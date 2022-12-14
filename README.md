@@ -5,12 +5,8 @@
 |-------------------------------------------------------------------------|-------------|-----------------------------------------------------------------|
 | **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)** | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
 
-
-
-![chatting_AdobeExpress](https://user-images.githubusercontent.com/29156882/207486921-40699804-4c8e-4345-86a6-e9a1d8d8f696.gif)
-
-
-
+## v1 동작
+[![Watch the video](img/chattingMov.png)](https://www.youtube.com/watch?v=nwD3AX6CJcc)
 
 ### Update[v1.1.1]
 1. Kafka 추가

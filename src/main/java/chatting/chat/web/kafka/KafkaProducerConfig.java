@@ -1,6 +1,6 @@
 package chatting.chat.web.kafka;
 
-import chatting.chat.web.dto.ChatMessageDTO;
+import chatting.chat.web.dto.ChatMessage;
 import com.google.common.collect.ImmutableMap;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, ChatMessageDTO> producerFactory() {
+    public ProducerFactory<String, ChatMessage> producerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
     }
 
@@ -34,7 +34,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, ChatMessageDTO> kafkaTemplate() {
+    public KafkaTemplate<String, ChatMessage> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 

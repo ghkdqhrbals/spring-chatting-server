@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -25,19 +26,22 @@ public class Chatting {
     @Column(name = "MESSAGE")
     private String message;
 
-    @Column(name = "CREATED_AT")
-    private LocalDate createdAt;
+    @Column(name = "CREATED_DATE")
+    private LocalDate createdDate;
 
-    @Column(name = "UPDATED_AT")
-    private LocalDate UpdatedAt;
+    @Column(name = "CREATED_TIME")
+    private LocalTime createdTime;
 
-    public Chatting(Room room, User sendUser, String message, LocalDate createdAt, LocalDate updatedAt) {
+    public Chatting(Long id, Room room, User sendUser, String message, LocalDate createdDate, LocalTime createdTime) {
+        this.id = id;
         this.room = room;
         this.sendUser = sendUser;
         this.message = message;
-        this.createdAt = createdAt;
-        UpdatedAt = updatedAt;
+        this.createdDate = createdDate;
+        this.createdTime = createdTime;
     }
+
+
 
     public Chatting() {
 

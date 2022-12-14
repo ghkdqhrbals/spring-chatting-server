@@ -26,16 +26,17 @@
             </button>
         </div>
     </div>
+
     <div th:if="${status} == true" class="ROW">
         <form th:action="@{/logout}" method="post">
             <button class="w-100 btn btn-dark btn-lg" onclick="location.href='home.html'" type="submit">
                 로그아웃
             </button>
         </form>
+        <hr class="my-4">
         <button class="w-100 btn btn-dark btn-lg" th:onclick="|location.href='@{/users}'|" onclick="location.href='users/loginHome.html'" type="submit">
             친구목록
         </button>
-
     </div>
 
     <hr class="my-4">

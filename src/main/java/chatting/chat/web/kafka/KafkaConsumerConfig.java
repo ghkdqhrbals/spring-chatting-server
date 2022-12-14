@@ -1,7 +1,6 @@
 package chatting.chat.web.kafka;
 
-import chatting.chat.web.dto.ChatMessageDTO;
-import chatting.chat.web.dto.ChattingDTO;
+import chatting.chat.web.dto.ChatMessage;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -20,17 +19,17 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ChatMessageDTO> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, ChatMessage> kafkaListenerContainerFactory() {
         log.info("kafkaListenerContainerFactory");
-        ConcurrentKafkaListenerContainerFactory<String, ChatMessageDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, ChatMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, ChatMessageDTO> consumerFactory() {
+    public ConsumerFactory<String, ChatMessage> consumerFactory() {
         log.info("consumerFactory");
-        JsonDeserializer<ChatMessageDTO> deserializer = new JsonDeserializer<>(ChatMessageDTO.class);
+        JsonDeserializer<ChatMessage> deserializer = new JsonDeserializer<>(ChatMessage.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);

@@ -1,0 +1,17 @@
+package chatting.chat.domain.chat;
+
+import chatting.chat.domain.data.Chatting;
+import chatting.chat.domain.data.Friend;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
+
+import java.util.List;
+
+public interface ChatRepository extends JpaRepository<Chatting, Long> {
+
+    @Nullable
+    @Query("select c from Chatting c where c.room.roomId = :roomId order by DATE(c.createdDate) ASC, TIME(c.createdTime) ASC")
+    List<Chatting> findAllByRoomId(@Param("roomId") Long roomId); // in asc order by its date and time
+}

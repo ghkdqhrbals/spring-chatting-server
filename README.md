@@ -15,12 +15,15 @@
    * Spring - Kafka 연동
 * Sequence Diagram
 ![chatSeq](img/chatting.png)
+> 변경점
+> 
 > 기존에는 클라이언트로부터 메세지를 전달받으면 MessageHandler에서 별 다른 과정 없이 바로 토픽으로 전송하였다.
 > 
 > 이제는 MessageHandler에서 Kafka에 전달하여 중앙서버를 거침으로써 다른 서버에서도 메세지를 가지고 다른 로직들을 수행할 수 있도록 설정.( ex) **로깅** + **어뷰저 관측** )
 
 ### Update[v1.1.0]
 1. 채팅방 STOMP-WebSocket 실시간 양방향 통신 추가
+> 동작 순서
 > 1. `유저A`는 채팅방 입장 시, 서버의 /stomp/chat 엔드포인트와 연결
 > 2. 채팅 전송 시, /pub/chat/message 로 ChatMessageDTO와 함께 전송
 > 3. 서버는 MessageHandler을 통해 SimpleBroker의 TOPIC : /sub/chat/message로 전달
@@ -34,6 +37,8 @@
    * 사용자, 채팅방, 채팅참여자, 친구를 저장할 수 있는 Repository 생성
 2. UserService 생성
    * UserRepository, FriendRepository, RoomRepository, ParticipantRepoisotry들을 Transactional 하게 관리하도록 설정
+> 고려한 점
+> 
 > 이 때, `하나의 Service에서 다수의 Repository를 사용하는것이 여러 방면에서 옳은가?` 라는 고민이였다. 내린 결론은 `상관이 없다` 였으며, 이렇게 생각한 이유는 다음과 같다. DB관리에서 무엇보다도 중요한 것이 트랜젝션 관리이며, 트랜잭션의 정합성만 만족한다면 된다. 
 > 
 > 이것은 다수의 Repository를 사용해도 만족가능하다. Service의 function내에 다수의 Repository를 사용해도 function의 앞과 뒤에 BEGIN/COMMIT을, 그리고 에러시 ROLLBACK을 스프링에서 붙여주기때문에, 우리는 Service내에서의 트랜잭션의 정합성을 의심할 필요가 없다는 것이다. 따라서 다수의 Repository을 사용하는것에 대해 상관없다라는 결론을 내렸다.

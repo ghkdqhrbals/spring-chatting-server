@@ -5,6 +5,9 @@
 |-------------------------------------------------------------------------|-------------|-----------------------------------------------------------------|
 | **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)** | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
 
+<video src="img/chattingMovie.mov" controls="controls" style="max-width: 730px;">
+</video>
+
 ### Update[v1.1.1]
 1. Kafka 추가
    * localhost:9092 Broker 설정

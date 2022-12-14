@@ -29,12 +29,14 @@
 >                |-- DB(Postgres)
 > ```
 > 
-> 위는 현재의 아키텍쳐이다. **문제점은 아래와 같다.**
+> * 위는 현재의 아키텍쳐이다. **문제점은 아래와 같다.**
+> 
 > 1. ChatServer은 front와 backend를 모두 맡고있다. 또한 Logging/Abuser관리를 모두 맡음. 따라서 개발에 있어 원하는 부분을 수정하기란 어려우며 deploy또한 모두 다 이루어져야한다.
 > 2. 백업 DB또한 설정되지 않았다(CDC).
 > 3. Kafka Broker 1대, Partition 1개, Topic 1개이기때문에 Kafka 문제 시 대처 불가능하다.
 > 
-> **개선할 점은 다음과 같다.**
+> * **개선할 점은 다음과 같다.**
+> 
 > 1. Chat front/back 분리 및 Logging/Abuser Server 분리
 > 2. webClient로 api 요청. Async로 요청할 것임. 값이 비어있을 때, `처리중`으로 표시. 값 도착하면 실제 값 뷰로 송출(사실 Chatting은 빠르게 처리 가능하기에 sync로 해도 상관없지만, 비동기 통신 숙련도를 위해 이와같이 설정할 것이다).
 >    * WebClient : Async-NonBlocking 지원 HTTP 클라이언트
@@ -49,7 +51,8 @@
 > 
 ### Update[v1.1.0]
 1. 채팅방 STOMP-WebSocket 실시간 양방향 통신 추가
-> 동작 순서
+> * 동작 순서
+> 
 > 1. `유저A`는 채팅방 입장 시, 서버의 /stomp/chat 엔드포인트와 연결
 > 2. 채팅 전송 시, /pub/chat/message 로 ChatMessageDTO와 함께 전송
 > 3. 서버는 MessageHandler을 통해 SimpleBroker의 TOPIC : /sub/chat/message로 전달
@@ -63,8 +66,8 @@
    * 사용자, 채팅방, 채팅참여자, 친구를 저장할 수 있는 Repository 생성
 2. UserService 생성
    * UserRepository, FriendRepository, RoomRepository, ParticipantRepoisotry들을 Transactional 하게 관리하도록 설정
-> 고려한 점
-> 
+> * 고려한 점
+>
 > 이 때, `하나의 Service에서 다수의 Repository를 사용하는것이 여러 방면에서 옳은가?` 라는 고민이였다. 내린 결론은 `상관이 없다` 였으며, 이렇게 생각한 이유는 다음과 같다. DB관리에서 무엇보다도 중요한 것이 트랜젝션 관리이며, 트랜잭션의 정합성만 만족한다면 된다. 
 > 
 > 이것은 다수의 Repository를 사용해도 만족가능하다. Service의 function내에 다수의 Repository를 사용해도 function의 앞과 뒤에 BEGIN/COMMIT을, 그리고 에러시 ROLLBACK을 스프링에서 붙여주기때문에, 우리는 Service내에서의 트랜잭션의 정합성을 의심할 필요가 없다는 것이다. 따라서 다수의 Repository을 사용하는것에 대해 상관없다라는 결론을 내렸다.
@@ -72,7 +75,7 @@
    * 여러가지 DTO 생성 + Thymeleaf 연동
 4. Login Filter 추가
    * 클라이언트 쿠키에 인증정보추가
-> 동작 순서
+> * 동작 순서
 > 
 > 1. 유저로그인 시, 서버는 유저정보를 해싱하여 1) 세션에 저장, 2) 클라이언트의 쿠키에 삽입 한다.
 > 2. 클라이언트는 이후 있을 통신에 쿠키값을 전송한다.

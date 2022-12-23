@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 
 @Configuration
 public class JpaConfig {
-
     private final EntityManager em;
     private final FriendRepository friendRepository;
     private final RoomRepository roomRepository;

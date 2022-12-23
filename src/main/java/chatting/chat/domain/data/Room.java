@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -16,11 +17,11 @@ public class Room {
     private Long roomId;
 
     @Column(name = "CREATED_AT")
-    private LocalDate createdAt;
+    private ZonedDateTime createdAt;
     @Column(name = "UPDATED_AT")
-    private LocalDate updatedAt;
+    private ZonedDateTime updatedAt;
 
-    public Room(LocalDate createdAt, LocalDate updatedAt) {
+    public Room(ZonedDateTime createdAt, ZonedDateTime updatedAt) {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

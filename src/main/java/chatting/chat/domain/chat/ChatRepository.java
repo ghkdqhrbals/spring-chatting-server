@@ -12,6 +12,7 @@ import java.util.List;
 public interface ChatRepository extends JpaRepository<Chatting, Long> {
 
     @Nullable
-    @Query("select c from Chatting c where c.room.roomId = :roomId order by DATE(c.createdDate) ASC, TIME(c.createdTime) ASC")
+    @Query("select c from Chatting c where c.room.roomId = :roomId")
     List<Chatting> findAllByRoomId(@Param("roomId") Long roomId); // in asc order by its date and time
+
 }

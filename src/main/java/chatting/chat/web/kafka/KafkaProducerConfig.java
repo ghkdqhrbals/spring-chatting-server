@@ -1,9 +1,8 @@
 package chatting.chat.web.kafka;
 
-import chatting.chat.web.dto.ChatMessage;
-import com.google.common.collect.ImmutableMap;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -12,29 +11,27 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 @EnableKafka
 public class KafkaProducerConfig {
 
-    @Bean
-    public ProducerFactory<String, ChatMessage> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
+    @Value("${kafka.bootstrap-servers}")
+    private String bootstrapServer;
+
+    private ProducerFactory<String, Object> producerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public Map<String, Object> kafkaProducerConfiguration() {
-        return ImmutableMap.<String, Object>builder()
-                .put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConsts.KAFKA_BROKER)
-                .put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
-                .put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
-                .put("group.id", KafkaConsts.GROUP_ID)
-                .build();
-    }
-
-    @Bean
-    public KafkaTemplate<String, ChatMessage> kafkaTemplate() {
+    public KafkaTemplate<String, Object> kafkaProducerTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 

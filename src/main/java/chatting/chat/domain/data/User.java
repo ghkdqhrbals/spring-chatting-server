@@ -28,7 +28,6 @@ public class User {
     @Column(name = "USER_ID")
     private String userId;
 
-
     @Column(name = "USER_PW")
     private String userPw;
 

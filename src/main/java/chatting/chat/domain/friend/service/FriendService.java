@@ -10,6 +10,8 @@ public interface FriendService {
 
     String save(String userId, String friendId);
 
+    List<Friend> findAllByUserId(String userId);
+
     Optional<Friend> findByUserAndFriend(User user, Friend friend);
 
     List<Friend> findAll(User user);

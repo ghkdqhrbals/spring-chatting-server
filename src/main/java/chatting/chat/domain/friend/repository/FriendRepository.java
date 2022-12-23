@@ -17,7 +17,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Nullable
     Friend save(Friend friend);
 
-    @Nullable
     List<Friend> findAllByUserId(String userId);
 
     @Nullable

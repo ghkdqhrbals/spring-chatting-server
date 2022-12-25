@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
     Room save(Room room);
-
     @Nullable
     Room findByRoomId(@Param("roomId") Long roomId);
 

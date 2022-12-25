@@ -12,6 +12,7 @@ public class ResponseAddUserDTO {
     private String userId;
     private Boolean isSuccess;
     private User user;
+    private String errorMessage;
 
     public ResponseAddUserDTO(String userId) {
         this.userId = userId;

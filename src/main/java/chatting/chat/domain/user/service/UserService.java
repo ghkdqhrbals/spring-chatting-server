@@ -10,13 +10,13 @@ import java.util.Optional;
 
 
 public interface UserService {
-    ResponseAddUserDTO save(User item);
-    ResponseChangeUserStatusDTO updateUserStatus(RequestChangeUserStatusDTO req);
-    ResponseUserRoomDTO findAllMyRooms(String userId);
+    User save(User item);
+    void updateUserStatus(RequestChangeUserStatusDTO req);
+    List<ChatRoomDTO> findAllMyRooms(String userId);
 
-    ResponseAddUserRoomDTO makeRoomWithFriends(RequestAddUserRoomDTO req);
+    void makeRoomWithFriends(RequestAddChatRoomDTO req);
 
-    Optional<User> findById(String id);
+    User findById(String id);
 
     ResponseLoginDTO login(String userId, String userPw);
     ResponseLogoutDTO logout(String userId);

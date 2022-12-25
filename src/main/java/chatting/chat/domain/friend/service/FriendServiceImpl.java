@@ -3,14 +3,16 @@ package chatting.chat.domain.friend.service;
 import chatting.chat.domain.data.Friend;
 import chatting.chat.domain.data.User;
 import chatting.chat.domain.friend.repository.FriendRepository;
-import chatting.chat.domain.user.repository.UserRepository;
+import chatting.chat.web.error.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
+import static chatting.chat.web.error.ErrorCode.DUPLICATE_FRIEND;
+import static chatting.chat.web.error.ErrorCode.DUPLICATE_FRIEND_SELF;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 @Transactional
@@ -24,36 +26,35 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public String save(String userId, String friendId){
+    public Friend save(String userId, String friendId){
 
         Friend friend1 = new Friend();
-        friend1.setFriendId(friendId);
         friend1.setUserId(userId);
-
+        friend1.setFriendId(friendId);
 
         Friend friend2 = new Friend();
-        friend2.setFriendId(userId);
         friend2.setUserId(friendId);
+        friend2.setFriendId(userId);
 
         Friend isFriend1 = friendRepository.findByUserIdAndFriendId(userId, friendId);
         Friend isFriend2 = friendRepository.findByUserIdAndFriendId(friendId, userId);
 
-        if (isFriend1 != null){
-            return "1"; // 내가 이미 친구추가함
+        if (userId.equals(friendId)){
+            throw new CustomException(DUPLICATE_FRIEND_SELF);
         }
 
-        if (isFriend2 != null){
-            return "2"; // 상대방이 이미 친구추가함
+        if (isFriend1 != null){
+            // 이미 나와 친구임
+            throw new CustomException(DUPLICATE_FRIEND);
         }
 
         Friend save1 = friendRepository.save(friend1);
-        Friend save2 = friendRepository.save(friend2);
 
-        if (save1 == null || save2 == null){
-            return "3"; // 저장에러
+        if (isFriend2 == null){
+            // 상대방또한 나를 친구추가
+            Friend save2 = friendRepository.save(friend2);
         }
-
-        return "0"; // 성공
+        return save1;
     }
 
     @Override

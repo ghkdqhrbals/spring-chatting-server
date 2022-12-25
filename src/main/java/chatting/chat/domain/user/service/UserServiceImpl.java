@@ -8,20 +8,24 @@ import chatting.chat.domain.friend.repository.FriendRepository;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.room.repository.RoomRepository;
 import chatting.chat.domain.user.repository.UserRepository;
+import chatting.chat.web.error.CustomException;
 import chatting.chat.web.kafka.dto.ChatRoomDTO;
 import chatting.chat.web.kafka.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static chatting.chat.web.error.ErrorCode.*;
+
 @Slf4j
 @Service
-//@Transactional(rollbackFor=Exception.class) // RollBack 설정
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
@@ -36,93 +40,87 @@ public class UserServiceImpl implements UserService {
         this.friendRepository = friendRepository;
     }
 
+    // 유저 검색
+    @Override
+    public User findById(String id) {
+        Optional<User> findId = userRepository.findById(id);
+        if (!findId.isPresent()){
+            throw new CustomException(CANNOT_FIND_USER);
+        }
+        return findId.get();
+    }
+
     // 유저 저장
     @Override
-    public ResponseAddUserDTO save(User user) {
+    public User save(User user) {
         Optional<User> findUser = userRepository.findById(user.getUserId());
-        ResponseAddUserDTO responseAddUserDTO = new ResponseAddUserDTO(user.getUserId());
-
 
         if (findUser.isPresent()) {
-            responseAddUserDTO.setUser(findUser.get());
-        }else{
-            User save = userRepository.save(user);
-            responseAddUserDTO.setUser(save);
-            responseAddUserDTO.setIsSuccess(true);
+            throw new CustomException(DUPLICATE_RESOURCE);
         }
-
-        return responseAddUserDTO;
+        User save = userRepository.save(user);
+        return save;
     }
 
     // 유저 상태메세지 업데이트
     @Override
-    public ResponseChangeUserStatusDTO updateUserStatus(RequestChangeUserStatusDTO req) {
+    public void updateUserStatus(RequestChangeUserStatusDTO req) {
         Optional<User> findUser = userRepository.findById(req.getUserId());
-        ResponseChangeUserStatusDTO resp = new ResponseChangeUserStatusDTO();
-
         if (!findUser.isPresent()) {
-            resp.setErrorMessage("유저가 존재하지 않습니다");
+            throw new CustomException(CANNOT_FIND_USER);
         }
-        else{
-            findUser.get().setUserStatus(req.getStatus());
-            resp.setStatus(req.getStatus());
-            resp.setIsSuccess(true);
-        }
-        return resp;
+        findUser.get().setUserStatus(req.getStatus());
     }
 
 
     // 채팅방 생성
     @Override
-    public ResponseAddUserRoomDTO makeRoomWithFriends(RequestAddUserRoomDTO req){
-        ResponseAddUserRoomDTO resp = new ResponseAddUserRoomDTO(req.getUserId());
+    public void makeRoomWithFriends(RequestAddChatRoomDTO req){
 
         // 새로운 채팅방 생성
         Room room = new Room();
-        Room save = roomRepository.save(room);
+        roomRepository.save(room);
 
         Optional<User> findUser = userRepository.findById(req.getUserId());
+
+        // 유저 존재 X
         if (!findUser.isPresent()){
-            resp.setErrorMessage("ID="+req.getUserId()+" 존재하지 않는 사용자");
-            return resp;
+            throw new CustomException(CANNOT_FIND_USER);
         }
 
+        // 신청한 유저 먼저 저장
         Participant participant = new Participant();
         participant.setUser(findUser.get());
         participant.setRoom(room);
-        participant.setRoomName(req.getFriendId().toString().replace("[","").replace("]",""));
+        participant.setRoomName(req.getFriendIds().toString().replace("[","").replace("]",""));
         participant.setCreatedAt(LocalDate.now());
         participant.setUpdatedAt(LocalDate.now());
         participantRepository.save(participant);
 
-        // 채팅방에 참여하는 친구들 목록 생성
-        for (String userId : req.getFriendId()){
+        List<String> friendIds = req.getFriendIds();
+        if (friendIds.contains(findUser.get().getUserId())){
+            throw new CustomException(DUPLICATE_FRIEND_SELF);
+        }
+        // 채팅방에 참여하는 친구들 목록 저장
+        for (String userId : req.getFriendIds()){
             Optional<User> findFriend = userRepository.findById(userId);
-            if (!findUser.isPresent()){
-                resp.setErrorMessage("ID="+userId+" 존재하지 않는 사용자");
-                return resp;
+            if (!findFriend.isPresent()){
+                throw new CustomException(CANNOT_FIND_FRIEND_USER);
+            }
+            Friend f1 = friendRepository.findByUserIdAndFriendId(findUser.get().getUserId(), userId);
+            Friend f2 = friendRepository.findByUserIdAndFriendId(userId,findUser.get().getUserId());
+            if (f1==null || f2==null){
+                throw new CustomException(CANNOT_FIND_FRIEND);
             }
             Participant friendParticipant = new Participant();
             friendParticipant.setUser(findFriend.get());
             friendParticipant.setRoom(room);
-            friendParticipant.setRoomName(req.getFriendId().toString().replace("[","").replace("]",""));
+            friendParticipant.setRoomName(req.getFriendIds().toString().replace("[","").replace("]",""));
             friendParticipant.setCreatedAt(LocalDate.now());
             friendParticipant.setUpdatedAt(LocalDate.now());
-            participantRepository.save(participant);
+            participantRepository.save(friendParticipant);
         }
 
-        resp.setFriendId(req.getFriendId());
-        resp.setIsSuccess(true);
-        resp.setCreatedAt(save.getCreatedAt());
-
-        return resp;
-    }
-
-
-    // 유저 검색
-    @Override
-    public Optional<User> findById(String id) {
-        return userRepository.findById(id);
     }
 
     // login
@@ -153,11 +151,11 @@ public class UserServiceImpl implements UserService {
 
     // 유저참여 채팅방 검색
     @Override
-    public ResponseUserRoomDTO findAllMyRooms(String userId) {
+    public List<ChatRoomDTO> findAllMyRooms(String userId) {
         Optional<User> findUser = userRepository.findById(userId);
 
         if (!findUser.isPresent()) {
-            return new ResponseUserRoomDTO(userId, false,"유저가 존재하지 않습니다");
+            throw new CustomException(CANNOT_FIND_USER);
         }
 
         // 내가 현재 참가하고있는 채팅방 검색
@@ -172,7 +170,7 @@ public class UserServiceImpl implements UserService {
             chatRoomDTOS.add(chatRoomDTO);
         }
 
-        return new ResponseUserRoomDTO(userId,true,chatRoomDTOS,"");
+        return chatRoomDTOS;
     }
 
     public List<Participant> findParticipantWithRoomId(Long roomId){
@@ -186,7 +184,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Participant findByRoomIdAndUserId(Long roomId, String userId) {
-        return participantRepository.findByRoomIdAndUserId(roomId,userId);
+        Participant findP = participantRepository.findByRoomIdAndUserId(roomId, userId);
+        if (findP==null){
+            throw new CustomException(INVALID_PARTICIPANT);
+        }
+        return findP;
     }
 
     // 채팅방 참여자 저장

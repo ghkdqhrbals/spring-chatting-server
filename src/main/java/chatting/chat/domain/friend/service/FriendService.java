@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface FriendService {
 
-    String save(String userId, String friendId);
+    Friend save(String userId, String friendId);
 
     List<Friend> findAllByUserId(String userId);
 

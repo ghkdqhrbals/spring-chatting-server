@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/spring-auth-backend-server/.idea/spring-auth-backend-server.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-auth-backend-server/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-backend-server/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaAdminConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaProducerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaTopicConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaTopicConst.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/MessageListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ChatRoomDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddChatMessageDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddChatRoomDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddFriendDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserRoomDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestChangeUserStatusDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestLoginDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestUserFriendDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/RequestUserRoomDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddChatMessageDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddFriendDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddUserDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddUserRoomDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseChangeUserStatusDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseFindUserFriends.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseLoginDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseLogoutDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseUserFriendDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/dto/ResponseUserRoomDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/7.5.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/config/JpaConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/config/JpaConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/chat/ChatRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/chat/ChatService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/compositekey/FriendId.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/data/Chatting.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/data/Friend.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/data/Participant.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/data/Room.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/data/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/data/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/friend/repository/FriendRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/friend/service/FriendService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/friend/service/FriendServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/participant/repository/ParticipantRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/participant/service/ParticipantService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/participant/service/ParticipantServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/room/repository/RoomRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/room/service/RoomService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/room/service/RoomServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/user/repository/UserSearchCond.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/error/ErrorCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/error/ErrorCode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaAdminConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaConsumerConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaProducerConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaProducerController$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaProducerController$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaProducerController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaTopicConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaTopicConst.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ChatRoomDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestAddChatMessageDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestAddChatRoomDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestAddFriendDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestAddUserDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestAddUserRoomDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestChangeUserStatusDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestLoginDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestUserFriendDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestUserRoomDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseAddChatMessageDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseAddFriendDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseAddUserDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseAddUserRoomDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseChangeUserStatusDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseFindUserFriends.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseLoginDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseLogoutDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseUserFriendDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/ResponseUserRoomDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/resources/main/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/resources/main/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/docker-compose.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/ChatApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/ChatApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/config/JpaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/config/JpaConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/chat/ChatRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/chat/ChatService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/compositekey/FriendId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/data/Chatting.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/data/Friend.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/data/Participant.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/data/Room.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/data/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/data/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/friend/repository/FriendRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/friend/service/FriendService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/friend/service/FriendServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/participant/repository/ParticipantRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/participant/service/ParticipantService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/participant/service/ParticipantServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/room/repository/RoomRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/room/service/RoomService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/room/service/RoomServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/user/repository/UserSearchCond.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/user/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/domain/user/service/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/ChatConroller.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/error/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/error/ErrorCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/KafkaAdminConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/KafkaProducerConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/KafkaProducerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/KafkaTopicConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/KafkaTopicConst.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/MessageListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ChatRoomDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/dto/ChatRoomDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddChatMessageDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/dto/RequestAddChatMessageDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddChatRoomDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddFriendDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/dto/RequestAddUserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserRoomDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestChangeUserStatusDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/dto/RequestChangeUserStatusDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestLoginDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestUserFriendDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestUserRoomDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddChatMessageDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddFriendDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddUserDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseAddUserRoomDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseChangeUserStatusDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseFindUserFriends.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseLoginDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseLogoutDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseUserFriendDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/java/chatting/chat/web/kafka/dto/ResponseUserRoomDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/spring-auth-backend-server/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/test/java/chatting/chat/ChatApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/test/java/chatting/chat/domain/friend/service/FriendServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-auth-backend-server/src/test/java/chatting/chat/domain/user/repository/JpaUserRepositoryTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/7.5.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/config/JpaConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/config/JpaConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/chat/ChatService.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/chat/ChatService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/data/Chatting.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/data/Chatting.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/data/Friend.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/data/Friend.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/data/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/data/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/friend/repository/FriendRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/friend/repository/FriendRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/friend/service/FriendService.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/friend/service/FriendService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/friend/service/FriendServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/friend/service/FriendServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/domain/user/service/UserServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/UserController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/error/ErrorCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/error/ErrorCode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaAdminConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaAdminConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaConsumerConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaConsumerConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaProducerConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/KafkaProducerConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestAddUserDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/classes/java/main/chatting/chat/web/kafka/dto/RequestAddUserDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/resources/main/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/resources/main/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/config/JpaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/config/JpaConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Chatting.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Chatting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Friend.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Friend.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/friend/repository/FriendRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/friend/repository/FriendRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/friend/service/FriendService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/friend/service/FriendService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/friend/service/FriendServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/friend/service/FriendServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/user/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/user/service/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatConroller.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/error/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/error/ErrorCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaAdminConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaAdminConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaProducerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/test/java/chatting/chat/ChatApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/test/java/chatting/chat/domain/friend/service/FriendServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/test/java/chatting/chat/domain/user/repository/JpaUserRepositoryTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/7.5.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/chat/ChatRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/chat/ChatRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/chat/ChatService.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/chat/ChatService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/data/Chatting.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/data/Chatting.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/room/service/RoomServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/room/service/RoomServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/user/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/user/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/user/service/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/domain/user/service/UserServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/web/dto/ChatMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/web/dto/ChatMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/web/kafka/KafkaConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/web/kafka/KafkaConsumer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/web/user/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/classes/java/main/chatting/chat/web/user/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/resources/main/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/resources/main/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/resources/main/templates/users/chat.html" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/resources/main/templates/users/chat.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/img/chatting.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/img/chattingMov.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/img/chattingMovie.mov" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/chat/ChatRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/chat/ChatRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/chat/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/chat/ChatService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/data/Chatting.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/data/Chatting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/room/service/RoomServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/room/service/RoomServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/user/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/domain/user/service/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/HomeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/dto/ChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/dto/ChatMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/dto/ChattingDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/friend/FriendController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/friend/FriendController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaConsts.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaConsumer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaProducer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/kafka/KafkaProducerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/login/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/login/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/user/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/websocket/StompChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/websocket/StompChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/websocket/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/websocket/WebSocketConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/users/chat.html" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/users/chat.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/spring-chatting-backend-server" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2IoOhejKmSwWol4lqq1q1KIWQhl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server",
+    "nodejs_package_manager_path": "npm",
+    "spring.configuration.checksum": "ba6128a59739fe745677c573659322af"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/spring-auth-backend-server" />
+      <recent name="$PROJECT_DIR$/img" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/img" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="ChatApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="chat.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="chatting.chat.ChatApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="" />
+      <created>1670844589307</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1670844589307</updated>
+      <workItem from="1670844590662" duration="32576000" />
+      <workItem from="1671239919240" duration="9115000" />
+      <workItem from="1672102387966" duration="26810000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

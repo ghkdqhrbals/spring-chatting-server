@@ -1,11 +1,58 @@
 # Spring Java 채팅서버구현
 ## Versions
 
-| Version                                                                 | Last Update | Skills                                                          | 
-|-------------------------------------------------------------------------|-------------|-----------------------------------------------------------------|
-| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)** | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
+| Version                                                                 | Last Update | Skills                                                                                                  | 
+|-------------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------|
+| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)** | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                         |
+| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)** | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
 
-## v1 동작
+# v2
+### Running Chat Backend Server with Docker
+
+1. 루트 디렉토리에서 `docker-compose -f docker-compose.yml up -d` 실행
+2. 관찰 후, `docker-compose -f docker-elk/docker-compose-es.yml up -d` 실행
+3. http://localhost:5601 을 통해 kibana 접속 후, `new-user`, `chat` 인덱스 생성
+4. 이후 WAS restapi 통신
+
+    > 추가적으로 `docker-compose-monitor.yaml`을 통해 http://localhost:8989 로 kafka 내 토픽 및 할당브로커 관찰 가능
+
+### Update[v2.0.0]
+#### Architecture
+![chatSeq](img/v2/final.png)
+#### Visualized Kafka Traffics and others
+* Kibana
+  ![visualized](img/v2/5.png)
+* UI for Kafka
+  ![visualized](img/v2/1.png)
+  ![visualized](img/v2/2.png)
+1. 모노서버 분리
+   * 유저인증서버 + 채팅서버
+2. Kafka 멀티 브로커 설정
+3. ElasticSearch 연동
+4. Logstash input filter 설정
+5. Kibana 연동 및 시각화 설정
+6. Docker container화
+
+    >```
+    >CONTAINER ID   IMAGE                                      COMMAND                  CREATED          STATUS          PORTS                                                                                                NAMES
+    >c8844bebca0f   docker-elk_logstash                        "/usr/local/bin/dock…"   32 seconds ago   Up 30 seconds   0.0.0.0:5044->5044/tcp, 0.0.0.0:9600->9600/tcp, 0.0.0.0:50000->50000/tcp, 0.0.0.0:50000->50000/udp   docker-elk_logstash_1
+    >10932c3ca0cf   docker-elk_kibana                          "/bin/tini -- /usr/l…"   32 seconds ago   Up 31 seconds   0.0.0.0:5601->5601/tcp                                                                               docker-elk_kibana_1
+    >ecc046260f13   docker-elk_elasticsearch                   "/bin/tini -- /usr/l…"   33 seconds ago   Up 32 seconds   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                                                       docker-elk_elasticsearch_1
+    >4f85aff682ba   spring-chatting-server_nginx               "/docker-entrypoint.…"   54 minutes ago   Up 54 minutes   0.0.0.0:8080->80/tcp                                                                                 nginx
+    >374824d2b950   spring-chatting-server_chatting-server-1   "java -jar app.jar"      54 minutes ago   Up 54 minutes   0.0.0.0:8083->8083/tcp                                                                               chatting-server-1
+    >04b35b27012f   spring-chatting-server_chatting-server-2   "java -jar app.jar"      54 minutes ago   Up 54 minutes   0.0.0.0:8084->8084/tcp                                                                               chatting-server-2
+    >ba305f53a20e   confluentinc/cp-kafka:7.2.1                "/etc/confluent/dock…"   54 minutes ago   Up 54 minutes   0.0.0.0:8099->8099/tcp, 9092/tcp                                                                     kafka3
+    >204f557e1588   confluentinc/cp-kafka:7.2.1                "/etc/confluent/dock…"   54 minutes ago   Up 54 minutes   0.0.0.0:8098->8098/tcp, 9092/tcp                                                                     kafka2
+    >bcc4230e019a   confluentinc/cp-kafka:7.2.1                "/etc/confluent/dock…"   54 minutes ago   Up 54 minutes   0.0.0.0:8097->8097/tcp, 9092/tcp                                                                     kafka1
+    >1e4311a3184e   spring-chatting-server_auth-server         "java -jar app.jar"      54 minutes ago   Up 54 minutes   0.0.0.0:8085->8085/tcp                                                                               auth-server
+    >3ae7be01ea42   postgres:12-alpine                         "docker-entrypoint.s…"   54 minutes ago   Up 54 minutes   5432/tcp, 0.0.0.0:5434->5434/tcp                                                                     chatting-db-2
+    >a8aec1c46475   confluentinc/cp-zookeeper:7.2.1            "/etc/confluent/dock…"   54 minutes ago   Up 54 minutes   2181/tcp, 2888/tcp, 3888/tcp                                                                         zookeeper
+    >35c58ec8ea78   postgres:12-alpine                         "docker-entrypoint.s…"   54 minutes ago   Up 54 minutes   5432/tcp, 0.0.0.0:5435->5435/tcp                                                                     auth-db
+    >b6a5f60c3a39   postgres:12-alpine                         "docker-entrypoint.s…"   54 minutes ago   Up 54 minutes   5432/tcp, 0.0.0.0:5433->5433/tcp                                                                     chatting-db-1
+    >```
+
+
+## v1
 [![Watch the video](img/chattingMov.png)](https://www.youtube.com/watch?v=nwD3AX6CJcc)
 
 ### Update[v1.1.1]

@@ -279,7 +279,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/spring-chatting-backend-server" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/spring-auth-backend-server" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -301,18 +301,18 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/elk/kibana/config",
+    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/img/v2",
     "nodejs_package_manager_path": "npm",
     "spring.configuration.checksum": "ba6128a59739fe745677c573659322af"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/img/v2" />
+      <recent name="$PROJECT_DIR$/img" />
       <recent name="$PROJECT_DIR$/elk/kibana/config" />
       <recent name="$PROJECT_DIR$/elk" />
       <recent name="$PROJECT_DIR$/elk/logstash/config" />
-      <recent name="$PROJECT_DIR$/elk/logstash/pipeline" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -351,7 +351,7 @@
       <updated>1670844589307</updated>
       <workItem from="1670844590662" duration="32576000" />
       <workItem from="1671239919240" duration="9115000" />
-      <workItem from="1672102387966" duration="64539000" />
+      <workItem from="1672102387966" duration="70598000" />
     </task>
     <servers />
   </component>

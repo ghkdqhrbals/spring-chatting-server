@@ -1,0 +1,97 @@
+version: '2.2'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.8
+    container_name: es01
+    environment:
+      - node.name=es01
+      - ELASTIC_PASSWORD="1234"
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=false
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.8
+    container_name: es02
+    environment:
+      - node.name=es02
+      - ELASTIC_PASSWORD="1234"
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=false
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.8
+    container_name: es03
+    environment:
+      - node.name=es03
+      - ELASTIC_PASSWORD="1234"
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=false
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.8
+    ports:
+      - 5601:5601
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - es01
+      - es02
+      - es03
+    networks:
+      - elastic
+    restart: always # ES가 막상 ready 되어도 설정에 시간이 걸리기때문에 kibana error뜸. 그래서 restart 설정해줘야한다.
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local
+
+networks:
+  elastic:
+    name: spring-chatting-server_default
+    external: true

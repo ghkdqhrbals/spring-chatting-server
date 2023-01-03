@@ -156,3 +156,4 @@ services:
     depends_on:
       - auth-db
     restart: always
+

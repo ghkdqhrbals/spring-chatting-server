@@ -75,18 +75,19 @@ services:
       - "5433:5433"
     volumes:
       - ./backups:/home/backups
-    command: -p 5433
+    command: -c wal_level=logical -p 5433
+
   chatting-server-1:
     container_name: chatting-server-1
     build: ./spring-chatting-backend-server
     ports:
-      - "8083:8083"
+      - "8082:8082"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://chatting-db-1:5433/chat
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SERVER_PORT=8083
+      - SERVER_PORT=8082
       - KAFKA_BOOTSTRAP=kafka1:9092,kafka2:9092,kafka3:9092 # 내부포트
     depends_on:
       - kafka1
@@ -107,7 +108,8 @@ services:
       - "5434:5434"
     volumes:
       - ./backups:/home/backups
-    command: -p 5434
+    command: -c wal_level=logical -p 5434
+
   chatting-server-2:
     container_name: chatting-server-2
     build: ./spring-chatting-backend-server
@@ -156,4 +158,57 @@ services:
     depends_on:
       - auth-db
     restart: always
+
+  # -------- kafdrop for visualization --------
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka1:9092,kafka2:9092,kafka3:9092"
+      JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    ports:
+      - 9000:9000
+    depends_on:
+      - kafka1
+      - kafka2
+
+  # -------- postgres -> kafka source connector --------
+  kafka-source-connector:
+    image: debezium/connect:1.9
+    container_name: postgres-kafka-source-connector
+    ports:
+      - 8083:8083
+    environment:
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_connect_statuses
+      BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - zookeeper
+      - chatting-db-1
+      - chatting-db-2
+
+  # rest api 를 통한 kafka source connector 등록
+
+#   POST  http://localhost:8083/connectors
+#   {
+#     "name": "inventory-connector",
+#     "config": {
+#       "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+#       "database.hostname": "postgres",
+#       "database.port": "5433",
+#       "database.user": "postgres",
+#       "database.password": "password",
+#       "database.dbname" : "chat",
+#       "database.server.name": "dbserver1",
+#       "table.include.list": "chat.user_table"
+#     }
+#   }
+
+
+  # -------- kafka -> postgres sink connector --------
+  # TODO
 

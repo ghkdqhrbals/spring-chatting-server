@@ -179,9 +179,9 @@ services:
     ports:
       - 8083:8083
     environment:
-      CONFIG_STORAGE_TOPIC: my_connect_configs
-      OFFSET_STORAGE_TOPIC: my_connect_offsets
-      STATUS_STORAGE_TOPIC: my_connect_statuses
+      CONFIG_STORAGE_TOPIC: __pg.source.config.storage
+      OFFSET_STORAGE_TOPIC: __pg.source.offset.storage
+      STATUS_STORAGE_TOPIC: __pg.source.status.storage
       BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
     depends_on:
       - kafka1
@@ -210,5 +210,52 @@ services:
 
 
   # -------- kafka -> postgres sink connector --------
-  # TODO
-
+  # -------- postgres -> kafka source connector --------
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect
+    container_name: kafka-connect
+    ports:
+      - "8091:8083"
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - chatting-db-1
+      - chatting-db-2
+      - auth-db
+      - zookeeper
+    environment:
+      LOG_LEVEL: DEBUG
+      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
+      CONNECT_GROUP_ID: kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: __pg.sink.config.storage
+      CONNECT_STATUS_STORAGE_TOPIC: __pg.sink.status.storage
+      CONNECT_OFFSET_STORAGE_TOPIC: __pg.sink.offset.storage
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_REST_PORT: 8091
+      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
+      CONNECT_SCHEMAS_ENABLE: "false"
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
+      #  ---------------
+      CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars
+    # If you want to use the Confluent Hub installer to d/l component, but make them available
+    # when running this offline, spin up the stack once and then run :
+    #   docker cp kafka-connect:/usr/share/confluent-hub-components ./data/connect-jars
+    volumes:
+      - ./connectors:/etc/kafka-connect/jars/
+    # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
+    command:
+      - bash
+      - -c
+      - |
+        echo "Installing Connector"
+        confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.6.1
+        confluent-hub install --no-prompt confluentinc/connect-transforms
+        #
+        echo "Launching Kafka Connect worker"
+        /etc/confluent/docker/run

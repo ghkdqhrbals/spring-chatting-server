@@ -282,7 +282,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/spring-chatting-backend-server" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/spring-chatting-front-server" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -354,7 +354,7 @@
       <updated>1670844589307</updated>
       <workItem from="1670844590662" duration="32576000" />
       <workItem from="1671239919240" duration="9115000" />
-      <workItem from="1672102387966" duration="106758000" />
+      <workItem from="1672102387966" duration="107233000" />
     </task>
     <servers />
   </component>

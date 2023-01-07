@@ -2,8 +2,16 @@
 
 confluent-hub-client-latest.tar.gz
 
-confluent-etcs/
+/confluent-etcs
 
-spring-chatting-log-server/
+/spring-chatting-log-server
 
-spring-chatting-backend-server/build
+./spring-chatting-backend-server/build
+./spring-chatting-auth-server/build
+./spring-chatting-auth-server/build
+
+
+
+.idea/
+*.iml
+*.iws

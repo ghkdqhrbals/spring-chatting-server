@@ -1,10 +1,106 @@
 # Spring Java 채팅서버구현
 ## Versions
 
-| Version                                                                 | Last Update | Skills                                                                                                  | 
-|-------------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------|
-| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)** | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                         |
-| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)** | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
+| Version                                                                 | Last Update | Skills                                                                                                            | 
+|-------------------------------------------------------------------------|-------------|-------------------------------------------------------------------------------------------------------------------|
+| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)** | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                   |
+| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)** | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                  |
+| **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3)** | 2023.01.08  | Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
+
+
+# v3
+### Running with Docker
+1. Please cloning [docker-elk](https://github.com/deviantony/docker-elk) for running elk stacks
+2. Run `./gradlew build` in each directory(spring-auth-backend-server, spring-chatting-backend-server)
+3. In root directory, run `docker-compose -f docker-compose.yml up -d`
+4. After docker containers run successfully, run `docker-compose -f docker-elk/docker-compose-es.yml up -d`
+5. In Kibana([http://localhost:5601](http://localhost:5601)), create index of `new-user` and `chat`
+6. Run `sh ./install-jdbc-connector.sh` for installing jdbc-sink connector and copy to kafka-connector container(container will be restarted)
+7. Send HTTP request to kafka-connector as below for configuring schema in source/sink connector
+    * Source Connector
+    
+    ```
+    POST http://localhost:8083/connectors
+    {
+        "name": "source-connector",
+        "config": {
+            "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+            "plugin.name": "pgoutput",
+            "database.hostname": "chatting-db-2",
+            "database.port": "5434",
+            "database.user": "postgres",
+            "database.password": "password",
+            "database.dbname" : "chat2",
+            "database.server.name": "dbserver5434",
+            "transforms": "unwrap,addTopicPrefix",
+            "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+            "transforms.addTopicPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
+            "transforms.addTopicPrefix.regex":"(.*)",
+            "transforms.addTopicPrefix.replacement":"$1"
+        }
+    }
+    ```
+
+    * Source Connector
+    
+    ```
+    POST http://localhost:8083/connectors
+    {
+        "name": "sink-connector",
+        "config": {
+            "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+            "task.max" : 1,
+            "topics": "dbserver5434.public.user_table",
+            
+            "connection.url": "jdbc:postgresql://chatting-db-1:5433/chat1",
+            "connection.user":"postgres",
+            "connection.password":"password",
+    
+            "auto.create": "false",
+            "auto.evolve": "false",
+            "delete.enabled": "true",
+            "insert.mode": "upsert",
+            "pk.mode": "record_key",
+            "tombstones.on.delete": "true",
+    
+            "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+            "key.converter.schemas.enable": "true",
+            "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+            "value.converter.schemas.enable": "true",
+            "transforms": "unwrap,addTopicPrefix",
+            "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+            "transforms.addTopicPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
+            "transforms.addTopicPrefix.regex":"(.*)",
+            "transforms.addTopicPrefix.replacement":"$1",
+    
+    
+            "table.name.format":"user_table",
+    
+            "batch.size": "1"
+        }
+    }   
+    ```
+
+8. Send HTTP reqeust to chatServer
+    > example
+    > 
+    > ```
+    > POST http://localhost:8080/chat/user
+    > {
+    >    "userId":"Hwangbo",
+    >    "userName":"황보규민"
+    > }
+    > ```
+
+9. See Results in Kafdrop [http://localhost:9000/](http://localhost:9000/)
+
+### Update[v3.0.0]
+1. Add Kafdrop for simple visualization
+2. Update **Uni-directional DB sync** with kafka connector
+   * Configure Source Connector with Debezium
+   * Configure Sink Connector with JDBC-Sink-Connector that load from Confluent
+
+
 
 # v2
 ### Running Chat Backend Server with Docker

@@ -9,14 +9,11 @@
 
 
 # v3
-### Running with Docker
-1. Please cloning [docker-elk](https://github.com/deviantony/docker-elk) for running elk stacks
-2. Run `./gradlew build` in each directory(spring-auth-backend-server, spring-chatting-backend-server)
-3. In root directory, run `docker-compose -f docker-compose.yml up -d`
-4. After docker containers run successfully, run `docker-compose -f docker-elk/docker-compose-es.yml up -d`
-5. In Kibana([http://localhost:5601](http://localhost:5601)), create index of `new-user` and `chat`
-6. Run `sh ./install-jdbc-connector.sh` for installing jdbc-sink connector and copy to kafka-connector container(container will be restarted)
-7. Send HTTP request to kafka-connector as below for configuring schema in source/sink connector
+### Running with Docker - Backend
+1. Run `./gradlew build` in each directory(spring-auth-backend-server, spring-chatting-backend-server)
+2. In root directory, run `docker-compose -f docker-compose.yaml up -d`
+3. Run `sh ./install-jdbc-connector.sh` for installing jdbc-sink connector and copy to kafka-connector container(container will be restarted)
+4. Send HTTP request to kafka-connector as below for configuring schema in source/sink connector
     * Source Connector
     
     ```
@@ -81,7 +78,7 @@
     }   
     ```
 
-8. Send HTTP reqeust to chatServer
+5. Send HTTP reqeust to chatServer
     > example
     > 
     > ```
@@ -92,7 +89,61 @@
     > }
     > ```
 
-9. See Results in Kafdrop [http://localhost:9000/](http://localhost:9000/)
+6. See Results in Kafdrop [http://localhost:9000/](http://localhost:9000/)
+
+### Running with Docker - ELK stack
+1. Please cloning [docker-elk](https://github.com/deviantony/docker-elk) for running elk stacks
+2. Edit `/docker-elk/logstash/pipeline/logstash.conf` with following configurations
+    
+   ```
+    input {
+        kafka {
+            type => "analysis1"
+            bootstrap_servers => "kafka1:9092,kafka2:9092,kafka3:9092"
+            group_id => "logstash-user-add"
+            topics => "log-user-add"
+            codec => "json"
+            consumer_threads => 2
+        }
+    
+        kafka {
+            type => "analysis2"
+            bootstrap_servers => "kafka1:9092,kafka2:9092,kafka3:9092"
+            group_id => "logstash-chat"
+            topics => "log-user-chat"
+            codec => "json"
+            consumer_threads => 3
+        }
+    }
+    
+    output {
+        if [type] == "analysis1" {
+            elasticsearch {
+                hosts => "elasticsearch:9200"
+                index => "new-user"
+                workers => 1
+                user => "elastic"
+                password => "${LOGSTASH_INTERNAL_PASSWORD}"
+            }
+        }
+        if [type] == "analysis2" {
+            elasticsearch {
+                hosts => "elasticsearch:9200"
+                index => "chat"
+                workers => 1
+                user => "elastic"
+                password => "${LOGSTASH_INTERNAL_PASSWORD}"
+            }
+        }
+    }
+    ```
+   
+3. Run `docker-compose -f docker-elk/docker-compose-es.yml up -d` in root directory
+4. In Kibana[http://localhost:5601](http://localhost:5601), create index of new-user and chat
+
+
+### Update[v3.0.1]
+* Bug fix : add logstash configuration and compose file name
 
 ### Update[v3.0.0]
 1. Add Kafdrop for simple visualization

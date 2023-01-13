@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,17 +68,19 @@ public class UserServiceImpl implements UserService {
         findUser.setUserStatus(req.getStatus());
     }
 
+    public void remove(String userId){
+        throwErrorWhenUserNotFind(userId);
+        userRepository.deleteById(userId);
+    }
+
     // 채팅방 생성
     @Override
     public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
 
         User findUser = getUser(req.getUserId());
 
-        // 자신에게 친구신청 확인
-        throwErrorWhenUserAddFriendSelf(req.getFriendIds(), findUser);
-
         // 새로운 채팅방 생성
-        Room room = roomRepository.save(new Room());
+        Room room = roomRepository.save(new Room(ZonedDateTime.now(),ZonedDateTime.now()));
 
         // 채팅방 참여 저장-본인
         saveParticipant(findUser, room, req.getFriendIds().toString().replace("[", "").replace("]", ""));
@@ -87,6 +91,7 @@ public class UserServiceImpl implements UserService {
             User findFriend = getUser(friendId);
             // 해당 유저가 친구가 아닐 때 오류 반환
             isFriend(findUser, friendId);
+
             // 채팅방 참여자 저장-친구
             saveParticipant(findFriend, room, req.getFriendIds().toString().replace("[", "").replace("]", ""));
         }

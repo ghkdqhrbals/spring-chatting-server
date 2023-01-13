@@ -15,7 +15,6 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ROOM_ID")
     private Long roomId;
-
     @Column(name = "CREATED_AT")
     private ZonedDateTime createdAt;
     @Column(name = "UPDATED_AT")

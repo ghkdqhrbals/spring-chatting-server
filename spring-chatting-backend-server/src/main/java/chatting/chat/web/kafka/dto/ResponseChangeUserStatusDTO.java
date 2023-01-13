@@ -10,12 +10,4 @@ public class ResponseChangeUserStatusDTO {
     private Boolean isSuccess;
     private String status;
     private String errorMessage;
-
-    public ResponseChangeUserStatusDTO(String userId) {
-        this.userId = userId;
-        this.isSuccess=false;
-    }
-
-    public ResponseChangeUserStatusDTO() {
-    }
 }

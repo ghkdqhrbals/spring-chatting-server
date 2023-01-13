@@ -14,16 +14,4 @@ public class ResponseAddChatMessageDTO {
     private Boolean isSuccess;
     private ZonedDateTime createdAt;
     private String errorMessage;
-
-    public ResponseAddChatMessageDTO(Long roomId, String userId) {
-        this.roomId = roomId;
-        this.userId = userId;
-        this.isSuccess=false;
-        this.errorMessage="";
-    }
-
-    public ResponseAddChatMessageDTO() {
-        this.isSuccess=false;
-        this.errorMessage="";
-    }
 }

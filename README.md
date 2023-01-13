@@ -1,14 +1,17 @@
 # Spring Java 채팅서버구현
 ## Versions
 
-| Version                                                                 | Last Update | Skills                                                                                                            | 
-|-------------------------------------------------------------------------|-------------|-------------------------------------------------------------------------------------------------------------------|
-| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)** | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                   |
-| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)** | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                  |
-| **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3)** | 2023.01.08  | Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
+| Version                                                                     | Last Update | Skills                                                                                                            | 
+|-----------------------------------------------------------------------------|-------------|-------------------------------------------------------------------------------------------------------------------|
+| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)**     | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                   |
+| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)**     | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                  |
+| **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3.1.0)** | 2023.01.13  | Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
 
 
 # v3
+### Current Architecture
+![chatSeq](img/v3/v3.1.0.png)
+
 ### Running with Docker - Backend
 1. Run `./gradlew build` in each directory(spring-auth-backend-server, spring-chatting-backend-server)
 2. In root directory, run `docker-compose -f docker-compose.yaml up -d`
@@ -17,7 +20,6 @@
     * Source Connector
     
     ```
-    POST http://localhost:8083/connectors
     {
         "name": "source-connector",
         "config": {
@@ -29,33 +31,29 @@
             "database.password": "password",
             "database.dbname" : "chat2",
             "database.server.name": "dbserver5434",
+            
             "transforms": "unwrap,addTopicPrefix",
             "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
             "transforms.addTopicPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
             "transforms.addTopicPrefix.regex":"(.*)",
             "transforms.addTopicPrefix.replacement":"$1"
         }
-    }
+    }   
     ```
 
-    * Source Connector
+    * Sink Connector
     
     ```
-    POST http://localhost:8083/connectors
     {
         "name": "sink-connector",
         "config": {
             "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
-            "task.max" : 1,
-            "topics": "dbserver5434.public.user_table",
+            "task.max" : 5,
+            "topics": "dbserver5434.public.user_table,dbserver5434.public.friend,dbserver5434.public.room,dbserver5434.public.participant,dbserver5434.public.chatting",
             
             "connection.url": "jdbc:postgresql://chatting-db-1:5433/chat1",
             "connection.user":"postgres",
             "connection.password":"password",
-    
-            "auto.create": "false",
-            "auto.evolve": "false",
-            "delete.enabled": "true",
             "insert.mode": "upsert",
             "pk.mode": "record_key",
             "tombstones.on.delete": "true",
@@ -64,14 +62,13 @@
             "key.converter.schemas.enable": "true",
             "value.converter": "org.apache.kafka.connect.json.JsonConverter",
             "value.converter.schemas.enable": "true",
-            "transforms": "unwrap,addTopicPrefix",
+            "transforms": "unwrap,dropPrefix",
             "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-            "transforms.addTopicPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
-            "transforms.addTopicPrefix.regex":"(.*)",
-            "transforms.addTopicPrefix.replacement":"$1",
-    
-    
-            "table.name.format":"user_table",
+            "auto.create": "true",
+            "auto.evolve":"true",
+            "transforms.dropPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
+            "transforms.dropPrefix.regex":"dbserver5434(.*)$",
+            "transforms.dropPrefix.replacement":"$1",
     
             "batch.size": "1"
         }
@@ -142,6 +139,14 @@
 4. In Kibana[http://localhost:5601](http://localhost:5601), create index of new-user and chat
 
 
+### Update[v3.1.0]
+* Bug fix
+  * Nginx Proxy Issue [Solved Issue #5](https://github.com/ghkdqhrbals/spring-chatting-server/issues/5)
+  * Null ID exception [Solved Issue #7](https://github.com/ghkdqhrbals/spring-chatting-server/issues/7)
+* Add configurations for sink multiple topics with Kafka connector
+  * Source Connector
+  * Sink Connector
+
 ### Update[v3.0.1]
 * Bug fix : add logstash configuration and compose file name
 
@@ -151,7 +156,7 @@
    * Configure Source Connector with Debezium
    * Configure Sink Connector with JDBC-Sink-Connector that load from Confluent
 
-
+---
 
 # v2
 ### Running Chat Backend Server with Docker

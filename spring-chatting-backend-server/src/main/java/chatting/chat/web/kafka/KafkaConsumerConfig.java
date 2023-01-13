@@ -20,15 +20,10 @@ public class KafkaConsumerConfig {
     @Value("${kafka.bootstrap}")
     private String bootstrapServer;
 
-    // 유저 저장
+    // 유저 변경
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, RequestAddUserDTO> userAddKafkaListenerContainerFactory() {
-        return getContainerFactory("logstash",RequestAddUserDTO.class);
-    }
-    // 채팅 저장
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, RequestAddChatMessageDTO> userAddChatKafkaListenerContainerFactory() {
-        return getContainerFactory("logstash",RequestAddChatMessageDTO.class);
+    public ConcurrentKafkaListenerContainerFactory<String, RequestUserChange> userKafkaListenerContainerFactory() {
+        return getContainerFactory("chatting",RequestUserChange.class);
     }
 
     /**

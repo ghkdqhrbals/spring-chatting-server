@@ -13,13 +13,4 @@ public class ResponseAddUserDTO {
     private Boolean isSuccess;
     private User user;
     private String errorMessage;
-
-    public ResponseAddUserDTO(String userId) {
-        this.userId = userId;
-        this.isSuccess = false;
-        this.user=new User();
-    }
-
-    public ResponseAddUserDTO() {
-    }
 }

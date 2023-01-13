@@ -14,10 +14,4 @@ public class ResponseUserFriendDTO {
     private Boolean isSuccess;
     private String stat;
     private List<Friend> friend;
-    public ResponseUserFriendDTO(String userId) {
-        this.userId = userId;
-        this.isSuccess = false;
-        this.stat = "";
-        this.friend = new ArrayList<>();
-    }
 }

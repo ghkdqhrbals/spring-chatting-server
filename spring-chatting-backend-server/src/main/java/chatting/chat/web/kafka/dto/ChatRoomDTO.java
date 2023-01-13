@@ -15,8 +15,4 @@ import java.util.Set;
 public class ChatRoomDTO {
     private Long roomId;
     private String roomName;
-    public ChatRoomDTO(Long roomId, String roomName) {
-        this.roomId = roomId;
-        this.roomName = roomName;
-    }
 }

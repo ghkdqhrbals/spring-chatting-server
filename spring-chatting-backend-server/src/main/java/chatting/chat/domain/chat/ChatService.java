@@ -43,16 +43,6 @@ public class ChatService {
         chatRepository.saveAll(chattings);
     }
     public Chatting save(Chatting chatting){
-        Optional<Chatting> findChatting = chatRepository.findById(chatting.getId());
-
-        if (findChatting.isPresent()){
-            throw new CustomException(DUPLICATE_RESOURCE);
-        }
-
-        if (findChatting.isPresent()){
-            throw new CustomException(DUPLICATE_RESOURCE);
-        }
-
         Chatting save = chatRepository.save(chatting);
         return save;
     }

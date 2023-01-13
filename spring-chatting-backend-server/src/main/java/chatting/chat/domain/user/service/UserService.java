@@ -19,6 +19,7 @@ public interface UserService {
     List<Participant> findParticipantWithRoomId(Long roomId);
     List<Friend> getMyFriends(String userId);
     Participant findByRoomIdAndUserId(Long roomId, String userId);
+    void remove(String userId);
 
 
 }

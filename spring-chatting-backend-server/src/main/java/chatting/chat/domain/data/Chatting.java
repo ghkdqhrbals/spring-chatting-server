@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Setter
 public class Chatting {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne

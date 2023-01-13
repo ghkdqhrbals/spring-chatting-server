@@ -29,6 +29,7 @@ public class ChatController extends KafkaTopicConst {
     private final RoomService roomService;
     private final ChatService chatService;
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
+
     public ChatController(UserService userService, FriendService friendService, RoomService roomService, ChatService chatService, KafkaTemplate<String, Object> kafkaProducerTemplate) {
         this.userService = userService;
         this.friendService = friendService;
@@ -70,7 +71,7 @@ public class ChatController extends KafkaTopicConst {
     }
 
     // 특정 채팅 조회
-    @RequestMapping(method=RequestMethod.GET)
+    @GetMapping(value = "/chat")
     public ResponseEntity<?> findChatRecord(@RequestParam("chatId") Long chatId){
         Chatting findChatting = chatService.findById(chatId);
         return ResponseEntity.ok(findChatting);
@@ -79,18 +80,6 @@ public class ChatController extends KafkaTopicConst {
     /**
      * -------------- POST METHODS --------------
      */
-    // 유저 저장
-    @PostMapping("/user")
-    public ResponseEntity<?> addUser(@RequestBody RequestAddUserDTO req){
-
-        // service-logic
-        User save = userService.save(req.getUserId(),req.getUserName(),"");
-
-        // kafka-logic
-        sendToKafka(TOPIC_USER_ADD_REQUEST,req);
-
-        return ResponseEntity.ok(save);
-    }
 
     // 유저 상태메세지 변경
     @PostMapping("/status")
@@ -100,30 +89,31 @@ public class ChatController extends KafkaTopicConst {
     }
 
     // 채팅방 개설
-    @PostMapping(value = "/room")
+    @PostMapping("/room")
     public ResponseEntity<?> addChatRoom(@RequestBody RequestAddChatRoomDTO req){
         userService.makeRoomWithFriends(req);
-        return ResponseEntity.ok("success");
+        List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(req.getUserId());
+        return ResponseEntity.ok(allMyRooms);
     }
 
     // 채팅 저장
-    @RequestMapping(method=RequestMethod.POST)
+    @PostMapping(value = "/chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
 
         // validation
         Room findRoom = roomService.findByRoomId(req.getRoomId());
         User findUser = userService.findById(req.getWriterId());
 
-        userService.findByRoomIdAndUserId(findRoom.getRoomId(), findUser.getUserId());
+        Participant findParticipant = userService.findByRoomIdAndUserId(findRoom.getRoomId(), findUser.getUserId());
 
         // service-logic
         Chatting chatting = convertToChatting(findRoom, findUser, req.getMessage());
-        Chatting save = chatService.save(chatting);
+        chatService.save(chatting);
 
         // kafka-logic
-        sendToKafka(TOPIC_USER_ADD_CHAT_REQUEST,req);
+        sendToKafka(TOPIC_USER_ADD_CHAT_REQUEST, req);
 
-        return ResponseEntity.ok(save);
+        return ResponseEntity.ok("success");
     }
 
     // 친구 저장
@@ -132,7 +122,6 @@ public class ChatController extends KafkaTopicConst {
 
         // validation
         User findUser = userService.findById(req.getUserId());
-        List<Friend> friends = new ArrayList<>();
 
         List<String> friendIds = req.getFriendId();
         for(String friendId : friendIds){
@@ -140,27 +129,19 @@ public class ChatController extends KafkaTopicConst {
             User findUserFriend = userService.findById(friendId);
 
             // logic
-            Friend save = friendService.save(findUser.getUserId(), findUserFriend.getUserId());
-            friends.add(save);
+            friendService.save(findUser.getUserId(), findUserFriend.getUserId());
         }
-        return ResponseEntity.ok("성공");
+        return ResponseEntity.ok("success");
     }
 
     /**
      * DELETE
      */
-    @DeleteMapping("/user")
-    public ResponseEntity<?> removeUser(@RequestParam("userId") String userId){
-        log.info("REQUEST DELETE");
-        userService.removeUser(userId);
-        return ResponseEntity.ok("성공");
-    }
 
     @DeleteMapping("/friend")
     public ResponseEntity<?> removeFriend(@RequestParam("userId") String userId,@RequestParam("friendId") String friendId){
-        log.info("REQUEST DELETE");
         friendService.removeFriend(userId,friendId);
-        return ResponseEntity.ok("성공");
+        return ResponseEntity.ok("success");
     }
 
 
@@ -185,6 +166,20 @@ public class ChatController extends KafkaTopicConst {
             @Override
             public void onSuccess(SendResult<String, Object> result) {
                 log.info("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
+            }
+        });
+    }
+
+    private void sendToKafkaWithKey(String topic,Object req, String key) {
+        ListenableFuture<SendResult<String, Object>> future = kafkaProducerTemplate.send(topic,key, req);
+        future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("메세지 전송 실패={}", ex.getMessage());
+            }
+            @Override
+            public void onSuccess(SendResult<String, Object> result) {
+                log.info("메세지 전송 성공 topic={}, key={}, offset={}, partition={}",topic, key, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
             }
         });
     }

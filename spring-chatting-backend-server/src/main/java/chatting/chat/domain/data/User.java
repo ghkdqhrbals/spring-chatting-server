@@ -1,10 +1,7 @@
 package chatting.chat.domain.data;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -31,6 +28,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Friend> friends = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Participant> participants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sendUser", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Chatting> chattings = new ArrayList<>();
 
     public User() {
 

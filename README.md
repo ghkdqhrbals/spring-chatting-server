@@ -1,11 +1,11 @@
 # Spring Java 채팅서버구현
 ## Versions
 
-| Version                                                                     | Last Update | Skills                                                                                                            | 
-|-----------------------------------------------------------------------------|-------------|-------------------------------------------------------------------------------------------------------------------|
-| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)**     | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                   |
-| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)**     | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                  |
-| **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3.1.0)** | 2023.01.13  | Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
+| Version                                                                     | Last Update | Skills                                                                                                                  | 
+|-----------------------------------------------------------------------------|-------------|-------------------------------------------------------------------------------------------------------------------------|
+| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)**     | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                         |
+| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)**     | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                        |
+| **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3.1.1)** | 2023.01.14  | Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
 
 
 # v3
@@ -138,6 +138,8 @@
 3. Run `docker-compose -f docker-elk/docker-compose-es.yml up -d` in root directory
 4. In Kibana[http://localhost:5601](http://localhost:5601), create index of new-user and chat
 
+### Update[v3.1.1]
+* Add more mock test and error-code
 
 ### Update[v3.1.0]
 * Bug fix

@@ -13,8 +13,5 @@ public interface FriendService {
 
     List<Friend> findAllByUserId(String userId);
 
-    Optional<Friend> findByUserAndFriend(User user, Friend friend);
-
-    List<Friend> findAll(User user);
 
 }

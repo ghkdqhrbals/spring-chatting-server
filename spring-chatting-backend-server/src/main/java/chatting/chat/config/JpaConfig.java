@@ -4,6 +4,8 @@ import chatting.chat.domain.friend.repository.FriendRepository;
 import chatting.chat.domain.friend.service.FriendService;
 import chatting.chat.domain.friend.service.FriendServiceImpl;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
+import chatting.chat.domain.participant.service.ParticipantService;
+import chatting.chat.domain.participant.service.ParticipantServiceImpl;
 import chatting.chat.domain.room.repository.RoomRepository;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.room.service.RoomServiceImpl;
@@ -47,6 +49,11 @@ public class JpaConfig {
     @Bean
     public RoomService roomService() {
         return new RoomServiceImpl(roomRepository);
+    }
+
+    @Bean
+    public ParticipantService participantService() {
+        return new ParticipantServiceImpl(participantRepository);
     }
 
 }

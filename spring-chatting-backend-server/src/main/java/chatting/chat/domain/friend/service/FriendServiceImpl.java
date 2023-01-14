@@ -72,18 +72,4 @@ public class FriendServiceImpl implements FriendService{
     public List<Friend> findAllByUserId(String userId) {
         return friendRepository.findAllByUserId(userId);
     }
-
-    @Override
-    public Optional<Friend> findByUserAndFriend(User user, Friend friend) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Friend> findAll(User user) {
-        return friendRepository.findAllByUserId(user.getUserId());
-    }
-
-
-
-
 }

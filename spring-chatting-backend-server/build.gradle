@@ -44,7 +44,10 @@ dependencies {
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
 
 	compileOnly 'org.projectlombok:lombok'
+
+	testAnnotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

@@ -1,11 +1,14 @@
 package chatting.chat.web.kafka.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Getter
 @Setter
-public class RequestLoginDTO {
+@NoArgsConstructor
+public class RequestAddParticipantDTO {
     private String userId;
-    private String userPw;
+    private String participantId;
 }

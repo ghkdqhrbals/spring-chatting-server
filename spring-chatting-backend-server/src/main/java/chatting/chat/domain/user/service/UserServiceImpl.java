@@ -140,11 +140,7 @@ public class UserServiceImpl implements UserService {
         user.setUserName(userName);
         return user;
     }
-    public void throwErrorWhenUserAddFriendSelf(List<String> friendIds, User findUser) throws CustomException {
-        if (friendIds.contains(findUser.getUserId())) {
-            throw new CustomException(DUPLICATE_FRIEND_SELF);
-        }
-    }
+
     public void throwErrorWhenUserFind(String userId) throws CustomException {
         Optional<User> findUser = userRepository.findById(userId);
         if (findUser.isPresent()) {

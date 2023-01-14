@@ -35,4 +35,14 @@ public class RoomServiceImpl implements RoomService {
     public Room save(Room room) {
         return roomRepository.save(room);
     }
+
+    @Override
+    public void remove(Long roomId){
+        Optional<Room> findRoom = roomRepository.findById(roomId);
+        if (!findRoom.isPresent()){
+            throw new CustomException(CANNOT_FIND_ROOM);
+        }
+
+        roomRepository.deleteById(roomId);
+    }
 }

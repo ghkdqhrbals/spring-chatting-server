@@ -3,6 +3,7 @@ package chatting.chat.web;
 import chatting.chat.domain.chat.ChatService;
 import chatting.chat.domain.data.*;
 import chatting.chat.domain.friend.service.FriendService;
+import chatting.chat.domain.participant.service.ParticipantService;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.kafka.KafkaTopicConst;
@@ -16,7 +17,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,13 +28,16 @@ public class ChatController extends KafkaTopicConst {
     private final FriendService friendService;
     private final RoomService roomService;
     private final ChatService chatService;
+
+    private final ParticipantService participantService;
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
-    public ChatController(UserService userService, FriendService friendService, RoomService roomService, ChatService chatService, KafkaTemplate<String, Object> kafkaProducerTemplate) {
+    public ChatController(UserService userService, FriendService friendService, RoomService roomService, ChatService chatService,ParticipantService participantService, KafkaTemplate<String, Object> kafkaProducerTemplate) {
         this.userService = userService;
         this.friendService = friendService;
         this.roomService = roomService;
         this.chatService = chatService;
+        this.participantService = participantService;
         this.kafkaProducerTemplate = kafkaProducerTemplate;
     }
     /**
@@ -97,6 +100,23 @@ public class ChatController extends KafkaTopicConst {
     }
 
     // 채팅 저장
+//    @PostMapping(value = "/participant")
+//    public ResponseEntity<?> addParticipant(@RequestBody RequestAddParticipantDTO req) {
+//        // 초대자, 초대받는자
+//        User user = userService.findById(req.getUserId());
+//        Room room = roomService.findByRoomId();
+//        Participant p = new Participant(user);
+//
+//
+//
+//        participantService.save()
+//        // validation
+//
+//
+//        return ResponseEntity.ok("success");
+//    }
+
+    // 채팅 저장
     @PostMapping(value = "/chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
 
@@ -104,7 +124,7 @@ public class ChatController extends KafkaTopicConst {
         Room findRoom = roomService.findByRoomId(req.getRoomId());
         User findUser = userService.findById(req.getWriterId());
 
-        Participant findParticipant = userService.findByRoomIdAndUserId(findRoom.getRoomId(), findUser.getUserId());
+        userService.findByRoomIdAndUserId(findRoom.getRoomId(), findUser.getUserId());
 
         // service-logic
         Chatting chatting = convertToChatting(findRoom, findUser, req.getMessage());

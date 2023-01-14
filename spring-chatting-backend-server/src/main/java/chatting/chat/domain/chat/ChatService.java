@@ -2,32 +2,42 @@ package chatting.chat.domain.chat;
 
 
 import chatting.chat.domain.data.Chatting;
+import chatting.chat.domain.data.Participant;
+import chatting.chat.domain.data.Room;
+import chatting.chat.domain.participant.repository.ParticipantRepository;
+import chatting.chat.domain.room.repository.RoomRepository;
 import chatting.chat.web.error.CustomException;
-import chatting.chat.web.kafka.dto.ResponseAddChatMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static chatting.chat.web.error.ErrorCode.CANNOT_FIND_CHATTING;
-import static chatting.chat.web.error.ErrorCode.DUPLICATE_RESOURCE;
+import static chatting.chat.web.error.ErrorCode.*;
 
 @Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class ChatService {
     private final ChatRepository chatRepository;
+    private final RoomRepository roomRepository;
+    private final ParticipantRepository participantRepository;
 
-    public ChatService(ChatRepository chatRepository) {
+    public ChatService(ChatRepository chatRepository, RoomRepository roomRepository, ParticipantRepository participantRepository) {
         this.chatRepository = chatRepository;
+        this.roomRepository = roomRepository;
+        this.participantRepository = participantRepository;
     }
 
     @Nullable
     public List<Chatting>  findAllByRoomId(Long roomId){
+        Optional<Room> findRoom = roomRepository.findById(roomId);
+        if (!findRoom.isPresent()){
+            throw new CustomException(CANNOT_FIND_ROOM);
+        }
+
         return chatRepository.findAllByRoomId(roomId);
     }
 
@@ -42,7 +52,13 @@ public class ChatService {
     public void saveAll(List<Chatting> chattings){
         chatRepository.saveAll(chattings);
     }
-    public Chatting save(Chatting chatting){
+
+    public Chatting save(Chatting chatting) throws CustomException {
+        Participant findParticipant = participantRepository.findByRoomIdAndUserId(chatting.getRoom().getRoomId(), chatting.getSendUser().getUserId());
+        // 채팅방 참여인원인지 확인
+        if (findParticipant == null){
+            throw new CustomException(INVALID_PARTICIPANT);
+        }
         Chatting save = chatRepository.save(chatting);
         return save;
     }

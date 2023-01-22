@@ -43,6 +43,7 @@ public class ChatController extends KafkaTopicConst {
     /**
      * -------------- GET METHODS --------------
      */
+
     // 채팅방 정보 조회
     @GetMapping(value = "/room/{roomId}")
     public ResponseEntity<?> findRoom(@PathVariable("roomId") Long roomId){

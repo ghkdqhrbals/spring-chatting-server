@@ -2,58 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-    </style>
+    <link th:href="@{/templates/css/common.css}"
+          href="../css/common.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="container">
+<div class="center">
 
     <div class="py-5 text-center">
-        <h2>로그인</h2>
+        <h2>Login</h2>
     </div>
 
     <form action="item.html" th:action th:object="${loginForm}" method="post">
 
+
         <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+            <p class="field-error tc" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
         </div>
 
-        <div>
-            <label for="loginId">로그인 ID</label>
-            <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{loginId}" />
-        </div>
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{password}" />
-        </div>
 
-        <hr class="my-4">
-
-        <div class="row">
-            <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">로그인</button>
+        <div class="grid grid--block">
+            <div class="item-3">
+                <p class="col-l">id</p>
             </div>
-            <div class="col">
-                <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='home.html'"
-                        th:onclick="|location.href='@{/}'|"
-                        type="button">취소</button>
+            <div class="item-6">
+                <input type="text" th:field="*{loginId}" class="form-control"
+                       th:errorclass="field-error">
             </div>
         </div>
 
+        <div class="grid grid--block">
+            <div class="item-3">
+                <p class="col-l">password</p>
+            </div>
+            <div class="item-6">
+                <input type="password" th:field="*{password}" class="form-control"
+                       th:errorclass="field-error">
+            </div>
+        </div>
+
+
+        <div class="container-2" style="padding-top: 30px">
+            <div class="item-6">
+                <button class="w-100 btn-primary" type="submit">login</button>
+            </div>
+            <div class="item-6">
+                <button class="w-100 btn-primary" onclick="location.href='../users/addUserForm.html'"
+                        th:onclick="|location.href='@{/users/add}'|"
+                        type="button">register</button>
+            </div>
+        </div>
     </form>
 
 </div> <!-- /container -->

@@ -15,9 +15,6 @@ public class StompChatController {
     // STOMP 템플릿
     private final SimpMessagingTemplate template;
 
-    // Redirect 용 kafka Producer
-    private final KafkaProducer kafkaProducer;
-
     // "/pub/chat/enter"
     @MessageMapping(value = "/chat/enter")
     public void enter(ChatMessage message){
@@ -30,6 +27,5 @@ public class StompChatController {
     public void message(ChatMessage message){
         log.info(message.getMessage());
         // kafka topic send
-        kafkaProducer.send(KafkaConsts.KAFKA_TOPIC, message);
     }
 }

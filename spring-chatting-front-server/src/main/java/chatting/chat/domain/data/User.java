@@ -1,24 +1,24 @@
 package chatting.chat.domain.data;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "USER_TABLE")
 @Getter
 @Setter
 public class User {
-    public User(String userId, String userPw, String email, String userName, String userStatus, LocalDate joinDate, LocalDate loginDate, LocalDate logoutDate) {
+    public User(String userId, String userPw, String email, String userName, LocalDate joinDate, LocalDate loginDate, LocalDate logoutDate) {
         this.userId = userId;
         this.userPw = userPw;
         this.email = email;
         this.userName = userName;
-        this.userStatus = userStatus;
         this.joinDate = joinDate;
         this.loginDate = loginDate;
         this.logoutDate = logoutDate;
@@ -28,7 +28,6 @@ public class User {
     @Column(name = "USER_ID")
     private String userId;
 
-
     @Column(name = "USER_PW")
     private String userPw;
 
@@ -37,9 +36,6 @@ public class User {
 
     @Column(name = "USER_NAME")
     private String userName;
-
-    @Column(name = "USER_STATUS")
-    private String userStatus;
 
     @Column(name="JOIN_DATE")
     private LocalDate joinDate;

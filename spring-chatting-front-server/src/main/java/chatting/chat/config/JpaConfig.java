@@ -13,9 +13,11 @@ import chatting.chat.domain.user.repository.UserRepository;
 
 import chatting.chat.domain.user.service.UserServiceImpl;
 import chatting.chat.domain.user.service.UserService;
+import chatting.chat.web.login.LoginController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityManager;
 
@@ -46,5 +48,6 @@ public class JpaConfig {
     public FriendService friendService(){
         return new FriendServiceImpl(friendRepository);
     }
+
 
 }

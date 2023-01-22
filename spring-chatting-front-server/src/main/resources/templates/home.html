@@ -2,14 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/templates/css/common.css}"
+          href="css/common.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="container" style="max-width: 600px">
+<div class="center">
+
     <div class="py-5 text-center">
-        <h2>홈 화면</h2>
+        <h2>Main</h2>
     </div>
 
     <div th:if="${status} == false" class="row">

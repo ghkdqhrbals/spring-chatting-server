@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="">
+    <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -29,7 +29,7 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/v3/v3.1.0.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/v3/v3.1.0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/nginx.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,17 +64,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/img/v3",
-    "nodejs_package_manager_path": "npm",
-    "spring.configuration.checksum": "ba6128a59739fe745677c573659322af"
+    "nodejs_package_manager_path": "npm"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -91,19 +84,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Docker.logstash/Dockerfile">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="spring-chatting-server" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="spring-chatting-server" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ChatApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="chat.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="chatting.chat.ChatApplication" />
@@ -137,7 +117,11 @@
       <workItem from="1671239919240" duration="9115000" />
       <workItem from="1672102387966" duration="112122000" />
       <workItem from="1673253120951" duration="2387000" />
-      <workItem from="1673499009865" duration="22568000" />
+      <workItem from="1673499009865" duration="29576000" />
+      <workItem from="1673936646867" duration="565000" />
+      <workItem from="1673938473247" duration="8609000" />
+      <workItem from="1674022042555" duration="535000" />
+      <workItem from="1674179345667" duration="1165000" />
     </task>
     <servers />
   </component>

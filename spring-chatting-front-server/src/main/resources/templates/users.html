@@ -2,14 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <link th:href="@{/css/bootstrap.min.css}"
-        href="css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/templates/css/common.css}"
+        href="css/common.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="container" style="max-width: 600px">
+<div class="center" style="max-width: 600px">
+
   <div class="py-5 text-center">
-    <h2>유저 목록</h2>
+    <h2>Main</h2>
   </div>
 
   <!--
@@ -24,25 +25,51 @@
       </div>
   -->
 
-  <hr class="my-4">
   <div>
+    <p>
+      My Friends
+    </p>
     <table class="table">
-      <thead>
+      <thead class="col-l">
       <tr>
         <th>ID</th>
-        <th>PW</th>
-        <th>EMAIL</th>
+        <th>Name</th>
+        <th>Status</th>
       </tr>
       </thead>
       <tbody>
-      <tr th:each="user : ${users}">
+      <tr class="col-l" th:each="user : ${users}">
         <td th:text="${user.userId}">사용자 ID</td>
-        <td th:text="${user.userPw}">사용자 PW</td>
-        <td th:text="${user.email}">사용자 EMAIL</td>
+        <td th:text="${user.userPw}">사용자 이름</td>
+        <td th:text="${user.email}">사용자 상태메세지</td>
       </tr>
       </tbody>
     </table>
   </div>
+
+  <div class="container-2">
+    <div class="item-6">
+      <button class="w-100 btn-primary" onclick="location.href='home.html'"
+              th:onclick="|location.href='@{/users/add}'|"
+              type="button">chat room</button>
+    </div>
+    <div class="item-6">
+      <button class="w-100 btn-primary" onclick="location.href='users/addFriendForm.html'"
+              th:onclick="|location.href='@{/users/add}'|"
+              type="button">add friends</button>
+    </div>
+    <div class="item-6">
+      <button class="w-100 btn-primary" onclick="location.href='home.html'"
+              th:onclick="|location.href='@{/users/add}'|"
+              type="button">change status</button>
+    </div>
+    <div class="item-6">
+      <button class="w-100 btn-primary" onclick="location.href='home.html'"
+              th:onclick="|location.href='@{/users/add}'|"
+              type="button">logout</button>
+    </div>
+  </div>
+
 
 
 </div> <!-- /container -->

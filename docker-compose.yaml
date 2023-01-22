@@ -145,6 +145,21 @@ services:
     depends_on:
       - auth-db
     restart: always
+  auth-server-2:
+    container_name: auth-server-2
+    build: ./spring-auth-backend-server
+    ports:
+      - "8072:8072"
+    environment:
+      - SERVER_PORT=8072
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-db:5435/auth
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_BOOTSTRAP=kafka1:9092,kafka2:9092,kafka3:9092 # 내부포트
+    depends_on:
+      - auth-db
+    restart: always
 
   # -------- kafdrop for visualization --------
   kafdrop:

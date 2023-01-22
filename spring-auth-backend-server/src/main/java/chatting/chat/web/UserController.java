@@ -37,15 +37,15 @@ public class UserController extends KafkaTopicConst {
     }
 
     // 로그인
-    @GetMapping("/login/{userId}")
-    public ResponseEntity<?> login(@PathVariable("userId") String userId,@RequestParam("userPw") String userPw){
+    @GetMapping("/login")
+    public ResponseEntity<?> login(@RequestParam("userId") String userId,@RequestParam("userPw") String userPw){
         User user = userService.login(userId,userPw);
         return ResponseEntity.ok(user);
     }
 
     // 로그아웃
-    @GetMapping("/logout/{userId}")
-    public ResponseEntity<?> logout(@PathVariable("userId") String userId){
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(@RequestParam("userId") String userId){
         userService.logout(userId);
         return ResponseEntity.ok("success");
     }
@@ -57,7 +57,6 @@ public class UserController extends KafkaTopicConst {
     @PostMapping("/user")
     public ResponseEntity<?> addUser(HttpServletRequest r, @RequestBody RequestAddUserDTO request){
 
-        log.info("request URI={}",r.getRequestURI());
         User user = new User(
                 request.getUserId(),
                 request.getUserPw(),
@@ -68,7 +67,6 @@ public class UserController extends KafkaTopicConst {
                 LocalDate.now()
         );
         User save = userService.save(user);
-        log.info("userID={}",user.getUserId());
 
         // 같은 파티션에 삽입하여 메세지 전송 순서 보장
         sendToKafkaWithKey(TOPIC_USER_CHANGE, new RequestUserChange(user.getUserId(), user.getUserName(),"","INSERT"), user.getUserId());

@@ -12,7 +12,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "8060:80"
 
   # -------- KAFKA --------
   zookeeper:

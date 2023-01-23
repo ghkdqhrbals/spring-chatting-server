@@ -2,44 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <link th:href="@{/css/bootstrap.min.css}"
-        href="../css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .container {
-      max-width: 560px;
-    }
-    .field-error {
-      border-color: #dc3545;
-      color: #dc3545;
-    }
-  </style>
+  <link th:href="@{/templates/css/common.css}"
+        href="../css/common.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="container">
+<div class="center">
 
-  <div class="py-5 text-center">
-    <h2>상태 메세지 변경</h2>
-  </div>
+
+  <h2>Change User Status Message</h2>
+
 
   <form action="" th:action th:object="${userStatusUpdateDTO}" method="post">
 
-    <div th:if="${#fields.hasGlobalErrors()}">
+    <div style="text-align: center" th:if="${#fields.hasGlobalErrors()}">
       <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
     </div>
 
-    <div>
-      <label for="loginId">상태 메세지</label>
-      <input type="text" id="loginId" th:field="*{statusMessage}" class="form-control"
-             th:errorclass="field-error">
-      <div class="field-error" th:errors="*{statusMessage}" />
-    </div>
-
-    <hr class="my-4">
-
-    <div class="row">
-      <div class="col">
-        <button class="w-100 btn btn-primary btn-lg" type="submit">상태 메세지 변경</button>
+    <div class="grid grid--block">
+      <div class="item-6">
+        <label>Update your status as below</label>
+      </div>
+      <div class="item-6">
+        <input type="text" id="loginId" th:field="*{statusMessage}" class="form-control"
+               th:errorclass="field-error">
+      </div>
+      <div class="item-6">
+        <div class="field-error" th:errors="*{statusMessage}" >필드 오류</div>
+      </div>
+      <div class="item-6">
+        <button class="w-100 btn-primary" type="submit">Update</button>
+      </div>
+      <div class="item-6">
+        <button class="w-100 btn-secondary" onclick="location.href='../users.html'"
+                th:onclick="|location.href='@{/users}'|"
+                type="button">back</button>
       </div>
     </div>
 

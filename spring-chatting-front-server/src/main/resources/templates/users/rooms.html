@@ -2,31 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-    </style>
+    <link th:href="@{/templates/css/common.css}"
+          href="../css/common.css" rel="stylesheet">
+    <link th:href="@{/templates/css/msg.css}"
+          href="../css/msg.css" rel="stylesheet">
 </head>
 <body>
-<div class="py-5 text-center">
-    <h2>채팅방 목록</h2>
-</div>
-    <div class="container">
-        <div>
-            <ul th:each="room : ${list}">
-                <li><a th:href="@{/users/chat(roomId=${room.roomId})}">[[${room.roomName}]]</a></li>
-            </ul>
+<div class="center">
+    <h2>My Chat Room</h2>
+
+
+
+    <div class="grid grid--block">
+        <div class="item-6">
+            room list
+            <div th:each="room : ${list}">
+                <button style="margin-top: 10px" class="btn-room" onclick="location.href='chat.html'"
+                        th:onclick="|location.href='@{/users/chat(roomId=${room.roomId})}'|" type="button">
+                    [[${room.roomName}]]
+                </button>
+            </div>
+        </div>
+        <div class="item-6" style="margin-top: 20px">
+            <button class="w-100 btn-primary" onclick="location.href='room.html'"
+                    th:onclick="|location.href='@{/users/room}'|"
+                    type="button">Create new chat room</button>
+        </div>
+        <div class="item-6">
+            <button class="w-100 btn-secondary" onclick="location.href='../users.html'"
+                    th:onclick="|location.href='@{/users/room}'|"
+                    type="button">back</button>
         </div>
     </div>
-    <form th:action="@{/users/room}">
-        <button class="btn btn-secondary">개설하기</button>
-    </form>
+</div>
+
 </body>
 </html>

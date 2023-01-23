@@ -26,9 +26,11 @@
       <div class="item-6">
         <input type="text" th:field="*{friendId}" class="form-control"
                th:errorclass="field-error">
-        <div class="field-error" th:errors="*{friendId}" >오류메세지</div>
       </div>
 
+      <div class="item-6">
+        <div class="field-error" th:errors="*{friendId}" >오류메세지</div>
+      </div>
 
       <div class="item-6" style="padding-top: 30px">
         <button class="w-100 btn-primary" type="submit">add</button>

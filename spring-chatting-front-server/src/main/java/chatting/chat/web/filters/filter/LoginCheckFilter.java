@@ -21,7 +21,8 @@ public class LoginCheckFilter implements HandlerInterceptor {
         if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER)
                 == null) {
             //로그인으로 redirect
-            response.sendRedirect("/login?redirectURL=" + requestURI);
+//            response.sendRedirect("/login?redirectURL=" + requestURI);
+            response.sendRedirect("/login");
             log.info("인증 체크 인터셉터 실패 {}", requestURI);
             return false;
         }

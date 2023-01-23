@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/templates/css/common.css}"
+    <link th:href="@{/css/common.css}"
           href="../css/common.css" rel="stylesheet">
 </head>
 <body>
@@ -13,7 +13,7 @@
         <h2>Login</h2>
     </div>
 
-    <form action="item.html" th:action th:object="${loginForm}" method="post">
+    <form action="" th:action th:object="${loginForm}" method="post">
 
 
         <div th:if="${#fields.hasGlobalErrors()}">
@@ -29,6 +29,9 @@
                 <input type="text" th:field="*{loginId}" class="form-control"
                        th:errorclass="field-error">
             </div>
+            <div class="item-6">
+                <div class="field-error" th:errors="*{loginId}" >오류메세지</div>
+            </div>
         </div>
 
         <div class="grid grid--block">
@@ -38,6 +41,9 @@
             <div class="item-6">
                 <input type="password" th:field="*{password}" class="form-control"
                        th:errorclass="field-error">
+            </div>
+            <div class="item-6">
+                <div class="field-error" th:errors="*{password}" >오류메세지</div>
             </div>
         </div>
 

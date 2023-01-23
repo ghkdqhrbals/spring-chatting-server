@@ -1,6 +1,5 @@
 package chatting.chat.domain.data;
 
-import chatting.chat.domain.compositekey.FriendId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +8,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-//@IdClass(FriendId.class)
 public class Friend {
 
     // PK

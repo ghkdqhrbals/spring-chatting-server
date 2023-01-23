@@ -6,30 +6,14 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity
 @Getter
 @Setter
 public class Participant {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long participantId;
-
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
     private User user;
-
-    @ManyToOne
-    @JoinColumn(name="ROOM_ID")
     private Room room;
-
-    @Column(name = "ROOM_NAME")
     private String roomName;
-
-    @Column(name = "CREATED_AT")
     private LocalDate createdAt;
-
-    @Column(name = "UPDATED_AT")
     private LocalDate UpdatedAt;
 
     public Participant(User user, Room room, String roomName, LocalDate createdAt, LocalDate updatedAt) {

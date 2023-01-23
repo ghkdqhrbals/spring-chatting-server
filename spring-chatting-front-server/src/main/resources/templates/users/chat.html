@@ -1,36 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="utf-8">
+  <link th:href="@{/templates/css/msg.css}"
+        href="../css/msg.css" rel="stylesheet">
+  <link th:href="@{/templates/css/common.css}"
+        href="../css/common.css" rel="stylesheet">
+
+</head>
+
+<th:block th:fragment="content">
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
-  <th:block th:fragment="content">
-    <body>
-      <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <div class="center">
+      <h2>[[${room.name}]]</h2>
 
-
-      <div class="container">
-        <div class="col-6">
-          <h1>[[${room.name}]]</h1>
-        </div>
-        <div>
-          <div id="msgArea" class="col"></div>
-
-          <div class="col-6">
-            <div class="input-group mb-3">
-              <input type="text" id="msg" name="msg" class="form-control">
-              <div class="input-group-append">
-                <button class="w-100 btn btn-secondary btn-lg" type="button" th:onclick="msgSend()">전송</button>
+      <div class="scroll-box h-250">
+        <table class="item">
+          <tbody>
+              <div class="#msgArea">
+                  Message Area
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-6"></div>
+          </tbody>
+        </table>
       </div>
-    </body>
-  </th:block>
+      <div class="container-85-15" style="padding-top: 30px">
+        <input type="text" id="msg" name="msg" class="form-control" style="margin-bottom: 10px">
+        <button class="w-100 btn-primary" type="button" th:onclick="msgSend()">전송</button>
+      </div>
+
+        <div style="text-align: center">
+            To leave this room,
+            <a href="rooms.html" style="text-align: center"> Click here </a>
+        </div>
+
+    </div>
+
+
+  </body>
+</th:block>
+
 </html>
 
 
@@ -47,11 +61,31 @@
   record.forEach(function(r){
     var str = '';
     if (r.sendUser.userName == username){
-      str = "<div class='col-6'>";
-      str += "<div class='alert alert-secondary'>";
-      str += "<b>" + username + " : " + r.message + "</b>";
-      str += "</div></div>";
-      $("#msgArea").append(str);
+
+        str = "<tr>";
+        str +=  "<td style='text-align: right'>";
+
+        str = "<div class='msg-r'>";
+        str += username + " : " + r.message;
+        str += "</div>";
+
+        str +=  "</td>";
+        str += "</tr>";
+
+        $("#msgArea").append(str);
+    }
+    else{
+        str = "<tr>";
+        str +=  "<td style='text-align: left'>";
+
+        str = "<div class='msg-l'>";
+        str += username + " : " + r.message;
+        str += "</div>";
+
+        str +=  "</td>";
+        str += "</tr>";
+
+        $("#msgArea").append(str);
     }
   });
 
@@ -73,16 +107,29 @@
       var str = '';
 
       if (writer === username) {
-        str = "<div class='col-6'>";
-        str += "<div class='alert alert-secondary'>";
-        str += "<b>" + writer + " : " + message + "</b>";
-        str += "</div></div>";
+        str = "<tr>";
+        str +=  "<td style='text-align: right'>";
+
+        str = "<div class='msg-r'>";
+        str += writer + " : " + message;
+        str += "</div>";
+
+        str +=  "</td>";
+        str += "</tr>";
+
         $("#msgArea").append(str);
       } else {
-        str = "<div class='col-6'>";
-        str += "<div class='alert alert-warning'>";
-        str += "<b>" + writer + " : " + message + "</b>";
-        str += "</div></div>";
+
+        str = "<tr>";
+        str +=  "<td style='text-align: left'>";
+
+        str = "<div class='msg-l'>";
+        str += writer + " : " + message;
+        str += "</div>";
+
+        str +=  "</td>";
+        str += "</tr>";
+
         $("#msgArea").append(str);
       }
 

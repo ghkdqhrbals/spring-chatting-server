@@ -2,39 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <link th:href="@{/css/bootstrap.min.css}"
-        href="../css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .container {
-      max-width: 560px;
-    }
-    .field-error {
-      border-color: #dc3545;
-      color: #dc3545;
-    }
-  </style>
+  <link th:href="@{/templates/css/common.css}"
+        href="../css/common.css" rel="stylesheet">
+  <link th:href="@{/templates/css/msg.css}"
+        href="../css/msg.css" rel="stylesheet">
 </head>
 
 <body>
-<div class="py-5 text-center">
-  <h2>방 개설</h2>
-</div>
+<div class="center">
+  <h2>Create new room</h2>
   <form action="" th:action method="post" th:object="${form}">
-    <table>
-      <thead>
-      <tr>
-        <th> 친구 ID</th>
-        <th> 대화 초대</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="friend, itemStat : *{friends}">
-        <td> <input type="text" th:field="*{friends[__${itemStat.index}__].friendId}"/></td>
-        <td><input type="checkbox" th:field="*{friends[__${itemStat.index}__].join}" /></td>
-      </tr>
-      </tbody>
-    </table>
-    <button class="w-100 btn btn-secondary btn-lg" type="submit">초대</button>
+<!--    <table>-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th> invite</th>-->
+<!--        <th> friend ID</th>-->
+<!--      </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--      <tr th:each="friend, itemStat : *{friends}">-->
+<!--        <td><input type="checkbox" th:field="*{friends[__${itemStat.index}__].join}" /></td>-->
+<!--        <td><label th:for="${#ids.prev('friends')}" th:text="*{friends[__${itemStat.index}__].friendId}">friends id</label></td>-->
+<!--&lt;!&ndash;        <td><input type="text" th:field="*{friends[__${itemStat.index}__].friendId}"/></td>&ndash;&gt;-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+
+    <div class="container-15-85" th:each="friend, itemStat : *{friends}" style="padding-top: 30px">
+      <input type="checkbox" th:field="*{friends[__${itemStat.index}__].join}" />
+      <label th:for="${#ids.prev('friends')}" th:text="*{friends[__${itemStat.index}__].friendId}">friends id</label>
+    </div>
+
+
+    <div class="grid grid--block">
+      <div class="item-6">
+        <button style="margin-top: 20px" class="w-100 btn-primary" type="submit">create</button>
+      </div>
+      <div class="item-6">
+        <button class="w-100 btn-secondary" onclick="location.href='rooms.html'"
+                th:onclick="|location.href='@{/users/rooms}'|"
+                type="button">back</button>
+      </div>
+    </div>
+
   </form>
+</div>
+
 
 </body>

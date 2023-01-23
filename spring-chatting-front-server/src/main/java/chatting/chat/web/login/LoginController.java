@@ -1,26 +1,19 @@
 package chatting.chat.web.login;
 
 import chatting.chat.domain.data.User;
-import chatting.chat.domain.login.LoginService;
+import chatting.chat.web.error.CustomException;
+import chatting.chat.web.error.CustomThrowableException;
+import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
-import chatting.chat.web.kafka.KafkaTopicConst;
-import chatting.chat.web.kafka.dto.RequestLoginDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -28,14 +21,14 @@ import javax.validation.Valid;
 
 @Slf4j
 @Controller
+@RequestMapping("/")
+public class LoginController {
 
-public class LoginController extends KafkaTopicConst {
-    private final LoginService loginService;
-    private final WebClient webClient;
+    private WebClient webClient;
 
-    public LoginController(LoginService loginService, WebClient webClient) {
-        this.loginService = loginService;
-        this.webClient = webClient;
+    @PostConstruct
+    public void initWebClient() {
+        this.webClient = WebClient.create("http://127.0.0.1:8060");
     }
 
     @GetMapping("/login")
@@ -56,33 +49,42 @@ public class LoginController extends KafkaTopicConst {
             return "login/loginForm";
         }
 
-        Mono<Object> objectMono = webClient.mutate()
-                .baseUrl("https://localhost:8080")
-                .build()
-                .get()
-                .uri("/auth/login" + form.getLoginId() + "?userPw=" + form.getPassword())
-                .retrieve()
-                .onStatus(
-                        HttpStatus.OK::equals,
-                        response -> response.bodyToMono(User.class).map(Exception::new)
-                )
-                .onStatus(
-                        HttpStatus.UNAUTHORIZED::equals,
-                        response -> response.bodyToMono(String.class).map(Exception::new)
-                )
-                .onStatus(
-                        HttpStatus.NOT_FOUND::equals,
-                        response -> response.bodyToMono(String.class).map(Exception::new)
-                )
-                .bodyToMono(Object.class);
 
+        User user = new User();
+        try{
+            user = webClient.mutate()
+                    .baseUrl("http://127.0.0.1:8060")
+                    .build()
+                    .get()
+                    .uri("/auth/login?userId=" + form.getLoginId() + "&userPw=" + form.getPassword())
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus.NOT_FOUND::equals,
+                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
+                    .onStatus(
+                            HttpStatus.UNAUTHORIZED::equals,
+                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
+                    .bodyToMono(User.class)
+                    .block();
+        }catch (CustomThrowableException e){
+            if (e.getErrorResponse().getStatus()==HttpStatus.NOT_FOUND.value()){
+                bindingResult.rejectValue("loginId", null, e.getErrorResponse().getMessage());
+            }
+            if (e.getErrorResponse().getStatus()==HttpStatus.UNAUTHORIZED.value()){
+                bindingResult.rejectValue("password", null,e.getErrorResponse().getMessage());
+            }
+            return "login/loginForm";
+        }
 
-        log.info("return 받은 것들",stringMono.toString());
+        // logic
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, user);
+        log.info(redirectURL);
+        return "redirect:"+redirectURL;
 
-
-        RequestLoginDTO req = new RequestLoginDTO();
-        req.setUserId(form.getLoginId());
-        req.setUserPw(form.getPassword());
+//        RequestLoginDTO req = new RequestLoginDTO();
+//        req.setUserId(form.getLoginId());
+//        req.setUserPw(form.getPassword());
 
 //        ListenableFuture<SendResult<String, Object>> future = kafkaProducerTemplate.send(TOPIC_LOGIN_REQUEST, form.getLoginId(), req);
 //
@@ -108,27 +110,27 @@ public class LoginController extends KafkaTopicConst {
 //        }
 
         // 이후 로그인 성공
-        HttpSession session = request.getSession(true);
+//        HttpSession session = request.getSession(true);
 
 
         // 세션에 User정보 넣어둠
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
-        log.info(redirectURL);
-        return "redirect:"+redirectURL;
+//        session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
+//        log.info(redirectURL);
+//        return "redirect:"+redirectURL;
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request){
-        //세션이 없으면 생성하는 default를 false로 둔다
-        HttpSession session = request.getSession(false);
-
-        if (session != null){
-            User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-            loginService.logout(user);
-            session.invalidate();
-        }
-        return "redirect:/";
-    }
+//    @PostMapping("/logout")
+//    public String logout(HttpServletRequest request){
+//        //세션이 없으면 생성하는 default를 false로 둔다
+//        HttpSession session = request.getSession(false);
+//
+//        if (session != null){
+//            User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+//            loginService.logout(user);
+//            session.invalidate();
+//        }
+//        return "redirect:/";
+//    }
 
 
 

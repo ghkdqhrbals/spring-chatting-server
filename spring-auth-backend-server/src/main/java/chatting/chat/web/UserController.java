@@ -55,7 +55,7 @@ public class UserController extends KafkaTopicConst {
      */
     // 유저 저장
     @PostMapping("/user")
-    public ResponseEntity<?> addUser(HttpServletRequest r, @RequestBody RequestAddUserDTO request){
+    public ResponseEntity<?> addUser(@RequestBody RequestAddUserDTO request){
 
         User user = new User(
                 request.getUserId(),

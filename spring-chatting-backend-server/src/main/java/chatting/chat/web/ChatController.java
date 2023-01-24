@@ -6,6 +6,7 @@ import chatting.chat.domain.friend.service.FriendService;
 import chatting.chat.domain.participant.service.ParticipantService;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
+import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.kafka.KafkaTopicConst;
 import chatting.chat.web.kafka.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Slf4j
@@ -62,8 +65,17 @@ public class ChatController extends KafkaTopicConst {
     @GetMapping("/friend")
     public ResponseEntity<?> findFriend(@RequestParam("userId") String userId){
         User findUser = userService.findById(userId);
-        List<Friend> findFriends = friendService.findAllByUserId(findUser.getUserId());
-        return ResponseEntity.ok(findFriends);
+//        List<Friend> findFriends = friendService.findAllByUserId(findUser.getUserId());
+//
+//        findUser.getFriends();
+        Stream<ResponseGetFriend> rGetFriend = findUser.getFriends().stream().map(f -> {
+            User findFriend = userService.findById(f.getFriendId());
+            ResponseGetFriend responseGetFriend = new ResponseGetFriend(findFriend.getUserId(), findFriend.getUserName(),findFriend.getUserStatus());
+            return responseGetFriend;
+        });
+        List<ResponseGetFriend> collect = rGetFriend.collect(Collectors.toList());
+
+        return ResponseEntity.ok(collect);
     }
 
     // 이전 채팅기록 조회

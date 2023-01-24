@@ -1,58 +1,92 @@
-//package chatting.chat.web.user;
-//
-//
-//import chatting.chat.domain.chat.ChatService;
-//import chatting.chat.domain.data.Chatting;
-//import chatting.chat.domain.data.Friend;
-//import chatting.chat.domain.data.Participant;
-//import chatting.chat.domain.data.User;
-//import chatting.chat.domain.friend.service.FriendService;
-//import chatting.chat.domain.user.service.UserService;
-//import chatting.chat.web.dto.*;
-//import chatting.chat.web.filters.cons.SessionConst;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.web.bind.annotation.*;
-//
-//import javax.servlet.http.HttpSession;
-//import javax.validation.Valid;
-//import java.time.LocalDate;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Slf4j
-//@Controller
-//@RequestMapping("/users")
-//@RequiredArgsConstructor
-//public class UserController {
-//    private final UserService userService;
-//    private final FriendService friendService;
-//    private final ChatService chatService;
-//
-//    // 친구목록과 유저 정보 및 여러 기능을 표시하는 메인화면
-//    @GetMapping
-//    public String mainHome(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginUser, Model model){
-//
-//        // 모델에 친구목록을 DTO에 담아 전달
-//        List<Friend> findFriends = friendService.findAll(loginUser);
-//        List<FriendInfoDTO> friendInfoDTOS = new ArrayList<>();
-//        for (Friend f : findFriends){
-//            User myFriend = userService.findByUserId(f.getFriendId());
-//            friendInfoDTOS.add(new FriendInfoDTO(myFriend.getUserId(),myFriend.getUserName(),myFriend.getUserStatus()));
-//        }
-//        model.addAttribute("findFriends",friendInfoDTOS);
-//
-//        // 모델에 유저정보를 전달
-//        model.addAttribute("user",loginUser);
-//
-//        return "users/loginHome";
-//    }
-//
-//    // 유저 상태메세지 변경
+package chatting.chat.web.user;
+
+
+import chatting.chat.domain.data.Chatting;
+import chatting.chat.domain.data.Friend;
+import chatting.chat.domain.data.Participant;
+import chatting.chat.domain.data.User;
+import chatting.chat.web.dto.*;
+import chatting.chat.web.error.CustomThrowableException;
+import chatting.chat.web.error.ErrorCode;
+import chatting.chat.web.error.ErrorResponse;
+import chatting.chat.web.filters.cons.SessionConst;
+import chatting.chat.web.kafka.dto.RequestAddFriendDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Controller
+@RequestMapping("/user")
+public class UserController {
+
+    private WebClient webClient;
+
+    @Value("${backend.api.gateway}")
+    private String backEntry;
+
+    @PostConstruct
+    public void initWebClient() {
+        log.info(backEntry);
+        this.webClient = WebClient.create(backEntry);
+    }
+
+    @GetMapping
+    public String savea(@ModelAttribute("userForm") UserForm form){
+        return "users/addUserForm";
+    }
+
+    @PostMapping
+    public String save(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult){
+
+        // Form 에러 모델 전달
+        if (bindingResult.hasErrors()){
+            return "users/addUserForm";
+        }
+
+        try{
+            webClient.mutate()
+                    .build()
+                    .post()
+                    .uri("/auth/user")
+                    .bodyValue(new RequestAddUserDTO(form.getUserId(),form.getUserPw(),form.getEmail(),form.getUserName()))
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::is4xxClientError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .bodyToMono(User.class).block();
+
+        }catch (CustomThrowableException e){
+
+            log.info(e.getErrorResponse().getCode());
+            log.info(e.getErrorResponse().getMessage());
+            if (e.getErrorResponse().getCode().equals(ErrorCode.DUPLICATE_RESOURCE.toString())){
+                bindingResult.rejectValue("userId", null, e.getErrorResponse().getMessage());
+            }
+            return "users/addUserForm";
+        }
+
+        return "redirect:/";
+    }
+
+    // 유저 상태메세지 변경
 //    @GetMapping("/status")
 //    public String updateUserStatus(@ModelAttribute("userStatusUpdateDTO") UserStatusUpdateDTO form){
 //        return "users/updateStatusForm";
@@ -189,9 +223,9 @@
 //
 //        return "/users/chat";
 //    }
-//
-//
-//
-//
-//
-//}
+
+
+
+
+
+}

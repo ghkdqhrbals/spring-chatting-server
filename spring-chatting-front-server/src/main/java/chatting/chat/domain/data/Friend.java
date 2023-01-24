@@ -1,27 +1,17 @@
 package chatting.chat.domain.data;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 
-@Entity
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class Friend {
 
-    // PK
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "FRIEND_SEQ")
     private Long id;
-
-    // FK
-    @Column(name = "USER_ID")
-    private String userId;
-
-    @Column(name = "FRIEND_ID")
+    private User user;
     private String friendId;
 
-    public Friend() {}
 }

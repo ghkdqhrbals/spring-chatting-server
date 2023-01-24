@@ -6,6 +6,7 @@ import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,14 +22,17 @@ import javax.validation.Valid;
 
 @Slf4j
 @Controller
-@RequestMapping("/")
 public class LoginController {
 
     private WebClient webClient;
 
+    @Value("${backend.api.gateway}")
+    private String backEntry;
+
     @PostConstruct
     public void initWebClient() {
-        this.webClient = WebClient.create("http://127.0.0.1:8060");
+        log.info(backEntry);
+        this.webClient = WebClient.create(backEntry);
     }
 
     @GetMapping("/login")
@@ -48,6 +52,7 @@ public class LoginController {
         if (bindingResult.hasErrors()){
             return "login/loginForm";
         }
+
 
 
         User user = new User();

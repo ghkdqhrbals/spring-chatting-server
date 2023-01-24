@@ -1,20 +1,20 @@
 # Spring Java 채팅서버구현
 ## Versions
 
-| Version                                                                     | Last Update | Skills                                                                                                                           | 
-|-----------------------------------------------------------------------------|-------------|----------------------------------------------------------------------------------------------------------------------------------|
-| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)**     | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                                  |
-| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)**     | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                 |
-| **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3.1.1)** | 2023.01.14  | Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.          |
-| **[v4](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.0.0)** | 2023.01.24  | WebFlux, Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
+| Version                                                                     | Last Update | Skills                                                                                                                                | 
+|-----------------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| **[v1](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v1)**     | 2022.12.14  | WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                                       |
+| **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)**     | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                      |
+| **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3.1.1)** | 2023.01.14  | Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.               |
+| **[v4](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.0.0)** | 2023.01.24  | WebFlux, CSS, Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
 
 
 # INDEX
-1. [Current Architecture(v4)](https://github.com/ghkdqhrbals/spring-chatting-server#current-architecturev4)
-2. [Running with Docker](https://github.com/ghkdqhrbals/spring-chatting-server#running-with-docker)
-   * [Backend Server](https://github.com/ghkdqhrbals/spring-chatting-server#backend)
-   * [ELK stack](https://github.com/ghkdqhrbals/spring-chatting-server#elk-stack)
-3. [Update Logs](https://github.com/ghkdqhrbals/spring-chatting-server#update-logs)
+1. [Current Architecture(v4)](#current-architecturev4)
+2. [Running with Docker](#running-with-docker)
+   * [Backend Server](#backend)
+   * [ELK stack](#elk-stack)
+3. [Update Logs](#update-logs)
 
 ## Current Architecture(v4)
 ![chatSeq](img/v3/v3.1.0.png)
@@ -87,7 +87,7 @@
     > example
     > 
     > ```
-    > POST http://localhost:8080/chat/user
+    > POST http://localhost:8060/chat/user
     > {
     >    "userId":"Hwangbo",
     >    "userName":"황보규민"
@@ -156,15 +156,19 @@
     * home
     * add friend
     
-* Edit Scene with css files(But still, more process remain)
+* Edit HTML and CSS files(But still, more process remain)
   * loginForm.html
   * addUserForm.html
   * addFriendForm.html
   * users.html
 
 * Bug fix
-  * infinite recursion in getting response with myFriendList
-    * by adding ResponseGetFriend class for intermediate class(dto).
+  * infinite recursion in json response [Solved Issue #12](https://github.com/ghkdqhrbals/spring-chatting-server/issues/12)
+    * by adding ResponseGetFriend class for intermediate class(dto)
+
+* Change backend-gateway config
+  * port `8080` -> `8060`
+  * listen ip `localhost` -> `127.0.0.1`
 
 ### Update[v3.1.1]
 * Add more mock test and error-code
@@ -189,10 +193,7 @@
 ### Update[v2.0.0]
 * Visualized Kafka Traffics and others
   * Kibana
-    ![visualized](img/v2/5.png)
   * UI for Kafka
-    ![visualized](img/v2/1.png)
-    ![visualized](img/v2/2.png)
 * 모노서버 분리
    * 유저인증서버 + 채팅서버
 * Kafka 멀티 브로커 설정
@@ -210,11 +211,6 @@
 
 ### Update[v1.1.0]
 * 채팅방 STOMP-WebSocket 실시간 양방향 통신 추가 
-> 1. `유저A`는 채팅방 입장 시, 서버의 /stomp/chat 엔드포인트와 연결
-> 2. 채팅 전송 시, /pub/chat/message 로 ChatMessageDTO와 함께 전송
-> 3. 서버는 MessageHandler을 통해 SimpleBroker의 TOPIC : /sub/chat/message로 전달
-> 4. SimpleBroker은 현재 연결된 유저 중, 해당 토픽을 구독하고 있는 `유저B`, `유저C` 에게 전달
-> 5. `유저B`, `유저C`는 Jquery로 ChatMessageDTO의 메세지 파싱 후 읽음
  
 ### Update[v1.0.0]
 * 기본적인 JPA 설정(Repository 생성)-PostgresDB 연동

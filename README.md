@@ -148,6 +148,10 @@
 
 ## Update Logs
 
+### Update[v4.0.1]
+* Bug fix
+  * 4xx response when send logout [Solved Issue #13](https://github.com/ghkdqhrbals/spring-chatting-server/issues/13)
+
 ### Update[v4.0.0]
 * Add WebFlux for communicating backend by sending HTTP request through backend-api-gateway
   * Complete List

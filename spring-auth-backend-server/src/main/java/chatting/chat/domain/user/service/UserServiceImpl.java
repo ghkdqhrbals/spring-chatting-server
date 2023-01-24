@@ -66,8 +66,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> findUser = userRepository.findById(userId);
         if (findUser.isPresent()){
             findUser.get().setLogoutDate(LocalDate.now());
+        }else{
+            throw new CustomException(CANNOT_FIND_USER);
         }
-        throw new CustomException(CANNOT_FIND_USER);
     }
 
     // 유저 삭제

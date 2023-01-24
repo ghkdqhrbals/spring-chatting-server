@@ -49,12 +49,12 @@ public class UserController {
     }
 
     @GetMapping
-    public String savea(@ModelAttribute("userForm") UserForm form){
+    public String pageAddfriendG(@ModelAttribute("userForm") UserForm form){
         return "users/addUserForm";
     }
 
     @PostMapping
-    public String save(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult){
+    public String pageAddfriendP(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult){
 
         // Form 에러 모델 전달
         if (bindingResult.hasErrors()){

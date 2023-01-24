@@ -10,11 +10,11 @@
 
 
 # INDEX
-1. [Current Architecture(v4)](#Current Architecture(v4))
-2. Running with Docker
-   * Backend Server
-   * ELK
-3. Update Logs
+1. [Current Architecture(v4)](https://github.com/ghkdqhrbals/spring-chatting-server#current-architecturev4)
+2. [Running with Docker](https://github.com/ghkdqhrbals/spring-chatting-server#running-with-docker)
+   * [Backend Server](https://github.com/ghkdqhrbals/spring-chatting-server#backend)
+   * [ELK stack](https://github.com/ghkdqhrbals/spring-chatting-server#elk-stack)
+3. [Update Logs](https://github.com/ghkdqhrbals/spring-chatting-server#update-logs)
 
 ## Current Architecture(v4)
 ![chatSeq](img/v3/v3.1.0.png)

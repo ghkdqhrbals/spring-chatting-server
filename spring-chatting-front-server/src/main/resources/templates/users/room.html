@@ -29,8 +29,10 @@
 <!--    </table>-->
 
     <div class="container-15-85" th:each="friend, itemStat : *{friends}" style="padding-top: 30px">
-      <input type="checkbox" th:field="*{friends[__${itemStat.index}__].join}" />
-      <label th:for="${#ids.prev('friends')}" th:text="*{friends[__${itemStat.index}__].friendId}">friends id</label>
+        <input style="display: none" th:field="*{friends[__${itemStat.index}__].userId}"/>
+        <input style="display: none" th:field="*{friends[__${itemStat.index}__].userName}"/>
+        <input type="checkbox" id="test" th:id="*{friends.get(__${itemStat.index}__).userId}" th:field="*{friends[__${itemStat.index}__].join}" />
+        <label for="test" th:for="*{friends.get(__${itemStat.index}__).userId}" th:text="*{friends[__${itemStat.index}__].userName}">friends name</label>
     </div>
 
 

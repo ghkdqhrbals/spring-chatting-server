@@ -148,6 +148,15 @@
 
 ## Update Logs
 
+### Update[v4.1.0]
+* Add WebFlux(To see more details about what is remaining, [visit blog](https://ghkdqhrbals.github.io/posts/chatting(16)))
+    * Complete List
+        * logout(non-blocking)
+        * change user status
+        * add/get user chat room list
+* Add getUser api in ChatServer
+* Edit userService.makeRoomWithFriends where setting room name
+
 ### Update[v4.0.1]
 * Bug fix
   * 4xx response when send logout [Solved Issue #13](https://github.com/ghkdqhrbals/spring-chatting-server/issues/13)

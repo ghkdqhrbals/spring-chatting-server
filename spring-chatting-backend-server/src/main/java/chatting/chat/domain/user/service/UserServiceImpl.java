@@ -70,6 +70,11 @@ public class UserServiceImpl implements UserService {
 
     public void remove(String userId){
         throwErrorWhenUserNotFind(userId);
+        List<Friend> findFriends = friendRepository.findAllByUserId(userId);
+        for (Friend f : findFriends){
+            friendRepository.deleteByUserId(f.getFriendId());
+        }
+
         userRepository.deleteById(userId);
     }
 

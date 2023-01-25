@@ -6,16 +6,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestAddChatRoomDTO {
+public class CreateChatRoomUnitDTO {
     private String userId;
+    private String userName;
     private Boolean join;
 
-    public RequestAddChatRoomDTO(String userId, Boolean join) {
+    public CreateChatRoomUnitDTO(String userId, String userName, Boolean join) {
         this.userId = userId;
+        this.userName = userName;
         this.join = join;
     }
 
-    public RequestAddChatRoomDTO() {
+    public CreateChatRoomUnitDTO() {
         this.join = false;
     }
 }

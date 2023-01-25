@@ -1,6 +1,6 @@
 package chatting.chat.web.dto;
 
-import chatting.chat.domain.data.Friend;
+import chatting.chat.web.kafka.dto.CreateChatRoomUnitDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,12 +10,12 @@ import java.util.List;
 @Getter
 @Setter
 public class RoomCreationDTO {
-    private List<CreateChatRoomDTO> friends;
+    private List<CreateChatRoomUnitDTO> friends;
     public RoomCreationDTO(){
         this.friends = new ArrayList<>();
     }
 
-    public void addFriend(CreateChatRoomDTO friend){
+    public void addFriend(CreateChatRoomUnitDTO friend){
         this.friends.add(friend);
     }
 

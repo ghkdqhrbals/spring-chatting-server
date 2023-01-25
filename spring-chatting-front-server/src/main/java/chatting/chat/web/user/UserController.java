@@ -1,17 +1,14 @@
 package chatting.chat.web.user;
 
 
-import chatting.chat.domain.data.Chatting;
-import chatting.chat.domain.data.Friend;
-import chatting.chat.domain.data.Participant;
 import chatting.chat.domain.data.User;
 import chatting.chat.web.dto.*;
 import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
-import chatting.chat.web.kafka.dto.RequestAddFriendDTO;
-import lombok.RequiredArgsConstructor;
+import chatting.chat.web.kafka.dto.CreateChatRoomUnitDTO;
+import chatting.chat.web.kafka.dto.RequestChangeUserStatusDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,12 +22,12 @@ import reactor.core.publisher.Flux;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.time.LocalDate;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Controller
@@ -48,11 +45,11 @@ public class UserController {
         this.webClient = WebClient.create(backEntry);
     }
 
+    // 유저 추가
     @GetMapping
     public String pageAddfriendG(@ModelAttribute("userForm") UserForm form){
         return "users/addUserForm";
     }
-
     @PostMapping
     public String pageAddfriendP(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult){
 
@@ -71,7 +68,8 @@ public class UserController {
                     .onStatus(
                             HttpStatus::is4xxClientError,
                             r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                    .bodyToMono(User.class).block();
+                    .bodyToMono(User.class)
+                    .block();
 
         }catch (CustomThrowableException e){
 
@@ -86,143 +84,173 @@ public class UserController {
         return "redirect:/";
     }
 
+
     // 유저 상태메세지 변경
-//    @GetMapping("/status")
-//    public String updateUserStatus(@ModelAttribute("userStatusUpdateDTO") UserStatusUpdateDTO form){
-//        return "users/updateStatusForm";
-//    }
-//
-//    // 유저 상태메세지 변경
-//    @PostMapping("/status")
-//    public String updateUserStatusForm(HttpSession session, @ModelAttribute("userStatusUpdateDTO") UserStatusUpdateDTO form){
-//        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-//
-//        // 상태 메세지 변경
-//        userService.updateUserStatus(user.getUserId(),form.getStatusMessage());
-//        return "redirect:/";
-//    }
-//
-//    // 유저 추가
-//    @GetMapping("/add")
-//    public String addUser(@ModelAttribute("userForm") UserForm form){
-//        return "users/addUserForm";
-//    }
-//
-//    // 유저 추가
-//    @PostMapping("/add")
-//    public String save(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult){
-//
-//        // Form 에러 모델 전달
-//        if (bindingResult.hasErrors()){
-//            return "users/addUserForm";
-//        }
-//
-//        User findUser = userService.findByUserId(form.getUserId());
-//
-//        // 기존 유저 확인
-//        if (findUser==null){
-//            bindingResult.rejectValue("userId","exist");
-//        }
-//
-//        // 패스워드 설정 길이 확인
-//        if (4 > form.getUserPw().length() || form.getUserPw().length() > 10) {
-//            bindingResult.rejectValue("userPw","range",new Object[]{4,10},null);
-//        }
-//
-//        // 이메일 형식 확인
-//        if (!form.getEmail().contains("@")){
-//            bindingResult.rejectValue("email","format");
-//        }
-//
-//        if (bindingResult.hasErrors()){
-//            return "users/addUserForm";
-//        }
-//
-//        // 유저저장
-//        User user = new User(form.getUserId(), form.getUserPw(), form.getEmail(), form.getUserName(), "",LocalDate.now(), LocalDate.now(), LocalDate.now());
-//        userService.save(user);
-//
-//        return "redirect:/";
-//    }
-//
-//
-//    // 유저 존재유무 확인 RestAPI
-//    @GetMapping("/api/exist/{userId}")
-//    @ResponseBody
-//    public Optional<User> apiUserIdExist(@PathVariable("userId") String userId){
-//        Optional<User> user = userService.findById(userId);
-//        return user;
-//    }
-//
-//    //채팅방 목록 조회
-//    @GetMapping(value = "/rooms")
-//    public String rooms(HttpSession session, Model model){
-//
-//        // 유저가 참여하고있는 채팅방 목록 검색 후 모델 전달
-//        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-//        List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(user.getUserId());
-//        model.addAttribute("list", allMyRooms);
-//
-//        return "users/rooms";
-//    }
-//
-//    //채팅방 개설
-//    @GetMapping("/room")
-//    public String createRoom(@ModelAttribute("form") RoomCreationDTO roomsForm, HttpSession session, Model model){
-//
-//        // 세션에 저장된 유저정보를 가져와 유저의 친구목록을 검색
-//        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-//        List<Friend> myFriends = userService.getMyFriends(user.getUserId());
-//
-//        // DTO에 담아 모델에 전달
-//        for (Friend f : myFriends){
-//            roomsForm.addFriend(new CreateChatRoomDTO(f.getFriendId(), false));
-//        }
-//
-//        return "users/room";
-//    }
-//
-//    //채팅방 개설
-//    @PostMapping(value = "/room")
-//    public String createRoomForm(@ModelAttribute("form") RoomCreationDTO roomsForm, HttpSession session, Model model){
-//        List<CreateChatRoomDTO> friends = roomsForm.getFriends();
-//        List<String> friendsIdList = new ArrayList<>();
-//
-//        // Form에서 전달받은 친구들의 ID List
-//        for (CreateChatRoomDTO f : friends){
-//            friendsIdList.add(f.getFriendId());
-//        }
-//
-//        // 세션에서 유저정보를 검색
-//        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-//
-//        // 새로운 채팅방 생성
-//        userService.makeRoomWithFriends(user,friendsIdList);
-//
-//        return "redirect:/users/rooms";
-//    }
-//
-//    // 채팅방
-//    @GetMapping("/chat")
-//    public String chattingRoom(@RequestParam Long roomId, Model model, HttpSession session) {
-//        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-//
-//        // Participant에서 Room참여자들 정보를 가져와 모델에 전달
-//        Participant findParticipant = userService.findByRoomIdAndUserId(roomId,user.getUserId());
-//        model.addAttribute("user", user);
-//
-//        // 유저가 참여하고있는 채팅방정보를 DTO에 담아 모델에 전달
-//        RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
-//        roomInfoDTO.setName(findParticipant.getRoomName());
-//        roomInfoDTO.setRoomId(roomId);
-//        model.addAttribute("room", roomInfoDTO);
-//
-//        // 입장한 채팅방의 채팅메세지들을 가져와 모델에 전달
-//        List<Chatting> findChattings = chatService.findAllByRoomId(roomId);
-//        model.addAttribute("records",findChattings);
-//
-//        return "/users/chat";
-//    }
+    @GetMapping("/status")
+    public String updateUserStatus(@ModelAttribute("userStatusUpdateDTO") UserStatusUpdateDTO form){
+        return "users/updateStatusForm";
+    }
+    @PostMapping("/status")
+    public String updateUserStatusForm(HttpSession session,
+                                       @Valid @ModelAttribute("userStatusUpdateDTO") UserStatusUpdateDTO form,
+                                       BindingResult bindingResult){
+        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        // 상태 메세지 변경
+        try{
+            webClient.mutate()
+                    .build()
+                    .post()
+                    .uri("/chat/status")
+                    .bodyValue(new RequestChangeUserStatusDTO(user.getUserId(),form.getStatusMessage()))
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::is4xxClientError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .bodyToMono(String.class)
+                    .block();
+
+        }catch (CustomThrowableException e){
+            log.info(e.getErrorResponse().getCode());
+            log.info(e.getErrorResponse().getMessage());
+            return "users/updateStatusForm";
+        }
+
+        return "redirect:/";
+    }
+
+    //채팅방 목록 조회
+    @GetMapping(value = "/rooms")
+    public String rooms(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user, HttpSession session, Model model){
+        try{
+            Flux<ChatRoomDTO> response = webClient.mutate()
+                    .build()
+                    .get()
+                    .uri("/chat/rooms?userId=" + user.getUserId())
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::is4xxClientError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .bodyToFlux(ChatRoomDTO.class);
+            List<ChatRoomDTO> readers = response.collect(Collectors.toList())
+                    .share().block();
+
+            model.addAttribute("list",readers);
+
+        }catch (CustomThrowableException e){
+
+            log.info(e.getErrorResponse().getCode());
+            log.info(e.getErrorResponse().getMessage());
+            /**
+             * TODO global error
+             */
+            return "users/rooms";
+        }
+        return "users/rooms";
+    }
+
+    //채팅방 개설
+    @GetMapping("/room")
+    public String createRoom(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
+                             @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model){
+
+        try{
+            Flux<ResponseGetFriend> response = webClient.mutate()
+                    .build()
+                    .get()
+                    .uri("/chat/friend?userId=" + user.getUserId())
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::is4xxClientError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .bodyToFlux(ResponseGetFriend.class);
+            List<ResponseGetFriend> readers = response.collect(Collectors.toList()).share().block();
+
+            if (readers.size()>0) {
+                form.setFriends(
+                        readers
+                                .stream()
+                                .map(f -> new CreateChatRoomUnitDTO(f.getFriendId(),f.getFriendName(), false))
+                                .collect(Collectors.toList())
+                );
+            }
+
+        }catch (CustomThrowableException e){
+            log.info(e.getErrorResponse().getCode());
+            log.info(e.getErrorResponse().getMessage());
+            return "users/room";
+        }
+
+        return "users/room";
+    }
+
+    //채팅방 개설
+    @PostMapping(value = "/room")
+    public String createRoomForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
+                                 @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model){
+
+        List<String> friendIds = new ArrayList<>();
+        for (CreateChatRoomUnitDTO f : form.getFriends()){
+            if (f.getJoin()){
+                log.info(f.getUserName());
+                log.info(f.getUserId());
+                log.info(f.getJoin().toString());
+                friendIds.add(f.getUserId());
+            }else{
+                log.info(f.getUserName());
+                log.info(f.getUserId());
+                log.info(f.getJoin().toString());
+            }
+
+        }
+
+
+        try{
+            Flux<ChatRoomDTO> response = webClient.mutate()
+                    .build()
+                    .post()
+                    .uri("/chat/room")
+                    .bodyValue(new RequestAddChatRoomDTO(user.getUserId(), friendIds))
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::is4xxClientError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .bodyToFlux(ChatRoomDTO.class);
+
+            List<ChatRoomDTO> readers = response.collect(Collectors.toList())
+                    .share().block();
+
+
+        }catch (CustomThrowableException e){
+            log.info(e.getErrorResponse().getCode());
+            log.info(e.getErrorResponse().getMessage());
+            return "users/room";
+        }
+
+        return "redirect:/user/rooms";
+    }
+
+    // 채팅방
+    @GetMapping("/chat")
+    public String chattingRoom(@RequestParam Long roomId, Model model, HttpSession session) {
+        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        // Participant에서 Room참여자들 정보를 가져와 모델에 전달
+        Participant findParticipant = userService.findByRoomIdAndUserId(roomId,user.getUserId());
+        model.addAttribute("user", user);
+
+        // 유저가 참여하고있는 채팅방정보를 DTO에 담아 모델에 전달
+        RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
+        roomInfoDTO.setName(findParticipant.getRoomName());
+        roomInfoDTO.setRoomId(roomId);
+        model.addAttribute("room", roomInfoDTO);
+
+        // 입장한 채팅방의 채팅메세지들을 가져와 모델에 전달
+        List<Chatting> findChattings = chatService.findAllByRoomId(roomId);
+        model.addAttribute("records",findChattings);
+
+        return "/users/chat";
+    }
 
 
 

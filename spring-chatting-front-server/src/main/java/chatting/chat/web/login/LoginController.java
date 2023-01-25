@@ -99,7 +99,7 @@ public class LoginController {
                             HttpStatus::is4xxClientError,
                             response -> response.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
                     .bodyToMono(String.class)
-                    .block();
+                    .subscribe(log::info);
 
             session.removeAttribute(SessionConst.LOGIN_MEMBER);
         }catch (CustomThrowableException e){

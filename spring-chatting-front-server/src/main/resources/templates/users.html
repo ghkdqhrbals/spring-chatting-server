@@ -15,6 +15,29 @@
 
 
   <div>
+    <div style="margin-bottom: 30px">
+      <p>
+        Me
+      </p>
+
+      <table class="table">
+        <thead class="col-l">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="col-l" th:each="f : ${user}">
+          <td th:text="${user.userId}">my id</td>
+          <td th:text="${user.userName}">my name</td>
+          <td th:text="${user.userStatus}">my status</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
     <p>
       My Friends
     </p>
@@ -39,7 +62,7 @@
   <div class="container-2">
     <div class="item-6">
       <button class="w-100 btn-primary" onclick="location.href='users/rooms.html'"
-              th:onclick="|location.href='@{/users/add}'|"
+              th:onclick="|location.href='@{/user/rooms}'|"
               type="button">chat room</button>
     </div>
     <div class="item-6">
@@ -49,7 +72,7 @@
     </div>
     <div class="item-6">
       <button class="w-100 btn-primary" onclick="location.href='users/updateStatusForm.html'"
-              th:onclick="|location.href='@{/users/add}'|"
+              th:onclick="|location.href='@{/user/status}'|"
               type="button">change status</button>
     </div>
     <div class="item-6">

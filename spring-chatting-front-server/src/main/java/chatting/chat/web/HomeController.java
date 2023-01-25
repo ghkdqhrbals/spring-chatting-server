@@ -3,6 +3,7 @@ package chatting.chat.web;
 import chatting.chat.domain.data.Friend;
 import chatting.chat.domain.data.User;
 import chatting.chat.web.dto.ResponseGetFriend;
+import chatting.chat.web.dto.ResponseGetUser;
 import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
@@ -47,6 +48,17 @@ public class HomeController {
             Model model) {
 
         try{
+            ResponseGetUser me = webClient.mutate()
+                    .build()
+                    .get()
+                    .uri("/chat/user?userId=" + loginUser.getUserId())
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::is4xxClientError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
+                    .bodyToMono(ResponseGetUser.class).block();
+            model.addAttribute("user",me);
+
             Flux<ResponseGetFriend> response = webClient.mutate()
                     .build()
                     .get()
@@ -61,6 +73,7 @@ public class HomeController {
             model.addAttribute("friends",readers);
 
         }catch (CustomThrowableException e){
+            log.info(e.getErrorResponse().getMessage());
             return "login/loginForm";
         }
 

@@ -15,8 +15,6 @@ import java.util.Set;
 public class ChatRoomDTO {
     private Long roomId;
     private String roomName;
-    private Set<WebSocketSession> sessions = new HashSet<>();
-
 
     public ChatRoomDTO(Long roomId, String roomName) {
         this.roomId = roomId;

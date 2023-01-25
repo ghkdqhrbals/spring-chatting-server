@@ -7,6 +7,8 @@ import chatting.chat.domain.participant.service.ParticipantService;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.dto.ResponseGetFriend;
+import chatting.chat.web.dto.ResponseGetUser;
+import chatting.chat.web.error.CustomException;
 import chatting.chat.web.kafka.KafkaTopicConst;
 import chatting.chat.web.kafka.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static chatting.chat.web.error.ErrorCode.CANNOT_FIND_USER;
 
 
 @Slf4j
@@ -47,6 +51,13 @@ public class ChatController extends KafkaTopicConst {
      * -------------- GET METHODS --------------
      */
 
+    // 유저 조회
+    @GetMapping("/user")
+    public ResponseEntity<?> findUser(@RequestParam("userId") String userId){
+        User findUser = userService.findById(userId);
+        return ResponseEntity.ok(new ResponseGetUser(findUser.getUserId(),findUser.getUserName(),findUser.getUserStatus()));
+    }
+
     // 채팅방 정보 조회
     @GetMapping(value = "/room/{roomId}")
     public ResponseEntity<?> findRoom(@PathVariable("roomId") Long roomId){
@@ -65,13 +76,10 @@ public class ChatController extends KafkaTopicConst {
     @GetMapping("/friend")
     public ResponseEntity<?> findFriend(@RequestParam("userId") String userId){
         User findUser = userService.findById(userId);
-//        List<Friend> findFriends = friendService.findAllByUserId(findUser.getUserId());
-//
-//        findUser.getFriends();
+
         Stream<ResponseGetFriend> rGetFriend = findUser.getFriends().stream().map(f -> {
             User findFriend = userService.findById(f.getFriendId());
-            ResponseGetFriend responseGetFriend = new ResponseGetFriend(findFriend.getUserId(), findFriend.getUserName(),findFriend.getUserStatus());
-            return responseGetFriend;
+            return new ResponseGetFriend(findFriend.getUserId(), findFriend.getUserName(),findFriend.getUserStatus());
         });
         List<ResponseGetFriend> collect = rGetFriend.collect(Collectors.toList());
 

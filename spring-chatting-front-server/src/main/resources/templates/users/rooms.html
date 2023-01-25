@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/templates/css/common.css}"
+    <link th:href="@{/css/common.css}"
           href="../css/common.css" rel="stylesheet">
-    <link th:href="@{/templates/css/msg.css}"
+    <link th:href="@{/css/msg.css}"
           href="../css/msg.css" rel="stylesheet">
 </head>
 <body>
@@ -18,19 +18,19 @@
             room list
             <div th:each="room : ${list}">
                 <button style="margin-top: 10px" class="btn-room" onclick="location.href='chat.html'"
-                        th:onclick="|location.href='@{/users/chat(roomId=${room.roomId})}'|" type="button">
+                        th:onclick="|location.href='@{/user/chat(roomId=${room.roomId})}'|" type="button">
                     [[${room.roomName}]]
                 </button>
             </div>
         </div>
         <div class="item-6" style="margin-top: 20px">
             <button class="w-100 btn-primary" onclick="location.href='room.html'"
-                    th:onclick="|location.href='@{/users/room}'|"
+                    th:onclick="|location.href='@{/user/room}'|"
                     type="button">Create new chat room</button>
         </div>
         <div class="item-6">
             <button class="w-100 btn-secondary" onclick="location.href='../users.html'"
-                    th:onclick="|location.href='@{/users/room}'|"
+                    th:onclick="|location.href='@{/}'|"
                     type="button">back</button>
         </div>
     </div>

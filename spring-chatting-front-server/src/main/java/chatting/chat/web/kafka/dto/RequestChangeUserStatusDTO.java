@@ -8,4 +8,9 @@ import lombok.Setter;
 public class RequestChangeUserStatusDTO {
     private String userId;
     private String status;
+
+    public RequestChangeUserStatusDTO(String userId, String status) {
+        this.userId = userId;
+        this.status = status;
+    }
 }

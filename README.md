@@ -16,6 +16,8 @@
    * [ELK stack](#elk-stack)
 3. [Update Logs](#update-logs)
 
+To see the description of functions and simulation video, here is youtube link : [youtube link](https://www.youtube.com/watch?v=3VqwZ17XyEQ&t=237s)
+
 ## Current Architecture(v4)
 ![chatSeq](img/v3/v3.1.0.png)
 
@@ -147,6 +149,13 @@
 4. In Kibana[http://localhost:5601](http://localhost:5601), create index of new-user and chat
 
 ## Update Logs
+
+### Update[v4.2.0]
+* Add WebFlux
+  * chatting
+* Add Kibana Graph
+  * new-user traffic
+  * chat traffic
 
 ### Update[v4.1.0]
 * Add WebFlux(To see more details about what is remaining, [visit blog](https://ghkdqhrbals.github.io/posts/chatting(16)))

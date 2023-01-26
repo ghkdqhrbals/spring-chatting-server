@@ -10,8 +10,10 @@ confluent-hub-client-latest.tar.gz
 ./spring-chatting-auth-server/build
 ./spring-chatting-auth-server/build
 
-
-
+/.idea
+/app
+/backups
+/kafka-connect-jdbc
 .idea/
 *.iml
 *.iws

@@ -2,9 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="utf-8">
-  <link th:href="@{/templates/css/msg.css}"
+  <link th:href="@{/css/msg.css}"
         href="../css/msg.css" rel="stylesheet">
-  <link th:href="@{/templates/css/common.css}"
+  <link th:href="@{/css/common.css}"
         href="../css/common.css" rel="stylesheet">
 
 </head>
@@ -18,14 +18,12 @@
 
 
     <div class="center">
-      <h2>[[${room.name}]]</h2>
+      <h2>[[${roomName}]]</h2>
 
       <div class="scroll-box h-250">
         <table class="item">
           <tbody>
-              <div class="#msgArea">
-                  Message Area
-              </div>
+              <div id="msgArea"/>
           </tbody>
         </table>
       </div>
@@ -36,7 +34,7 @@
 
         <div style="text-align: center">
             To leave this room,
-            <a href="rooms.html" style="text-align: center"> Click here </a>
+            <a th:href="@{/user/rooms}" href="rooms.html" style="text-align: center"> Click here </a>
         </div>
 
     </div>
@@ -51,40 +49,29 @@
 <script th:inline="javascript">
   /*<![CDATA[*/
 
-  var roomName = [[${room.name}]];
-  var roomId = [[${room.roomId}]];
+
+  var roomName = [[${roomName}]];
+  var roomId = [[${roomId}]];
   var username = [[${user.userName}]];
+  var userId = [[${user.userId}]];
   var record = [[${records}]];
   var writerId = [[${user.userId}]];
 
   console.log(roomName + ", " + roomId + ", " + username);
   record.forEach(function(r){
     var str = '';
-    if (r.sendUser.userName == username){
 
-        str = "<tr>";
-        str +=  "<td style='text-align: right'>";
 
-        str = "<div class='msg-r'>";
-        str += username + " : " + r.message;
+    if (r.sendUserId == userId){
+        str = "<div class='msg-r m-tb-5'>";
+        str += r.sendUserName + " : " + r.message;
         str += "</div>";
-
-        str +=  "</td>";
-        str += "</tr>";
-
         $("#msgArea").append(str);
     }
     else{
-        str = "<tr>";
-        str +=  "<td style='text-align: left'>";
-
-        str = "<div class='msg-l'>";
-        str += username + " : " + r.message;
+        str = "<div class='msg-l m-tb-5'>";
+        str += r.sendUserName + " : " + r.message;
         str += "</div>";
-
-        str +=  "</td>";
-        str += "</tr>";
-
         $("#msgArea").append(str);
     }
   });
@@ -103,40 +90,27 @@
       var content = JSON.parse(chat.body);
 
       var writer = content.writer;
+      var writerId = content.writerId;
       var message = content.message;
       var str = '';
 
-      if (writer === username) {
-        str = "<tr>";
-        str +=  "<td style='text-align: right'>";
-
-        str = "<div class='msg-r'>";
+      console.log("writer:"+writer+" message:"+message);
+      if (writerId === userId) {
+        str = "<div class='msg-r m-tb-5'>";
         str += writer + " : " + message;
         str += "</div>";
-
-        str +=  "</td>";
-        str += "</tr>";
-
         $("#msgArea").append(str);
       } else {
-
-        str = "<tr>";
-        str +=  "<td style='text-align: left'>";
-
-        str = "<div class='msg-l'>";
+        str = "<div class='msg-l m-tb-5'>";
         str += writer + " : " + message;
         str += "</div>";
-
-        str +=  "</td>";
-        str += "</tr>";
-
         $("#msgArea").append(str);
       }
 
     });
 
     //3. send(path, header, message)로 메세지를 보낼 수 있음
-    stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId,writerId:writerId, writer: username, createAt:Date.now()}))
+    // stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId,writerId:writerId, writer: username, createAt:Date.now()}))
   });
 
 

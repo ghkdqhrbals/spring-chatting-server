@@ -14,7 +14,6 @@ public class Chatting {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "ROOM_ID")
     private Room room;

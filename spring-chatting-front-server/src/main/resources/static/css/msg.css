@@ -1,7 +1,7 @@
 
 
 .msg-r{
-    background-color: #fae4a7;
+    background-color: #d4ffcf;
     box-shadow: 0px 2px 2.2px #818181;
     padding-right: 5px;
     padding-left: 5px;
@@ -11,11 +11,11 @@
     text-align: right;
     border-radius: 5px;
     margin-left: auto;
-    margin-right: 0;
+    margin-right: 10px;
 }
 
 .msg-l{
-    background-color: #ffffff;
+    background-color: #fff8d6;
     box-shadow: 0px 2px 2.2px #818181;
     padding-right: 5px;
     padding-left: 5px;
@@ -24,7 +24,7 @@
     width: fit-content;
     text-align: right;
     border-radius: 5px;
-    margin-left: 0;
+    margin-left: 10px;
     margin-right: auto;
 }
 
@@ -44,6 +44,11 @@
     grid-auto-rows: 100px;
     grid-auto-columns: 100px;
     grid-auto-flow: row;
+}
+
+.m-tb-5{
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .item-h-50{

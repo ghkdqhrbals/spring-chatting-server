@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <link th:href="@{/templates/css/common.css}"
+  <link th:href="@{/css/common.css}"
         href="../css/common.css" rel="stylesheet">
-  <link th:href="@{/templates/css/msg.css}"
+  <link th:href="@{/css/msg.css}"
         href="../css/msg.css" rel="stylesheet">
 </head>
 
@@ -42,7 +42,7 @@
       </div>
       <div class="item-6">
         <button class="w-100 btn-secondary" onclick="location.href='rooms.html'"
-                th:onclick="|location.href='@{/users/rooms}'|"
+                th:onclick="|location.href='@{/user/rooms}'|"
                 type="button">back</button>
       </div>
     </div>

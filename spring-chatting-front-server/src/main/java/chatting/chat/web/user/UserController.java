@@ -230,26 +230,59 @@ public class UserController {
         return "redirect:/user/rooms";
     }
 
+    // 패킷의 크기 또한 신경써야될듯
     // 채팅방
     @GetMapping("/chat")
-    public String chattingRoom(@RequestParam Long roomId, Model model, HttpSession session) {
-        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+    public String chattingRoom(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
+                               @RequestParam Long roomId, @RequestParam String roomName, Model model) {
 
-        // Participant에서 Room참여자들 정보를 가져와 모델에 전달
-        Participant findParticipant = userService.findByRoomIdAndUserId(roomId,user.getUserId());
-        model.addAttribute("user", user);
+        try {
 
-        // 유저가 참여하고있는 채팅방정보를 DTO에 담아 모델에 전달
-        RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
-        roomInfoDTO.setName(findParticipant.getRoomName());
-        roomInfoDTO.setRoomId(roomId);
-        model.addAttribute("room", roomInfoDTO);
+            Flux<ChatRecord> response = webClient.mutate()
+                    .build()
+                    .get()
+                    .uri("/chat/chats?roomId="+roomId)
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::is4xxClientError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .bodyToFlux(ChatRecord.class);
 
-        // 입장한 채팅방의 채팅메세지들을 가져와 모델에 전달
-        List<Chatting> findChattings = chatService.findAllByRoomId(roomId);
-        model.addAttribute("records",findChattings);
+            List<ChatRecord> records = response.collect(Collectors.toList())
+                    .share().block();
 
-        return "/users/chat";
+            model.addAttribute("roomId",roomId);
+            model.addAttribute("roomName",roomName);
+            model.addAttribute("user", user);
+            model.addAttribute("records",records);
+
+        }catch (CustomThrowableException e){
+            log.info(e.getErrorResponse().getCode());
+            log.info(e.getErrorResponse().getMessage());
+            return "users/chat";
+        }
+
+        return "users/chat";
+
+
+
+//
+//
+//        // Participant에서 Room참여자들 정보를 가져와 모델에 전달
+//        Participant findParticipant = userService.findByRoomIdAndUserId(roomId,user.getUserId());
+//        model.addAttribute("user", user);
+//
+//        // 유저가 참여하고있는 채팅방정보를 DTO에 담아 모델에 전달
+//        RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
+//        roomInfoDTO.setName(findParticipant.getRoomName());
+//        roomInfoDTO.setRoomId(roomId);
+//        model.addAttribute("room", roomInfoDTO);
+//
+//        // 입장한 채팅방의 채팅메세지들을 가져와 모델에 전달
+//        List<Chatting> findChattings = chatService.findAllByRoomId(roomId);
+//        model.addAttribute("records",findChattings);
+//
+//        return "/users/chat";
     }
 
 

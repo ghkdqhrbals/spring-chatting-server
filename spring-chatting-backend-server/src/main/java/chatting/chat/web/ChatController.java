@@ -91,7 +91,9 @@ public class ChatController extends KafkaTopicConst {
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId){
         Room findRoom = roomService.findByRoomId(roomId);
         List<Chatting> findChattings = chatService.findAllByRoomId(findRoom.getRoomId());
-        return ResponseEntity.ok(findChattings);
+        List<ChatRecord> response = findChattings.stream().map(c -> new ChatRecord(c.getId(), c.getRoom().getRoomId(), c.getSendUser().getUserId(), c.getSendUser().getUserName(), c.getMessage(), c.getCreatedDate(), c.getCreatedTime())).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 
     // 특정 채팅 조회

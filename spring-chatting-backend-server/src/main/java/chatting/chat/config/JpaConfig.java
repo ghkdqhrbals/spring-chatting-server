@@ -16,6 +16,7 @@ import chatting.chat.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.persistence.EntityManager;
 
@@ -26,6 +27,8 @@ public class JpaConfig {
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
+
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     public JpaConfig(EntityManager em, UserRepository userRepository,FriendRepository friendRepository, RoomRepository roomRepository, ParticipantRepository participantRepository) {

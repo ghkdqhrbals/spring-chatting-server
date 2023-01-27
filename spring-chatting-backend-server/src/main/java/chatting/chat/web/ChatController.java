@@ -8,7 +8,6 @@ import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
-import chatting.chat.web.error.CustomException;
 import chatting.chat.web.kafka.KafkaTopicConst;
 import chatting.chat.web.kafka.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static chatting.chat.web.error.ErrorCode.CANNOT_FIND_USER;
 
 
 @Slf4j
@@ -91,7 +89,7 @@ public class ChatController extends KafkaTopicConst {
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId){
         Room findRoom = roomService.findByRoomId(roomId);
         List<Chatting> findChattings = chatService.findAllByRoomId(findRoom.getRoomId());
-        List<ChatRecord> response = findChattings.stream().map(c -> new ChatRecord(c.getId(), c.getRoom().getRoomId(), c.getSendUser().getUserId(), c.getSendUser().getUserName(), c.getMessage(), c.getCreatedDate(), c.getCreatedTime())).collect(Collectors.toList());
+        List<ChatRecord> response = findChattings.stream().map(c -> new ChatRecord(c.getId(), c.getRoom().getRoomId(), c.getSendUser().getUserId(), c.getSendUser().getUserName(), c.getMessage(), c.getCreatedAt())).collect(Collectors.toList());
 
         return ResponseEntity.ok(response);
     }
@@ -123,23 +121,6 @@ public class ChatController extends KafkaTopicConst {
     }
 
     // 채팅 저장
-//    @PostMapping(value = "/participant")
-//    public ResponseEntity<?> addParticipant(@RequestBody RequestAddParticipantDTO req) {
-//        // 초대자, 초대받는자
-//        User user = userService.findById(req.getUserId());
-//        Room room = roomService.findByRoomId();
-//        Participant p = new Participant(user);
-//
-//
-//
-//        participantService.save()
-//        // validation
-//
-//
-//        return ResponseEntity.ok("success");
-//    }
-
-    // 채팅 저장
     @PostMapping(value = "/chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
 
@@ -147,10 +128,11 @@ public class ChatController extends KafkaTopicConst {
         Room findRoom = roomService.findByRoomId(req.getRoomId());
         User findUser = userService.findById(req.getWriterId());
 
-        userService.findByRoomIdAndUserId(findRoom.getRoomId(), findUser.getUserId());
+        // 성능개선을 위해 제거
+//        userService.findByRoomIdAndUserId(findRoom.getRoomId(), findUser.getUserId());
 
         // service-logic
-        Chatting chatting = convertToChatting(findRoom, findUser, req.getMessage());
+        Chatting chatting = createChatting(findRoom, findUser, req.getMessage());
         chatService.save(chatting);
 
         // kafka-logic
@@ -189,12 +171,12 @@ public class ChatController extends KafkaTopicConst {
 
 
     // utils
-    private Chatting convertToChatting(Room room, User user,String msg){
+    private Chatting createChatting(Room room, User user, String msg){
         Chatting chatting = new Chatting();
+        chatting.setId(UUID.randomUUID().toString());
         chatting.setRoom(room);
         chatting.setSendUser(user);
-        chatting.setCreatedDate(LocalDateTime.now().toLocalDate());
-        chatting.setCreatedTime(LocalDateTime.now().toLocalTime());
+        chatting.setCreatedAt(LocalDateTime.now());
         chatting.setMessage(msg);
         return chatting;
     }

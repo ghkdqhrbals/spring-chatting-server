@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static chatting.chat.web.error.ErrorCode.*;
 
@@ -24,6 +25,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
+
 
     public ChatService(ChatRepository chatRepository, RoomRepository roomRepository, ParticipantRepository participantRepository) {
         this.chatRepository = chatRepository;
@@ -59,6 +61,7 @@ public class ChatService {
         if (findParticipant == null){
             throw new CustomException(INVALID_PARTICIPANT);
         }
+
         Chatting save = chatRepository.save(chatting);
         return save;
     }

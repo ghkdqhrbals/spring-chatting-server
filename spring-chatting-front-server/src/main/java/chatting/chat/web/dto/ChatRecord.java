@@ -5,29 +5,27 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
 @Setter
 public class ChatRecord {
-    private Long id;
+    private String id;
     private Long roomId;
     private String sendUserId;
     private String sendUserName;
     private String message;
-    private LocalDate createdDate;
-    private LocalTime createdTime;
+    private LocalDateTime createdAt;
 
-    public ChatRecord() {
-    }
+    public ChatRecord() {}
 
-    public ChatRecord(Long id, Long roomId, String sendUserId, String sendUserName, String message, LocalDate createdDate, LocalTime createdTime) {
+    public ChatRecord(String id, Long roomId, String sendUserId, String sendUserName, String message, LocalDateTime createdAt) {
         this.id = id;
         this.roomId = roomId;
         this.sendUserId = sendUserId;
         this.sendUserName = sendUserName;
         this.message = message;
-        this.createdDate = createdDate;
-        this.createdTime = createdTime;
+        this.createdAt = createdAt;
     }
 }

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -12,30 +13,25 @@ import java.time.LocalTime;
 @Setter
 public class Chatting {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    @ManyToOne
+    private String id;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID")
     private Room room;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User sendUser;
     @Column(name = "MESSAGE")
     private String message;
-    @Column(name = "CREATED_DATE")
-    private LocalDate createdDate;
-    @Column(name = "CREATED_TIME")
-    private LocalTime createdTime;
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
 
-    public Chatting(Long id, Room room, User sendUser, String message, LocalDate createdDate, LocalTime createdTime) {
+    public Chatting(String id, Room room, User sendUser, String message, LocalDateTime createdAt) {
         this.id = id;
         this.room = room;
         this.sendUser = sendUser;
         this.message = message;
-        this.createdDate = createdDate;
-        this.createdTime = createdTime;
+        this.createdAt = createdAt;
     }
-
 
     public Chatting() {
 

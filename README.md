@@ -149,6 +149,31 @@ To see the description of functions and simulation video, here is youtube link :
 4. In Kibana[http://localhost:5601](http://localhost:5601), create index of new-user and chat
 
 ## Update Logs
+### Update[v4.2.1]
+
+* Fix performance issue(Insert 10K chatting required time **80 sec** -> **29 sec**)
+  * Update list
+    * batch
+      * before : 1
+      * after : 100
+    * chatting_id generation algorithm
+      * before : from db sequence
+      * after : random.UUID
+    * add db parallel processor 
+      * before : 1
+      * after : 8
+    * reduce query frequency per addChatRequest
+      * before : 6
+      * after : 4
+    * add chatServer
+      * before : 1
+      * after : 2
+> Before : ( get response ) **125. / sec**
+>![img](img/v4/2.png)
+
+> After : ( get response ) **344. / sec** 
+>![img](img/v4/8.png)
+
 
 ### Update[v4.2.0]
 * Add WebFlux

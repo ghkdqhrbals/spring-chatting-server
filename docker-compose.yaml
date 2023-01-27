@@ -96,6 +96,25 @@ services:
     command: -c wal_level=logical -p 5434
     restart: always
 
+  chatting-server-1:
+    container_name: chatting-server-1
+    build: ./spring-chatting-backend-server
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://chatting-db-2:5434/chat2
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_PORT=8081
+      - KAFKA_BOOTSTRAP=kafka1:9092,kafka2:9092,kafka3:9092 # 내부포트
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - chatting-db-2
+    restart: always
+
   chatting-server-2:
     container_name: chatting-server-2
     build: ./spring-chatting-backend-server

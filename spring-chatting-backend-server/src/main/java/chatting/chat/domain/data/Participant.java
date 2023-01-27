@@ -15,11 +15,11 @@ public class Participant {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long participantId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ROOM_ID")
     private Room room;
 

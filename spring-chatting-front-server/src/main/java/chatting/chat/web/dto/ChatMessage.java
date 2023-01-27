@@ -19,6 +19,6 @@ public class ChatMessage {
     private ZonedDateTime createAt;
 
     public Chatting convertToChatting(Room room, User user){
-        return new Chatting(roomId, room, user, message, createAt.toLocalDate(),createAt.toLocalTime());
+        return new Chatting(roomId, room, user, message, createAt.toLocalDateTime());
     }
 }

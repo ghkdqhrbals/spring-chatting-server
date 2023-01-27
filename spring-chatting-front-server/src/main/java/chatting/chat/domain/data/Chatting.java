@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -13,18 +14,15 @@ public class Chatting {
     private Room room;
     private User sendUser;
     private String message;
-    private LocalDate createdDate;
-    private LocalTime createdTime;
+    private LocalDateTime createdAt;
 
-    public Chatting(Long id, Room room, User sendUser, String message, LocalDate createdDate, LocalTime createdTime) {
+    public Chatting(Long id, Room room, User sendUser, String message, LocalDateTime createdAt) {
         this.id = id;
         this.room = room;
         this.sendUser = sendUser;
         this.message = message;
-        this.createdDate = createdDate;
-        this.createdTime = createdTime;
+        this.createdAt = createdAt;
     }
-
 
     public Chatting() {
 

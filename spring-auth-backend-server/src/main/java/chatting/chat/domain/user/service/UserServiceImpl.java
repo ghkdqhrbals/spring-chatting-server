@@ -5,6 +5,7 @@ import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.web.error.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static chatting.chat.web.error.ErrorCode.*;
 
 @Slf4j
+@Async
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         Optional<User> findUser = userRepository.findById(user.getUserId());
-
+        log.info("Current Thread = {}",Thread.currentThread().getName());
         if (findUser.isPresent()) {
             throw new CustomException(DUPLICATE_RESOURCE);
         }

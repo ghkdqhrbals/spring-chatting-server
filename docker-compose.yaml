@@ -13,6 +13,23 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8060:80"
+  front-server:
+    container_name: front-server
+    build: ./spring-chatting-front-server
+    ports:
+      - "8054:8054"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://chatting-db-2:5434/chat2
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_PORT=8054
+      # 내부포트
+    depends_on:
+      - auth-server
+      - auth-server-2
+      - chatting-db-2
+    restart: always
 
   # -------- KAFKA --------
   zookeeper:
@@ -148,7 +165,8 @@ services:
       - "5435:5435"
     volumes:
       - ./backups:/home/backups
-    command: -p 5435
+    command: -p 5435 -c 'max_connections=200'
+
   auth-server:
     container_name: auth-server
     build: ./spring-auth-backend-server
@@ -156,10 +174,9 @@ services:
       - "8085:8085"
     environment:
       - SERVER_PORT=8085
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-db:5435/auth
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432/postgres?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=mypassword
+      - SPRING_DATASOURCE_URL= # insert your db url
+      - SPRING_DATASOURCE_PASSWORD= # insert your db password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - KAFKA_BOOTSTRAP=kafka1:9092,kafka2:9092,kafka3:9092 # 내부포트
     depends_on:
@@ -173,9 +190,9 @@ services:
       - "8072:8072"
     environment:
       - SERVER_PORT=8072
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432/postgres?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=mypassword
+      - SPRING_DATASOURCE_URL= # insert your db url
+      - SPRING_DATASOURCE_PASSWORD= # insert your db password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - KAFKA_BOOTSTRAP=kafka1:9092,kafka2:9092,kafka3:9092 # 내부포트
     depends_on:

@@ -61,20 +61,20 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server",
-    "nodejs_package_manager_path": "npm"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/gyuminhwangbo/study/spring-chatting-server/spring-chatting-front-server&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/spring-chatting-front-server" />
       <recent name="$PROJECT_DIR$/img/v4" />
       <recent name="$PROJECT_DIR$/img/v3" />
-      <recent name="$PROJECT_DIR$/spring-chatting-front-server" />
       <recent name="$PROJECT_DIR$/spring-chatting-backend-server" />
       <recent name="$PROJECT_DIR$/img/v2" />
     </key>
@@ -126,7 +126,8 @@
       <workItem from="1674549523836" duration="5163000" />
       <workItem from="1674633083905" duration="12749000" />
       <workItem from="1676878766255" duration="2017000" />
-      <workItem from="1677910061774" duration="3533000" />
+      <workItem from="1677910061774" duration="9624000" />
+      <workItem from="1678342392246" duration="1937000" />
     </task>
     <servers />
   </component>

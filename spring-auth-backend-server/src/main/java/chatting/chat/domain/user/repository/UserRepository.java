@@ -7,9 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
+@Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
     @Nullable
@@ -17,5 +23,10 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findByUserId(@Param("userId") String userId);
 
     List<User> findAll();
+
+
+
+
+
 
 }

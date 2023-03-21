@@ -1,0 +1,54 @@
+package chatting.chat.web.logger;
+
+import javax.sql.DataSource;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.pool.HikariPool;
+import lombok.extern.slf4j.Slf4j;
+
+@Aspect
+@Component
+@Slf4j
+public class DataSourceAspectLogger {
+
+    private HikariPool pool;
+
+    @Autowired
+    private HikariDataSource ds;
+
+
+    @Before("execution(* chatting.chat.domain.user.repository.UserRepositoryJDBC.saveAll(..))")
+    public void logBeforeConnection(JoinPoint jp) throws Throwable {
+//        logDataSourceInfos("Before ", jp);
+    }
+
+    @After("execution(* chatting.chat.domain.user.repository.UserRepositoryJDBC.saveAll(..))")
+    public void logAfterConnection(JoinPoint jp) throws Throwable {
+//        logDataSourceInfos("After ", jp);
+    }
+
+    @Autowired
+    public void getPool() {
+        try {
+            java.lang.reflect.Field field = ds.getClass().getDeclaredField("pool");
+            field.setAccessible(true);
+            this.pool = (HikariPool) field.get(ds);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void logDataSourceInfos(final String time, final JoinPoint jp) {
+        final String method = String.format("%s", jp.getSignature().getName());
+        int totalConnections = pool.getTotalConnections();
+        int activeConnections = pool.getActiveConnections();
+        int freeConnections = totalConnections - activeConnections;
+        int connectionWaiting = pool.getThreadsAwaitingConnection();
+        log.info(String.format("%s %s: [Total: %d, Active: %d, Idle: %d, Wait: %d]", time, method, ds.getMaximumPoolSize(),activeConnections,freeConnections,connectionWaiting));
+    }
+}

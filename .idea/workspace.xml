@@ -29,6 +29,7 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/nginx.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,13 +84,26 @@
       <recent name="$PROJECT_DIR$/img" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.logstash/Dockerfile">
+  <component name="RunManager" selected="Docker.docker-compose.yaml.auth-server-1: Compose Deployment">
     <configuration name="ChatApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="chat.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="chatting.chat.ChatApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="docker-compose.yaml.auth-server-1: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="auth-server-1" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="docker-compose.yaml" />
+        </settings>
+      </deployment>
+      <method v="2" />
     </configuration>
     <configuration name="logstash/Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
@@ -101,6 +115,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.docker-compose.yaml.auth-server-1: Compose Deployment" />
         <item itemvalue="Docker.logstash/Dockerfile" />
       </list>
     </recent_temporary>
@@ -127,7 +142,9 @@
       <workItem from="1674633083905" duration="12749000" />
       <workItem from="1676878766255" duration="2017000" />
       <workItem from="1677910061774" duration="9624000" />
-      <workItem from="1678342392246" duration="1937000" />
+      <workItem from="1678342392246" duration="3956000" />
+      <workItem from="1678532748388" duration="9885000" />
+      <workItem from="1679135234239" duration="5011000" />
     </task>
     <servers />
   </component>

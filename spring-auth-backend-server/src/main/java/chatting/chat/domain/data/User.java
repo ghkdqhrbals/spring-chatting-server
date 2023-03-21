@@ -1,17 +1,20 @@
 package chatting.chat.domain.data;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "USER_TABLE")
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class User {
-    public User(String userId, String userPw, String email, String userName, LocalDate joinDate, LocalDate loginDate, LocalDate logoutDate) {
+    public User(String userId, String userPw, String email, String userName, LocalDateTime joinDate, LocalDateTime loginDate, LocalDateTime logoutDate) {
         this.userId = userId;
         this.userPw = userPw;
         this.email = email;
@@ -35,15 +38,12 @@ public class User {
     private String userName;
 
     @Column(name="JOIN_DATE")
-    private LocalDate joinDate;
+    private LocalDateTime joinDate;
 
     @Column(name="LOGIN_DATE")
-    private LocalDate loginDate;
+    private LocalDateTime loginDate;
 
     @Column(name="LOGOUT_DATE")
-    private LocalDate logoutDate;
+    private LocalDateTime logoutDate;
 
-    public User() {
-
-    }
 }

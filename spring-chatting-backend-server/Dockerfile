@@ -1,10 +1,46 @@
-FROM openjdk:11-jdk
+#
+# Set a variable that can be used in all stages.
+#
+ARG BUILD_HOME=/chat
 
-# JAR_FILE 변수 정의 -> 기본적으로 jar file이 2개이기 때문에 이름을 특정해야함
-ARG JAR_FILE=./build/libs/chat-0.0.1-SNAPSHOT.jar
+#
+# Gradle image for the build stage.
+#
+FROM gradle:jdk11 as build-image
 
-# JAR 파일 메인 디렉토리에 복사
-COPY ${JAR_FILE} app.jar
+#
+# Set the working directory.
+#
+ARG BUILD_HOME
+ENV APP_HOME=$BUILD_HOME
+WORKDIR $APP_HOME
 
-# 시스템 진입점 정의
-ENTRYPOINT ["java","-jar","app.jar"]
+#
+# Copy the Gradle config, source code, and static analysis config
+# into the build container.
+#
+COPY --chown=gradle:gradle build.gradle settings.gradle $APP_HOME/
+COPY --chown=gradle:gradle src $APP_HOME/src
+#COPY --chown=gradle:gradle config $APP_HOME/config
+
+#
+# Build the application.
+#
+RUN gradle --no-daemon build
+
+#
+# Java image for the application to run in.
+#
+FROM openjdk:12-alpine
+
+#
+# Copy the jar file in and name it app.jar.
+#
+ARG BUILD_HOME
+ENV APP_HOME=$BUILD_HOME
+COPY --from=build-image $APP_HOME/build/libs/chat-0.0.1-SNAPSHOT.jar app.jar
+
+#
+# The command to run when the container starts.
+#
+ENTRYPOINT java -jar app.jar

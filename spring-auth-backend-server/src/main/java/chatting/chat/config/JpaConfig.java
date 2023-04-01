@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.EntityManager;
 import java.util.concurrent.Executor;
@@ -44,9 +45,8 @@ public class JpaConfig {
         this.hikariDataSource = hikariDataSource;
     }
 
-
-    @Bean
-    public UserService userService() {
-        return new UserServiceImpl(userRepository, userRepositoryJDBC, kafkaProducerTemplate, serviceExecutor, hikariDataSource);
-    }
+//    @Bean
+//    public UserService userService() {
+//        return new UserServiceImpl(userRepository, userRepositoryJDBC, kafkaProducerTemplate, serviceExecutor, hikariDataSource);
+//    }
 }

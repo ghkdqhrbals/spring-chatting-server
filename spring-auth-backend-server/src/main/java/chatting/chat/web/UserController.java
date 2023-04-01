@@ -2,7 +2,7 @@ package chatting.chat.web;
 
 import chatting.chat.domain.data.*;
 import chatting.chat.domain.user.service.UserService;
-import chatting.chat.web.dto.RequestAddUserDTO;
+import chatting.chat.web.vo.RequestAddUserVO;
 import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.kafka.KafkaTopicConst;
@@ -10,6 +10,7 @@ import chatting.chat.web.kafka.dto.RequestUserChange;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -18,8 +19,10 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.servlet.ServletRequest;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 
 
 @Slf4j
@@ -31,14 +34,34 @@ public class UserController extends KafkaTopicConst {
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final HikariDataSource hikariDataSource;
 
+    @GetMapping("/health-check")
+    public String hello(ServletRequest request){
+        return "Access auth-controller port "+ String.valueOf(request.getRemotePort());
+    }
     /**
      * -------------- READ METHODS --------------
      */
     // 유저 조회
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> findUser(@PathVariable("userId") String userId){
-        User user = userService.findById(userId);
-        return ResponseEntity.ok(user);
+    public DeferredResult<ResponseEntity<?>> findUser(@PathVariable("userId") String userId){
+        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
+        dr.onTimeout(() ->
+                dr.setErrorResult(
+                        ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                                .body("Request timeout occurred.")));
+        userService.findById(userId, dr);
+        return dr;
+    }
+
+    @GetMapping(value = "/deferredResult")
+    public DeferredResult<String> useDeferredResult() {
+        DeferredResult<String> deferredResult = new DeferredResult<>();
+        deferredResult.onCompletion(() -> log.info("onCompletion"));
+        ForkJoinPool.commonPool().submit(() -> {
+            deferredResult.setResult("Results Here");
+            log.info("Results set");
+        });
+        return deferredResult;
     }
 
     @GetMapping("/login")
@@ -60,46 +83,11 @@ public class UserController extends KafkaTopicConst {
      */
     // 유저 저장
     @PostMapping("/user")
-    public DeferredResult<ResponseEntity<?>> addUser(@RequestBody RequestAddUserDTO request) throws InterruptedException {
-
-        // DeferredResult는 Spring 3.2부터 지원하는 이벤트 driven 비동기 지원 Callback 메소드
-        // DeferredResult를 리턴 타입으로 설정하면,
-        // 이벤트가 다른 스레드로부터 들어오면 클라이언트 정보를 가지고 있는 현재 nio 톰켓 스레드에서 클라이언트에게 결과물 반환
-        // 즉, Golang의 채널같은 존재임(조금 다르긴 하지만)
+    public DeferredResult<ResponseEntity<?>> addUser(@RequestBody RequestAddUserVO req) throws InterruptedException {
         DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-
-        User user = new User(
-                request.getUserId(),
-                request.getUserPw(),
-                request.getEmail(),
-                request.getUserName(),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
-
-        // 유저 서비스를 통해 유저 저장
-        saveUserHandler(dr, user);
-
-        // deferredResult 는 default로 되었다가 이벤트가 들어오면 해당 이벤트를 비로소 수행
+        userService.save(req, dr);
+        sendToKafkaWithKey(TOPIC_USER_CHANGE, new RequestUserChange(req.getUserId(), req.getUserName(),"","INSERT"), req.getUserId());
         return dr;
-    }
-
-    private void saveUserHandler(DeferredResult<ResponseEntity<?>> dr, User user) {
-        CompletableFuture.runAsync(()->{
-            }).thenCompose(s->{
-                return userService.save(user);
-            }).thenAcceptAsync( s1->{
-                sendToKafkaWithKey(TOPIC_USER_CHANGE, new RequestUserChange(user.getUserId(), user.getUserName(),"","INSERT"), user.getUserId());
-                dr.setResult(ResponseEntity.ok("success"));
-            }).exceptionally(e->{
-                if (e.getCause() instanceof CustomException){
-                    dr.setResult(ErrorResponse.toResponseEntity(((CustomException) e.getCause()).getErrorCode()));
-                }else{
-                    dr.setResult(ResponseEntity.badRequest().body("default bad request response"));
-                }
-                return null;
-            });
     }
 
     /**
@@ -108,11 +96,11 @@ public class UserController extends KafkaTopicConst {
     // 유저 삭제
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<?> removeUser(@PathVariable("userId") String userId){
-        User user = userService.findById(userId);
-        userService.removeUser(userId);
-
-        // 같은 파티션에 삽입하여 메세지 전송 순서 보장
-        sendToKafkaWithKey(TOPIC_USER_CHANGE, new RequestUserChange(user.getUserId(),user.getUserName(),"","DELETE"), user.getUserId());
+//        User user = userService.findById(userId);
+//        userService.removeUser(userId);
+//
+//        // 같은 파티션에 삽입하여 메세지 전송 순서 보장
+//        sendToKafkaWithKey(TOPIC_USER_CHANGE, new RequestUserChange(user.getUserId(),user.getUserName(),"","DELETE"), user.getUserId());
 
         return ResponseEntity.ok("success");
     }

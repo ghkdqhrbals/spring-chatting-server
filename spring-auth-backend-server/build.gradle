@@ -14,6 +14,10 @@ configurations {
 	}
 }
 
+ext {
+	set('springCloudVersion', "2021.0.5")
+}
+
 repositories {
 	mavenCentral()
 }
@@ -28,25 +32,23 @@ dependencies {
 
 	// kafka const쉽게 받아오기위해서 configuration 우선순위 설정
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'com.google.guava:guava:31.1-jre'
-
 	implementation group: 'org.json', name: 'json', version: '20090211'
-
     testImplementation 'org.projectlombok:lombok:1.18.24'
-
-//    runtimeOnly 'com.h2database:h2'
-
-
-	// https://mvnrepository.com/artifact/org.postgresql/postgresql
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
-
-
-
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+	implementation "org.springframework.boot:spring-boot-starter-security"
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 tasks.named('test') {

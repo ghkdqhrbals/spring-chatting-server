@@ -1,0 +1,35 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+spring:
+  application:
+    name:
+      apigateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: "SCG Global Filter"
+            preLogger: true
+            postLogger: true
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+#        - id: chat-service
+#          uri: lb://CHAT-SERVICE
+#          predicates:
+#            - Path=/chat/**
+
+#          filters:
+#            - AddRequestHeader=second-request, second-request-header
+#            - AddResponseHeader=second-response, second-response-header

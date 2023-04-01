@@ -1,0 +1,55 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+spring:
+  application:
+    name:
+      apigateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: "SCG Global Filter"
+            preLogger: true
+            postLogger: true
+      routes:
+        # 세부기능
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+        # 로그인
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+        # 회원가입
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/user
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+
+token:
+  expiration_time: 86400000
+  secret: my_secrets

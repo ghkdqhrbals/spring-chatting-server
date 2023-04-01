@@ -22,6 +22,22 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 public class AsyncConfig  {
 
+    @Bean(name = "taskExecutor")
+    public Executor taskExecutor() {
+        ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
+        t.setCorePoolSize(5);
+        t.setMaxPoolSize(10);
+        t.setQueueCapacity(10);
+        t.setThreadNamePrefix("task-");
+
+        t.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        t.setWaitForTasksToCompleteOnShutdown(true);
+        t.setAwaitTerminationSeconds(60);
+
+        t.initialize();
+        return t;
+    }
+
     @Bean(name = "taskExecutorForService")
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();

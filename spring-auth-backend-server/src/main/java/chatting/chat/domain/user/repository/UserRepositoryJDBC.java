@@ -11,6 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -42,7 +43,33 @@ public class UserRepositoryJDBC {
         this.hikariDataSource = hikariDataSource;
     }
 
-    @Transactional
+    public void saveAll2(List<User> users) {
+        log.info(TransactionSynchronizationManager.getCurrentTransactionName());
+        try{
+            String sql = "INSERT INTO user_table (user_id, email, join_date, login_date, logout_date, user_name, user_pw) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?) ";
+
+            jdbcTemplate.batchUpdate(sql,
+                    users,
+                    batchSize,
+                    (PreparedStatement ps, User user) -> {
+                        ps.setString(1, user.getUserId());
+                        ps.setString(2, user.getEmail());
+                        ps.setObject(3, user.getJoinDate());
+                        ps.setObject(4, user.getLoginDate());
+                        ps.setObject(5, user.getLogoutDate());
+                        ps.setString(6,user.getUserName());
+                        ps.setString(7,user.getUserPw());
+                    });
+
+        } catch(Exception e){
+            if (e.getCause().getClass() == DuplicateKeyException.class){
+                throw new CustomException(DUPLICATE_RESOURCE);
+            }
+            throw new RuntimeException();
+        }
+    }
+
     public CompletableFuture<?> saveAll(List<User> users) {
         return CompletableFuture.runAsync(()->{
             String sql = "INSERT INTO user_table (user_id, email, join_date, login_date, logout_date, user_name, user_pw) " +
@@ -135,6 +162,7 @@ public class UserRepositoryJDBC {
         });
     }
 
+    // Transaction 과 Connection, SQL 쿼리문, 스레드 모두 직접 컨트롤
     public CompletableFuture<?> login(String user_id, String user_pw) throws CustomException{
         return CompletableFuture.supplyAsync(()->{
             Connection conn = null;
@@ -142,9 +170,8 @@ public class UserRepositoryJDBC {
                 // Set "ThreadLocal" connection
                 conn = hikariDataSource.getConnection();
                 conn.setAutoCommit(false);
-
                 // Repository Logics
-                loginUser(user_id,user_pw, conn);
+                loginUser(user_id,user_pw, conn); // 지저분하긴 하지만, connection 을 그대로 넘겨줌.
 
                 // If everything is fine, Set "ThreadLocal" connection
                 conn.commit();

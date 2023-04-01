@@ -7,16 +7,24 @@ import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.kafka.KafkaTopicConst;
 import chatting.chat.web.kafka.dto.RequestUserChange;
+import chatting.chat.web.vo.RequestAddUserVO;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.bouncycastle.cert.dane.DANEEntryFetcherFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.sql.Connection;
@@ -24,6 +32,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
 
@@ -40,71 +49,76 @@ public class UserServiceImpl extends KafkaTopicConst implements UserService  {
 
     private final HikariDataSource hikariDataSource;
 
+    private final PasswordEncoder pwe;
+
     public UserServiceImpl(UserRepository userRepository,
                            UserRepositoryJDBC userRepositoryJDBC,
                            KafkaTemplate<String, Object> kafkaProducerTemplate,
-                           @Qualifier("taskExecutorForService") Executor serviceExecutor, HikariDataSource hikariDataSource) {
+                           @Qualifier("taskExecutorForService") Executor serviceExecutor,
+                           HikariDataSource hikariDataSource,
+                           PasswordEncoder pwe) {
         this.userRepository = userRepository;
         this.userRepositoryJDBC = userRepositoryJDBC;
         this.kafkaProducerTemplate = kafkaProducerTemplate;
         this.serviceExecutor = serviceExecutor;
         this.hikariDataSource = hikariDataSource;
+        this.pwe = pwe;
+    }
+
+    private ResponseEntity defaultErrorResponse(){
+        return ResponseEntity.badRequest().body("default Error");
     }
 
     // 유저 검색
     @Override
-    public User findById(String id) {
-        Optional<User> findId = userRepository.findById(id);
-        if (!findId.isPresent()){
-            throw new CustomException(CANNOT_FIND_USER);
+    @Async
+    @Transactional
+    public DeferredResult<ResponseEntity<?>> findById(String id, DeferredResult<ResponseEntity<?>> dr) {
+        try {
+            List<User> users = userRepository.findByUserId(id);
+            if (users.size() == 0) {
+                dr.setResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
+                return dr;
+            }
+            dr.setResult(ResponseEntity.ok(users.get(0)));
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
+            dr.setErrorResult(defaultErrorResponse());
         }
-        return findId.get();
+        return dr;
     }
-
 
     // 유저 저장
     @Override
-    public CompletableFuture<?> save(User user) throws CustomException {
-        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-        return CompletableFuture.supplyAsync(()->{
-            return Arrays.asList(user);
-        }, serviceExecutor).thenAccept(u -> {
-            try {
-                userRepositoryJDBC.saveAll(u).get(); // blocked
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }).exceptionally(e -> {
-            if (e.getCause() instanceof CustomException){
-                CustomException ex = (CustomException) e.getCause();
-                throw ex;
-            } else{
-                throw new RuntimeException();
-            }
-        });
-    }
+    @Async
+    @Transactional
+    public DeferredResult<ResponseEntity<?>> save(RequestAddUserVO request, DeferredResult<ResponseEntity<?>> dr) throws CustomException {
 
-//    public DeferredResult<Response<?>> saveUserHandler(DeferredResult<ResponseEntity<?>> dr, User user) {
-//        CompletableFuture.runAsync(() -> {
-//        }).thenCompose(s -> {
-//            log.info("SET dr1");
-//            return userService.save(user);
-//        }).thenAcceptAsync(s1 -> {
-//            sendToKafkaWithKey(TOPIC_USER_CHANGE, new RequestUserChange(user.getUserId(), user.getUserName(), "", "INSERT"), user.getUserId());
-//            log.info("SET dr2");
-//            dr.setResult(ResponseEntity.ok("success"));
-//        }).exceptionally(e -> {
-//            if (e.getCause() instanceof CustomException) {
-//                dr.setResult(ErrorResponse.toResponseEntity(((CustomException) e.getCause()).getErrorCode()));
-//            } else {
-//                dr.setResult(ResponseEntity.badRequest().body("default bad request response"));
-//            }
-//            return null;
-//        });
-//
-//    }
+        User user = new User(
+                request.getUserId(),
+                pwe.encode(request.getUserPw()),
+                request.getEmail(),
+                request.getUserName(),
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+
+
+        try {
+            userRepositoryJDBC.saveAll2(Arrays.asList(user));
+            dr.setResult(ResponseEntity.ok("success"));
+        } catch (CustomException e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
+            dr.setErrorResult(ErrorResponse.toResponseEntity(e.getErrorCode()));
+        } catch ( Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
+            dr.setErrorResult(defaultErrorResponse());
+        }
+        return dr;
+    }
 
     // 로그인
     @Override

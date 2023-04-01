@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: product-service
+  messages:
+    basename: messages,errors
+  datasource:
+    url: jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432/postgres?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    hikari:
+      username: postgres
+      password: mypassword
+      maximum-pool-size: 10
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    show-sql: true
+    open-in-view: false
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: always
+
+
+server:
+  tomcat:
+    accept-count: 1000
+    connection-timeout: 10s
+    threads:
+      max: 1200
+    max-connections: 10000
+    max-swallow-size: 2MB
+  servlet:
+    session:
+      tracking-modes: cookie
+  port: 8070
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka

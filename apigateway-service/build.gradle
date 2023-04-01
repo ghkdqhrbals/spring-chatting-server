@@ -30,6 +30,11 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '4.0.0'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.0.0'
 }
 
 dependencyManagement {

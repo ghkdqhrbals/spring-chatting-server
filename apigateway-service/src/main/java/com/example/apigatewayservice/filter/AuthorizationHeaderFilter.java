@@ -30,8 +30,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     public static class Config{
-
-
     }
 
     @Override
@@ -49,7 +47,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             if (!isJwtValid(jwt)){
                 return onError(exchange, "Non valid JWT token", HttpStatus.UNAUTHORIZED);
             }
-
 
             return chain.filter(exchange);
         });

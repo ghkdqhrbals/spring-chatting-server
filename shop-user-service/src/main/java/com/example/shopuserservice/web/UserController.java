@@ -10,7 +10,9 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -28,20 +30,25 @@ import static com.example.shopuserservice.web.error.ErrorCode.CANNOT_FIND_USER;
 public class UserController {
     private final UserService userService;
     private final HikariDataSource hikariDataSource;
+    private final Environment env;
 
     private ResponseEntity defaultErrorResponse(){
         return ResponseEntity.badRequest().body("default Error");
     }
 
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @GetMapping("/")
     public String welcome(ServletRequest request){
         return "Access auth-controller port "+ String.valueOf(request.getRemotePort());
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @GetMapping("/health-check")
     public String hello(ServletRequest request){
-        return "Access auth-controller port "+ String.valueOf(request.getRemotePort());
+        return "Access auth-controller port "+
+                String.valueOf(request.getRemotePort()+","+
+                        env.getProperty("token.expiration_time")+","+
+                        env.getProperty("token.secret"));
     }
     /**
      * -------------- READ METHODS --------------

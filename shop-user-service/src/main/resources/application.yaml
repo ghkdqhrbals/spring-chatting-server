@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   application:
     name: auth-service
   messages:
@@ -37,7 +39,7 @@ server:
   servlet:
     session:
       tracking-modes: cookie
-  port: 8080
+  port: 8070
 
 eureka:
   instance:
@@ -48,6 +50,8 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
 
-token:
-  expiration_time: 86400000
-  secret: my_secrets
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, httpexchanges, beans

@@ -1,6 +1,7 @@
 package com.example.shopuserservice.web.security;
 
 import com.example.shopuserservice.domain.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +15,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class WebSecurity {
 
     private Environment env;
@@ -46,13 +49,9 @@ public class WebSecurity {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-//        http.authorizeRequests().antMatchers("/users/**").permitAll();
-        http.authorizeHttpRequests().requestMatchers("/**")
-                .permitAll().and().addFilter(getAuthenticationFiler());
-//                .antMatchers("/**")
-//                .hasIpAddress("192.168.219.101")
-//                .and()
-//                .addFilter(getAuthenticationFiler());
+        http.authorizeHttpRequests().requestMatchers("/actuator/**").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/**").permitAll();
+        http.addFilter(getAuthenticationFiler());
 
         http.headers().frameOptions().disable();
         return http.build();
@@ -66,9 +65,18 @@ public class WebSecurity {
         return authenticationFilter;
     }
 
-
-    private AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) throws Exception {
-        return builder.userDetailsService(userService).passwordEncoder(passwordEncoder()).and().build();
-    }
+//    @Bean
+//    public AuthenticationFilter customAuthenticationFilter() throws Exception {
+//        AuthenticationFilter customAuthenticationFilter = new AuthenticationFilter(authenticationManager(),userService,env);
+//        customAuthenticationFilter.setFilterProcessesUrl("/user/login");
+//        customAuthenticationFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());
+//        customAuthenticationFilter.afterPropertiesSet();
+//        return customAuthenticationFilter;
+//    }
+//
+//    @Bean
+//    public CustomLoginSuccessHandler customLoginSuccessHandler() {
+//        return new CustomLoginSuccessHandler();
+//    }
 
 }

@@ -17,12 +17,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 @Slf4j
@@ -38,7 +41,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     String secret;
 
     public AuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, Environment env) {
-        super(authenticationManager);
+        super.setAuthenticationManager(authenticationManager);
         this.userService = userService;
         this.env = env;
     }
@@ -46,14 +49,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-
         try {
             RequestLogin creds = new ObjectMapper().readValue(request.getInputStream(),RequestLogin.class);
-            return getAuthenticationManager()
-                    .authenticate(new UsernamePasswordAuthenticationToken(
-                            creds.getUserId(),
-                            creds.getUserPw(),
-                            new ArrayList<>()));
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(creds.getUserId(),creds.getUserPw());
+            setDetails(request, authRequest);
+            return this.getAuthenticationManager().authenticate(authRequest);
+//            Arrays.asList(new SimpleGrantedAuthority("USER"))
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -9,6 +9,8 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka
 
 spring:
+  profiles:
+    active: dev
   application:
     name:
       apigateway-service
@@ -22,6 +24,14 @@ spring:
             postLogger: true
       routes:
         # 세부기능
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/actuator/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/auth/(?<segment>.*), /$\{segment}
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
@@ -49,7 +59,3 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
-
-token:
-  expiration_time: 86400000
-  secret: my_secrets

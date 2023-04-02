@@ -69,4 +69,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, httpexchanges, beans, busrefresh
+        include: health, httpexchanges, beans, busrefresh

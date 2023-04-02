@@ -32,6 +32,7 @@ dependencies {
 	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '4.0.0'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.0.0'

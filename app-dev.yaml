@@ -1,3 +1,3 @@
 token:
   expiration_time: 86400000
-  secret: my_secret_topics
+  secret: my_secret_topics#2

@@ -11,10 +11,7 @@ spring:
   messages:
     basename: messages,errors
   datasource:
-    url: jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432/postgres?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     hikari:
-      username: postgres
-      password: mypassword
       maximum-pool-size: 10
 
   jpa:

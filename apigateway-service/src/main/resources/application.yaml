@@ -9,6 +9,11 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka
 
 spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   profiles:
     active: dev
   application:
@@ -40,7 +45,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
+#            - AuthorizationHeaderFilter
         # 로그인
         - id: auth-service
           uri: lb://AUTH-SERVICE
@@ -59,3 +64,9 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, httpexchanges, beans, busrefresh

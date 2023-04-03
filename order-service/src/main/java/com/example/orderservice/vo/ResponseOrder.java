@@ -14,5 +14,4 @@ public class ResponseOrder {
     private Integer totalPrice;
     private Integer unitPrice;
     private LocalDateTime createAt;
-
 }

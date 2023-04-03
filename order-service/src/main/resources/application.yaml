@@ -1,30 +1,29 @@
 
 spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: order-service
   messages:
     basename: messages,errors
   datasource:
-    url: jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432/postgres?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     hikari:
-      username: postgres
-      password: mypassword
       maximum-pool-size: 10
-
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
     show-sql: true
     open-in-view: false
-#    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
 # data.sql init always~
   sql:
     init:
       mode: always
-
 
 server:
   tomcat:
@@ -37,7 +36,7 @@ server:
   servlet:
     session:
       tracking-modes: cookie
-  port: 8070
+  port: 0
 
 eureka:
   instance:

@@ -1,5 +1,6 @@
 package com.example.shopuserservice.domain.user.service;
 
+import com.example.shopuserservice.client.OrderServiceClient;
 import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
@@ -7,7 +8,9 @@ import com.example.shopuserservice.web.dto.UserDto;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.vo.RequestUser;
+import com.example.shopuserservice.web.vo.ResponseOrder;
 import com.zaxxer.hikari.HikariDataSource;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,23 +40,23 @@ import static com.example.shopuserservice.web.error.ErrorCode.*;
 public class UserServiceImpl implements UserService  {
     private final UserRepository userRepository;
     private final UserRepositoryJDBC userRepositoryJDBC;
-
     private final Executor serviceExecutor;
-
     private final HikariDataSource hikariDataSource;
-
     private final PasswordEncoder pwe;
+    private final OrderServiceClient orderServiceClient;
 
     public UserServiceImpl(UserRepository userRepository,
                            UserRepositoryJDBC userRepositoryJDBC,
                            @Qualifier("taskExecutorForService") Executor serviceExecutor,
                            HikariDataSource hikariDataSource,
-                           PasswordEncoder pwe) {
+                           PasswordEncoder pwe,
+                           OrderServiceClient orderServiceClient) {
         this.userRepository = userRepository;
         this.userRepositoryJDBC = userRepositoryJDBC;
         this.serviceExecutor = serviceExecutor;
         this.hikariDataSource = hikariDataSource;
         this.pwe = pwe;
+        this.orderServiceClient = orderServiceClient;
     }
 
 
@@ -166,15 +169,26 @@ public class UserServiceImpl implements UserService  {
     }
 
     @Override
-    public UserDto getUserDetailsByUserId(String username) {
+    @Async
+    @Transactional
+    public CompletableFuture<UserDto> getUserDetailsByUserId(String username) {
         Optional<User> user = userRepository.findById(username);
+        List<ResponseOrder> orders = null;
 
         if (!user.isPresent()){
             throw new UsernameNotFoundException(username);
         }
         UserDto userDto = new ModelMapper().map(user, UserDto.class);
 
-        return userDto;
+        try{
+            orders = orderServiceClient.getOrders(username);
+        }catch (FeignException e){
+            log.info(e.getMessage());
+        }
+
+        userDto.setOrders(orders);
+
+        return CompletableFuture.completedFuture(userDto);
     }
 
     private void printHikariCPInfo() {

@@ -6,13 +6,16 @@ import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.vo.RequestLogin;
 import com.example.shopuserservice.web.vo.RequestUser;
+import com.example.shopuserservice.web.vo.ResponseUser;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -57,16 +60,28 @@ public class UserController {
     @GetMapping("/user/{userId}")
     public DeferredResult<ResponseEntity<?>> findUser(@PathVariable("userId") String userId){
         DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-        userService.getUserById(userId).thenAccept((users)->{
-            if (users.size()<1) {
-                dr.setResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
+
+        userService.getUserDetailsByUserId(userId).thenAccept((userDto -> {
+            dr.setResult(ResponseEntity.ok(new ModelMapper().map(userDto, ResponseUser.class)));
+        })).exceptionally(e->{
+            if( e.getCause() instanceof UsernameNotFoundException){
+                dr.setErrorResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
             }
-            dr.setResult(ResponseEntity.ok(users.get(0)));
-        }).exceptionally(e->{
             dr.setErrorResult(defaultErrorResponse());
             return null;
         });
+
         return dr;
+//        userService.getUserById(userId).thenAccept((users)->{
+//            if (users.size()<1) {
+//                dr.setResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
+//            }
+//            dr.setResult(ResponseEntity.ok(users.get(0)));
+//        }).exceptionally(e->{
+//            dr.setErrorResult(defaultErrorResponse());
+//            return null;
+//        });
+//        return dr;
     }
 
     // deferredResult examples
@@ -80,13 +95,6 @@ public class UserController {
         });
         return dr;
     }
-
-//    @GetMapping("/login")
-//    public DeferredResult<ResponseEntity<?>> login(@RequestBody RequestLogin login){
-//        printHikariCPInfo();
-//        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-//        return userService.login(login.getUserId(), login.getUserPw(), dr);
-//    }
 
     // 로그아웃
     @GetMapping("/logout")

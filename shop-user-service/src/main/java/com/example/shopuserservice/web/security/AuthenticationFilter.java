@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -66,8 +68,16 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         String username = ((User) authResult.getPrincipal()).getUsername();
-        UserDto userDto = userService.getUserDetailsByUserId(username);
+        UserDto userDto = null;
 
+        CompletableFuture<UserDto> cf = userService.getUserDetailsByUserId(username);
+        try {
+            userDto = cf.get();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
         Date date = new Date(System.currentTimeMillis() + expirationTime);
         String token = Jwts.builder()
                 .setSubject(userDto.getUserId())

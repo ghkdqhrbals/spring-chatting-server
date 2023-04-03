@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    active: dev
+#  main:
+#    web-application-type: "none"
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -13,7 +13,6 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 10
-
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -30,7 +29,12 @@ spring:
           time_zone: UTC
           batch_size: 50
 
+
+
 server:
+#  netty:
+#    max-keep-alive-requests: 1000
+#    connection-timeout: 10s
   tomcat:
     accept-count: 1000
     connection-timeout: 10s
@@ -41,7 +45,7 @@ server:
   servlet:
     session:
       tracking-modes: cookie
-  port: 8070
+  port: 8010
 
 eureka:
   instance:
@@ -52,10 +56,12 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
 
-
-
 management:
   endpoints:
     web:
       exposure:
         include: health, httpexchanges, beans, busrefresh
+
+logging:
+  level:
+    com.example.shopuserservice.client: DEBUG

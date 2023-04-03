@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/order-service")
+@RequestMapping("/")
 public class OrderController {
 
     private final OrderService orderService;

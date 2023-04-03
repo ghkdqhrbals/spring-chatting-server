@@ -37,15 +37,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
-          predicates:
-            - Path=/auth/**
-            - Method=GET
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/auth/(?<segment>.*), /$\{segment}
-#            - AuthorizationHeaderFilter
         # 로그인
         - id: auth-service
           uri: lb://AUTH-SERVICE
@@ -55,6 +46,15 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
         # 회원가입
         - id: auth-service
           uri: lb://AUTH-SERVICE
@@ -64,7 +64,14 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
-
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
+            - Method=POST, GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
 management:
   endpoints:
     web:

@@ -19,5 +19,5 @@ public interface UserService extends UserDetailsService {
     void removeUser(String userId);
     void updateUser(User user);
 
-    UserDto getUserDetailsByUserId(String username);
+    CompletableFuture<UserDto> getUserDetailsByUserId(String username);
 }

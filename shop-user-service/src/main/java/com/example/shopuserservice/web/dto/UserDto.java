@@ -1,10 +1,12 @@
 package com.example.shopuserservice.web.dto;
 
+import com.example.shopuserservice.web.vo.ResponseOrder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
 @Data
 public class UserDto {
@@ -15,4 +17,5 @@ public class UserDto {
     private LocalDateTime joinDate;
     private LocalDateTime loginDate;
     private LocalDateTime logoutDate;
+    private List<ResponseOrder> orders;
 }

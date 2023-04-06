@@ -13,6 +13,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableAsync
 @SpringBootApplication(scanBasePackages = "com.example",exclude={DataSourceAutoConfiguration.class})
@@ -33,5 +36,11 @@ public class OrderServiceApplication {
 	public HttpExchangeRepository httpTraceRepository(){
 		return new InMemoryHttpExchangeRepository();
 	}
+
+	@Bean(name = "bcrypt")
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 
 }

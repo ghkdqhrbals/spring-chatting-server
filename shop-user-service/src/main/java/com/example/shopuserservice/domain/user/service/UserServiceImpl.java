@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.context.request.async.DeferredResult;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService  {
                            UserRepositoryJDBC userRepositoryJDBC,
                            @Qualifier("taskExecutorForService") Executor serviceExecutor,
                            HikariDataSource hikariDataSource,
-                           PasswordEncoder pwe,
+                           @Qualifier("bcrypt") PasswordEncoder pwe,
                            OrderServiceClient orderServiceClient) {
         this.userRepository = userRepository;
         this.userRepositoryJDBC = userRepositoryJDBC;
@@ -168,6 +169,8 @@ public class UserServiceImpl implements UserService  {
         throw new CustomException(CANNOT_FIND_USER);
     }
 
+
+
     @Override
     @Async
     @Transactional
@@ -201,8 +204,26 @@ public class UserServiceImpl implements UserService  {
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        Optional<User> user = userRepository.findById(username);
+//        if (!user.isPresent()){
+//            throw new UsernameNotFoundException(username);
+//        }
+//        User findUser = user.get();
+//        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+//                .username(findUser.getUserId())
+//                .password(findUser.getUserPw())
+//                .roles("USER")
+//                .accountExpired(false)
+//                .accountLocked(false)
+//                .build();
+//
+//        return userDetails;
+//    }
+
+
+    public Mono<UserDetails> findByUsername(String username) {
         Optional<User> user = userRepository.findById(username);
         if (!user.isPresent()){
             throw new UsernameNotFoundException(username);
@@ -215,7 +236,6 @@ public class UserServiceImpl implements UserService  {
                 .accountExpired(false)
                 .accountLocked(false)
                 .build();
-
-        return userDetails;
+        return Mono.just(userDetails);
     }
 }

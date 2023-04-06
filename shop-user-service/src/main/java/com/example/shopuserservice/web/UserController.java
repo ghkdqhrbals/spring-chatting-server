@@ -4,6 +4,9 @@ import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.user.service.UserService;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorResponse;
+import com.example.shopuserservice.web.security.LoginRequestDto;
+import com.example.shopuserservice.web.security.LoginResponseDto;
+import com.example.shopuserservice.web.security.LoginService;
 import com.example.shopuserservice.web.vo.RequestLogin;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
@@ -19,7 +22,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 
@@ -32,6 +37,7 @@ import static com.example.shopuserservice.web.error.ErrorCode.CANNOT_FIND_USER;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final LoginService loginService;
     private final HikariDataSource hikariDataSource;
     private final Environment env;
 
@@ -41,8 +47,20 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @GetMapping("/")
-    public String welcome(ServletRequest request){
-        return "Access auth-controller port "+ String.valueOf(request.getRemotePort());
+    public CompletableFuture welcome(ServletRequest request){
+        return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
+    }
+
+    @GetMapping("/b")
+    public Mono<String> greet(Mono<Principal> principal) {
+        return principal
+                .map(Principal::getName)
+                .map(name -> String.format("Hello, %s", name));
+    }
+
+    @PostMapping("/login")
+    public Mono<LoginResponseDto> welcome2(@RequestBody LoginRequestDto request){
+        return loginService.login(request);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
@@ -72,16 +90,6 @@ public class UserController {
         });
 
         return dr;
-//        userService.getUserById(userId).thenAccept((users)->{
-//            if (users.size()<1) {
-//                dr.setResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
-//            }
-//            dr.setResult(ResponseEntity.ok(users.get(0)));
-//        }).exceptionally(e->{
-//            dr.setErrorResult(defaultErrorResponse());
-//            return null;
-//        });
-//        return dr;
     }
 
     // deferredResult examples

@@ -25,6 +25,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.context.request.async.DeferredResult;
 import reactor.core.publisher.Mono;
 
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.stream.Stream;
 
 import static com.example.shopuserservice.web.error.ErrorCode.*;
 
@@ -66,19 +68,17 @@ public class UserServiceImpl implements UserService  {
     @Override
     @Async
     @Transactional
-    public CompletableFuture<List<User>> getUserById(String id) {
-        List<User> users = new ArrayList<User>();
-
+    public CompletableFuture<Optional<User>> getUserById(String id) {
+        Optional<User> user = Optional.of(new User());
         try {
-            users = userRepository.findByUserId(id);
-            if (users.size() == 0) {
+            user = userRepository.findById(id);
+            if (user.isEmpty()) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
             }
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
         }
-
-        return CompletableFuture.completedFuture(users);
+        return CompletableFuture.completedFuture(user);
     }
 
     // 유저 저장
@@ -94,7 +94,8 @@ public class UserServiceImpl implements UserService  {
                 request.getUserName(),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                request.getRole()
         );
 
         try {
@@ -175,6 +176,7 @@ public class UserServiceImpl implements UserService  {
     @Async
     @Transactional
     public CompletableFuture<UserDto> getUserDetailsByUserId(String username) {
+        log.info("getUserDetailsByUserId");
         Optional<User> user = userRepository.findById(username);
         List<ResponseOrder> orders = null;
 
@@ -183,15 +185,24 @@ public class UserServiceImpl implements UserService  {
         }
         UserDto userDto = new ModelMapper().map(user, UserDto.class);
 
-        try{
-            orders = orderServiceClient.getOrders(username);
-        }catch (FeignException e){
-            log.info(e.getMessage());
-        }
+        orders = orderServiceClient.getOrders(username);
+//        try{
+//            orders = orderServiceClient.getOrders(username);
+//        }catch(FeignException e){
+////            return CompletableFuture.failedFuture(e);
+//            log.info("EEEE @@ : {}",e.getMessage());
+//        }
 
         userDto.setOrders(orders);
-
         return CompletableFuture.completedFuture(userDto);
+    }
+
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<List<User>> getAllUser() {
+        List<User> allUser = userRepository.findAll();
+        return CompletableFuture.completedFuture(allUser);
     }
 
     private void printHikariCPInfo() {
@@ -201,41 +212,5 @@ public class UserServiceImpl implements UserService  {
                 String.valueOf(hikariDataSource.getHikariPoolMXBean().getIdleConnections()),
                 String.valueOf(hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection())
         ));
-    }
-
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        Optional<User> user = userRepository.findById(username);
-//        if (!user.isPresent()){
-//            throw new UsernameNotFoundException(username);
-//        }
-//        User findUser = user.get();
-//        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-//                .username(findUser.getUserId())
-//                .password(findUser.getUserPw())
-//                .roles("USER")
-//                .accountExpired(false)
-//                .accountLocked(false)
-//                .build();
-//
-//        return userDetails;
-//    }
-
-
-    public Mono<UserDetails> findByUsername(String username) {
-        Optional<User> user = userRepository.findById(username);
-        if (!user.isPresent()){
-            throw new UsernameNotFoundException(username);
-        }
-        User findUser = user.get();
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                .username(findUser.getUserId())
-                .password(findUser.getUserPw())
-                .roles("USER")
-                .accountExpired(false)
-                .accountLocked(false)
-                .build();
-        return Mono.just(userDetails);
     }
 }

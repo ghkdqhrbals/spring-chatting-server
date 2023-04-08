@@ -14,8 +14,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.*;
 
 public interface UserService {
+    CompletableFuture<List<User>> getAllUser();
     CompletableFuture<User> createUser(RequestUser request);
-    CompletableFuture<List<User>> getUserById(String id);
+    CompletableFuture<Optional<User>> getUserById(String id);
     DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
     DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
     void removeUser(String userId);

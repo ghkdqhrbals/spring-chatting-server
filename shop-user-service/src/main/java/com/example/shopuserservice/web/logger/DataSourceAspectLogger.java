@@ -31,12 +31,12 @@ public class DataSourceAspectLogger {
 //        logDataSourceInfos("After ", jp);
     }
 
-    @Before("execution(* com.example.shopuserservice.web.UserController.*(..))")
+    @Before("execution(* com.example.shopuserservice.web.controller.UserController.*(..))")
     public void logBeforeController(JoinPoint jp) throws Throwable {
         log.info("BEFORE CONTROLLER ACCESS");
     }
 
-    @After("execution(* com.example.shopuserservice.web.UserController.*(..))")
+    @After("execution(* com.example.shopuserservice.web.controller.UserController.*(..))")
     public void logAfterController(JoinPoint jp) throws Throwable {
         log.info("AFTER CONTROLLER ACCESS");
     }

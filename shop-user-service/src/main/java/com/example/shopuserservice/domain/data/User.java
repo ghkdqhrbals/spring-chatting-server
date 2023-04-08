@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @RequiredArgsConstructor
 public class User {
-    public User(String userId, String userPw, String email, String userName, LocalDateTime joinDate, LocalDateTime loginDate, LocalDateTime logoutDate) {
+    public User(String userId, String userPw, String email, String userName, LocalDateTime joinDate, LocalDateTime loginDate, LocalDateTime logoutDate, String role) {
         this.userId = userId;
         this.userPw = userPw;
         this.email = email;
@@ -23,6 +23,7 @@ public class User {
         this.joinDate = joinDate;
         this.loginDate = loginDate;
         this.logoutDate = logoutDate;
+        this.role = role;
     }
 
     @Id
@@ -46,5 +47,8 @@ public class User {
 
     @Column(name="LOGOUT_DATE")
     private LocalDateTime logoutDate;
+
+    @Column(name="ROLE")
+    private String role;
 
 }

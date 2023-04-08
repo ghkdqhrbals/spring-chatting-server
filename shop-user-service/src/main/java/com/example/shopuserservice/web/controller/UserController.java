@@ -1,4 +1,4 @@
-package com.example.shopuserservice.web;
+package com.example.shopuserservice.web.controller;
 
 import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.user.service.UserService;
@@ -11,23 +11,33 @@ import com.example.shopuserservice.web.vo.RequestLogin;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
 import com.zaxxer.hikari.HikariDataSource;
+import feign.Response;
 import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 import java.security.Principal;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
-
+import java.util.List;
 import static com.example.shopuserservice.web.error.ErrorCode.CANNOT_FIND_USER;
 
 
@@ -45,10 +55,15 @@ public class UserController {
         return ResponseEntity.badRequest().body("default Error");
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @GetMapping("/")
     public CompletableFuture welcome(ServletRequest request){
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
+    }
+
+
+    @GetMapping("/d")
+    public Mono<String> welcome2(){
+        return Mono.just("welcome2");
     }
 
     @GetMapping("/b")
@@ -59,37 +74,45 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Mono<LoginResponseDto> welcome2(@RequestBody LoginRequestDto request){
-        return loginService.login(request);
+    public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
+                                        ServerHttpResponse response){
+        Mono<LoginResponseDto> login = loginService.login(request, response).log();
+        return login;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @GetMapping("/health-check")
-    public String hello(ServletRequest request){
-        return "Access auth-controller port "+
-                String.valueOf(request.getRemotePort()+","+
+    public Mono<String> hello(ServerHttpRequest request){
+        return Mono.just("Access auth-controller port "+
+                String.valueOf(request.getRemoteAddress().getPort()+","+
                         env.getProperty("token.expiration_time")+","+
-                        env.getProperty("token.secret"));
+                        env.getProperty("token.secret")));
     }
     /**
      * -------------- READ METHODS --------------
      */
     // 유저 조회
     @GetMapping("/user/{userId}")
-    public DeferredResult<ResponseEntity<?>> findUser(@PathVariable("userId") String userId){
+    public CompletableFuture<ResponseEntity<ResponseUser>> findUser(@PathVariable("userId") String userId){
         DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
 
-        userService.getUserDetailsByUserId(userId).thenAccept((userDto -> {
-            dr.setResult(ResponseEntity.ok(new ModelMapper().map(userDto, ResponseUser.class)));
+        return userService.getUserDetailsByUserId(userId).thenApply((userDto -> {
+            return ResponseEntity.ok(new ModelMapper().map(userDto, ResponseUser.class));
         })).exceptionally(e->{
-            if( e.getCause() instanceof UsernameNotFoundException){
-                dr.setErrorResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
-            }
-            dr.setErrorResult(defaultErrorResponse());
-            return null;
-        });
+            log.info(e.getCause().getClass().getName());
 
-        return dr;
+            if( e.getCause() instanceof UsernameNotFoundException){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User name not found");
+//                dr.setErrorResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
+            }
+
+            if (e.getCause() instanceof ResponseStatusException){
+                log.info("ResponseStatusException");
+                ResponseStatusException e2 = (ResponseStatusException) e.getCause();
+                throw e2;
+            }
+
+            return defaultErrorResponse();
+        });
     }
 
     // deferredResult examples
@@ -104,11 +127,17 @@ public class UserController {
         return dr;
     }
 
+    @GetMapping(value = "/f")
+    public CompletableFuture<String> examples() {
+        return CompletableFuture.completedFuture("hi~");
+    }
+
     // 로그아웃
     @GetMapping("/logout")
-    public DeferredResult<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
+    public Mono<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
         DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-        return userService.logout(userId, userPw, dr);
+        userService.logout(userId, userPw, dr);
+        return Mono.just((ResponseEntity) dr.getResult());
     }
 
     /**

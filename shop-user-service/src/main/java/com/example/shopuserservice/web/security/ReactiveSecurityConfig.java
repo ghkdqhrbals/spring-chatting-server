@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.PermissionEvaluator;
@@ -16,11 +18,13 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
@@ -28,8 +32,10 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 
 /**
  * 보안에 필요한 것들을 여기에 작성한다.
@@ -43,6 +49,7 @@ import java.util.Optional;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
+@EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 public class ReactiveSecurityConfig {
 
@@ -85,13 +92,18 @@ public class ReactiveSecurityConfig {
                 .httpBasic().disable()
                 .authenticationManager(reactiveAuthenticationManager)
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                // authenticate
+                .addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                        .pathMatchers(HttpMethod.POST,"/user").permitAll()
-                        .pathMatchers("/login").permitAll()
+                        // 승인 목록
+                        .pathMatchers(HttpMethod.OPTIONS).permitAll() // 사용가능 Method
+                        .pathMatchers(HttpMethod.POST,"/user").permitAll() // 회원가입
+                        .pathMatchers("/login").permitAll() // 로그인
+                        // 권한 필터
+                        .pathMatchers("/admin/**").hasRole("ADMIN") // admin 만 접근가능하도록 권한 설정
+                        .pathMatchers("/**").hasAnyRole("USER","ADMIN") // 다른 모든 method 권한 설정
                         .anyExchange().authenticated()
                 )
-                .addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
     }
 
@@ -100,10 +112,17 @@ public class ReactiveSecurityConfig {
         return new PermissionEvaluator() {
             @Override
             public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+                log.info("has Permission?");
                 if(authentication.getAuthorities().stream()
-                        .filter(grantedAuthority -> grantedAuthority.getAuthority().equals(targetDomainObject))
-                        .count() > 0)
+                        .filter(grantedAuthority -> {
+                            log.info("My Authorities={}", grantedAuthority.getAuthority());
+                            log.info("permission={}", permission);
+                            return grantedAuthority.getAuthority().equals((String) permission);
+                        })
+                        .count() > 0) {
+                    log.info("Yes Authorities={}", authentication.getAuthorities());
                     return true;
+                }
                 return false;
             }
 
@@ -124,6 +143,7 @@ public class ReactiveSecurityConfig {
             if (!findUser.isPresent()) {
                 return Mono.empty();
             }
+
             User user = findUser.get();
 
             CustomUserDetails userDetails = new CustomUserDetails();
@@ -133,9 +153,20 @@ public class ReactiveSecurityConfig {
             userDetails.setAccountNonExpired(true);
             userDetails.setCredentialsNonExpired(true);
             userDetails.setAccountNonLocked(true);
+            userDetails.setPermissions(Arrays.asList(user.getRole()));
 
-            List<String> permissions = userDetails.getPermissions();
-            permissions.add("USER");
+//            UserDetails a = org.springframework.security.core.userdetails.User.builder()
+//                    .username(user.getUserId())
+//                    .password(user.getUserPw())
+//                    .roles("USER")
+//                    .accountExpired(false)
+//                    .accountLocked(false)
+//                    .credentialsExpired(false)
+//                    .build();
+//            a.getAuthorities().forEach(auth->{
+//                log.info("ROLES:{}",auth.getAuthority());
+//            });
+
             return Mono.just(userDetails);
         };
     }

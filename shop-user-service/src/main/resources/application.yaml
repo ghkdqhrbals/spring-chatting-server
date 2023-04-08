@@ -29,7 +29,11 @@ spring:
 #  main:
 #    allow-bean-definition-overriding: true
 
+
+
 server:
+  error:
+    include-stacktrace: never
   netty:
     max-keep-alive-requests: 10000 # 서버 메모리에 따라 구성가능합니다
     connection-timeout: 10s
@@ -44,6 +48,7 @@ server:
 #    session:
 #      tracking-modes: cookie
   port: 8010
+
 
 eureka:
   instance:

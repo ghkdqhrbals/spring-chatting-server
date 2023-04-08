@@ -28,19 +28,21 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        log.info("JWT 토큰 필터");
         String token = resolveToken(exchange.getRequest());
-        log.info("JWT validate:start");
         if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
+            authentication.getAuthorities().forEach(a->{
+                log.info("JWT 토큰으로 부터 얻는 Authorities={}",a.getAuthority());
+            });
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }
         return chain.filter(exchange);
     }
 
-    // 요청으로부터 JWT 토큰을 얻는다.
+    // Header에서 JWT 토큰을 Bear 프리픽스 떼서 가져옵니다
     private String resolveToken(ServerHttpRequest request) {
-        log.info("JWT validate:get Token");
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
             return bearerToken.substring(7);

@@ -2,12 +2,14 @@ package com.example.shopuserservice.web.security;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 @Getter
 @Setter
+@Slf4j
 public class CustomUserDetails implements UserDetails {
 
     private String username;
@@ -60,6 +62,9 @@ public class CustomUserDetails implements UserDetails {
         List<GrantedAuthority> authorities = new ArrayList<>();
         permissions.stream().forEach(permission -> {
             authorities.add(new SimpleGrantedAuthority(permission));
+        });
+        authorities.forEach(a->{
+            log.info("getAuthorities={}",a.getAuthority());
         });
         return authorities;
     }

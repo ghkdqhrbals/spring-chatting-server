@@ -25,6 +25,10 @@ public class RequestUser {
     @Size(min = 3, message = "user name must not be less than 3")
     private String userName;
 
+    @NotNull(message = "role should be not null")
+    @Size(min = 3, message = "role must not be less than 3")
+    private String role;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

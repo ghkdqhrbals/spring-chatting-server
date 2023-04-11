@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: '{cipher}827f3cdee17b000e6f042a5eb7bdb3c9dc9e0580d63490f3fada6436bddb7924effec245077cf32265ab591d74652ca6fba87f25deeb68cbf0583165740be0b98e6242d473388f96d0294a3c21ffd64f5bc50bb56dba634d7853a29f2ed45b0c9995895c05657dd4c9a1fa67bbffa933'
+    url: 'jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432'
     hikari:
-      username: '{cipher}15a049a179b2e5a161cbd6d5de94f984c6fae2b3d6c1f29b73f332281455d30f'
+      username: 'postgres'
       password: '{cipher}8e311444494067867b6ba62846074de3a938adcd8cb55d000663e2d926578ad5'
 
 token:

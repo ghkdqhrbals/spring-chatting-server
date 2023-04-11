@@ -184,14 +184,9 @@ public class UserServiceImpl implements UserService  {
             throw new UsernameNotFoundException(username);
         }
         UserDto userDto = new ModelMapper().map(user, UserDto.class);
-
-        orders = orderServiceClient.getOrders(username);
-//        try{
-//            orders = orderServiceClient.getOrders(username);
-//        }catch(FeignException e){
-////            return CompletableFuture.failedFuture(e);
-//            log.info("EEEE @@ : {}",e.getMessage());
-//        }
+        try{
+            orders = orderServiceClient.getOrders(username);
+        }catch (Exception e){}
 
         userDto.setOrders(orders);
         return CompletableFuture.completedFuture(userDto);

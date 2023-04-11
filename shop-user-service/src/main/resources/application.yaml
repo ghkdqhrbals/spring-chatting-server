@@ -29,7 +29,9 @@ spring:
 #  main:
 #    allow-bean-definition-overriding: true
 
-
+kafka:
+  topic:
+    createOrder: "create-order"
 
 server:
   error:

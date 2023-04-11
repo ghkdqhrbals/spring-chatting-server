@@ -1,38 +1,49 @@
 spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: product-service
-  messages:
-    basename: messages,errors
   datasource:
     hikari:
       maximum-pool-size: 10
-
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
     show-sql: true
     open-in-view: false
-    defer-datasource-initialization: true
+    #    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create-drop
-  sql:
-    init:
-      mode: always
+      ddl-auto: create
+#  kafka:
+#    bootstrap-servers: http://localhost:8097,http://localhost:8098,http://localhost:8099
+#  cloud:
+#    stream:
+#      kafka:
+#        streams:
+#          binder:
+#            brokers: http://localhost:8097,http://localhost:8098,http://localhost:8099
+#            inventoryProcessor-in-0: order-event
+#
+#
+#          inventoryProcessor-in-0: order-event
+#          inventoryProcessor-out-0: inventory-event
 
+
+
+
+#  sql:
+#    init:
+#      mode: always
+#  kafka:
+#    binder:
+#      brokers: http://localhost:8097,http://localhost:8098,http://localhost:8099
 
 server:
-  tomcat:
-    accept-count: 1000
-    connection-timeout: 10s
-    threads:
-      max: 1200
-    max-connections: 10000
-    max-swallow-size: 2MB
-  servlet:
-    session:
-      tracking-modes: cookie
-  port: 8070
+  port: 8071
 
 eureka:
   instance:

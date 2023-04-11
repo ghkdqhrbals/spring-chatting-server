@@ -51,11 +51,11 @@ public class OrderServiceApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
-	@LoadBalanced
-	public RestTemplate restTemplate(){
-		return new RestTemplate();
-	}
+//	@Bean
+//	@LoadBalanced
+//	public RestTemplate restTemplate(){
+//		return new RestTemplate();
+//	}
 
 	@Bean
 	public FeignErrorDecoder getFeignErrorDecoder(){

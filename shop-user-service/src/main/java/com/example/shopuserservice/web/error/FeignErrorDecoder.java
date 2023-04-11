@@ -18,7 +18,6 @@ public class FeignErrorDecoder implements ErrorDecoder {
                     return new ResponseStatusException(HttpStatus.valueOf(response.status()),
                             "User's order is empty");
                 }
-
                 break;
             default:
                 return new Exception(response.reason());

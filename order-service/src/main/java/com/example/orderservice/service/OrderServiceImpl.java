@@ -1,12 +1,11 @@
 package com.example.orderservice.service;
 
-import com.example.orderservice.data.OrderEntity;
+import com.example.commondto.events.order.OrderEvent;
 import com.example.orderservice.dto.OrderDto;
+import com.example.orderservice.entity.OrderEntity;
 import com.example.orderservice.repository.OrderRepository;
-import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
+        new OrderEvent()
         orderDto.setOrderId(UUID.randomUUID().toString());
         orderDto.setTotalPrice(
                 orderDto.getUnitPrice() * orderDto.getQty()

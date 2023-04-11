@@ -154,19 +154,6 @@ public class ReactiveSecurityConfig {
             userDetails.setCredentialsNonExpired(true);
             userDetails.setAccountNonLocked(true);
             userDetails.setPermissions(Arrays.asList(user.getRole()));
-
-//            UserDetails a = org.springframework.security.core.userdetails.User.builder()
-//                    .username(user.getUserId())
-//                    .password(user.getUserPw())
-//                    .roles("USER")
-//                    .accountExpired(false)
-//                    .accountLocked(false)
-//                    .credentialsExpired(false)
-//                    .build();
-//            a.getAuthorities().forEach(auth->{
-//                log.info("ROLES:{}",auth.getAuthority());
-//            });
-
             return Mono.just(userDetails);
         };
     }

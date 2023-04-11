@@ -1,10 +1,13 @@
 spring:
   datasource:
-    url: '{cipher}827f3cdee17b000e6f042a5eb7bdb3c9dc9e0580d63490f3fada6436bddb7924effec245077cf32265ab591d74652ca6fba87f25deeb68cbf0583165740be0b98e6242d473388f96d0294a3c21ffd64f5bc50bb56dba634d7853a29f2ed45b0c9995895c05657dd4c9a1fa67bbffa933'
+    url: 'a54220089a57c5b68a405a5ab650eb7d2ae470e3325511c03d5e772907db851c9c4d913ce4b8698e3d57ad5d3b25e12942313ee686a1abf675b4b7e1edf29b94f4086dab62b3cc7651c518f1cd13cffc61e2f1c3d5d0d6e448f81bf42c1c46bc6ea319da839df8b70d28ec451ccf2824'
     hikari:
-      username: '{cipher}15a049a179b2e5a161cbd6d5de94f984c6fae2b3d6c1f29b73f332281455d30f'
-      password: '{cipher}8e311444494067867b6ba62846074de3a938adcd8cb55d000663e2d926578ad5'
+      username: 'postgres'
+      password: '{cipher}cb37d0254f9af1ae19f8f3aaf5ddca4c94e8c1cf5479a3240a706e32167867ab'
 
 token:
   expiration_time: 86400000
   secret: '{cipher}45939b87daf906ea6bfce17b4c1d9c0feb3910ca3306a09e8f8cd55b6b9e4d5390302e09b7d03ad6d9fe26e603f8d20e4fe8639c6d1f9644895d991c3e9fae9d'
+
+kafka:
+  bootstrap: http://localhost:8099,http://localhost:8098,http://localhost:8097

@@ -25,6 +25,6 @@ public class KafkaTopicConfig extends KafkaTopicConst {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic(TOPIC_USER_CHANGE,2,3));
+        kafkaAdmin.createOrModifyTopics(generateTopic("payment",2,3));
     }
 }

@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-dev.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
@@ -238,7 +239,7 @@
       <workItem from="1681030188237" duration="3020000" />
       <workItem from="1681193913374" duration="170000" />
       <workItem from="1681194101352" duration="1746000" />
-      <workItem from="1681195878882" duration="5096000" />
+      <workItem from="1681195878882" duration="5261000" />
     </task>
     <servers />
   </component>

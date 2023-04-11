@@ -1,10 +1,13 @@
 spring:
   datasource:
-    url: 'jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432/postgres'
+    url: 'a54220089a57c5b68a405a5ab650eb7d2ae470e3325511c03d5e772907db851c9c4d913ce4b8698e3d57ad5d3b25e12942313ee686a1abf675b4b7e1edf29b94f4086dab62b3cc7651c518f1cd13cffc61e2f1c3d5d0d6e448f81bf42c1c46bc6ea319da839df8b70d28ec451ccf2824'
     hikari:
       username: 'postgres'
-      password: 'mypassword'
+      password: '{cipher}dc34df995310f2d4ddfd4c727da14ec4338858d5728059ddcca9256db2d58095'
 
 token:
   expiration_time: 86400000
   secret: '{cipher}45939b87daf906ea6bfce17b4c1d9c0feb3910ca3306a09e8f8cd55b6b9e4d5390302e09b7d03ad6d9fe26e603f8d20e4fe8639c6d1f9644895d991c3e9fae9d'
+
+kafka:
+  bootstrap: http://localhost:8099,http://localhost:8098,http://localhost:8097

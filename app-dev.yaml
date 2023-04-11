@@ -3,7 +3,7 @@ spring:
     url: 'a54220089a57c5b68a405a5ab650eb7d2ae470e3325511c03d5e772907db851c9c4d913ce4b8698e3d57ad5d3b25e12942313ee686a1abf675b4b7e1edf29b94f4086dab62b3cc7651c518f1cd13cffc61e2f1c3d5d0d6e448f81bf42c1c46bc6ea319da839df8b70d28ec451ccf2824'
     hikari:
       username: 'postgres'
-      password: '{cipher}dc34df995310f2d4ddfd4c727da14ec4338858d5728059ddcca9256db2d58095'
+      password: '{cipher}cb37d0254f9af1ae19f8f3aaf5ddca4c94e8c1cf5479a3240a706e32167867ab'
 
 token:
   expiration_time: 86400000

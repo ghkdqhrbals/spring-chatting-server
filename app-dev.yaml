@@ -3,7 +3,7 @@ spring:
     url: '{cipher}7702116c6f2dd7a5b4dda7de0f23b098afbb1995d3256c306d10ae8d381a60ec481efe47bba59ce18cafc3ce76f9c0e7f142dccb9928a71573671e3e91ff7ec5d356e3f7ac858c7b1617318574f69ee7'
     hikari:
       username: '{cipher}15a049a179b2e5a161cbd6d5de94f984c6fae2b3d6c1f29b73f332281455d30f'
-      password: '{cipher}ea1273b456376d81c3097d9c7b17e9b58ceb8c9fef306d00fd1077717475b12c'
+      password: '{cipher}8e311444494067867b6ba62846074de3a938adcd8cb55d000663e2d926578ad5'
 
 token:
   expiration_time: 86400000

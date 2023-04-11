@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: 'jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432'
+    url: 'jdbc:postgresql://database-1.cyykxhwims2n.ap-northeast-2.rds.amazonaws.com:5432/postgres'
     hikari:
       username: 'postgres'
-      password: '{cipher}8e311444494067867b6ba62846074de3a938adcd8cb55d000663e2d926578ad5'
+      password: 'mypassword'
 
 token:
   expiration_time: 86400000

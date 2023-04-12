@@ -76,6 +76,7 @@ public class UserController {
     @PostMapping("/login")
     public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
                                         ServerHttpResponse response){
+        log.info("start with key={}",env.getProperty("token.secret"));
         Mono<LoginResponseDto> login = loginService.login(request, response).log();
         return login;
     }

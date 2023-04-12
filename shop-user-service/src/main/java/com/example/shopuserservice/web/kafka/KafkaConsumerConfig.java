@@ -1,7 +1,7 @@
-package chatting.chat.web.kafka;
+package com.example.shopuserservice.web.kafka;
 
-import chatting.chat.web.kafka.dto.*;
 import com.example.commondto.events.user.UserEvent;
+import com.example.commondto.events.user.UserResponseEvent;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -9,10 +9,12 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import reactor.core.publisher.Sinks;
 
 @Slf4j
 @EnableKafka
@@ -23,8 +25,8 @@ public class KafkaConsumerConfig {
 
     // 유저 변경
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserEvent> userKafkaListenerContainerFactory() {
-        return getContainerFactory("user",UserEvent.class);
+    public ConcurrentKafkaListenerContainerFactory<String, UserResponseEvent> userKafkaListenerContainerFactory() {
+        return getContainerFactory("auth", UserResponseEvent.class);
     }
 
     /**

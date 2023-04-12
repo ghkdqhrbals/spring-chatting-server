@@ -1,16 +1,16 @@
 package chatting.chat.web.kafka;
 
+import com.example.commondto.events.topic.KafkaTopic;
+import jakarta.annotation.PostConstruct;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
 
-import javax.annotation.PostConstruct;
-
 
 @Configuration
-public class KafkaTopicConfig extends KafkaTopicConst {
+public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;
 
@@ -25,7 +25,7 @@ public class KafkaTopicConfig extends KafkaTopicConst {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic(TOPIC_USER_ADD_REQUEST,5,3));
-        kafkaAdmin.createOrModifyTopics(generateTopic(TOPIC_USER_ADD_CHAT_REQUEST,2,3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.user_add_req,2,3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.user_add_res,2,3));
     }
 }

@@ -58,9 +58,8 @@ public class UserRepositoryJDBC {
                         ps.setString(7,user.getUserPw());
                         ps.setString(8,user.getRole());
                     });
-
         } catch(Exception e){
-            if (e.getCause().getClass() == DuplicateKeyException.class){
+            if (e.getClass() == DuplicateKeyException.class){
                 throw new CustomException(DUPLICATE_RESOURCE);
             }
             throw new RuntimeException();

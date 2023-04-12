@@ -12,6 +12,7 @@ public class ResponseGetUser {
     private String userStatus;
 
     public ResponseGetUser() {
+
     }
 
     public ResponseGetUser(String userId, String userName, String userStatus) {

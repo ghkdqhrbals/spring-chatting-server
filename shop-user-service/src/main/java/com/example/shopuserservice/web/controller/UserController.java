@@ -1,44 +1,42 @@
 package com.example.shopuserservice.web.controller;
 
+import com.example.commondto.dto.RequestUserChangeDto;
+import com.example.commondto.events.topic.KafkaTopic;
+import com.example.commondto.events.user.UserEvent;
+import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.domain.data.User;
-import com.example.shopuserservice.domain.user.service.UserService;
+import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.web.error.CustomException;
-import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.security.LoginRequestDto;
 import com.example.shopuserservice.web.security.LoginResponseDto;
 import com.example.shopuserservice.web.security.LoginService;
-import com.example.shopuserservice.web.vo.RequestLogin;
 import com.example.shopuserservice.web.vo.RequestUser;
+import com.example.shopuserservice.web.vo.ResponseAddUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
 import com.zaxxer.hikari.HikariDataSource;
-import feign.Response;
 import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import java.security.Principal;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
-import java.util.List;
-import static com.example.shopuserservice.web.error.ErrorCode.CANNOT_FIND_USER;
 
 
 @Slf4j
@@ -46,9 +44,11 @@ import static com.example.shopuserservice.web.error.ErrorCode.CANNOT_FIND_USER;
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserCommandQueryService userCommandQueryService;
     private final LoginService loginService;
     private final HikariDataSource hikariDataSource;
+
+    private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Environment env;
 
     private ResponseEntity defaultErrorResponse(){
@@ -95,7 +95,7 @@ public class UserController {
     public CompletableFuture<ResponseEntity<ResponseUser>> findUser(@PathVariable("userId") String userId){
         DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
 
-        return userService.getUserDetailsByUserId(userId).thenApply((userDto -> {
+        return userCommandQueryService.getUserDetailsByUserId(userId).thenApply((userDto -> {
             return ResponseEntity.ok(new ModelMapper().map(userDto, ResponseUser.class));
         })).exceptionally(e->{
             log.info(e.getCause().getClass().getName());
@@ -136,7 +136,7 @@ public class UserController {
     @GetMapping("/logout")
     public Mono<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
         DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-        userService.logout(userId, userPw, dr);
+        userCommandQueryService.logout(userId, userPw, dr);
         return Mono.just((ResponseEntity) dr.getResult());
     }
 
@@ -145,19 +145,29 @@ public class UserController {
      */
     // 유저 저장
     @PostMapping("/user")
-    public DeferredResult<ResponseEntity<?>> addUser(@RequestBody RequestUser req) throws InterruptedException {
-        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-        userService.createUser(req).thenAccept((user)->{
-            dr.setResult(ResponseEntity.ok(user));
+    public CompletableFuture<ResponseEntity<ResponseAddUser>> addUser(@RequestBody RequestUser req) throws InterruptedException {
+        // saga choreograhpy tx 관리 id;
+        UUID eventId = UUID.randomUUID();
+
+        return userCommandQueryService.createUser(req, eventId.toString()).thenApply((user)->{
+            sendToKafkaWithKey(KafkaTopic.user_add_req,
+                    new UserEvent(
+                            eventId,
+                            UserStatus.USER_INSERT,
+                            new RequestUserChangeDto(req.getUserId(),req.getUserName(),req.getEmail())
+                    ), req.getUserId()).thenRun(()->{
+                        log.info("send kafka message");
+            });
+            ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
+            return ResponseEntity.ok(res);
         }).exceptionally(e->{
-            if (e instanceof CustomException){
-                dr.setResult(ErrorResponse.toResponseEntity(((CustomException) e).getErrorCode()));
+            if (e.getCause() instanceof CustomException){
+                CustomException e2 = ((CustomException) e.getCause());
+                throw new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail());
             }else{
-                dr.setErrorResult(defaultErrorResponse());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
             }
-            return null;
         });
-        return dr;
     }
 
     /**
@@ -181,7 +191,7 @@ public class UserController {
     // 유저 업데이트
     @PutMapping("/user")
     public ResponseEntity<?> removeUser(@RequestBody User user){
-        userService.updateUser(user);
+        userCommandQueryService.updateUser(user);
         return ResponseEntity.ok("success");
     }
 
@@ -189,18 +199,8 @@ public class UserController {
      * -------------- Utils --------------
      */
 
-    <T> CompletableFuture<T> toCF(ListenableFuture<T> lf){
-        CompletableFuture<T> cf = new CompletableFuture<T>();
-        lf.addCallback(s-> cf.complete(s), e-> cf.completeExceptionally(e));
-        return cf;
-    }
-    private String printHikariCPInfo() {
-        return String.format("HikariCP[Total:%s, Active:%s, Idle:%s, Wait:%s]",
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getTotalConnections()),
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getActiveConnections()),
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getIdleConnections()),
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection())
-        );
+    private CompletableFuture<?> sendToKafkaWithKey(String topic,Object req, String key) {
+        return kafkaProducerTemplate.send(topic,key, req);
     }
 
 }

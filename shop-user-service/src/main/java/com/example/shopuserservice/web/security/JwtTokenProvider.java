@@ -62,7 +62,6 @@ public class JwtTokenProvider {
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
-
     }
 
     public Authentication getAuthentication(String token) {

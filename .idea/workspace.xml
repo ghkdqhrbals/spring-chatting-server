@@ -5,9 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/RequestUserChangeDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/ResponseUserChangeDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/UserRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/ServiceNames.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/topic/KafkaTopic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserResponseEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserResponseStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/data/UserTransaction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserTransactionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaConsumerConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/MessageListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/vo/ResponseAddUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources/bootstrap.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/CommonDtoApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/CommonDtoApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -30,6 +61,36 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserRepositoryJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserRepositoryJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaTopicConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaTopicConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaTopicConst.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/security/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/ChatApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/ChatApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/config/JpaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/config/JpaConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Chatting.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Chatting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Friend.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Friend.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Participant.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Participant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/domain/data/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/dto/ResponseGetUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/dto/ResponseGetUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaTopicConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaTopicConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaTopicConst.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/MessageListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/MessageListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/dto/ChatRoomDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/dto/ChatRoomDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestAddUserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/dto/RequestUserChange.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources/application.properties" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +112,24 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="spring-chatting-server" type="f1a62948:ProjectNode" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="spring-chatting-server" type="f1a62948:ProjectNode" />
+                <item name="shop-user-service" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="spring-chatting-server" type="f1a62948:ProjectNode" />
+                <item name="shop-user-service" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="spring-chatting-server" type="f1a62948:ProjectNode" />
+                <item name="shop-user-service" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -61,6 +140,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
       </list>
@@ -89,8 +169,11 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "jdk.selected.JAVA_MODULE": "corretto-17",
-    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server",
+    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "spring.configuration.checksum": "72b4d4cd71dc465008976b01f9088965"
   }
@@ -100,15 +183,18 @@
       <recent name="com.example.orderservice.repository" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka" />
+      <recent name="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/spring-chatting-front-server" />
       <recent name="$PROJECT_DIR$/img/v4" />
-      <recent name="$PROJECT_DIR$/img/v3" />
-      <recent name="$PROJECT_DIR$/spring-chatting-backend-server" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/img" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.example.commondto.dto" />
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.OrderServiceApplication">
@@ -122,6 +208,13 @@
     <configuration name="ChatApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="spring-chatting-server.discovery.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.chat.ChatApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ChatApplication (2)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="spring-chatting-server.spring-chatting-backend-server.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="chatting.chat.ChatApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -240,7 +333,7 @@
       <workItem from="1681030188237" duration="3020000" />
       <workItem from="1681193913374" duration="170000" />
       <workItem from="1681194101352" duration="1746000" />
-      <workItem from="1681195878882" duration="5887000" />
+      <workItem from="1681195878882" duration="27869000" />
     </task>
     <servers />
   </component>

@@ -13,12 +13,12 @@ import chatting.chat.domain.user.repository.UserRepository;
 
 import chatting.chat.domain.user.service.UserServiceImpl;
 import chatting.chat.domain.user.service.UserService;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.persistence.EntityManager;
 
 @Configuration
 public class JpaConfig {

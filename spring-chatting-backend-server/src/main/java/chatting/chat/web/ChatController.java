@@ -8,7 +8,6 @@ import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
-import chatting.chat.web.kafka.KafkaTopicConst;
 import chatting.chat.web.kafka.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,7 @@ import java.util.stream.Stream;
 @Slf4j
 @RestController
 @RequestMapping("/chat")
-public class ChatController extends KafkaTopicConst {
+public class ChatController {
     private final UserService userService;
     private final FriendService friendService;
     private final RoomService roomService;
@@ -136,7 +135,7 @@ public class ChatController extends KafkaTopicConst {
         chatService.save(chatting);
 
         // kafka-logic
-        sendToKafka(TOPIC_USER_ADD_CHAT_REQUEST, req);
+//        sendToKafka(TOPIC_USER_ADD_CHAT_REQUEST, req);
 
         return ResponseEntity.ok("success");
     }
@@ -179,34 +178,6 @@ public class ChatController extends KafkaTopicConst {
         chatting.setCreatedAt(LocalDateTime.now());
         chatting.setMessage(msg);
         return chatting;
-    }
-
-    private void sendToKafka(String topic,Object req) {
-        ListenableFuture<SendResult<String, Object>> future = kafkaProducerTemplate.send(topic, req);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                log.error("메세지 전송 실패={}", ex.getMessage());
-            }
-            @Override
-            public void onSuccess(SendResult<String, Object> result) {
-                log.info("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
-            }
-        });
-    }
-
-    private void sendToKafkaWithKey(String topic,Object req, String key) {
-        ListenableFuture<SendResult<String, Object>> future = kafkaProducerTemplate.send(topic,key, req);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                log.error("메세지 전송 실패={}", ex.getMessage());
-            }
-            @Override
-            public void onSuccess(SendResult<String, Object> result) {
-                log.info("메세지 전송 성공 topic={}, key={}, offset={}, partition={}",topic, key, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
-            }
-        });
     }
 
 }

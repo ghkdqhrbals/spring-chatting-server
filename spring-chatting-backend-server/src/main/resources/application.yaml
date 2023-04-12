@@ -5,7 +5,7 @@ spring:
     username: guest
     password: guest
   application:
-    name: auth-service
+    name: chat-service
   messages:
     basename: messages,errors
   datasource:
@@ -26,12 +26,13 @@ spring:
         jdbc:
           time_zone: UTC
           batch_size: 50
+
+
+
+
 #  main:
 #    allow-bean-definition-overriding: true
 
-kafka:
-  topic:
-    createOrder: "create-order"
 
 server:
   error:
@@ -49,7 +50,7 @@ server:
 #  servlet:
 #    session:
 #      tracking-modes: cookie
-  port: 8010
+  port: 8020
 
 
 eureka:

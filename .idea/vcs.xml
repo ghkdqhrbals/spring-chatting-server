@@ -4,7 +4,6 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/docker-elk" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/spring-auth-backend-server" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/spring-chatting-backend-server" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/spring-chatting-front-server" vcs="Git" />
   </component>
 </project>

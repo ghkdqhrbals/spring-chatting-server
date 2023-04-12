@@ -1,5 +1,6 @@
 package com.example.shopuserservice.web.kafka;
 
+import com.example.commondto.events.topic.KafkaTopic;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,7 @@ import javax.annotation.PostConstruct;
 
 
 @Configuration
-public class KafkaTopicConfig extends KafkaTopicConst {
+public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;
 
@@ -25,6 +26,8 @@ public class KafkaTopicConfig extends KafkaTopicConst {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic("payment",2,3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.user_add_req ,2,3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.user_add_res ,2,3));
     }
+
 }

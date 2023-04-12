@@ -15,6 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +32,7 @@ import java.net.UnknownHostException;
 @EnableDiscoveryClient
 @EnableFeignClients
 @Import(JpaConfig.class)
+@EnableKafka
 public class OrderServiceApplication {
 
 	public static void main(String[] args) {
@@ -50,12 +52,6 @@ public class OrderServiceApplication {
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
-//	@Bean
-//	@LoadBalanced
-//	public RestTemplate restTemplate(){
-//		return new RestTemplate();
-//	}
 
 	@Bean
 	public FeignErrorDecoder getFeignErrorDecoder(){

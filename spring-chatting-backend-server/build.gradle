@@ -1,12 +1,16 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.5'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'java'
+	id 'org.springframework.boot' version '3.0.5'
+	id 'io.spring.dependency-management' version '1.1.0'
+}
+
+ext {
+	set('springCloudVersion', "2022.0.1")
 }
 
 group = 'chatting'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -16,32 +20,45 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 dependencies {
 	testImplementation 'junit:junit:4.13.1'
 	testImplementation 'junit:junit:4.13.1'
-	annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.5.3'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'org.springframework.kafka:spring-kafka'
 
-	implementation 'org.springframework.boot:spring-boot-configuration-processor:2.5.3';
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '4.0.0'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.0.0'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+	implementation 'org.springframework.boot:spring-boot-configuration-processor';
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'com.google.guava:guava:31.1-jre'
 
 	implementation group: 'org.json', name: 'json', version: '20090211'
 
-    testImplementation 'org.projectlombok:lombok:1.18.24'
+    testImplementation 'org.projectlombok:lombok:1.18.26'
 
-//    runtimeOnly 'com.h2database:h2'
+	implementation project(':common-dto')
 
+	implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.27'
 
-	// https://mvnrepository.com/artifact/org.postgresql/postgresql
-	implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 	compileOnly 'org.projectlombok:lombok'
 

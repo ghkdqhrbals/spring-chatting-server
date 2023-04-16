@@ -1,6 +1,6 @@
 package com.example.shopuserservice.web.security;
 
-import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +9,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
@@ -28,13 +26,18 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+
         log.info("JWT 토큰 필터");
+
         String token = resolveToken(exchange.getRequest());
-        if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token)) {
+        if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token, exchange)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
+
             authentication.getAuthorities().forEach(a->{
                 log.info("JWT 토큰으로 부터 얻는 Authorities={}",a.getAuthority());
             });
+
+
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }

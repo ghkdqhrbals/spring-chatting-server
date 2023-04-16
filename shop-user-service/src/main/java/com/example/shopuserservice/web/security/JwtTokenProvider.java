@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
@@ -83,17 +84,22 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, ServerWebExchange exchange) {
         try {
             Jws<Claims> claims = Jwts
                     .parserBuilder().setSigningKey(this.secret).build()
                     .parseClaimsJws(token);
             //  parseClaimsJws will check expiration date. No need do here.
-            log.info("JWT 토큰 만료 시간: {}", claims.getBody().getExpiration());
+            log.debug("JWT 토큰 소유주: {}",claims.getBody().getSubject());
+            log.debug("JWT 토큰 만료 시간: {}", claims.getBody().getExpiration());
+
+            // 세션에 넣고 컨트롤러에서 빼서 쓸 것입니다.
+            exchange.getSession().subscribe(s->{
+                s.getAttributes().put("userId",claims.getBody().getSubject());
+            });
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            log.info("JWT 토큰 사용 불가능: {}", e.getMessage());
-            log.trace("TRACE", e);
+            log.debug("JWT 토큰 사용 불가능: {}", e.getMessage());
         }
         return false;
     }

@@ -1,6 +1,9 @@
 package com.example.shopuserservice.domain.user.service;
 
+import com.example.commondto.dto.RequestUserChangeDto;
 import com.example.commondto.events.ServiceNames;
+import com.example.commondto.events.topic.KafkaTopic;
+import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
@@ -20,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +46,8 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     private final UserRepository userRepository;
     private final UserRepositoryJDBC userRepositoryJDBC;
     private final UserTransactionRepository userTransactionRepository;
+
+    private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Executor serviceExecutor;
     private final HikariDataSource hikariDataSource;
     private final PasswordEncoder pwe;
@@ -53,7 +59,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                                        HikariDataSource hikariDataSource,
                                        @Qualifier("bcrypt") PasswordEncoder pwe,
                                        OrderServiceClient orderServiceClient,
-                                       UserTransactionRepository userTransactionRepository) {
+                                       UserTransactionRepository userTransactionRepository, KafkaTemplate<String, Object> kafkaProducerTemplate) {
         this.userRepository = userRepository;
         this.userRepositoryJDBC = userRepositoryJDBC;
         this.serviceExecutor = serviceExecutor;
@@ -61,6 +67,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         this.pwe = pwe;
         this.orderServiceClient = orderServiceClient;
         this.userTransactionRepository = userTransactionRepository;
+        this.kafkaProducerTemplate = kafkaProducerTemplate;
     }
 
 
@@ -100,9 +107,21 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             }
             String chatStatus = ut.getChatStatus();
             String customerStatus = ut.getCustomerStatus();
+            String userStatus = ut.getUserStatus();
+            // 둘 다 SUCCESS 일 경우,
             if (chatStatus.equals(UserResponseStatus.USER_SUCCES.name())
                     && customerStatus.equals(UserResponseStatus.USER_SUCCES.name())){
-                ut.setUserStatus(UserResponseStatus.USER_SUCCES.name());
+                // 유저 Status 에 따라 완료/미완료
+                if (userStatus.equals(UserStatus.USER_INSERT.name())){
+                    ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
+                } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
+                    ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
+                }
+            // 둘 중 FAIL 이 있을 경우
+            } else if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())
+                    || customerStatus.equals(UserResponseStatus.USER_FAIL.name())) {
+                // 실패 시, FAIL 처리
+                ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
             }
         }else{
             return CompletableFuture.failedFuture(new RuntimeException());
@@ -114,7 +133,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     @Override
     @Async
     @Transactional
-    public CompletableFuture<User> createUser(RequestUser request, String eventId) {
+    public CompletableFuture<User> createUser(RequestUser request, UUID eventId) {
 
         User user = new User(
                 request.getUserId(),
@@ -130,14 +149,6 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         try {
             userRepositoryJDBC.saveAll2(Arrays.asList(user));
             // saga Choreography 로 Transaction 관리
-            userTransactionRepository.save(
-                    new UserTransaction(
-                            eventId,
-                            UserStatus.USER_INSERT,
-                            UserResponseStatus.USER_APPEND,
-                            UserResponseStatus.USER_APPEND)
-            );
-
         } catch (CustomException e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
             return CompletableFuture.failedFuture(e);
@@ -146,6 +157,40 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             return CompletableFuture.failedFuture(e);
         }
         return CompletableFuture.completedFuture(user);
+    }
+
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<UserTransaction> newUserEvent(RequestUser req, UUID eventId, UserEvent userEvent) {
+
+        UserTransaction userTransaction = new UserTransaction(
+                eventId,
+                UserStatus.USER_INSERT,
+                UserResponseStatus.USER_APPEND,
+                UserResponseStatus.USER_APPEND,
+                req.getUserId(),
+                LocalDateTime.now());
+        try {
+            // 이벤트 Transaction 저장
+            userTransactionRepository.save(userTransaction);
+
+            // 이벤트 Publishing key:userId = Partitioning
+            sendToKafkaWithKey(
+                    KafkaTopic.user_req,
+                    userEvent,
+                    req.getUserId()
+            ).thenRun(()->{
+                log.info("send kafka message successfully");
+            });
+        }catch(Exception e){
+            return CompletableFuture.failedFuture(e);
+        }
+        return CompletableFuture.completedFuture(userTransaction);
+    }
+
+    private CompletableFuture<?> sendToKafkaWithKey(String topic,Object req, String key) {
+        return kafkaProducerTemplate.send(topic,key, req);
     }
 
     // 로그인
@@ -186,12 +231,28 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     // 유저 삭제
     @Override
-    public void removeUser(String userId) {
+    @Transactional
+    @Async
+    public CompletableFuture<Boolean> removeUser(UUID eventId, String userId) {
+
+        // tx 저장
+        userTransactionRepository.save(
+                new UserTransaction(
+                        eventId,
+                        UserStatus.USER_DELETE,
+                        UserResponseStatus.USER_APPEND,
+                        UserResponseStatus.USER_APPEND,
+                        userId,
+                        LocalDateTime.now())
+        );
+
         Optional<User> findUser = userRepository.findById(userId);
+
         if (findUser.isPresent()){
             userRepository.delete(findUser.get());
-            return;
+            return CompletableFuture.completedFuture(true);
         }
+
         throw new CustomException(CANNOT_FIND_USER);
     }
 
@@ -226,6 +287,19 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
         userDto.setOrders(orders);
         return CompletableFuture.completedFuture(userDto);
+    }
+
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<String> changePassword(String userId, String userPw) {
+        Optional<User> findUser = userRepository.findById(userId);
+        if (findUser.isPresent()){
+            findUser.get().setUserPw(pwe.encode(userPw));
+            return CompletableFuture.completedFuture("success");
+        } else {
+            throw new UsernameNotFoundException("cannot find user");
+        }
     }
 
     @Override

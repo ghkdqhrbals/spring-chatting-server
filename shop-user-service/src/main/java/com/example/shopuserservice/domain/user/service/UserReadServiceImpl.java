@@ -6,6 +6,7 @@ import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
 import com.example.shopuserservice.domain.user.repository.UserTransactionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +41,11 @@ public class UserReadServiceImpl implements UserReadService{
     @Async
     public CompletableFuture<List<UserTransaction>> getAllUserAddTransaction() {
         return CompletableFuture.completedFuture(userTransactionRepository.findAll());
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<List<UserTransaction>> getRecentUserAddTransaction(String id) {
+        return CompletableFuture.completedFuture(userTransactionRepository.findAllByUserIdOrderByCreatedAt(id, Pageable.ofSize(1)));
     }
 }

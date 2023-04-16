@@ -17,10 +17,4 @@ public interface UserRepository extends JpaRepository<User, String> {
 //
 //
     List<User> findAll();
-
-
-
-
-
-
 }

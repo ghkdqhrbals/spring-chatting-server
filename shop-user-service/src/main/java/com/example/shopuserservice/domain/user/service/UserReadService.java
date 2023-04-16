@@ -11,4 +11,5 @@ public interface UserReadService {
     CompletableFuture<Optional<User>> getUserById(String id);
     CompletableFuture<List<User>> getAllUser();
     CompletableFuture<List<UserTransaction>> getAllUserAddTransaction();
+    CompletableFuture<List<UserTransaction>> getRecentUserAddTransaction(String id);
 }

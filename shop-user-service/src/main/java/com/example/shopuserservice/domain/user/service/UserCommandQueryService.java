@@ -1,5 +1,6 @@
 package com.example.shopuserservice.domain.user.service;
 
+import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.data.UserTransaction;
@@ -19,12 +20,14 @@ import java.util.*;
  */
 public interface UserCommandQueryService {
     CompletableFuture<List<User>> getAllUser();
-    CompletableFuture<User> createUser(RequestUser request, String eventId);
+    CompletableFuture<User> createUser(RequestUser request, UUID eventId);
+    CompletableFuture<UserTransaction> newUserEvent(RequestUser request, UUID eventId, UserEvent userEvent);
     CompletableFuture<Optional<User>> getUserById(String id);
     CompletableFuture<UserTransaction> updateStatus(UserResponseEvent event);
     DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
     DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
-    void removeUser(String userId);
+    CompletableFuture<Boolean> removeUser(UUID eventId, String userId);
     void updateUser(User user);
     CompletableFuture<UserDto> getUserDetailsByUserId(String username);
+    CompletableFuture<String> changePassword(String userId, String userPw);
 }

@@ -9,12 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RequestUserChangeDto {
     private String userId;
-    private String userName;
-    private String email;
 
-    public RequestUserChangeDto(String userId, String userName, String email) {
+    public RequestUserChangeDto(String userId) {
         this.userId = userId;
-        this.userName = userName;
-        this.email = email;
     }
 }

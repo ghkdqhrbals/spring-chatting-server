@@ -5,13 +5,11 @@ import lombok.Data;
 @Data
 public class ResponseUserChangeDto {
     private String userId;
-    private String userName;
 
     public ResponseUserChangeDto() {
     }
 
-    public ResponseUserChangeDto(String userId, String userName) {
+    public ResponseUserChangeDto(String userId) {
         this.userId = userId;
-        this.userName = userName;
     }
 }

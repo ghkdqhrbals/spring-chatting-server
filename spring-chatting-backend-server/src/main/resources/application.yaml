@@ -37,20 +37,14 @@ spring:
 server:
   error:
     include-stacktrace: never
-  netty:
-    max-keep-alive-requests: 10000 # 서버 메모리에 따라 구성가능합니다
+  tomcat:
+    accept-count: 1000
     connection-timeout: 10s
-#  tomcat:
-#    accept-count: 1000
-#    connection-timeout: 10s
-#    threads:
-#      max: 1200
-#    max-connections: 10000
-#    max-swallow-size: 2MB
-#  servlet:
-#    session:
-#      tracking-modes: cookie
-  port: 8020
+    threads:
+      max: 1200
+    max-connections: 10000
+    max-swallow-size: 2MB
+  port: 0
 
 
 eureka:

@@ -15,21 +15,20 @@ public class UserResponseEvent implements Event {
     private UUID eventId;
     private Date date = new Date();
 
-    private ResponseUserChangeDto responseUserChangeDto;
+    private String userId;
     private String userResponseStatus;
+    private String serviceName;
+
 
     public UserResponseEvent() {
     }
 
-    public UserResponseEvent(UUID eventId, ResponseUserChangeDto responseUserChangeDto, String userResponseStatus, String serviceName) {
+    public UserResponseEvent(UUID eventId, String userId, String userResponseStatus, String serviceName) {
         this.eventId = eventId;
-        this.responseUserChangeDto = responseUserChangeDto;
+        this.userId = userId;
         this.userResponseStatus = userResponseStatus;
         this.serviceName = serviceName;
     }
-
-    private String serviceName;
-
     @Override
     public UUID getEventId() {
         return eventId;

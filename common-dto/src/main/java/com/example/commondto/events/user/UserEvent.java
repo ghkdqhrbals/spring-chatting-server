@@ -1,10 +1,7 @@
 package com.example.commondto.events.user;
 
-import com.example.commondto.dto.PaymentDto;
 import com.example.commondto.dto.RequestUserChangeDto;
-import com.example.commondto.dto.UserRequestDto;
 import com.example.commondto.events.Event;
-import com.example.commondto.events.payment.PaymentStatus;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,19 +11,18 @@ import java.util.UUID;
 @Data
 public class UserEvent implements Event, Serializable {
 
-    public UserEvent(UUID eventId, UserStatus userStatus, RequestUserChangeDto userDto) {
+    public UserEvent(UUID eventId, UserStatus userStatus, String userId) {
         this.eventId = eventId;
         this.userStatus = userStatus.name();
-        this.userDto = userDto;
+        this.userId = userId;
     }
-
     public UserEvent() {
     }
 
     private UUID eventId;
     private final Date date = new Date();
     private String userStatus;
-    private RequestUserChangeDto userDto;
+    private String userId;
 
     @Override
     public UUID getEventId() {

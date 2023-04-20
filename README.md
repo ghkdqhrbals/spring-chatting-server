@@ -19,6 +19,9 @@
 
 To see the description of functions and simulation video, here is youtube link : [youtube link](https://www.youtube.com/watch?v=3VqwZ17XyEQ&t=237s)
 
+## Proceeding... Architecture(v5)
+![chatSeq](img/v5/10.svg)
+
 ## Current Architecture(v4)
 ![chatSeq](img/v3/v3.1.0.png)
 

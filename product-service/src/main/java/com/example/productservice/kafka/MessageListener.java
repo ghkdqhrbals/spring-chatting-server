@@ -10,6 +10,9 @@ import chatting.chat.domain.friend.service.FriendService;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.kafka.dto.*;
+import com.example.commondto.events.order.OrderEvent;
+import com.example.commondto.kafka.KafkaTopic;
+import com.example.commondto.kafka.KafkaTopicPartition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -28,15 +31,15 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MessageListener extends KafkaTopicConst{
+public class MessageListener {
     private final UserService userService;
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
     // 로그인 요청
-    @KafkaListener(topics = "${kafka.topic-user-change}", containerFactory = "userKafkaListenerContainerFactory")
-    public void listenLogin(RequestUserChange req) {
+    @KafkaListener(topics = KafkaTopic.orderReq, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.orderReq)
+    public void listenOrder(OrderEvent req) {
 
-        log.info("Receive [RequestUserChange] Message with query={}",req.getInsertOrDelete());
+        log.info("Receive [OrderEvent] Message with query={}",req.getOrderStatus());
 
         if (req.getInsertOrDelete().equals("INSERT")) {
             userService.save(req.getUserId(),req.getUserName(),req.getUserStatus());

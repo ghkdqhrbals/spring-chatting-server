@@ -11,10 +11,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class UserResponseEvent implements Event {
-
     private UUID eventId;
     private Date date = new Date();
-
     private String userId;
     private String userResponseStatus;
     private String serviceName;

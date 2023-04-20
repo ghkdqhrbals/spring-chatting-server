@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
 @Table(name = "PRODUCT_TABLE")
-public class OrderInventory {
+public class Product {
 
     @Id
     private int productId;

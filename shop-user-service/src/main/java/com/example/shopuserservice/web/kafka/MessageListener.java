@@ -2,8 +2,7 @@ package com.example.shopuserservice.web.kafka;
 
 
 
-import com.example.commondto.dto.ResponseUserChangeDto;
-import com.example.commondto.events.topic.KafkaTopic;
+import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.kafka.KafkaTopicPartition;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
@@ -22,16 +21,12 @@ public class MessageListener {
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
     // concurrency를 partition 개수에 맞추어 설정하는 것이 중요합니다.
-    @KafkaListener(topics = KafkaTopic.user_res, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userRes)
+    @KafkaListener(topics = KafkaTopic.userRes, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userRes)
     public void listenUser(UserResponseEvent req) {
-
-        String.valueOf(KafkaTopicPartition.userReq);
-        ResponseUserChangeDto res = req.getResponseUserChangeDto();
+        log.info("FROM:{} GET:{}",req.getServiceName(),req.getUserResponseStatus());
         try {
             userService.updateStatus(req);
-
         }catch(Exception e){}
-
     }
 
     private void sendToKafka(String topic,Object req) {

@@ -1,5 +1,7 @@
 package com.example.productservice.kafka;
 
+import com.example.commondto.kafka.KafkaTopic;
+import com.example.commondto.kafka.KafkaTopicPartition;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +12,7 @@ import javax.annotation.PostConstruct;
 
 
 @Configuration
-public class KafkaTopicConfig extends KafkaTopicConst {
+public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;
 
@@ -25,7 +27,7 @@ public class KafkaTopicConfig extends KafkaTopicConst {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic(TOPIC_USER_ADD_REQUEST,5,3));
-        kafkaAdmin.createOrModifyTopics(generateTopic(TOPIC_USER_ADD_CHAT_REQUEST,2,3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderReq, Integer.parseInt(KafkaTopicPartition.orderReq),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderRes,Integer.parseInt(KafkaTopicPartition.orderRes),3));
     }
 }

@@ -1,10 +1,8 @@
 package com.example.shopuserservice.web.controller;
 
-import com.example.commondto.dto.RequestUserChangeDto;
-import com.example.commondto.events.topic.KafkaTopic;
+import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
-import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.data.UserTransaction;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
@@ -16,7 +14,6 @@ import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseAddUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
 import com.zaxxer.hikari.HikariDataSource;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +24,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
@@ -68,18 +60,6 @@ public class UserController {
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
 
-
-    @GetMapping("/d")
-    public Mono<String> welcome2(){
-        return Mono.just("welcome2");
-    }
-
-    @GetMapping("/b")
-    public Mono<String> greet(Mono<Principal> principal) {
-        return principal
-                .map(Principal::getName)
-                .map(name -> String.format("Hello, %s", name));
-    }
 
     @PostMapping("/login")
     public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
@@ -202,7 +182,7 @@ public class UserController {
         // 이번에는 먼저 유저 삭제 후, 토픽에 전송
         return userCommandQueryService.removeUser(eventId, userId).thenApply(b->{
             if (b){
-                sendToKafkaWithKey(KafkaTopic.user_req,
+                sendToKafkaWithKey(KafkaTopic.userReq,
                         new UserEvent(
                                 eventId,
                                 UserStatus.USER_DELETE,

@@ -1,7 +1,7 @@
 package com.example.productservice.kafka;
 
-import chatting.chat.web.kafka.dto.*;
-import com.example.productservice.event.order.OrderEvent;
+
+import com.example.commondto.events.order.OrderEvent;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -21,10 +21,10 @@ public class KafkaConsumerConfig {
     @Value("${kafka.bootstrap-server}")
     private String bootstrapServer;
 
-    // 유저 변경
+    // 주문 이벤트 수신
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, OrderEvent> userKafkaListenerContainerFactory() {
-        return getContainerFactory("order",RequestUserChange.class);
+        return getContainerFactory("order",OrderEvent.class);
     }
 
     /**

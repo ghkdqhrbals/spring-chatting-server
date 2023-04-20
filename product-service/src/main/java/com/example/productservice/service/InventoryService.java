@@ -1,7 +1,7 @@
 package com.example.productservice.service;
 
 import com.example.productservice.dto.InventoryDto;
-import com.example.productservice.entity.OrderInventoryConsumption;
+import com.example.productservice.entity.ProductConsumption;
 import com.example.productservice.event.inventory.InventoryEvent;
 import com.example.productservice.event.inventory.InventoryStatus;
 import com.example.productservice.event.order.OrderEvent;
@@ -27,7 +27,7 @@ public class InventoryService {
                 .filter(i -> i.getAvailableInventory() > 0 )
                 .map(i -> {
                     i.setAvailableInventory(i.getAvailableInventory() - 1);
-                    consumptionRepository.save(OrderInventoryConsumption.of(orderEvent.getPurchaseOrder().getOrderId(), orderEvent.getPurchaseOrder().getProductId(), 1));
+                    consumptionRepository.save(ProductConsumption.of(orderEvent.getPurchaseOrder().getOrderId(), orderEvent.getPurchaseOrder().getProductId(), 1));
                     return new InventoryEvent(dto, InventoryStatus.RESERVED);
                 })
                 .orElse(new InventoryEvent(dto, InventoryStatus.REJECTED));

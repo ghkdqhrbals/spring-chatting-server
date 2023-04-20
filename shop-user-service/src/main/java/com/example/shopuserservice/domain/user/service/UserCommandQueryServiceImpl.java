@@ -1,8 +1,7 @@
 package com.example.shopuserservice.domain.user.service;
 
-import com.example.commondto.dto.RequestUserChangeDto;
 import com.example.commondto.events.ServiceNames;
-import com.example.commondto.events.topic.KafkaTopic;
+import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.events.user.UserResponseStatus;
@@ -94,15 +93,20 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     @Transactional
     public CompletableFuture<UserTransaction> updateStatus(UserResponseEvent event) {
 
-        Optional<UserTransaction> tx = userTransactionRepository.findByEventId(event.getEventId().toString());
+        Optional<UserTransaction> tx = userTransactionRepository.findByEventId(event.getEventId());
         if (tx.isPresent()){
             UserTransaction ut = tx.get();
+
             switch (event.getServiceName()){
                 case ServiceNames.chat -> {
+                    log.info("chat:{}",event.getUserResponseStatus());
                     ut.setChatStatus(event.getUserResponseStatus());
+                    break;
                 }
                 case ServiceNames.customer -> {
+                    log.info("customer:{}",event.getUserResponseStatus());
                     ut.setCustomerStatus(event.getUserResponseStatus());
+                    break;
                 }
             }
             String chatStatus = ut.getChatStatus();
@@ -177,7 +181,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
             // 이벤트 Publishing key:userId = Partitioning
             sendToKafkaWithKey(
-                    KafkaTopic.user_req,
+                    KafkaTopic.userReq,
                     userEvent,
                     req.getUserId()
             ).thenRun(()->{

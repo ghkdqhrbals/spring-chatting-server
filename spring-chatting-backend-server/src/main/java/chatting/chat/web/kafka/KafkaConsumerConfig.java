@@ -24,7 +24,7 @@ public class KafkaConsumerConfig {
     // 유저 변경
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, UserEvent> userKafkaListenerContainerFactory() {
-        return getContainerFactory("user",UserEvent.class);
+        return getContainerFactory("chat",UserEvent.class);
     }
 
     /**

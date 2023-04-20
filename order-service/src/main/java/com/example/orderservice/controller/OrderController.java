@@ -1,49 +1,32 @@
 package com.example.orderservice.controller;
 
-import com.example.orderservice.dto.OrderDto;
-import com.example.orderservice.service.OrderService;
-import com.example.orderservice.vo.RequestOrder;
-import com.example.orderservice.vo.ResponseOrder;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.http.ResponseEntity;
+import com.example.commondto.dto.OrderRequestDto;
+import com.example.orderservice.entity.OrderTransaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("order")
 public class OrderController {
 
-    private final OrderService orderService;
+    @Autowired
+    private OrderCommandService commandService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    @Autowired
+    private OrderQueryService queryService;
+
+    @PostMapping("/create")
+    public OrderTransaction createOrder(@RequestBody OrderRequestDto requestDTO){
+        requestDTO.setOrderId(UUID.randomUUID());
+        return this.commandService.createOrder(requestDTO);
     }
 
-    @PostMapping("/{userId}/orders")
-    public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
-                                                     @RequestBody RequestOrder order){
-        ModelMapper m = new ModelMapper();
-        m.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        OrderDto orderDto = m.map(order, OrderDto.class);
-        orderDto.setUserId(userId);
-        ResponseOrder responseOrder = m.map(
-                orderService.createOrder(orderDto),
-                ResponseOrder.class);
-        return ResponseEntity.ok(responseOrder);
+    @GetMapping("/all")
+    public List<PurchaseOrder> getOrders(){
+        return this.queryService.getAll();
     }
 
-    @GetMapping("/{userId}/orders")
-    public ResponseEntity<List<ResponseOrder>> getOrders(@PathVariable("userId") String userId){
-        ModelMapper m = new ModelMapper();
-        m.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        List<ResponseOrder> result = new ArrayList<>();
-        orderService.getAllOrdersByUserId(userId)
-                .forEach(v->{
-                    result.add(m.map(v,ResponseOrder.class));
-        });
-        return ResponseEntity.ok(result);
-    }
 }

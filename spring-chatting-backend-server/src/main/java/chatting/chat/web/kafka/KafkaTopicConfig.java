@@ -1,6 +1,6 @@
 package chatting.chat.web.kafka;
 
-import com.example.commondto.events.topic.KafkaTopic;
+import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.kafka.KafkaTopicPartition;
 import jakarta.annotation.PostConstruct;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -26,7 +26,7 @@ public class KafkaTopicConfig {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.user_req,Integer.parseInt(KafkaTopicPartition.userReq),3));
-        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.user_res,Integer.parseInt(KafkaTopicPartition.userRes),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userReq,Integer.parseInt(KafkaTopicPartition.userReq),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userRes,Integer.parseInt(KafkaTopicPartition.userRes),3));
     }
 }

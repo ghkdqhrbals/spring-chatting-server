@@ -16,8 +16,6 @@ public class UserTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
-
     @Column(name = "EVENT_ID", unique = true)
     private UUID eventId;
     private String userId;

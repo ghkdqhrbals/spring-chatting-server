@@ -9,14 +9,17 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserBalance {
     @Id
     @Column(name = "USER_ID", unique = true)
     private String userId;
-
     private Long userBalance;
+
+    public UserBalance(String userId, Long userBalance) {
+        this.userId = userId;
+        this.userBalance = userBalance;
+    }
 }
 
 

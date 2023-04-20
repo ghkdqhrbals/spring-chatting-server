@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -14,11 +15,17 @@ import java.time.LocalDateTime;
 public class UserBalanceTransaction {
 
     @Id
-    private Long orderId;
-
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+    @Column(name = "EVENT_ID", unique = true)
+    private UUID eventId;
     private String userId;
+    private String customerStatus;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private Long amount;
-
-    private LocalDateTime createdAt;
+    public UserBalanceTransaction(UUID eventId, String userId, String customerStatus) {
+        this.eventId = eventId;
+        this.userId = userId;
+        this.customerStatus = customerStatus;
+    }
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
 @Table(name = "PRODUCT_CONSUMPTION_TABLE")
-public class OrderInventoryConsumption {
+public class ProductConsumption {
 
     @Id
     private UUID orderId;

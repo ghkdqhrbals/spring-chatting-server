@@ -2,10 +2,8 @@ package chatting.chat.web.kafka;
 
 
 import chatting.chat.domain.user.service.UserService;
-import com.example.commondto.dto.RequestUserChangeDto;
-import com.example.commondto.dto.ResponseUserChangeDto;
 import com.example.commondto.events.ServiceNames;
-import com.example.commondto.events.topic.KafkaTopic;
+import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.events.user.UserResponseStatus;
@@ -25,7 +23,7 @@ public class MessageListener {
     private final UserService userService;
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
-    @KafkaListener(topics = KafkaTopic.user_req, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userReq)
+    @KafkaListener(topics = KafkaTopic.userReq, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userReq)
     public void listenUserRemove(UserEvent req) {
         System.out.println("THREAD:"+Thread.currentThread().getName()+" STATUS:"+req.getUserStatus()+" ID:"+req.getUserId());
 
@@ -35,13 +33,14 @@ public class MessageListener {
             } else if (req.getUserStatus().equals(UserStatus.USER_DELETE.name())) {
                 userService.remove(req.getUserId());
             }
-            sendToKafka(KafkaTopic.user_res,
+            sendToKafka(KafkaTopic.userRes,
                     new UserResponseEvent(req.getEventId(),
                             req.getUserId(),
                             UserResponseStatus.USER_SUCCES.name(),
                             ServiceNames.chat));
         }catch(Exception e){
-            sendToKafka(KafkaTopic.user_res,
+            log.info(e.getMessage());
+            sendToKafka(KafkaTopic.userRes,
                     new UserResponseEvent(req.getEventId(),
                             req.getUserId(),
                             UserResponseStatus.USER_FAIL.name(),

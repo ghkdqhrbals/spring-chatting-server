@@ -2,9 +2,11 @@ package com.example.orderservice.service;
 
 import com.example.orderservice.entity.UserBalance;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface UserBalanceCommandQueryService {
-    CompletableFuture<UserBalance> saveCurrentBalance(String userId);
-    CompletableFuture<UserBalance> updateCurrentBalance(String userId, Long amount);
+    CompletableFuture<UserBalance> saveUserBalance(String userId, UUID eventId);
+    CompletableFuture<UserBalance> removeUserBalance(String userId, UUID eventId);
+    CompletableFuture<UserBalance> updateUserBalance(String userId, Long amount);
 }

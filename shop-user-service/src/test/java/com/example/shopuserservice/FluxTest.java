@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Scheduler;
@@ -15,7 +16,10 @@ import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Consumer;
@@ -113,6 +117,36 @@ public class FluxTest {
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
+        t.destroy();
+    }
+
+    @Test
+    void multiThreadSink2(){
+        ConcurrentHashMap<String, Sinks.Many<Object>> sinkMap = new ConcurrentHashMap<>();
+        // userId = key
+        sinkMap.put("1", Sinks.many().multicast().onBackpressureBuffer());
+        sinkMap.put("2", Sinks.many().multicast().onBackpressureBuffer());
+
+
+        ThreadPoolTaskExecutor t = getThreadPoolTaskExecutor();
+
+        CompletableFuture<String> cf1 = CompletableFuture.supplyAsync(() -> {
+            sinkMap.get("1").asFlux().log().subscribe(c -> {
+                logger.debug("SUBSCRIBE-task-1: "+c);
+            });
+            return "Completed";
+        },t);
+
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> {
+            sinkMap.get("2").asFlux().log().subscribe(c -> {
+                logger.debug("SUBSCRIBE-task-1: "+c);
+            });
+            return "Completed";
+        },t);
+
+        sinkMap.get("1").tryEmitNext("1");
+        sinkMap.get("2").tryEmitNext("2");
+
         t.destroy();
     }
 

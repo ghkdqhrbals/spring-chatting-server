@@ -7,6 +7,7 @@ import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.client.OrderServiceClient;
+import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.data.UserTransaction;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
@@ -21,6 +22,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -118,14 +121,19 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 // 유저 Status 에 따라 완료/미완료
                 if (userStatus.equals(UserStatus.USER_INSERT.name())){
                     ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
                 } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
                     ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
                 }
             // 둘 중 FAIL 이 있을 경우
             } else if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())
                     || customerStatus.equals(UserResponseStatus.USER_FAIL.name())) {
                 // 실패 시, FAIL 처리
                 ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
+                AsyncConfig.sinkMap.get(event.getUserId()).tryEmitError(new ResponseStatusException(HttpStatus.CONFLICT, "동일한 사용자가 존재합니다"));
             }
         }else{
             return CompletableFuture.failedFuture(new RuntimeException());

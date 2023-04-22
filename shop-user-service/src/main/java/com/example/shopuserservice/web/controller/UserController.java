@@ -3,6 +3,7 @@ package com.example.shopuserservice.web.controller;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
+import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.UserTransaction;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
@@ -29,7 +30,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.WebSession;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 import java.security.Principal;
 import java.util.List;
@@ -59,6 +62,7 @@ public class UserController {
     public CompletableFuture welcome(ServletRequest request){
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
+
 
 
     @PostMapping("/login")
@@ -138,7 +142,7 @@ public class UserController {
      * -------------- CREATE METHODS --------------
      */
     // 유저 저장
-    @PostMapping("/user")
+    @PostMapping("/usera")
     public CompletableFuture<ResponseEntity<ResponseAddUser>> addUser(@RequestBody RequestUser req) throws InterruptedException {
         // saga choreograhpy tx 관리 id;
         UUID eventId = UUID.randomUUID();
@@ -162,6 +166,38 @@ public class UserController {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
             }
         });
+    }
+
+    @PostMapping("/user")
+    public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
+        // saga choreograhpy tx 관리 id;
+        UUID eventId = UUID.randomUUID();
+        AsyncConfig.sinkMap.put(req.getUserId(), Sinks.many().multicast().onBackpressureBuffer());
+
+        UserEvent userEvent = new UserEvent(
+                eventId,
+                UserStatus.USER_INSERT,
+                req.getUserId()
+        );
+        // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
+        userCommandQueryService
+                .newUserEvent(req, eventId, userEvent)
+                .thenCompose((c) -> {
+                    // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
+                    return userCommandQueryService.createUser(req, eventId); })
+                .thenApply((user) -> {
+                    ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
+                    return ResponseEntity.ok(res);})
+                .exceptionally(e -> {
+                    if (e.getCause() instanceof CustomException) {
+                        CustomException e2 = ((CustomException) e.getCause());
+                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail()));
+                    } else {
+                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+                    }
+                    return null;
+                });
+        return AsyncConfig.sinkMap.get(req.getUserId()).asFlux().log();
     }
 
     /**

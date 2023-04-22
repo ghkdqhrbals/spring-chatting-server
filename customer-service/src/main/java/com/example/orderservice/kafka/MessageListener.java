@@ -65,7 +65,7 @@ public class MessageListener {
 
     private void sendToKafka(String topic,Object req) {
         kafkaProducerTemplate.send(topic, req).thenAccept((SendResult<String, Object> result)->{
-            log.debug("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
+            log.info("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
         }).exceptionally(e->{
             log.error("메세지 전송 실패={}", e.getMessage());
             return null;

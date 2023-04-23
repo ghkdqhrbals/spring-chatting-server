@@ -21,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -35,6 +37,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -168,7 +171,7 @@ public class UserController {
         });
     }
 
-    @PostMapping("/user")
+    @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
         // saga choreograhpy tx 관리 id;
         UUID eventId = UUID.randomUUID();

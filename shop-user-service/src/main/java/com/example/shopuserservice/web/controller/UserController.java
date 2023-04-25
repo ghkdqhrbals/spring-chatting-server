@@ -108,11 +108,9 @@ public class UserController {
 
             if( e.getCause() instanceof UsernameNotFoundException){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User name not found");
-//                dr.setErrorResult(ErrorResponse.toResponseEntity(new CustomException(CANNOT_FIND_USER).getErrorCode()));
             }
 
             if (e.getCause() instanceof ResponseStatusException){
-                log.info("ResponseStatusException");
                 ResponseStatusException e2 = (ResponseStatusException) e.getCause();
                 throw e2;
             }
@@ -185,12 +183,12 @@ public class UserController {
         // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
         userCommandQueryService
                 .newUserEvent(req, eventId, userEvent)
-                .thenCompose((c) -> {
-                    // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
-                    return userCommandQueryService.createUser(req, eventId); })
-                .thenApply((user) -> {
-                    ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
-                    return ResponseEntity.ok(res);})
+//                .thenCompose((c) -> {
+//                    // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
+//                    return userCommandQueryService.createUser(req, eventId); })
+//                .thenApply((user) -> {
+//                    ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
+//                    return ResponseEntity.ok(res);})
                 .exceptionally(e -> {
                     if (e.getCause() instanceof CustomException) {
                         CustomException e2 = ((CustomException) e.getCause());

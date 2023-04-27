@@ -3,6 +3,7 @@ package com.example.orderservice.kafka;
 
 import chatting.chat.domain.user.service.UserService;
 import com.example.commondto.events.order.OrderEvent;
+import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.kafka.KafkaTopicPartition;
 import lombok.RequiredArgsConstructor;
@@ -18,40 +19,23 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 @Component
 @RequiredArgsConstructor
 public class MessageListener {
-    private final UserService userService;
+
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
-    // 로그인 요청
-    @KafkaListener(topics = KafkaTopic.orderReq, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.orderReq)
-    public void listenOrder(OrderEvent req) {
+    @KafkaListener(topics = KafkaTopic.productNewOrderRes, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.productNewOrderRes)
+    public void listenProductNewOrderResponse(OrderEvent req) {
 
-        log.info("Receive [OrderEvent] Message with query={}",req.getOrderStatus());
-
-        if (req.getInsertOrDelete().equals("INSERT")) {
-            userService.save(req.getUserId(),req.getUserName(),req.getUserStatus());
-
-            // 신규가입자 수 추이 확인을 위한 Producer (ELK 용)
-            RequestAddUserDTO user = new RequestAddUserDTO();
-            user.setUserName(req.getUserName());
-            user.setUserId(req.getUserId());
-            sendToKafka(TOPIC_USER_ADD_REQUEST,user);
-
-        } else if (req.getInsertOrDelete().equals("DELETE")) {
-            userService.remove(req.getUserId());
-        }
     }
+    @KafkaListener(topics = KafkaTopic.customerNewOrderRes, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.customerNewOrderRes)
+    public void listenCustomerNewOrderResponse(OrderEvent req) {
 
+    }
     private void sendToKafka(String topic,Object req) {
-        ListenableFuture<SendResult<String, Object>> future = kafkaProducerTemplate.send(topic, req);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                log.error("메세지 전송 실패={}", ex.getMessage());
-            }
-            @Override
-            public void onSuccess(SendResult<String, Object> result) {
-                log.info("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
-            }
+        kafkaProducerTemplate.send(topic, req).thenAccept((SendResult<String, Object> result)->{
+            log.debug("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
+        }).exceptionally(e->{
+            log.error("메세지 전송 실패={}", e.getMessage());
+            return null;
         });
     }
 

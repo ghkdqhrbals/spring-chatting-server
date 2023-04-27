@@ -142,33 +142,34 @@ public class UserController {
     /**
      * -------------- CREATE METHODS --------------
      */
-    // 유저 저장
-    @PostMapping("/usera")
-    public CompletableFuture<ResponseEntity<ResponseAddUser>> addUser(@RequestBody RequestUser req) throws InterruptedException {
-        // saga choreograhpy tx 관리 id;
-        UUID eventId = UUID.randomUUID();
-        UserEvent userEvent = new UserEvent(
-                eventId,
-                UserStatus.USER_INSERT,
-                req.getUserId()
-        );
-        // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
-        return userCommandQueryService.newUserEvent(req, eventId, userEvent).thenCompose((c)->{
-            // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
-            return userCommandQueryService.createUser(req, eventId);
-        }).thenApply((user)->{
-            ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
-            return ResponseEntity.ok(res);
-        }).exceptionally(e->{
-            if (e.getCause() instanceof CustomException){
-                CustomException e2 = ((CustomException) e.getCause());
-                throw new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail());
-            }else{
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
-            }
-        });
-    }
+    // 유저 저장(deprecated)
+//    @PostMapping("/usera")
+//    public CompletableFuture<ResponseEntity<ResponseAddUser>> addUser(@RequestBody RequestUser req) throws InterruptedException {
+//        // saga choreograhpy tx 관리 id;
+//        UUID eventId = UUID.randomUUID();
+//        UserEvent userEvent = new UserEvent(
+//                eventId,
+//                UserStatus.USER_INSERT,
+//                req.getUserId()
+//        );
+//        // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
+//        return userCommandQueryService.newUserEvent(req, eventId, userEvent).thenCompose((c)->{
+//            // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
+//            return userCommandQueryService.createUser(req, eventId);
+//        }).thenApply((user)->{
+//            ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
+//            return ResponseEntity.ok(res);
+//        }).exceptionally(e->{
+//            if (e.getCause() instanceof CustomException){
+//                CustomException e2 = ((CustomException) e.getCause());
+//                throw new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail());
+//            }else{
+//                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+//            }
+//        });
+//    }
 
+    // 유저 저장
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
         // saga choreograhpy tx 관리 id;
@@ -180,15 +181,10 @@ public class UserController {
                 UserStatus.USER_INSERT,
                 req.getUserId()
         );
+
         // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
         userCommandQueryService
                 .newUserEvent(req, eventId, userEvent)
-//                .thenCompose((c) -> {
-//                    // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
-//                    return userCommandQueryService.createUser(req, eventId); })
-//                .thenApply((user) -> {
-//                    ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
-//                    return ResponseEntity.ok(res);})
                 .exceptionally(e -> {
                     if (e.getCause() instanceof CustomException) {
                         CustomException e2 = ((CustomException) e.getCause());
@@ -204,34 +200,64 @@ public class UserController {
     /**
      * -------------- DELETE METHODS --------------
      */
+    // 유저 삭제(deprecated)
+//    @DeleteMapping("/user")
+//    public CompletableFuture<ResponseEntity<String>> removeUser(WebSession session){
+//        // JWT validation 과정 중, session 에 저장한 payload 의 sub:userId 를 가져옴
+//        String userId = session.getAttribute("userId");
+//        // 이벤트 ID 및 이벤트
+//        UUID eventId = UUID.randomUUID();
+//        UserEvent userEvent = new UserEvent(
+//                eventId,
+//                UserStatus.USER_DELETE,
+//                userId
+//        );
+//        // 이번에는 먼저 유저 삭제 후, 토픽에 전송
+//        return userCommandQueryService.removeUser(eventId, userId).thenApply(b->{
+//            if (b){
+//                sendToKafkaWithKey(KafkaTopic.userReq,
+//                        userEvent,
+//                        userId).thenRun(()->{
+//                    log.debug("send kafka message");
+//                });
+//            }
+//            return ResponseEntity.ok().body("delete method is successfully running");
+//        }).exceptionally(e->{
+//            return ResponseEntity.internalServerError().body("delete method error is occurred");
+//        });
+//    }
+
+
     // 유저 삭제
     @DeleteMapping("/user")
-    public CompletableFuture<ResponseEntity<String>> removeUser(WebSession session){
-        // JWT validation 과정 중, session 에 저장한 payload 의 sub:userId 를 가져옴
+    public Flux<?> removeUser(WebSession session){
+        // JWT validation 과정애서 session 에 저장한 payload 의 sub:userId 를 가져옴
         String userId = session.getAttribute("userId");
+
+        // sse 를 위한 Sinks 객체 추가
+        AsyncConfig.sinkMap.put(userId, Sinks.many().multicast().onBackpressureBuffer());
+
         // 이벤트 ID 및 이벤트
         UUID eventId = UUID.randomUUID();
         UserEvent userEvent = new UserEvent(
                 eventId,
-                UserStatus.USER_INSERT,
+                UserStatus.USER_DELETE,
                 userId
         );
-        // 이번에는 먼저 유저 삭제 후, 토픽에 전송
-        return userCommandQueryService.removeUser(eventId, userId).thenApply(b->{
-            if (b){
-                sendToKafkaWithKey(KafkaTopic.userReq,
-                        new UserEvent(
-                                eventId,
-                                UserStatus.USER_DELETE,
-                                userId
-                        ), userId).thenRun(()->{
-                    log.debug("send kafka message");
-                });
-            }
-            return ResponseEntity.ok().body("delete method is successfully running");
-        }).exceptionally(e->{
-            return ResponseEntity.internalServerError().body("delete method error is occurred");
-        });
+
+        // 유저 삭제 이벤트 전송 및 예외 처리
+        userCommandQueryService
+            .deleteUserEvent(eventId, userEvent)
+            .exceptionally(e -> {
+                if (e.getCause() instanceof CustomException) {
+                    CustomException e2 = ((CustomException) e.getCause());
+                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail()));
+                } else {
+                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+                }
+                return null;
+            });
+        return AsyncConfig.sinkMap.get(userId).asFlux().log();
     }
 
     /**

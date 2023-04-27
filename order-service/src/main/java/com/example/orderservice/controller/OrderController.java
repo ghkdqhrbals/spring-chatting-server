@@ -2,6 +2,7 @@ package com.example.orderservice.controller;
 
 import com.example.commondto.dto.OrderRequestDto;
 import com.example.orderservice.entity.OrderTransaction;
+import com.example.orderservice.service.OrderCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

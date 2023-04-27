@@ -27,7 +27,7 @@ public class KafkaTopicConfig {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderReq, Integer.parseInt(KafkaTopicPartition.orderReq),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderNewOrderReq, Integer.parseInt(KafkaTopicPartition.orderReq),3));
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderRes,Integer.parseInt(KafkaTopicPartition.orderRes),3));
     }
 }

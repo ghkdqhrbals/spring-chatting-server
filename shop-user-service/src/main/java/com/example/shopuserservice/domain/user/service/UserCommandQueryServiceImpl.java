@@ -136,7 +136,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                                 ut.getRole()
                         );
                         userRepository.save(user);
-                    }else{
+                    } else {
                         // 유저가 이미 존재할 때
                         ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
                         // CompletableFuture Fail 처리
@@ -228,6 +228,45 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                     KafkaTopic.userReq,
                     userEvent,
                     req.getUserId()
+            ).thenRun(()->{
+                log.info("send kafka message successfully");
+            });
+        }catch(Exception e){
+            return CompletableFuture.failedFuture(e);
+        }
+        return CompletableFuture.completedFuture(userTransaction);
+    }
+
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<UserTransaction> deleteUserEvent(UUID eventId, UserEvent userEvent) {
+        Optional<User> findUser = userRepository.findById(userEvent.getUserId());
+        if(findUser.isEmpty()){
+            return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.BAD_REQUEST,"사용자가 존재하지 않습니다"));
+        }
+        User u = findUser.get();
+
+        UserTransaction userTransaction = new UserTransaction(
+                eventId,
+                UserStatus.USER_DELETE,
+                UserResponseStatus.USER_APPEND,
+                UserResponseStatus.USER_APPEND,
+                u.getUserId(),
+                LocalDateTime.now(),
+                u.getEmail(),
+                u.getUserName(),
+                u.getUserPw(),
+                u.getRole());
+        try {
+            // 이벤트 Transaction 저장
+            userTransactionRepository.save(userTransaction);
+
+            // 이벤트 Publishing key:userId = Partitioning
+            sendToKafkaWithKey(
+                    KafkaTopic.userReq,
+                    userEvent,
+                    u.getUserId()
             ).thenRun(()->{
                 log.info("send kafka message successfully");
             });

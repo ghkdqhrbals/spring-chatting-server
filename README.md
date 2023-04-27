@@ -20,9 +20,9 @@
 To see the description of functions and simulation video, here is youtube link : [youtube link](https://www.youtube.com/watch?v=3VqwZ17XyEQ&t=237s)
 
 ## Proceeding... Architecture(v5)
-![chatSeq](img/v5/10.svg)
+![chatSeq](img/v5/21.svg)
 
-## Current Architecture(v4)
+## Architecture(v4)
 ![chatSeq](img/v3/v3.1.0.png)
 
 ## Running with Docker
@@ -153,6 +153,10 @@ To see the description of functions and simulation video, here is youtube link :
 4. In Kibana[http://localhost:5601](http://localhost:5601), create index of new-user and chat
 
 ## Update Logs
+### Update[v5.0.0]
+* MSA integration process
+
+
 ### Update[v4.2.1]
 
 * Fix performance issue(Insert 10K chatting required time **80 sec** -> **29 sec**)

@@ -1,6 +1,6 @@
 package com.example.commondto.events.order;
 
-import com.example.commondto.dto.PurchaseOrderDto;
+import com.example.commondto.dto.NewOrderDto;
 import com.example.commondto.events.Event;
 import lombok.Data;
 
@@ -12,14 +12,14 @@ public class OrderEvent implements Event {
 
     private final UUID eventId = UUID.randomUUID();
     private final Date date = new Date();
-    private PurchaseOrderDto purchaseOrder;
+    private NewOrderDto newOrderDto;
     private OrderStatus orderStatus;
 
     public OrderEvent() {
     }
 
-    public OrderEvent(PurchaseOrderDto purchaseOrder, OrderStatus orderStatus) {
-        this.purchaseOrder = purchaseOrder;
+    public OrderEvent(NewOrderDto newOrderDto, OrderStatus orderStatus) {
+        this.newOrderDto = newOrderDto;
         this.orderStatus = orderStatus;
     }
 
@@ -33,8 +33,8 @@ public class OrderEvent implements Event {
         return this.date;
     }
 
-    public PurchaseOrderDto getPurchaseOrder() {
-        return purchaseOrder;
+    public NewOrderDto getNewOrderDto() {
+        return newOrderDto;
     }
 
     public OrderStatus getOrderStatus() {

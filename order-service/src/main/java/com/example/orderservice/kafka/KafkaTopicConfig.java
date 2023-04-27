@@ -15,9 +15,7 @@ import javax.annotation.PostConstruct;
 public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;
-
-    // 계산 잘 해야한다. Partition 개수 >= Group내 Conusmer 개수
-    // 생성하고자 하는 Conumser=2 Partition은 2이기에, 각각 conusmer에게 leader-partition 매칭가능
+    
     private NewTopic generateTopic(String topicName,int partitionNum, int brokerNum) {
         return TopicBuilder.name(topicName)
                 .partitions(partitionNum) // 할당하고자 하는 파티션 개수
@@ -27,7 +25,8 @@ public class KafkaTopicConfig {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderReq, Integer.parseInt(KafkaTopicPartition.orderReq),3));
-        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderRes,Integer.parseInt(KafkaTopicPartition.orderRes),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.orderNewOrderReq, Integer.parseInt(KafkaTopicPartition.orderNewOrderReq),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.customerNewOrderRes, Integer.parseInt(KafkaTopicPartition.customerNewOrderRes),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.productNewOrderRes, Integer.parseInt(KafkaTopicPartition.productNewOrderRes),3));
     }
 }

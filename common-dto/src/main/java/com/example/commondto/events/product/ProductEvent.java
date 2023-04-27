@@ -1,6 +1,6 @@
-package com.example.commondto.events.inventory;
+package com.example.commondto.events.product;
 
-import com.example.commondto.dto.InventoryDto;
+import com.example.commondto.dto.ProductDto;
 import com.example.commondto.events.Event;
 import lombok.Data;
 
@@ -8,17 +8,17 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
-public class InventoryEvent implements Event {
+public class ProductEvent implements Event {
 
     private final UUID eventId = UUID.randomUUID();
     private final Date date = new Date();
-    private InventoryDto inventory;
-    private InventoryStatus status;
+    private ProductDto inventory;
+    private ProductStatus status;
 
-    public InventoryEvent() {
+    public ProductEvent() {
     }
 
-    public InventoryEvent(InventoryDto inventory, InventoryStatus status) {
+    public ProductEvent(ProductDto inventory, ProductStatus status) {
         this.inventory = inventory;
         this.status = status;
     }
@@ -33,11 +33,11 @@ public class InventoryEvent implements Event {
         return this.date;
     }
 
-    public InventoryDto getInventory() {
+    public ProductDto getInventory() {
         return inventory;
     }
 
-    public InventoryStatus getStatus() {
+    public ProductStatus getStatus() {
         return status;
     }
 

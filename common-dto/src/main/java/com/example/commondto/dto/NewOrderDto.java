@@ -9,9 +9,12 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class InventoryDto {
+public class NewOrderDto {
 
     private UUID orderId;
     private Integer productId;
+    private Integer price;
+    private Integer amount;
+    private Integer userId;
 
 }

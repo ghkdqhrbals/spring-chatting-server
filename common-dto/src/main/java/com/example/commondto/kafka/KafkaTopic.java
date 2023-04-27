@@ -1,7 +1,9 @@
 package com.example.commondto.kafka;
 
 public class KafkaTopic {
-    public static final String orderReq = "order.req";
+    public static final String orderNewOrderReq = "order.newOrder.req";
+    public static final String customerNewOrderRes = "customer.newOrder.res";
+    public static final String productNewOrderRes = "product.newOrder.res";
     public static final String orderRes = "order.res";
     public static final String paymentReq = "payment.req";
     public static final String paymentRes = "payment.res";

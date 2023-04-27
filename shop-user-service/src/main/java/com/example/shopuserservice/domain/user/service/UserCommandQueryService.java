@@ -22,6 +22,7 @@ public interface UserCommandQueryService {
     CompletableFuture<List<User>> getAllUser();
     CompletableFuture<User> createUser(RequestUser request, UUID eventId);
     CompletableFuture<UserTransaction> newUserEvent(RequestUser request, UUID eventId, UserEvent userEvent);
+    CompletableFuture<UserTransaction> deleteUserEvent(UUID eventId, UserEvent userEvent);
     CompletableFuture<Optional<User>> getUserById(String id);
     CompletableFuture<UserTransaction> updateStatus(UserResponseEvent event);
     DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);

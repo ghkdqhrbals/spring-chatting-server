@@ -18,15 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -36,7 +30,7 @@ public class MessageListener {
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
     // 로그인 요청
-    @KafkaListener(topics = KafkaTopic.orderReq, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.orderReq)
+    @KafkaListener(topics = KafkaTopic.orderNewOrderReq, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.orderReq)
     public void listenOrder(OrderEvent req) {
 
         log.info("Receive [OrderEvent] Message with query={}",req.getOrderStatus());

@@ -5,7 +5,7 @@ spring:
     username: guest
     password: guest
   application:
-    name: auth-service
+    name: user-service
   messages:
     basename: messages,errors
   datasource:
@@ -29,11 +29,6 @@ spring:
 #  main:
 #    allow-bean-definition-overriding: true
 
-kafka:
-  topic:
-    createOrder: "create-order"
-
-
 server:
   error:
     include-stacktrace: never
@@ -42,8 +37,6 @@ server:
     connection-timeout: 60s
     idle-timeout: 60s
   port: 8010
-
-
 
 eureka:
   instance:

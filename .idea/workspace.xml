@@ -5,29 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/config-service/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer-service/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/discovery/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose-prod.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop-user-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apigateway-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserResponseStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserResponseStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopic.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopicPartition.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopicPartition.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/customer-service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose-kafka.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-kafka.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apigateway-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/apigateway-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer-service/src/main/resources/bootstrap.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/customer-service/src/main/resources/bootstrap.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -50,13 +40,11 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/docker-compose.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/bootstrap.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/bootstrap.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources/bootstrap.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/resources/bootstrap.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +141,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "jdk.selected.JAVA_MODULE": "corretto-17",
-    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/shop-user-service",
+    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/apigateway-service",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
@@ -170,11 +158,11 @@
       <recent name="com.example.orderservice.repository" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apigateway-service" />
       <recent name="$PROJECT_DIR$/shop-user-service" />
       <recent name="$PROJECT_DIR$/customer-service" />
       <recent name="$PROJECT_DIR$/config-service" />
       <recent name="$PROJECT_DIR$/discovery" />
-      <recent name="$PROJECT_DIR$/img/v5" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/img/v5" />
@@ -380,7 +368,7 @@
       <workItem from="1681194101352" duration="1746000" />
       <workItem from="1681195878882" duration="41382000" />
       <workItem from="1681537246056" duration="3785000" />
-      <workItem from="1681637866428" duration="73053000" />
+      <workItem from="1681637866428" duration="77650000" />
     </task>
     <servers />
   </component>

@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 
 @Slf4j
 @RestController
-@RequestMapping("/chat")
 public class ChatController {
     private final UserService userService;
     private final FriendService friendService;

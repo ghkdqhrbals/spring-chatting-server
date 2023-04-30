@@ -29,49 +29,49 @@ spring:
             postLogger: true
       routes:
         # 세부기능
-        - id: auth-service
+        - id: user-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/auth/actuator/**
+            - Path=/user/actuator/**
             - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+#            - RewritePath=/user/(?<segment>.*), /$\{segment}
         # 로그인
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
+        - id: user-service
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/auth/login
+            - Path=/user/login
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/auth/(?<segment>.*), /$\{segment}
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
+#            - RewritePath=/user/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/auth/**
+            - Path=/user/**
             - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+#            - RewritePath=/user/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
         # 회원가입
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
+        - id: user-service
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/auth/user
+            - Path=/user
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/auth/(?<segment>.*), /$\{segment}
-        - id: order-service
-          uri: lb://ORDER-SERVICE
+#            - RewritePath=/auth/(?<segment>.*), /$\{segment}
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
           predicates:
-            - Path=/order-service/**
+            - Path=/chat/**
             - Method=POST, GET
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+            - RewritePath=/chat/(?<segment>.*), /$\{segment}
 management:
   endpoints:
     web:

@@ -10,6 +10,8 @@ confluent-hub-client-latest.tar.gz
 ./spring-chatting-auth-server/build
 ./spring-chatting-auth-server/build
 
+.docker
+
 /.idea
 /app
 /backups

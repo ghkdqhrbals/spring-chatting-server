@@ -143,7 +143,7 @@ public class UserController {
      * -------------- CREATE METHODS --------------
      */
     // 유저 저장(deprecated)
-//    @PostMapping("/usera")
+//    @PostMapping("/user")
 //    public CompletableFuture<ResponseEntity<ResponseAddUser>> addUser(@RequestBody RequestUser req) throws InterruptedException {
 //        // saga choreograhpy tx 관리 id;
 //        UUID eventId = UUID.randomUUID();
@@ -169,7 +169,7 @@ public class UserController {
 //        });
 //    }
 
-    // 유저 저장
+    // 유저 저장 Server-Sent Event
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
         // saga choreograhpy tx 관리 id;

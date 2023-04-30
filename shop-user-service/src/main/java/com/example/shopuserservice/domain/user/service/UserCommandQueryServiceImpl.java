@@ -162,11 +162,14 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                     || customerStatus.equals(UserResponseStatus.USER_FAIL.name())) {
                 // 실패 시, FAIL 처리
                 ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
+
+
                 return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.CONFLICT, "동일한 사용자가 존재합니다"));
             // 중간 결과값들 계속 전송
             } else {
                 AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
             }
+
         }else{
             return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러"));
         }

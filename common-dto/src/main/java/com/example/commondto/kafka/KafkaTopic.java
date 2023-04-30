@@ -10,6 +10,8 @@ public class KafkaTopic {
     public static final String productReq = "product.req";
     public static final String productRes = "product.res";
     public static final String userReq = "user.req";
+    public static final String userChatRollback = "user.chat.rollback";
+    public static final String userCustomerRollback = "user.customer.rollback";
     public static final String userRes = "user.res";
     public static final String chat = "chat";
     public static final String logUser = "log.user";

@@ -49,6 +49,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
     restart: always
+
   # -------- kafdrop for visualization --------
   kafdrop:
     image: obsidiandynamics/kafdrop

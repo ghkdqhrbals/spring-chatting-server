@@ -1,0 +1,145 @@
+version : '3.7'
+
+services:
+  # ********** Backbone **********
+  # -------- KAFKA --------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+  kafka1:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka1
+    ports:
+      - "8097:8097"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8097,INTERNAL://kafka1:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    restart: always
+  kafka2:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka2
+    ports:
+      - "8098:8098"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8098,INTERNAL://kafka2:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    restart: always
+  kafka3:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka3
+    ports:
+      - "8099:8099"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8099,INTERNAL://kafka3:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    restart: always
+  # -------- kafdrop for visualization --------
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka1:9092,kafka2:9092,kafka3:9092"
+      JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    ports:
+      - 9010:9000
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+  # -------- Rabbit MQ for configuration --------
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  # ********** SERVICES **********
+  # -------- Config Service --------
+  configuration-server:
+    container_name: configuration-server
+    build: ./config-service
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+    restart: always
+
+  # -------- Discovery Service --------
+  discovery-server:
+    container_name: discovery-server
+    build: ./discovery
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+    restart: always
+
+  chatting-server:
+    container_name: chatting-server
+    build: ./spring-chatting-backend-server
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      SERVER_PORT: 8030
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - discovery-server
+      - configuration-server
+    restart: always
+
+  customer-server:
+    container_name: customer-server
+    build: ./customer-service
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      SERVER_PORT: 8020
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - discovery-server
+      - configuration-server
+    restart: always
+
+  user-server:
+    container_name: user-server
+    build: ./shop-user-service
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      SERVER_PORT: 8010
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - discovery-server
+      - configuration-server
+    restart: always

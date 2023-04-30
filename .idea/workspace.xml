@@ -5,11 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/img/v5/21.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/entity/Order.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/repository/OrderRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/repository/OrderTransactionRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/service/OrderCommandService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-service/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customer-service/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/discovery/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose-prod.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shop-user-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -19,16 +22,12 @@
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/InventoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/ProductDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/PaymentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/CustomerDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/PurchaseOrderDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/dto/NewOrderDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/inventory/InventoryEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/product/ProductEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/inventory/InventoryStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/product/ProductStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/order/OrderEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/order/OrderEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/payment/PaymentEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/customer/CustomerEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/payment/PaymentStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/customer/CustomerStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserResponseStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user/UserResponseStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopic.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopic.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopicPartition.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/kafka/KafkaTopicPartition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/customer-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose-kafka.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-kafka.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -51,15 +50,13 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/controller/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/entity/OrderTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/entity/OrderTransaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/kafka/KafkaTopicConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/kafka/KafkaTopicConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/kafka/MessageListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice/kafka/MessageListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/example/productservice/kafka/KafkaTopicConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/example/productservice/kafka/KafkaTopicConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/com/example/productservice/kafka/MessageListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/java/com/example/productservice/kafka/MessageListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/docker-compose.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +153,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "jdk.selected.JAVA_MODULE": "corretto-17",
-    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/img/v5",
+    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server/shop-user-service",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
@@ -165,16 +162,19 @@
     "spring.configuration.checksum": "de83650d8f779310043b07edd7b0ab1b"
   }
 }]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.example.orderservice.repository" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/shop-user-service" />
+      <recent name="$PROJECT_DIR$/customer-service" />
+      <recent name="$PROJECT_DIR$/config-service" />
+      <recent name="$PROJECT_DIR$/discovery" />
       <recent name="$PROJECT_DIR$/img/v5" />
-      <recent name="$PROJECT_DIR$/order-service/src/main/java/com/example/orderservice" />
-      <recent name="$PROJECT_DIR$/customer-service/src/main/resources" />
-      <recent name="$PROJECT_DIR$/customer-service/src/main/java/com/example/orderservice" />
-      <recent name="$PROJECT_DIR$/common-dto/src/main/java/com/example/commondto/events/user" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/img/v5" />
@@ -380,7 +380,7 @@
       <workItem from="1681194101352" duration="1746000" />
       <workItem from="1681195878882" duration="41382000" />
       <workItem from="1681537246056" duration="3785000" />
-      <workItem from="1681637866428" duration="59246000" />
+      <workItem from="1681637866428" duration="73053000" />
     </task>
     <servers />
   </component>

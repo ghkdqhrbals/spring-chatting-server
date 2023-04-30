@@ -11,6 +11,11 @@ confluent-hub-client-latest.tar.gz
 ./spring-chatting-auth-server/build
 
 .docker
+.gradle
+.idea
+/gradle/*
+.DS_Store
+.gitignore
 
 /.idea
 /app

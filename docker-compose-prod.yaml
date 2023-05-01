@@ -138,24 +138,6 @@ services:
       - configuration-server
     restart: always
 
-  user-server:
-    container_name: user-server
-    build: ./shop-user-service
-    ports:
-      - "8010:8010"
-    environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
-      eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
-      SERVER_PORT: 8010
-    depends_on:
-      - kafka1
-      - kafka2
-      - kafka3
-      - discovery-server
-      - configuration-server
-    restart: always
-
   api-server:
     container_name: api-server
     build: ./apigateway-service
@@ -171,6 +153,24 @@ services:
       - user-server
       - chatting-server
       - customer-server
+      - discovery-server
+      - configuration-server
+    restart: always
+
+  user-server:
+    container_name: user-server
+    build: ./shop-user-service
+    ports:
+      - "8010:8010"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
+      SERVER_PORT: 8010
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
       - discovery-server
       - configuration-server
     restart: always

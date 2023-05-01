@@ -30,6 +30,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         log.info("JWT 토큰 필터");
 
         String token = resolveToken(exchange.getRequest());
+        log.info(token);
         if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token, exchange)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
 

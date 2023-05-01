@@ -16,6 +16,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -30,16 +32,13 @@ public class MessageListener {
 
         userService.updateStatus(req).exceptionally(e->{
             AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(e);
+            sendToKafkaWithKey(KafkaTopic.userCustomerRollback, req.getUserId(), req.getUserId());
+            sendToKafkaWithKey(KafkaTopic.userChatRollback, req.getUserId(), req.getUserId());
             return null;
         });
     }
 
-    private void sendToKafka(String topic,Object req) {
-        kafkaProducerTemplate.send(topic, req).thenAccept((SendResult<String, Object> result)->{
-            log.debug("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
-        }).exceptionally(e->{
-            log.error("메세지 전송 실패={}", e.getMessage());
-            return null;
-        });
+    private CompletableFuture<?> sendToKafkaWithKey(String topic, Object req, String key) {
+        return kafkaProducerTemplate.send(topic,key, req);
     }
 }

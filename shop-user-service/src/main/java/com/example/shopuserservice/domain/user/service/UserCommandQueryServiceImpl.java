@@ -115,6 +115,8 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             String customerStatus = ut.getCustomerStatus();
             String userStatus = ut.getUserStatus();
 
+            sendRollbackIfStatusFail(ut, chatStatus, customerStatus);
+
             // 둘 다 SUCCESS 일 경우,
             if (chatStatus.equals(UserResponseStatus.USER_SUCCES.name())
                     && customerStatus.equals(UserResponseStatus.USER_SUCCES.name())){
@@ -174,6 +176,18 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러"));
         }
         return CompletableFuture.completedFuture(tx.get());
+    }
+
+    private void sendRollbackIfStatusFail(UserTransaction ut, String chatStatus, String customerStatus) {
+        if (!chatStatus.equals(UserResponseStatus.USER_APPEND.name())
+                && !customerStatus.equals(UserResponseStatus.USER_APPEND.name())){
+            if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())){
+                sendToKafkaWithKey(KafkaTopic.userCustomerRollback, ut.getUserId(), ut.getUserId());
+            }
+            if (customerStatus.equals(UserResponseStatus.USER_FAIL.name())){
+                sendToKafkaWithKey(KafkaTopic.userChatRollback, ut.getUserId(), ut.getUserId());
+            }
+        }
     }
 
     // 유저 저장

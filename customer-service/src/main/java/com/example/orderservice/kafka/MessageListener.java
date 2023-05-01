@@ -44,7 +44,7 @@ public class MessageListener {
                 return null;
             });
         } else if (req.getUserStatus().equals(UserStatus.USER_DELETE.name())) {
-            userService.removeUserBalance(req.getUserId(), req.getEventId())
+            userService.removeUserBalance(req.getUserId())
                     .thenRun(()->{
                         sendToKafka(KafkaTopic.userRes,
                                 new UserResponseEvent(req.getEventId(),
@@ -62,6 +62,18 @@ public class MessageListener {
                     });;
         }
     }
+
+    @KafkaListener(topics = KafkaTopic.userCustomerRollback, containerFactory = "userRollbackKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userCustomerRollback)
+    public void listenUserRollback(String userId) {
+        try{
+            userService.removeUserBalance(userId);
+        }catch(Exception e){
+            log.info(e.getMessage());
+        }
+    }
+
+
+
 
     private void sendToKafka(String topic,Object req) {
         kafkaProducerTemplate.send(topic, req).thenAccept((SendResult<String, Object> result)->{

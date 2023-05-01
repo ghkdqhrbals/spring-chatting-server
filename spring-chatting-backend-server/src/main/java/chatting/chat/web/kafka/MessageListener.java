@@ -48,6 +48,15 @@ public class MessageListener {
         }
     }
 
+    @KafkaListener(topics = KafkaTopic.userChatRollback, containerFactory = "userRollbackKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userChatRollback)
+    public void listenUserRemove(String userId) {
+        try {
+            userService.removeUser(userId);
+        }catch(Exception e){
+            log.info(e.getMessage());
+        }
+    }
+
     private void sendToKafka(String topic,Object req) {
         kafkaProducerTemplate.send(topic, req).thenAccept((SendResult<String, Object> result)->{
             log.debug("메세지 전송 성공 topic={}, offset={}, partition={}",topic, result.getRecordMetadata().offset(), result.getRecordMetadata().partition());

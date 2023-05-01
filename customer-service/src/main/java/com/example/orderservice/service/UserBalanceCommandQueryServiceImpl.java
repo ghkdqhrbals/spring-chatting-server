@@ -56,7 +56,7 @@ public class UserBalanceCommandQueryServiceImpl implements UserBalanceCommandQue
     @Override
     @Async
     @Transactional
-    public CompletableFuture<UserBalance> removeUserBalance(String userId, UUID eventId) {
+    public CompletableFuture<UserBalance> removeUserBalance(String userId) {
         Optional<UserBalance> findUserBalance = userBalanceRepository.findById(userId);
 
         if (findUserBalance.isPresent()){

@@ -69,7 +69,7 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user/**
-            - Method=GET, POST
+            - Method=GET, POST, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - AuthorizationHeaderFilter

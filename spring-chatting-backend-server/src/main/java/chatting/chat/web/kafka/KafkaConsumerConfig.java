@@ -27,6 +27,11 @@ public class KafkaConsumerConfig {
         return getContainerFactory("chat",UserEvent.class);
     }
 
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> userRollbackKafkaListenerContainerFactory() {
+        return getContainerFactory("chat",String.class);
+    }
+
     /**
      * 유틸 목록
      * --Methods--

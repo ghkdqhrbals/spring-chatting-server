@@ -3,7 +3,5 @@ spring:
     active: dev
   cloud:
     config:
-#      uri:
-#        http://localhost:8888
       name:
-        app
+        customer

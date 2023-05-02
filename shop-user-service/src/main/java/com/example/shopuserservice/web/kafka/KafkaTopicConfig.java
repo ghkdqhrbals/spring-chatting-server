@@ -29,6 +29,8 @@ public class KafkaTopicConfig {
     public void init() {
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userReq,Integer.parseInt(KafkaTopicPartition.userReq),3));
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userRes,Integer.parseInt(KafkaTopicPartition.userRes),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userChatRollback,Integer.parseInt(KafkaTopicPartition.userChatRollback),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userCustomerRollback,Integer.parseInt(KafkaTopicPartition.userCustomerRollback),3));
     }
 
 }

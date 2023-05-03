@@ -4,6 +4,7 @@ import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.data.UserTransaction;
+import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.web.dto.UserDto;
 import com.example.shopuserservice.web.vo.RequestUser;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public interface UserCommandQueryService {
     CompletableFuture<List<User>> getAllUser();
     CompletableFuture<User> createUser(RequestUser request, UUID eventId);
     CompletableFuture<UserTransaction> newUserEvent(RequestUser request, UUID eventId, UserEvent userEvent);
+    CompletableFuture<UserTransactions> newUserEvent2(RequestUser request, UUID eventId, UserEvent userEvent);
     CompletableFuture<UserTransaction> deleteUserEvent(UUID eventId, UserEvent userEvent);
     CompletableFuture<Optional<User>> getUserById(String id);
     CompletableFuture<UserTransaction> updateStatus(UserResponseEvent event);

@@ -10,8 +10,10 @@ import com.example.shopuserservice.client.OrderServiceClient;
 import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.data.UserTransaction;
+import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
+import com.example.shopuserservice.domain.user.repository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.repository.UserTransactionRepository;
 import com.example.shopuserservice.web.dto.UserDto;
 import com.example.shopuserservice.web.error.CustomException;
@@ -48,6 +50,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     private final UserRepository userRepository;
     private final UserRepositoryJDBC userRepositoryJDBC;
     private final UserTransactionRepository userTransactionRepository;
+    private final UserTransactionRedisRepository userTransactionRedisRepository;
 
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Executor serviceExecutor;
@@ -57,13 +60,14 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     public UserCommandQueryServiceImpl(UserRepository userRepository,
                                        UserRepositoryJDBC userRepositoryJDBC,
-                                       @Qualifier("taskExecutorForService") Executor serviceExecutor,
+                                       UserTransactionRedisRepository userTransactionRedisRepository, @Qualifier("taskExecutorForService") Executor serviceExecutor,
                                        HikariDataSource hikariDataSource,
                                        @Qualifier("bcrypt") PasswordEncoder pwe,
                                        OrderServiceClient orderServiceClient,
                                        UserTransactionRepository userTransactionRepository, KafkaTemplate<String, Object> kafkaProducerTemplate) {
         this.userRepository = userRepository;
         this.userRepositoryJDBC = userRepositoryJDBC;
+        this.userTransactionRedisRepository = userTransactionRedisRepository;
         this.serviceExecutor = serviceExecutor;
         this.hikariDataSource = hikariDataSource;
         this.pwe = pwe;
@@ -236,9 +240,44 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 req.getUserName(),
                 pwe.encode(req.getUserPw()),
                 req.getRole());
+
         try {
             // 이벤트 Transaction 저장
             userTransactionRepository.save(userTransaction);
+
+            // 이벤트 Publishing key:userId = Partitioning
+            sendToKafkaWithKey(
+                    KafkaTopic.userReq,
+                    userEvent,
+                    req.getUserId()
+            ).thenRun(()->{
+                log.info("send kafka message successfully");
+            });
+        }catch(Exception e){
+            return CompletableFuture.failedFuture(e);
+        }
+        return CompletableFuture.completedFuture(userTransaction);
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<UserTransactions> newUserEvent2(RequestUser req, UUID eventId, UserEvent userEvent) {
+
+        UserTransactions userTransaction = new UserTransactions(
+                eventId,
+                UserStatus.USER_INSERT,
+                UserResponseStatus.USER_APPEND,
+                UserResponseStatus.USER_APPEND,
+                req.getUserId(),
+                LocalDateTime.now(),
+                req.getEmail(),
+                req.getUserName(),
+                pwe.encode(req.getUserPw()),
+                req.getRole());
+
+        try {
+            // 이벤트 Transaction 저장
+            userTransactionRedisRepository.save(userTransaction);
 
             // 이벤트 Publishing key:userId = Partitioning
             sendToKafkaWithKey(

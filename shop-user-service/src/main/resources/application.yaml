@@ -10,7 +10,7 @@ spring:
     basename: messages,errors
   datasource:
     hikari:
-      maximum-pool-size: 30
+      maximum-pool-size: 60
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -33,7 +33,7 @@ server:
   error:
     include-stacktrace: never
   netty:
-    max-keep-alive-requests: 10000 # 서버 메모리에 따라 구성가능합니다
+    maxKeepAliveRequests: 10000
     connection-timeout: 60s
     idle-timeout: 60s
   port: 8010

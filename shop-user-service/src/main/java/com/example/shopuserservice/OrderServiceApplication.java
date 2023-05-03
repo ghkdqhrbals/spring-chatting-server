@@ -24,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Mono;
+import reactor.netty.Connection;
+import reactor.netty.resources.ConnectionProvider;
+import reactor.netty.tcp.TcpClient;
 
 import java.net.UnknownHostException;
 
@@ -37,7 +40,6 @@ public class OrderServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(OrderServiceApplication.class, args);
-
 	}
 
 	@Bean

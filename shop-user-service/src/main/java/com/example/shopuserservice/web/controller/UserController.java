@@ -5,6 +5,7 @@ import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.UserTransaction;
+import com.example.shopuserservice.domain.user.repository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.web.error.CustomException;
@@ -52,6 +53,7 @@ public class UserController {
     private final UserCommandQueryService userCommandQueryService;
     private final LoginService loginService;
     private final UserReadService userReadService;
+    private final UserTransactionRedisRepository userTransactionRedisRepository;
     private final HikariDataSource hikariDataSource;
 
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
@@ -170,10 +172,12 @@ public class UserController {
 //    }
 
     // 유저 저장 Server-Sent Event
-    @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    // produces = MediaType.TEXT_EVENT_STREAM_VALUE
+    @PostMapping(value = "/user")
     public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
         // saga choreograhpy tx 관리 id;
         UUID eventId = UUID.randomUUID();
+
         AsyncConfig.sinkMap.put(req.getUserId(), Sinks.many().multicast().onBackpressureBuffer());
 
         UserEvent userEvent = new UserEvent(
@@ -181,6 +185,7 @@ public class UserController {
                 UserStatus.USER_INSERT,
                 req.getUserId()
         );
+
 
         // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
         userCommandQueryService

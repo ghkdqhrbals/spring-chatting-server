@@ -23,8 +23,7 @@ public class MessageListener {
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
     @KafkaListener(topics = KafkaTopic.userReq, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userReq)
-    public void listenUserRemove(UserEvent req) {
-        System.out.println("THREAD:"+Thread.currentThread().getName()+" STATUS:"+req.getUserStatus()+" ID:"+req.getUserId());
+    public void listenUser(UserEvent req) {
         if (req.getUserStatus().equals(UserStatus.USER_INSERT.name())) {
             userService.saveUserBalance(req.getUserId(), req.getEventId())
                     .thenRun(()->{
@@ -34,7 +33,6 @@ public class MessageListener {
                                     UserResponseStatus.USER_SUCCES.name(),
                                     ServiceNames.customer));
             }).exceptionally(e->{
-                log.info("Exception={}",e.getMessage());
                 sendToKafka(KafkaTopic.userRes,
                         new UserResponseEvent(req.getEventId(),
                                 req.getUserId(),

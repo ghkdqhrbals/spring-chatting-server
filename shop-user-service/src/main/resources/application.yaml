@@ -26,6 +26,13 @@ spring:
         jdbc:
           time_zone: UTC
           batch_size: 50
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: 10
+
+
 #  main:
 #    allow-bean-definition-overriding: true
 

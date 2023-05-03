@@ -16,6 +16,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,18 +35,18 @@ public class MessageListener {
             } else if (req.getUserStatus().equals(UserStatus.USER_DELETE.name())) {
                 userService.remove(req.getUserId());
             }
-            sendToKafka(KafkaTopic.userRes,
+            sendToKafkaWithKey(KafkaTopic.userRes,
                     new UserResponseEvent(req.getEventId(),
                             req.getUserId(),
                             UserResponseStatus.USER_SUCCES.name(),
-                            ServiceNames.chat));
+                            ServiceNames.chat),req.getEventId().toString());
         }catch(Exception e){
             log.info(e.getMessage());
-            sendToKafka(KafkaTopic.userRes,
+            sendToKafkaWithKey(KafkaTopic.userRes,
                     new UserResponseEvent(req.getEventId(),
                             req.getUserId(),
                             UserResponseStatus.USER_FAIL.name(),
-                            ServiceNames.chat));
+                            ServiceNames.chat),req.getEventId().toString());
         }
     }
 
@@ -55,6 +57,10 @@ public class MessageListener {
         }catch(Exception e){
             log.info(e.getMessage());
         }
+    }
+
+    private CompletableFuture<?> sendToKafkaWithKey(String topic, Object req, String key) {
+        return kafkaProducerTemplate.send(topic,key, req);
     }
 
     private void sendToKafka(String topic,Object req) {

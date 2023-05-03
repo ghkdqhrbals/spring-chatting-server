@@ -182,7 +182,107 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         return CompletableFuture.completedFuture(tx.get());
     }
 
+    @Override
+    public CompletableFuture<UserTransactions> updateStatus2(UserResponseEvent event) {
+        Optional<UserTransactions> tx = userTransactionRedisRepository.findById(event.getEventId());
+
+        if (tx.isPresent()){
+            UserTransactions ut = tx.get();
+
+            switch (event.getServiceName()){
+                case ServiceNames.chat -> {
+                    ut.setChatStatus(event.getUserResponseStatus());
+                    break;
+                }
+                case ServiceNames.customer -> {
+                    ut.setCustomerStatus(event.getUserResponseStatus());
+                    break;
+                }
+            }
+            String chatStatus = ut.getChatStatus();
+            String customerStatus = ut.getCustomerStatus();
+            String userStatus = ut.getUserStatus();
+            userTransactionRedisRepository.save(ut);
+
+            sendRollbackIfStatusFail2(ut, chatStatus, customerStatus);
+
+            // 둘 다 SUCCESS 일 경우,
+            if (chatStatus.equals(UserResponseStatus.USER_SUCCES.name())
+                    && customerStatus.equals(UserResponseStatus.USER_SUCCES.name())){
+                // 유저 Status 에 따라 완료/미완료
+                if (userStatus.equals(UserStatus.USER_INSERT.name())){
+
+                    Optional<User> findUser = userRepository.findById(ut.getUserId());
+
+                    if (!findUser.isPresent()){
+                        // 유저 저장
+                        User user = new User(
+                                ut.getUserId(),
+                                ut.getUserPw(),
+                                ut.getEmail(),
+                                ut.getUserName(),
+                                LocalDateTime.now(),
+                                LocalDateTime.now(),
+                                LocalDateTime.now(),
+                                ut.getRole()
+                        );
+                        userRepository.save(user);
+                    } else {
+                        // 유저가 이미 존재할 때
+                        ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
+                        // CompletableFuture Fail 처리
+                        return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.CONFLICT, "동일한 사용자가 존재합니다"));
+                    }
+
+                    log.info("STATUS = {}, {}",ut.getChatStatus(),ut.getCustomerStatus());
+
+                    ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
+                    userTransactionRedisRepository.save(ut);
+
+                    // 결과 SSE 클라이언트 반환
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
+
+                } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
+                    userRepository.deleteById(ut.getUserId());
+                    ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
+                    userTransactionRedisRepository.save(ut);
+
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
+                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
+                }
+                // 둘 중 FAIL 이 있을 경우
+            } else if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())
+                    || customerStatus.equals(UserResponseStatus.USER_FAIL.name())) {
+                // 실패 시, FAIL 처리
+                ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
+                userTransactionRedisRepository.save(ut);
+
+                return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.CONFLICT, "동일한 사용자가 존재합니다"));
+                // 중간 결과값들 계속 전송
+            } else {
+                AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
+            }
+
+        }else{
+            return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러"));
+        }
+        return CompletableFuture.completedFuture(tx.get());
+    }
+
     private void sendRollbackIfStatusFail(UserTransaction ut, String chatStatus, String customerStatus) {
+        if (!chatStatus.equals(UserResponseStatus.USER_APPEND.name())
+                && !customerStatus.equals(UserResponseStatus.USER_APPEND.name())){
+            if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())){
+                sendToKafkaWithKey(KafkaTopic.userCustomerRollback, ut.getUserId(), ut.getUserId());
+            }
+            if (customerStatus.equals(UserResponseStatus.USER_FAIL.name())){
+                sendToKafkaWithKey(KafkaTopic.userChatRollback, ut.getUserId(), ut.getUserId());
+            }
+        }
+    }
+
+    private void sendRollbackIfStatusFail2(UserTransactions ut, String chatStatus, String customerStatus) {
         if (!chatStatus.equals(UserResponseStatus.USER_APPEND.name())
                 && !customerStatus.equals(UserResponseStatus.USER_APPEND.name())){
             if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())){

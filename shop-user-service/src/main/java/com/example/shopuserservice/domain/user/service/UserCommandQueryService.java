@@ -27,6 +27,7 @@ public interface UserCommandQueryService {
     CompletableFuture<UserTransaction> deleteUserEvent(UUID eventId, UserEvent userEvent);
     CompletableFuture<Optional<User>> getUserById(String id);
     CompletableFuture<UserTransaction> updateStatus(UserResponseEvent event);
+    CompletableFuture<UserTransactions> updateStatus2(UserResponseEvent event);
     DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
     DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
     CompletableFuture<Boolean> removeUser(UUID eventId, String userId);

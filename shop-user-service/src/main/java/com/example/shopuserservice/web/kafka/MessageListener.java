@@ -30,7 +30,7 @@ public class MessageListener {
     public void listenUser(UserResponseEvent req) {
         log.info("메세지 도착 = {}", req.getServiceName());
 
-        userService.updateStatus(req).exceptionally(e->{
+        userService.updateStatus2(req).exceptionally(e->{
             AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(e);
             sendToKafkaWithKey(KafkaTopic.userCustomerRollback, req.getUserId(), req.getUserId());
             sendToKafkaWithKey(KafkaTopic.userChatRollback, req.getUserId(), req.getUserId());

@@ -4,6 +4,7 @@ import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.time.LocalDateTime;

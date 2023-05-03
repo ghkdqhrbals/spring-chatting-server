@@ -39,21 +39,4 @@ public class JpaConfig {
         this.hikariDataSource = hikariDataSource;
     }
 
-    @Bean
-    public RedisConnectionFactory connectionFactory() {
-        return new LettuceConnectionFactory();
-    }
-
-    @Bean
-    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-
-        RedisTemplate<byte[], byte[]> template = new RedisTemplate<byte[], byte[]>();
-        template.setConnectionFactory(redisConnectionFactory);
-        return template;
-    }
-
-//    @Bean
-//    public UserService userService() {
-//        return new UserServiceImpl(userRepository, userRepositoryJDBC, serviceExecutor, hikariDataSource);
-//    }
 }

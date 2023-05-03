@@ -189,7 +189,7 @@ public class UserController {
 
         // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
         userCommandQueryService
-                .newUserEvent(req, eventId, userEvent)
+                .newUserEvent2(req, eventId, userEvent)
                 .exceptionally(e -> {
                     if (e.getCause() instanceof CustomException) {
                         CustomException e2 = ((CustomException) e.getCause());

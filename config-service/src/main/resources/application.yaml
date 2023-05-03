@@ -13,4 +13,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/ghkdqhrbals/spring-chatting-server.git
+          default-label: main
+          uri: https://github.com/ghkdqhrbals/spring-chatting-server
+          timeout: 60
+

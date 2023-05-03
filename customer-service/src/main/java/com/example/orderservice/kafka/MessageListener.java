@@ -14,6 +14,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,35 +29,35 @@ public class MessageListener {
         if (req.getUserStatus().equals(UserStatus.USER_INSERT.name())) {
             userService.saveUserBalance(req.getUserId(), req.getEventId())
                     .thenRun(()->{
-                        sendToKafka(KafkaTopic.userRes,
+                        sendToKafkaWithKey(KafkaTopic.userRes,
                                 new UserResponseEvent(req.getEventId(),
                                     req.getUserId(),
                                     UserResponseStatus.USER_SUCCES.name(),
-                                    ServiceNames.customer));
+                                    ServiceNames.customer), req.getEventId().toString());
             }).exceptionally(e->{
-                sendToKafka(KafkaTopic.userRes,
+                sendToKafkaWithKey(KafkaTopic.userRes,
                         new UserResponseEvent(req.getEventId(),
                                 req.getUserId(),
                                 UserResponseStatus.USER_FAIL.name(),
-                                ServiceNames.customer));
+                                ServiceNames.customer), req.getEventId().toString());
                 log.info("saveUser={}",e.getMessage());
                 return null;
             });
         } else if (req.getUserStatus().equals(UserStatus.USER_DELETE.name())) {
             userService.removeUserBalance(req.getUserId())
                     .thenRun(()->{
-                        sendToKafka(KafkaTopic.userRes,
+                        sendToKafkaWithKey(KafkaTopic.userRes,
                                 new UserResponseEvent(req.getEventId(),
                                         req.getUserId(),
                                         UserResponseStatus.USER_SUCCES.name(),
-                                        ServiceNames.customer));
+                                        ServiceNames.customer),req.getEventId().toString());
                     })
                     .exceptionally(e->{
-                        sendToKafka(KafkaTopic.userRes,
+                        sendToKafkaWithKey(KafkaTopic.userRes,
                                 new UserResponseEvent(req.getEventId(),
                                         req.getUserId(),
                                         UserResponseStatus.USER_FAIL.name(),
-                                        ServiceNames.customer));
+                                        ServiceNames.customer),req.getEventId().toString());
                         return null;
                     });;
         }
@@ -70,6 +72,9 @@ public class MessageListener {
         }
     }
 
+    private CompletableFuture<?> sendToKafkaWithKey(String topic, Object req, String key) {
+        return kafkaProducerTemplate.send(topic,key, req);
+    }
 
 
 

@@ -1,10 +1,8 @@
 package com.example.shopuserservice.web.controller;
 
-import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.config.AsyncConfig;
-import com.example.shopuserservice.domain.data.UserTransaction;
 import com.example.shopuserservice.domain.user.repository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
@@ -13,7 +11,6 @@ import com.example.shopuserservice.web.security.LoginRequestDto;
 import com.example.shopuserservice.web.security.LoginResponseDto;
 import com.example.shopuserservice.web.security.LoginService;
 import com.example.shopuserservice.web.vo.RequestUser;
-import com.example.shopuserservice.web.vo.ResponseAddUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletRequest;
@@ -22,9 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -37,8 +32,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
-import java.security.Principal;
-import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

@@ -1,4 +1,8 @@
 spring:
+  reactor:
+    netty:
+      pool:
+        maxConnections: 1000
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -36,13 +40,22 @@ spring:
 #  main:
 #    allow-bean-definition-overriding: true
 
+
+
 server:
   error:
     include-stacktrace: never
-  netty:
-    maxKeepAliveRequests: 10000
-    connection-timeout: 60s
-    idle-timeout: 60s
+  undertow:
+    always-set-keep-alive: true # Whether the 'Connection: keep-alive' header should be added to all responses, even if not required by the HTTP specification.
+    decode-url: true # Whether the URL should be decoded. When disabled, percent-encoded characters in the URL will be left as-is.
+    eager-filter-init: true # Whether servlet filters should be initialized on startup.
+    max-cookies: 200 # Maximum number of cookies that are allowed. This limit exists to prevent hash collision based DOS attacks.
+    max-headers: 12 # Maximum number of headers that are allowed. This limit exists to prevent hash collision based DOS attacks.
+    no-request-timeout: 60000 # Amount of time a connection can sit idle without processing a request, before it is closed by the server.
+    preserve-path-on-forward: false # Whether to preserve the path of a request when it is forwarded.
+    url-charset: UTF-8 # Charset used to decode URLs
+    threads:
+      io: 50 # Number of I/O threads to create for the worker. The default is derived from the number of available processors.
   port: 8010
 
 eureka:

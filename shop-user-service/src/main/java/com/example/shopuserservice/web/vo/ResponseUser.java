@@ -1,6 +1,5 @@
 package com.example.shopuserservice.web.vo;
 
-import com.example.shopuserservice.domain.data.UserTransaction;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import java.util.*;

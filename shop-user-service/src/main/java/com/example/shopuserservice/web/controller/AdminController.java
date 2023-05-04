@@ -1,7 +1,7 @@
 package com.example.shopuserservice.web.controller;
 
 import com.example.shopuserservice.domain.data.User;
-import com.example.shopuserservice.domain.data.UserTransaction;
+import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class AdminController {
     }
 
     @GetMapping("/users/tx")
-    public CompletableFuture<List<UserTransaction>> getAllUserAddTransaction(){
+    public CompletableFuture<Iterable<UserTransactions>> getAllUserAddTransaction(){
         return userReadService.getAllUserAddTransaction();
     }
 }

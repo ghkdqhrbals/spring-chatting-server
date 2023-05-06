@@ -21,6 +21,8 @@ public class KafkaConsumerConfig {
     @Value("${kafka.bootstrap}")
     private String bootstrapServer;
 
+
+
     // 유저 변경
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, UserEvent> userKafkaListenerContainerFactory() {
@@ -58,6 +60,7 @@ public class KafkaConsumerConfig {
                 .put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
                 .put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
                 .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
+                .put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,"1")
                 .build();
         return config;
     }

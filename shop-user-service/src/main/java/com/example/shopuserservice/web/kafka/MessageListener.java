@@ -28,10 +28,10 @@ public class MessageListener {
     // concurrency를 partition 개수에 맞추어 설정하는 것이 중요합니다.
     @KafkaListener(topics = KafkaTopic.userRes, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userRes)
     public void listenUser(UserResponseEvent req) {
-        log.info("메세지 도착 = {}", req.getServiceName());
-
         userService.updateStatus2(req).exceptionally(e->{
             AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(e);
+            AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();
+            AsyncConfig.sinkMap.remove(req.getUserId());
             sendToKafkaWithKey(KafkaTopic.userCustomerRollback, req.getUserId(), req.getUserId());
             sendToKafkaWithKey(KafkaTopic.userChatRollback, req.getUserId(), req.getUserId());
             return null;

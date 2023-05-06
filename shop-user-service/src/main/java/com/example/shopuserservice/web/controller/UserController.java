@@ -3,6 +3,7 @@ package com.example.shopuserservice.web.controller;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.config.AsyncConfig;
+import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
@@ -61,8 +62,6 @@ public class UserController {
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
 
-
-
     @PostMapping("/login")
     public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
                                         ServerHttpResponse response){
@@ -87,10 +86,10 @@ public class UserController {
     public CompletableFuture<ResponseEntity<ResponseUser>> findUser(WebSession session){
         String userId = session.getAttribute("userId");
         return userCommandQueryService.getUserDetailsByUserId(userId).thenApply((userDto -> {
-            List<UserTransaction> userTransactions = null;
+            List<UserTransactions> userTransactions = null;
             try {
-                userTransactions = userReadService.getRecentUserAddTransaction(userId).get();
-                System.out.println(userTransactions);
+                userReadService.getRecentUserAddTransaction(userId).get()
+                        .forEach(u ->userTransactions.add(u));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -126,13 +125,13 @@ public class UserController {
         return dr;
     }
 
-    // 로그아웃
-    @GetMapping("/logout")
-    public Mono<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
-        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-        userCommandQueryService.logout(userId, userPw, dr);
-        return Mono.just((ResponseEntity) dr.getResult());
-    }
+//    // 로그아웃
+//    @GetMapping("/logout")
+//    public Mono<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
+//        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
+//        userCommandQueryService.logout(userId, userPw, dr);
+//        return Mono.just((ResponseEntity) dr.getResult());
+//    }
 
     /**
      * -------------- CREATE METHODS --------------
@@ -168,6 +167,7 @@ public class UserController {
     // produces = MediaType.TEXT_EVENT_STREAM_VALUE
     @PostMapping(value = "/user")
     public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
+        log.info("ADD USER");
         // saga choreograhpy tx 관리 id;
         UUID eventId = UUID.randomUUID();
 
@@ -187,12 +187,16 @@ public class UserController {
                     if (e.getCause() instanceof CustomException) {
                         CustomException e2 = ((CustomException) e.getCause());
                         AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail()));
+                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();
+                        AsyncConfig.sinkMap.remove(req.getUserId());
                     } else {
                         AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();
+                        AsyncConfig.sinkMap.remove(req.getUserId());
                     }
                     return null;
                 });
-        return AsyncConfig.sinkMap.get(req.getUserId()).asFlux().log();
+        return AsyncConfig.sinkMap.get(req.getUserId()).asFlux();
     }
 
     /**
@@ -227,36 +231,36 @@ public class UserController {
 
 
     // 유저 삭제
-    @DeleteMapping("/user")
-    public Flux<?> removeUser(WebSession session){
-        // JWT validation 과정애서 session 에 저장한 payload 의 sub:userId 를 가져옴
-        String userId = session.getAttribute("userId");
-
-        // sse 를 위한 Sinks 객체 추가
-        AsyncConfig.sinkMap.put(userId, Sinks.many().multicast().onBackpressureBuffer());
-
-        // 이벤트 ID 및 이벤트
-        UUID eventId = UUID.randomUUID();
-        UserEvent userEvent = new UserEvent(
-                eventId,
-                UserStatus.USER_DELETE,
-                userId
-        );
-
-        // 유저 삭제 이벤트 전송 및 예외 처리
-        userCommandQueryService
-            .deleteUserEvent(eventId, userEvent)
-            .exceptionally(e -> {
-                if (e.getCause() instanceof CustomException) {
-                    CustomException e2 = ((CustomException) e.getCause());
-                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail()));
-                } else {
-                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
-                }
-                return null;
-            });
-        return AsyncConfig.sinkMap.get(userId).asFlux().log();
-    }
+//    @DeleteMapping("/user")
+//    public Flux<?> removeUser(WebSession session){
+//        // JWT validation 과정애서 session 에 저장한 payload 의 sub:userId 를 가져옴
+//        String userId = session.getAttribute("userId");
+//
+//        // sse 를 위한 Sinks 객체 추가
+//        AsyncConfig.sinkMap.put(userId, Sinks.many().multicast().onBackpressureBuffer());
+//
+//        // 이벤트 ID 및 이벤트
+//        UUID eventId = UUID.randomUUID();
+//        UserEvent userEvent = new UserEvent(
+//                eventId,
+//                UserStatus.USER_DELETE,
+//                userId
+//        );
+//
+//        // 유저 삭제 이벤트 전송 및 예외 처리
+//        userCommandQueryService
+//            .deleteUserEvent(eventId, userEvent)
+//            .exceptionally(e -> {
+//                if (e.getCause() instanceof CustomException) {
+//                    CustomException e2 = ((CustomException) e.getCause());
+//                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail()));
+//                } else {
+//                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+//                }
+//                return null;
+//            });
+//        return AsyncConfig.sinkMap.get(userId).asFlux().log();
+//    }
 
     /**
      * -------------- UPDATE METHODS --------------

@@ -20,13 +20,14 @@ public class KafkaProducerConfig {
 
     @Value("${kafka.bootstrap}")
     private String bootstrapServer;
+    private final String batchSize = "50";
 
     private ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-
+        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSize);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

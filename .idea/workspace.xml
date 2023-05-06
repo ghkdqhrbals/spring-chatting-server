@@ -5,18 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-prod.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-prod.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer-service/src/main/java/com/example/orderservice/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer-service/src/main/java/com/example/orderservice/kafka/KafkaProducerConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -40,18 +38,17 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/redis/data/dump.rdb" beforeDir="false" afterPath="$PROJECT_DIR$/redis/data/dump.rdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/data/UserTransaction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserTransactionRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadService.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/AdminController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/MessageListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/MessageListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/security/JwtTokenAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/security/JwtTokenAuthenticationFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/vo/ResponseUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/vo/ResponseUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/KafkaProducerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/MessageListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-backend-server/src/main/java/chatting/chat/web/kafka/MessageListener.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,6 +96,14 @@
                 <item name="shop-user-service" type="2d1252cf:ModuleNode" />
                 <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
                 <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="spring-chatting-server" type="f1a62948:ProjectNode" />
+                <item name="shop-user-service" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+                <item name="org.springframework.boot:spring-boot-starter-undertow:3.0.5" type="b3323d55:ExternalSystemViewDefaultContributor$DependencyExternalSystemNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -377,7 +382,7 @@
       <workItem from="1681194101352" duration="1746000" />
       <workItem from="1681195878882" duration="41382000" />
       <workItem from="1681537246056" duration="3785000" />
-      <workItem from="1681637866428" duration="111550000" />
+      <workItem from="1681637866428" duration="120174000" />
     </task>
     <servers />
   </component>

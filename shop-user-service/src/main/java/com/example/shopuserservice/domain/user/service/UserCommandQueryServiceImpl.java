@@ -149,10 +149,6 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                         return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.CONFLICT, "동일한 사용자가 존재합니다"));
                     }
 
-                    log.info("STATUS = {}, {}",ut.getChatStatus(),ut.getCustomerStatus());
-
-
-
 
                     ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
                     userTransactionRedisRepository.save(ut);
@@ -160,6 +156,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                     // 결과 SSE 클라이언트 반환
                     AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
                     AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
+                    AsyncConfig.sinkMap.remove(event.getUserId());
 
                 } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
                     userRepository.deleteById(ut.getUserId());
@@ -168,6 +165,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
                     AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
                     AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
+                    AsyncConfig.sinkMap.remove(event.getUserId());
                 }
                 // 둘 중 FAIL 이 있을 경우
             } else if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())

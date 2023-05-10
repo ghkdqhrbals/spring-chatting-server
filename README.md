@@ -1,5 +1,5 @@
 # Spring Java 채팅서버구현
-현재 프로젝트는 MSA 이전중 임으로 불안정합니다. 따라서 채팅서버의 stable 한 버전인 4.2.1v 로 태그를 이동하고 Instruction 에 따라 실행해주세요. 
+현재 프로젝트는 MSA 이전중 임으로 불안정합니다. 따라서 채팅서버의 stable 한 버전인 4.2.0v 로 태그를 이동하고 Instruction 에 따라 실행해주세요. 
 
 ## Versions
 
@@ -9,22 +9,23 @@
 | **[v2](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v2)**                 | 2023.01.03  | ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                                                                                                                                                           |
 | **[v3](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v3.1.1)**             | 2023.01.14  | Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                                                                                                                                    |
 | **[v4](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.0.0)**             | 2023.01.24  | WebFlux, CSS, Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc.                                                                                                                                                      |
-| **[v5](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v5.0.0)(Proceeding)** | 2023.04.27  | **JWT, Spring-Security(role-based access control), Exception Handling, rabbitMQ, Spring-Cloud(apigateway, configuration server, discovery server)** ,WebFlux, CSS, Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
+| **[v5](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v5.0.0)(Proceeding)** | 2023.05.10  | **JWT, Spring-Security(role-based access control), Exception Handling, rabbitMQ, Spring-Cloud(apigateway, configuration server, discovery server)** ,WebFlux, CSS, Test, Kafka-connector, ElasticSearch, Logstash, Kibana, WebSocket, Kafka, Spring-Data-Jpa, Thymeleaf, Interceptor, etc. |
 
 
 # INDEX
-1. [Current Architecture(v4)](#current-architecturev4)
-2. [Running with Docker](#running-with-docker)
+1. [Proceeding Architecture(v5)](#proceeding-architecturev5)
+2. [Stable Architecture(v4)](#current-architecturev4)
+3. [Running with Docker(v4.2.0)](#running-with-docker)
    * [Backend Server](#backend)
    * [ELK stack](#elk-stack)
-3. [Update Logs](#update-logs)
+4. [Update Logs](#update-logs)
 
 To see the description of functions and simulation video, here is youtube link : [youtube link](https://www.youtube.com/watch?v=3VqwZ17XyEQ&t=237s)
 
 ## Proceeding... Architecture(v5)
 ![chatSeq](img/v5/21.svg)
 
-## Architecture(v4)
+## Stable Architecture(v4)
 ![chatSeq](img/v3/v3.1.0.png)
 
 ## Running with Docker

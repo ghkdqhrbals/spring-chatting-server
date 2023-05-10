@@ -1,5 +1,5 @@
 # Spring Java 채팅서버구현
-현재 프로젝트는 MSA 이전중 임으로 불안정합니다. 따라서 채팅서버의 stable 한 버전인 4.2.0v 로 태그를 이동하고 Instruction 에 따라 실행해주세요. 
+현재 프로젝트는 MSA 이전중 임으로 불안정합니다. 따라서 채팅서버의 stable 한 버전인 [4.2.0v](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.2.0) 로 태그를 이동하고 Instruction 에 따라 실행해주세요. 
 
 ## Versions
 

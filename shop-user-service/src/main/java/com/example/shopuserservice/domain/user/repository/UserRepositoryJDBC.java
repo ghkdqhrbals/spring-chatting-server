@@ -40,7 +40,6 @@ public class UserRepositoryJDBC {
     }
 
     public void saveAll2(List<User> users) {
-        log.info(TransactionSynchronizationManager.getCurrentTransactionName());
         try{
             String sql = "INSERT INTO user_table (user_id, email, join_date, login_date, logout_date, user_name, user_pw, role) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";

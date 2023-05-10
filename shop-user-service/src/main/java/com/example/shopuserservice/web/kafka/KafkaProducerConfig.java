@@ -20,7 +20,8 @@ public class KafkaProducerConfig {
 
     @Value("${kafka.bootstrap}")
     private String bootstrapServer;
-    private final String batchSize = "50";
+    private final Integer batchSize = 50; // number
+    private final Integer linger = 50; // ms
 
     private ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -28,6 +29,14 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSize);
+//        configProps.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 100);
+
+//        configProps.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 10000);
+
+        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "false");
+        configProps.put(ProducerConfig.RETRIES_CONFIG,0);
+        configProps.put(ProducerConfig.LINGER_MS_CONFIG, linger);
+
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

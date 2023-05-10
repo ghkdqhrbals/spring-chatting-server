@@ -4,6 +4,9 @@ spring:
     port: 5672
     username: guest
     password: guest
+  redis:
+    host: localhost
+    port: 6379
   application:
     name: user-service
   messages:
@@ -41,6 +44,7 @@ server:
   error:
     include-stacktrace: never
   undertow:
+    no-request-timeout: 10
     always-set-keep-alive: true # Whether the 'Connection: keep-alive' header should be added to all responses, even if not required by the HTTP specification.
     decode-url: true # Whether the URL should be decoded. When disabled, percent-encoded characters in the URL will be left as-is.
     eager-filter-init: true # Whether servlet filters should be initialized on startup.
@@ -54,9 +58,8 @@ server:
     options:
       server:
         # https://undertow.io/javadoc/1.3.x/io/undertow/UndertowOptions.html
-        MAX_CONCURRENT_REQUESTS_PER_CONNECTION: 0
+        MAX_CONCURRENT_REQUESTS_PER_CONNECTION: 2000
         HTTP2_SETTINGS_MAX_CONCURRENT_STREAMS: 2000
-        NO_REQUEST_TIMEOUT: 60000 # Amount of time a connection can sit idle without processing a request, before it is closed by the server.
         MAX_QUEUED_READ_BUFFERS: 10
         MAX_BUFFERED_REQUEST_SIZE: 16384
   port: 8010

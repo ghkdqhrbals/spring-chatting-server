@@ -116,6 +116,7 @@ services:
       SERVER_PORT: 8010
       spring_redis_host: user-redis
       spring_redis_port: 6379
+      server_undertow_no-request-timeout: 100
     depends_on:
       - kafka1
       - kafka2

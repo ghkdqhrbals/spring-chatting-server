@@ -15,6 +15,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,16 @@ public class FluxTest {
         Flux<String> source = Flux.fromIterable(Arrays.asList("1", "2")).log();
         source.subscribe(d -> System.out.println("Subscriber 1: "+d));
         source.subscribe(d -> System.out.println("Subscriber 2: "+d));
+
+    }
+    @Test
+    void subs() throws InterruptedException {
+
+
+        var a = LocalDateTime.now();
+
+
+        System.out.println(Duration.between(a, LocalDateTime.now()).toMillis());
     }
 
     @Test

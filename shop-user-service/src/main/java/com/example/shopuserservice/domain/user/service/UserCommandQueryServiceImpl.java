@@ -34,11 +34,13 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.example.shopuserservice.web.error.ErrorCode.*;
 
@@ -228,11 +230,15 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         return CompletableFuture.completedFuture(user);
     }
 
-
-
+    private AtomicInteger counts = new AtomicInteger(0);
+    private Long redis_sums = 0L;
+    private Long kafka_sums = 0L;
     @Override
     @Async
     public CompletableFuture<UserTransactions> newUserEvent2(RequestUser req, UUID eventId, UserEvent userEvent) {
+
+        int c = counts.incrementAndGet();
+        log.info("new user event");
 
         UserTransactions userTransaction = new UserTransactions(
                 eventId,
@@ -247,16 +253,26 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 req.getRole());
 
         try {
-            // 이벤트 Transaction 저장
-            userTransactionRedisRepository.save(userTransaction);
 
+            // 이벤트 Transaction 저장
+            LocalDateTime now1 = LocalDateTime.now();
+            userTransactionRedisRepository.save(userTransaction);
+            LocalDateTime now2 = LocalDateTime.now();
+//            System.out.println(Duration.between(now, LocalDateTime.now()).toMillis());
             // 이벤트 Publishing key:userId = Partitioning
             sendToKafkaWithKey(
                     KafkaTopic.userReq,
                     userEvent,
                     req.getUserId()
             ).thenRun(()->{
-                log.info("send kafka message successfully");
+                LocalDateTime now3 = LocalDateTime.now();
+                redis_sums += Duration.between(now1, now2).toMillis();
+                kafka_sums += Duration.between(now2, now3).toMillis();
+                log.info("Redis Save Time : "+redis_sums/c+", time:"+Duration.between(now1, now2).toMillis()+", counts:"+c+", ");
+                log.info("Kafka Sender Time : "+kafka_sums/c+", time:"+Duration.between(now2, now3).toMillis()+", counts:"+c);
+            }).exceptionally(e->{
+                log.error("에러발생 ㅜㅜ={}",e.getMessage());
+                return null;
             });
         }catch(Exception e){
             return CompletableFuture.failedFuture(e);

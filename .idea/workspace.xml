@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/dependencies-accessors/dependencies-accessors.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/dependencies-accessors/dependencies-accessors.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -12,8 +14,8 @@
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/customer-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -36,6 +38,15 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/redis/data/dump.rdb" beforeDir="false" afterPath="$PROJECT_DIR$/redis/data/dump.rdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/config/AsyncConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/config/AsyncConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserRepositoryJDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserRepositoryJDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/bootstrap.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/bootstrap.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/test/java/com/example/shopuserservice/FluxTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/test/java/com/example/shopuserservice/FluxTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,6 +234,29 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="FluxTest.subs" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":shop-user-service:test" />
+            <option value="--tests" />
+            <option value="&quot;com.example.shopuserservice.FluxTest.subs&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="ApigatewayServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="spring-chatting-server.apigateway-service.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.apigatewayservice.ApigatewayServiceApplication" />
@@ -319,21 +353,13 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="logstash/Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
-      <deployment type="dockerfile">
-        <settings>
-          <option name="sourceFilePath" value="elk/logstash/Dockerfile" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.FluxTest.subs" />
         <item itemvalue="Gradle.FluxTest.multiThreadSink" />
         <item itemvalue="Gradle.FluxTest.multiThreadSink2" />
         <item itemvalue="Spring Boot.OrderServiceApplication (1)" />
         <item itemvalue="Docker.docker-compose.yaml.auth-server-1: Compose Deployment" />
-        <item itemvalue="Docker.logstash/Dockerfile" />
       </list>
     </recent_temporary>
   </component>
@@ -369,7 +395,7 @@
       <workItem from="1681194101352" duration="1746000" />
       <workItem from="1681195878882" duration="41382000" />
       <workItem from="1681537246056" duration="3785000" />
-      <workItem from="1681637866428" duration="120670000" />
+      <workItem from="1681637866428" duration="139600000" />
     </task>
     <servers />
   </component>

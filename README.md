@@ -14,7 +14,7 @@
 
 # INDEX
 1. [Proceeding Architecture(v5)](#proceeding-architecturev5)
-2. [Stable Architecture(v4)](#current-architecturev4)
+2. [Stable Architecture(v4)](#stable-architecturev4)
 3. [Running with Docker(v4.2.0)](#running-with-docker)
    * [Backend Server](#backend)
    * [ELK stack](#elk-stack)

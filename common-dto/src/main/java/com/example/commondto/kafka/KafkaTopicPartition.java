@@ -1,8 +1,8 @@
 package com.example.commondto.kafka;
 
 public class KafkaTopicPartition {
-    public static final String userReq = "50";
-    public static final String userRes = "50";
+    public static final String userReq = "10";
+    public static final String userRes = "10";
     public static final String userChatRollback = "5";
     public static final String userCustomerRollback = "5";
     public static final String orderNewOrderReq = "5";

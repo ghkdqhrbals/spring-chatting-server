@@ -17,10 +17,10 @@ public class AsyncConfig  {
     public static ConcurrentHashMap<String, Sinks.Many<Object>> sinkMap = new ConcurrentHashMap<>();
 
     @Bean(name = "taskExecutor")
-    public Executor taskExecutor() {
+    public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
-        t.setCorePoolSize(50);
-        t.setMaxPoolSize(100);
+        t.setCorePoolSize(20);
+        t.setMaxPoolSize(50);
         t.setQueueCapacity(10);
         t.setThreadNamePrefix("task-");
 
@@ -32,36 +32,5 @@ public class AsyncConfig  {
         return t;
     }
 
-    @Bean(name = "taskExecutorForService")
-    public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
-        t.setCorePoolSize(10);
-        t.setMaxPoolSize(100);
-        t.setQueueCapacity(10);
-        t.setThreadNamePrefix("service-thread-");
-
-        t.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        t.setWaitForTasksToCompleteOnShutdown(true);
-        t.setAwaitTerminationSeconds(60);
-
-        t.initialize();
-        return t;
-    }
-
-    @Bean(name = "taskExecutorForDB")
-    public Executor AsyncExecutorForDB() {
-        ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
-        t.setCorePoolSize(10);
-        t.setMaxPoolSize(100);
-        t.setQueueCapacity(10);
-        t.setThreadNamePrefix("db-thread-");
-
-        t.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        t.setWaitForTasksToCompleteOnShutdown(true);
-        t.setAwaitTerminationSeconds(60);
-
-        t.initialize();
-        return t;
-    }
 
 }

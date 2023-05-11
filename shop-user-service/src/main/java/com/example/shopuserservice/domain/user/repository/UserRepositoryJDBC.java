@@ -27,15 +27,13 @@ import static com.example.shopuserservice.web.error.ErrorCode.DUPLICATE_RESOURCE
 @Repository
 public class UserRepositoryJDBC {
     private final JdbcTemplate jdbcTemplate;
-    private final Executor databaseExecutor;
 
     private final HikariDataSource hikariDataSource;
 
     private int batchSize = 50;
 
-    public UserRepositoryJDBC(JdbcTemplate jdbcTemplate, @Qualifier("taskExecutorForDB") Executor databaseExecutor, HikariDataSource hikariDataSource) {
+    public UserRepositoryJDBC(JdbcTemplate jdbcTemplate, HikariDataSource hikariDataSource) {
         this.jdbcTemplate = jdbcTemplate;
-        this.databaseExecutor = databaseExecutor;
         this.hikariDataSource = hikariDataSource;
     }
 
@@ -83,7 +81,7 @@ public class UserRepositoryJDBC {
                         ps.setString(7,user.getUserPw());
                     });
 
-        },databaseExecutor).exceptionally(e->{
+        }).exceptionally(e->{
             if (e.getCause().getClass() == DuplicateKeyException.class){
                 throw new CustomException(DUPLICATE_RESOURCE);
             }
@@ -177,7 +175,7 @@ public class UserRepositoryJDBC {
                 if (conn != null) try {conn.close();} catch (SQLException e) {throw new RuntimeException(e);}
             }
             return true;
-        },databaseExecutor);
+        });
     }
 
     public CompletableFuture<?> logout(String user_id, String user_pw) throws CustomException{
@@ -200,7 +198,7 @@ public class UserRepositoryJDBC {
                 if (conn != null) try {conn.close();} catch (SQLException e) {throw new RuntimeException(e);}
             }
             return true;
-        },databaseExecutor);
+        });
     }
 
     public void loginUser(String user_id, String user_pw, Connection conn) throws CustomException, SQLException {
@@ -325,7 +323,7 @@ public class UserRepositoryJDBC {
                     log.info(printHikariCPInfo()+" after release connection");
                 } catch(SQLException ex) {}
             }
-        },databaseExecutor).exceptionally(e->{
+        }).exceptionally(e->{
             log.info(e.getMessage());
             if (e.getCause().getClass() == CustomException.class){
                 log.info("CustomException");
@@ -383,7 +381,7 @@ public class UserRepositoryJDBC {
                     log.info(printHikariCPInfo()+" after release connection");
                 } catch(SQLException ex) {}
             }
-        },databaseExecutor).exceptionally(e->{
+        }).exceptionally(e->{
             log.info(e.getMessage());
             if (e.getCause().getClass() == CustomException.class){
                 throw new CustomException(CANNOT_FIND_USER);

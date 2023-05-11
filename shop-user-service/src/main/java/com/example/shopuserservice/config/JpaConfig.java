@@ -30,7 +30,7 @@ public class JpaConfig {
                      UserRepository userRepository,
                      UserRepositoryJDBC userRepositoryJDBC,
                      JdbcTemplate jdbcTemplate,
-                     @Qualifier("taskExecutorForService") Executor serviceExecutor, HikariDataSource hikariDataSource) {
+                     @Qualifier("taskExecutor") Executor serviceExecutor, HikariDataSource hikariDataSource) {
         this.entityManager = entityManager;
         this.userRepository = userRepository;
         this.userRepositoryJDBC = userRepositoryJDBC;

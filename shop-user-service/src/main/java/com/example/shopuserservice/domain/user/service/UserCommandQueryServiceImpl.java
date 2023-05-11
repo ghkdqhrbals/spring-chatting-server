@@ -59,7 +59,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     public UserCommandQueryServiceImpl(UserRepository userRepository,
                                        UserRepositoryJDBC userRepositoryJDBC,
-                                       UserTransactionRedisRepository userTransactionRedisRepository, @Qualifier("taskExecutorForService") Executor serviceExecutor,
+                                       UserTransactionRedisRepository userTransactionRedisRepository, @Qualifier("taskExecutor") Executor serviceExecutor,
                                        HikariDataSource hikariDataSource,
                                        @Qualifier("bcrypt") PasswordEncoder pwe,
                                        OrderServiceClient orderServiceClient,
@@ -230,16 +230,10 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         return CompletableFuture.completedFuture(user);
     }
 
-    private AtomicInteger counts = new AtomicInteger(0);
-    private Long redis_sums = 0L;
-    private Long kafka_sums = 0L;
+
     @Override
     @Async
     public CompletableFuture<UserTransactions> newUserEvent2(RequestUser req, UUID eventId, UserEvent userEvent) {
-
-        int c = counts.incrementAndGet();
-        log.info("new user event");
-
         UserTransactions userTransaction = new UserTransactions(
                 eventId,
                 UserStatus.USER_INSERT,
@@ -266,10 +260,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                     req.getUserId()
             ).thenRun(()->{
                 LocalDateTime now3 = LocalDateTime.now();
-                redis_sums += Duration.between(now1, now2).toMillis();
-                kafka_sums += Duration.between(now2, now3).toMillis();
-                log.info("Redis Save Time : "+redis_sums/c+", time:"+Duration.between(now1, now2).toMillis()+", counts:"+c+", ");
-                log.info("Kafka Sender Time : "+kafka_sums/c+", time:"+Duration.between(now2, now3).toMillis()+", counts:"+c);
+                log.info("Redis Save Time : "+Duration.between(now1, now2).toMillis() + " Kafka Sender Time : "+Duration.between(now2, now3).toMillis());
             }).exceptionally(e->{
                 log.error("에러발생 ㅜㅜ={}",e.getMessage());
                 return null;

@@ -21,6 +21,8 @@ public class DataSourceAspectLogger {
     private HikariDataSource ds;
 
 
+
+
     @Before("execution(* com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC.saveAll(..))")
     public void logBeforeConnection(JoinPoint jp) throws Throwable {
 //        logDataSourceInfos("Before ", jp);
@@ -40,6 +42,8 @@ public class DataSourceAspectLogger {
     public void logAfterController(JoinPoint jp) throws Throwable {
         log.info("AFTER CONTROLLER ACCESS");
     }
+
+
 
     @Autowired
     public void getPool() {

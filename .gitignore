@@ -17,6 +17,8 @@ confluent-hub-client-latest.tar.gz
 .DS_Store
 .gitignore
 
+/redis
+
 /.idea
 /app
 /backups

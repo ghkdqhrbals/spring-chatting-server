@@ -67,6 +67,23 @@ public class UserBalanceCommandQueryServiceImpl implements UserBalanceCommandQue
     }
 
     @Override
+    public CompletableFuture<UserBalance> increaseUserBalance(String userId, Long amount) {
+        Optional<UserBalance> findUserBalance = userBalanceRepository.findById(userId);
+
+        if (findUserBalance.isPresent()){
+            userBalanceRepository.delete(findUserBalance.get());
+            return CompletableFuture.completedFuture(findUserBalance.get());
+        }
+
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<UserBalance> decreaseUserBalance(String userId, Long amount) {
+        return null;
+    }
+
+    @Override
     public CompletableFuture<UserBalance> updateUserBalance(String userId, Long amount) {
         return null;
     }

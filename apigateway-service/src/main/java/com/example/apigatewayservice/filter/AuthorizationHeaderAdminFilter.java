@@ -65,7 +65,6 @@ public class AuthorizationHeaderAdminFilter extends AbstractGatewayFilterFactory
             subject = jwtBody.getSubject();
             permissions = (String) jwtBody.get("permissions");
 
-            log.info("subject={}, permissions={}",subject,permissions);
             if (permissions.contains("ROLE_ADMIN")){
                 return returnValue;
             }else{

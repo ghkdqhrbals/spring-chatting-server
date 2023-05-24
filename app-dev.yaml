@@ -4,12 +4,6 @@ spring:
     hikari:
       username: 'postgres'
       password: '{cipher}cb37d0254f9af1ae19f8f3aaf5ddca4c94e8c1cf5479a3240a706e32167867ab'
-  redis:
-    host: localhost
-    port: 6379
-  cloud:
-    config:
-      uri: http://localhost:8888
 eureka:
   client:
     service:

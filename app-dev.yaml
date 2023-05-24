@@ -4,6 +4,12 @@ spring:
     hikari:
       username: 'postgres'
       password: '{cipher}cb37d0254f9af1ae19f8f3aaf5ddca4c94e8c1cf5479a3240a706e32167867ab'
+  redis:
+    host: localhost
+    port: 6379
+  cloud:
+    config:
+      uri: http://localhost:8888
 eureka:
   client:
     service:
@@ -15,4 +21,4 @@ token:
   secret: '{cipher}751666904f7010ecd5b4e0a2733ebf27fc5364eff09505c6600c687b2e737d45beb934ab982b67436000d82a12bfb1c4f72bbd4b73446d478517cd501a288f8b3de56069e1e291da3608b572c87119e84f5c929101224d7651f731eba15043df84cdfa5b1ad5b0cc2b03e02afc45e7984adb71b1e7e2506a456428c8aab7cc05'
 
 kafka:
-  bootstrap: http://kafka1:9092,http://kafka2:9092,http://kafka3:9092
+  bootstrap: http://localhost:8099,http://localhost:8098,http://localhost:8097

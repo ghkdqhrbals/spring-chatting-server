@@ -39,6 +39,11 @@ public class MessageListener {
     }
 
     private CompletableFuture<?> sendToKafkaWithKey(String topic, Object req, String key) {
-        return kafkaProducerTemplate.send(topic,key, req);
+        return kafkaProducerTemplate.send(topic,key, req).thenRun(()->{
+            log.info("메세지 전송 성공");
+        }).exceptionally(e->{
+            log.error("메세지 전송 실패");
+            return null;
+        });
     }
 }

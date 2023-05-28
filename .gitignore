@@ -8,8 +8,8 @@ confluent-hub-client-latest.tar.gz
 
 ./spring-chatting-backend-server/build
 ./spring-chatting-auth-server/build
-./spring-chatting-auth-server/build
 
+redis/
 .docker
 .gradle
 .idea

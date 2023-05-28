@@ -19,6 +19,8 @@ confluent-hub-client-latest.tar.gz
 
 /redis
 
+.idea/workspace.xml
+
 /.idea
 /app
 /backups

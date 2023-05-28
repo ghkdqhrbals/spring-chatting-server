@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb8288f6-b975-4352-af9e-03f2e9083f0f" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
@@ -34,9 +29,6 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/data/dump.rdb" beforeDir="false" afterPath="$PROJECT_DIR$/redis/data/dump.rdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/config/AsyncConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/config/AsyncConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

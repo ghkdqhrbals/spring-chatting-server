@@ -16,11 +16,7 @@ confluent-hub-client-latest.tar.gz
 /gradle/*
 .DS_Store
 .gitignore
-
 /redis
-
-.idea
-
 /.idea
 /app
 /backups

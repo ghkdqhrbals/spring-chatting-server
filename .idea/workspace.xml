@@ -11,9 +11,7 @@
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app-dev.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -37,6 +35,8 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/redis/data/dump.rdb" beforeDir="false" afterPath="$PROJECT_DIR$/redis/data/dump.rdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/config/AsyncConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/config/AsyncConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,25 +131,25 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "jdk.selected.JAVA_MODULE": "corretto-17",
-    "last_opened_file_path": "/Users/gyuminhwangbo/study/spring-chatting-server",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "spring.configuration.checksum": "de83650d8f779310043b07edd7b0ab1b"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/gyuminhwangbo/study/spring-chatting-server&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;872c243f42bcaa619c8e2c68426f8d35&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -385,7 +385,9 @@
       <workItem from="1681194101352" duration="1746000" />
       <workItem from="1681195878882" duration="41382000" />
       <workItem from="1681537246056" duration="3785000" />
-      <workItem from="1681637866428" duration="163116000" />
+      <workItem from="1681637866428" duration="165279000" />
+      <workItem from="1685002226242" duration="1525000" />
+      <workItem from="1685256915943" duration="767000" />
     </task>
     <servers />
   </component>
@@ -397,7 +399,34 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
           </value>
         </entry>
       </map>

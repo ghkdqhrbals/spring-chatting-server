@@ -35,20 +35,20 @@ public class KafkaProducerConfig {
 
         // 카프카 트랜젝션에 id 부여
         // 사실 우리는 non-transactional 이라서 딱히 필요는 없습니다.
-        configProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString());
+//        configProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString());
 
         // 카프카 메세지 배치 프로세스
         configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSize);
         configProps.put(ProducerConfig.LINGER_MS_CONFIG, linger);
 
         // 메세지 전송 실패 시 재전송을 하게 되는데, 이 때 재발행한 메세지를 구분하기 위해 별도로 구분자를 추가한다.
-        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+//        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
 
         DefaultKafkaProducerFactory<String, Object> pf = new DefaultKafkaProducerFactory<>(configProps);
-        pf.setTransactionIdPrefix("user");
+//        pf.setTransactionIdPrefix("user");
 
         // Kafka/Topic/Partition 별 스레드 설정
-        pf.setProducerPerThread(true);
+//        pf.setProducerPerThread(true);
 
         return pf;
     }

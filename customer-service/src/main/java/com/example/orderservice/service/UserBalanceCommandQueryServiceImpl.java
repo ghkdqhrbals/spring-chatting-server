@@ -27,31 +27,31 @@ public class UserBalanceCommandQueryServiceImpl implements UserBalanceCommandQue
         this.userBalanceTransactionRepository = userBalanceTransactionRepository;
     }
 
-    @Override
-    @Async
-    @Transactional
-    public CompletableFuture<UserBalance> saveUserBalance(String userId, UUID eventId) {
+@Override
+@Async
+@Transactional
+public CompletableFuture<UserBalance> saveUserBalance(String userId, UUID eventId) {
 
-        try {
-            userBalanceTransactionRepository.save(new UserBalanceTransaction(
-                    eventId,
-                    userId,
-                    UserResponseStatus.USER_APPEND.name()
-            ));
-        }catch (Exception e){
-            return CompletableFuture.failedFuture(new RuntimeException("이벤트 ID unique-violation"));
-        }
-
-        Optional<UserBalance> findUserBalance = userBalanceRepository.findById(userId);
-        UserBalance savedUserBalance = null;
-        if (findUserBalance.isPresent()){
-            return CompletableFuture.failedFuture(new RuntimeException("사용자 Balance가 이미 존재합니다"));
-        }else{
-            log.info("저장!");
-            savedUserBalance = userBalanceRepository.save(new UserBalance(userId, 0L));
-        }
-        return CompletableFuture.completedFuture(savedUserBalance);
+    try {
+        userBalanceTransactionRepository.save(new UserBalanceTransaction(
+                eventId,
+                userId,
+                UserResponseStatus.USER_APPEND.name()
+        ));
+    }catch (Exception e){
+        return CompletableFuture.failedFuture(new RuntimeException("이벤트 ID unique-violation"));
     }
+
+    Optional<UserBalance> findUserBalance = userBalanceRepository.findById(userId);
+    UserBalance savedUserBalance = null;
+    if (findUserBalance.isPresent()){
+        return CompletableFuture.failedFuture(new RuntimeException("사용자 Balance가 이미 존재합니다"));
+    }else{
+        log.info("저장!");
+        savedUserBalance = userBalanceRepository.save(new UserBalance(userId, 0L));
+    }
+    return CompletableFuture.completedFuture(savedUserBalance);
+}
 
     @Override
     @Async

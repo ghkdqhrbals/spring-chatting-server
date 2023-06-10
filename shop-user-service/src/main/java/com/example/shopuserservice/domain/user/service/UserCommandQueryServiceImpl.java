@@ -99,7 +99,6 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
         if (tx.isPresent()){
             UserTransactions ut = tx.get();
-
             switch (event.getServiceName()){
                 case ServiceNames.chat -> {
                     ut.setChatStatus(event.getUserResponseStatus());
@@ -113,90 +112,63 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             String chatStatus = ut.getChatStatus();
             String customerStatus = ut.getCustomerStatus();
             String userStatus = ut.getUserStatus();
-            userTransactionRedisRepository.save(ut);
-
-            sendRollbackIfStatusFail2(ut, chatStatus, customerStatus);
-
-            // 둘 다 SUCCESS 일 경우,
-            if (chatStatus.equals(UserResponseStatus.USER_SUCCES.name())
-                    && customerStatus.equals(UserResponseStatus.USER_SUCCES.name())){
-                // 유저 Status 에 따라 완료/미완료
-                if (userStatus.equals(UserStatus.USER_INSERT.name())){
-
-                    Optional<User> findUser = userRepository.findById(ut.getUserId());
-
-                    if (!findUser.isPresent()){
-                        // 유저 저장
-                        User user = new User(
-                                ut.getUserId(),
-                                ut.getUserPw(),
-                                ut.getEmail(),
-                                ut.getUserName(),
-                                LocalDateTime.now(),
-                                LocalDateTime.now(),
-                                LocalDateTime.now(),
-                                ut.getRole()
-                        );
-                        try {
-                            userRepositoryJDBC.saveAll2(Arrays.asList(user));
-                            // saga Choreography 로 Transaction 관리
-                        } catch (Exception e){
-                            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-                            return CompletableFuture.failedFuture(e);
-                        }
-                    } else {
-                        // 유저가 이미 존재할 때
-                        ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
-                        // CompletableFuture Fail 처리
-                        return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.CONFLICT, "동일한 사용자가 존재합니다"));
+//            userTransactionRedisRepository.save(ut);
+//            sendRollbackIfStatusFail(ut, chatStatus, customerStatus);
+            if (userStatus.equals(UserStatus.USER_INSERT.name())){
+                Optional<User> findUser = userRepository.findById(ut.getUserId());
+                if (findUser.isEmpty()){
+                    // 유저 저장
+                    User user = new User(
+                            ut.getUserId(),
+                            ut.getUserPw(),
+                            ut.getEmail(),
+                            ut.getUserName(),
+                            LocalDateTime.now(),
+                            LocalDateTime.now(),
+                            LocalDateTime.now(),
+                            ut.getRole()
+                    );
+                    try {
+                        userRepositoryJDBC.saveAll2(Arrays.asList(user));
+                        log.info("저장 완료");
+                        // saga Choreography 로 Transaction 관리
+                    } catch (Exception e){
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
+                        return CompletableFuture.failedFuture(e);
                     }
-
-
-                    ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
-                    userTransactionRedisRepository.save(ut);
-
-                    // 결과 SSE 클라이언트 반환
-                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
-                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
-                    AsyncConfig.sinkMap.remove(event.getUserId());
-
-                } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
-                    userRepository.deleteById(ut.getUserId());
-                    ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
-                    userTransactionRedisRepository.save(ut);
-
-                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
-                    AsyncConfig.sinkMap.get(event.getUserId()).tryEmitComplete();
-                    AsyncConfig.sinkMap.remove(event.getUserId());
+                } else {
+                    log.info("인증서버에 유저가 이미 존재합니다");
+                    // 유저가 이미 존재할 때
+                    ut.setUserStatus(UserStatus.USER_DUPLICATION.name());
                 }
-                // 둘 중 FAIL 이 있을 경우
-            } else if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())
-                    || customerStatus.equals(UserResponseStatus.USER_FAIL.name())) {
-                // 실패 시, FAIL 처리
-                ut.setUserStatus(UserStatus.USER_INSERT_FAIL.name());
-                userTransactionRedisRepository.save(ut);
 
-                return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.CONFLICT, "동일한 사용자가 존재합니다"));
-                // 중간 결과값들 계속 전송
-            } else {
-                AsyncConfig.sinkMap.get(event.getUserId()).tryEmitNext(ut);
+                ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
+
+            } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
+                userRepository.deleteById(ut.getUserId());
+                ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
             }
 
+            userTransactionRedisRepository.save(ut);
+            // 결과 Flux 전송
+            checkCurrentStatus(ut,event.getUserId());
         }else{
             return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러"));
         }
         return CompletableFuture.completedFuture(tx.get());
     }
 
-    private void sendRollbackIfStatusFail2(UserTransactions ut, String chatStatus, String customerStatus) {
-        if (!chatStatus.equals(UserResponseStatus.USER_APPEND.name())
-                && !customerStatus.equals(UserResponseStatus.USER_APPEND.name())){
-            if (chatStatus.equals(UserResponseStatus.USER_FAIL.name())){
-                sendToKafkaWithKey(KafkaTopic.userCustomerRollback, ut.getUserId(), ut.getUserId());
-            }
-            if (customerStatus.equals(UserResponseStatus.USER_FAIL.name())){
-                sendToKafkaWithKey(KafkaTopic.userChatRollback, ut.getUserId(), ut.getUserId());
-            }
+    private void checkCurrentStatus(UserTransactions ut,String userId) {
+        if (!ut.getChatStatus().equals(UserResponseStatus.USER_APPEND.name())
+                && !ut.getCustomerStatus().equals(UserResponseStatus.USER_APPEND.name())
+                && !ut.getUserStatus().equals(UserStatus.USER_INSERT.name())
+                && !ut.getUserStatus().equals(UserStatus.USER_DELETE.name())){
+            AsyncConfig.sinkMap.get(userId).tryEmitNext(ut);
+            AsyncConfig.sinkMap.get(userId).tryEmitComplete();
+            AsyncConfig.sinkMap.remove(userId);
+        }
+        else{
+            AsyncConfig.sinkMap.get(userId).tryEmitNext(ut);
         }
     }
 

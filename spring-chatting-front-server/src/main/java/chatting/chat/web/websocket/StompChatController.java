@@ -1,5 +1,6 @@
 package chatting.chat.web.websocket;
 
+import chatting.chat.web.dto.AddUserResponse;
 import chatting.chat.web.dto.ChatMessage;
 import chatting.chat.web.dto.ChatRecord;
 import chatting.chat.web.dto.RequestAddChatRoomDTO;
@@ -44,6 +45,12 @@ public class StompChatController {
         message.setMessage(message.getWriter() + "님이 채팅방에 참여하였습니다.");
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message); // Direct send topic to stomp
     }
+
+    @MessageMapping(value = "/user")
+    public void registers(AddUserResponse message){
+        template.convertAndSend("/sub/user/"+message.getUserId(), message); // Direct send topic to stomp
+    }
+
 
     //"/pub/chat/message"
     @MessageMapping(value = "/chat/message")

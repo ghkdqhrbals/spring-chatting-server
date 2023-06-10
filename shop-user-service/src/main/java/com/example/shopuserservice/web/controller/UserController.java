@@ -15,16 +15,19 @@ import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
@@ -66,7 +69,6 @@ public class UserController {
     @PostMapping("/login")
     public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
                                         ServerHttpResponse response){
-        log.info("start with key={}",env.getProperty("token.secret"));
         Mono<LoginResponseDto> login = loginService.login(request, response).log();
         return login;
     }
@@ -166,7 +168,7 @@ public class UserController {
 
     // 유저 저장 Server-Sent Event
     // produces = MediaType.TEXT_EVENT_STREAM_VALUE
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
         log.info("ADD USER");
         // saga choreograhpy tx 관리 id;

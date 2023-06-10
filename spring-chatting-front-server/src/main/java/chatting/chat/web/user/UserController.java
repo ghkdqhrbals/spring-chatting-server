@@ -12,6 +12,7 @@ import chatting.chat.web.kafka.dto.RequestChangeUserStatusDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,12 +23,9 @@ import reactor.core.publisher.Flux;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Controller
@@ -36,8 +34,13 @@ public class UserController {
 
     private WebClient webClient;
 
+    private final SimpMessagingTemplate template;
     @Value("${backend.api.gateway}")
     private String backEntry;
+
+    public UserController(SimpMessagingTemplate template) {
+        this.template = template;
+    }
 
     @PostConstruct
     public void initWebClient() {
@@ -47,29 +50,51 @@ public class UserController {
 
     // 유저 추가
     @GetMapping
-    public String pageAddfriendG(@ModelAttribute("userForm") UserForm form){
+    public String addUserPage(@ModelAttribute("userForm") UserForm form){
         return "users/addUserForm";
     }
     @PostMapping
-    public String pageAddfriendP(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult){
+    public String addUser(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult, Model model){
 
         // Form 에러 모델 전달
         if (bindingResult.hasErrors()){
             return "users/addUserForm";
         }
 
+        RequestUser req = new RequestUser();
+        req.setUserId(form.getUserId());
+        req.setUserPw(form.getUserPw());
+        req.setEmail(form.getEmail());
+        req.setUserName(form.getUserName());
+        req.setRole("ROLE_USER"); // 기본적으로 일반 롤 부여
+
         try{
-            webClient.mutate()
+
+            Flux<AddUserResponse> res = webClient.mutate()
                     .build()
                     .post()
-                    .uri("/auth/user")
-                    .bodyValue(new RequestAddUserDTO(form.getUserId(),form.getUserPw(),form.getEmail(),form.getUserName()))
+                    .uri("http://127.0.0.1:8000/user")
+                    .bodyValue(req)
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,
                             r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                    .bodyToMono(User.class)
-                    .block();
+                    .bodyToFlux(AddUserResponse.class);
+
+            res.subscribe(response->{
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println(response.getUserStatus());
+                System.out.println(response.getChatStatus());
+                System.out.println(response.getCustomerStatus());
+//                String returns = response.getUserStatus() + response.getChatStatus() + response.getCustomerStatus();
+                template.convertAndSend("/sub/user/" + req.getUserId(), response); // Direct send topic to stomp
+            });
+//            model.addAttribute("stats",b);
+
 
         }catch (CustomThrowableException e){
 
@@ -80,6 +105,7 @@ public class UserController {
             }
             return "users/addUserForm";
         }
+
 
         return "redirect:/";
     }

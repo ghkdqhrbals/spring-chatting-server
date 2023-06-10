@@ -29,11 +29,12 @@ public class MessageListener {
     @KafkaListener(topics = KafkaTopic.userRes, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userRes)
     public void listenUser(UserResponseEvent req) {
         userService.updateStatus2(req).exceptionally(e->{
+            log.info("이벤트 트랜젝션이 발견되지 않았습니다");
             AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(e);
             AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();
             AsyncConfig.sinkMap.remove(req.getUserId());
-            sendToKafkaWithKey(KafkaTopic.userCustomerRollback, req.getUserId(), req.getUserId());
-            sendToKafkaWithKey(KafkaTopic.userChatRollback, req.getUserId(), req.getUserId());
+//            sendToKafkaWithKey(KafkaTopic.userCustomerRollback, req.getUserId(), req.getUserId());
+//            sendToKafkaWithKey(KafkaTopic.userChatRollback, req.getUserId(), req.getUserId());
             return null;
         });
     }

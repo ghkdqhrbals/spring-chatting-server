@@ -77,7 +77,7 @@ spring:
           uri: lb://CHAT-SERVICE
           predicates:
             - Path=/chat/**
-            - Method=POST, GET
+            - Method=POST, GET, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/chat/(?<segment>.*), /$\{segment}

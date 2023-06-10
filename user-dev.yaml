@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: '{cipher}a54220089a57c5b68a405a5ab650eb7d2ae470e3325511c03d5e772907db851c9c4d913ce4b8698e3d57ad5d3b25e12942313ee686a1abf675b4b7e1edf29b94f4086dab62b3cc7651c518f1cd13cffc61e2f1c3d5d0d6e448f81bf42c1c46bc6ea319da839df8b70d28ec451ccf2824'
+    hikari:
+      username: 'postgres'
+      password: '{cipher}cb37d0254f9af1ae19f8f3aaf5ddca4c94e8c1cf5479a3240a706e32167867ab'
+  redis:
+    host: localhost
+    port: 6379
+  cloud:
+    config:
+      uri: http://localhost:8888
+eureka:
+  client:
+    service:
+      url:
+        defaultZone: http://localhost:8761/eureka
+
+token:
+  expiration_time: 86400000
+  secret: '{cipher}751666904f7010ecd5b4e0a2733ebf27fc5364eff09505c6600c687b2e737d45beb934ab982b67436000d82a12bfb1c4f72bbd4b73446d478517cd501a288f8b3de56069e1e291da3608b572c87119e84f5c929101224d7651f731eba15043df84cdfa5b1ad5b0cc2b03e02afc45e7984adb71b1e7e2506a456428c8aab7cc05'
+
+kafka:
+  bootstrap: http://localhost:8099,http://localhost:8098,http://localhost:8097

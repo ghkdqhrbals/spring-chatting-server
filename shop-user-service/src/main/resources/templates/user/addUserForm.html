@@ -7,11 +7,6 @@
 </head>
 <body>
 
-<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <div class="center">
 
   <div class="py-5 text-center">
@@ -19,8 +14,6 @@
   </div>
 
 
-
-  <div id="statsArea"/>
 
   <form action="" th:action th:object="${userForm}" method="post">
 
@@ -33,7 +26,7 @@
         <p class="col-l">Enter your id</p>
       </div>
       <div class="item-6">
-        <input type="text" id="userId" th:field="*{userId}" class="form-control"
+        <input type="text" th:field="*{userId}" class="form-control"
                th:errorclass="field-error">
         <div class="field-error" th:errors="*{userId}">오류 메세지-1</div>
       </div>
@@ -66,7 +59,7 @@
       </div>
 
       <div class="item-6" style="padding-top: 30px">
-        <button class="w-100 btn-primary" type="submit" th:onclick="register()">register now</button>
+        <button class="w-100 btn-primary" type="submit">register now</button>
       </div>
       <div class="item-6">
         <button class="w-100 btn-secondary" onclick="location.href='../login/loginForm.html'"
@@ -80,40 +73,3 @@
 </div> <!-- /container -->
 </body>
 </html>
-
-<script th:inline="javascript">
-  /*<![CDATA[*/
-
-  var str = '';
-  var sockJs = new SockJS("/stomp/chat");
-
-  //1. SockJS를 내부에 들고있는 stomp를 내어줌
-  var stomp = Stomp.over(sockJs);
-
-  //2. connection이 맺어지면 실행
-  stomp.connect({}, function () {
-    console.log("Successfully created STOMP connection");
-
-    //3. send(path, header, message)로 메세지를 보낼 수 있음
-    // stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId,writerId:writerId, writer: username, createAt:Date.now()}))
-  });
-
-  function register() {
-    var userId = document.getElementById("userId");
-    console.log(userId);
-    //4. subscribe(path, callback)으로 메세지를 받을 수 있음
-    stomp.subscribe("/sub/user/" + userId.value, function (stats) {
-      var content = JSON.parse(stats.body);
-
-      console.log(stats);
-      str = "<div>";
-      str += content.userStatus + " : " + content.chatStatus + " : " + content.customerStatus;
-      str += "</div>";
-      $("#statsArea").append(str);
-    });
-
-  }
-
-
-  /*]]>*/
-</script>

@@ -63,3 +63,19 @@
 </div> <!-- /container -->
 </body>
 </html>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    function msgSend() {
+        var msg = document.getElementById("msg");
+        console.log(username + ":" + msg.value);
+
+        stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId,writerId:writerId, message: msg.value, writer: username, createAt:Date.now()}));
+        msg.value = '';
+    }
+
+
+
+    /*]]>*/
+</script>

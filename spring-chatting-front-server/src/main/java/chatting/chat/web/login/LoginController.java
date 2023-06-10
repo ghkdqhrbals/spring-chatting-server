@@ -1,10 +1,11 @@
 package chatting.chat.web.login;
 
 import chatting.chat.domain.data.User;
-import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
+import chatting.chat.web.user.LoginRequestDto;
+import chatting.chat.web.user.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -12,10 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -44,6 +45,7 @@ public class LoginController {
     public String login(@Valid @ModelAttribute("loginForm") LoginForm form,
                             BindingResult bindingResult,
                             HttpServletRequest request,
+                            HttpServletResponse httpServletResponse,
                             @RequestParam(defaultValue = "/") String redirectURL){
 
         System.out.println("bindingResult.getObjectName() = " + bindingResult.getObjectName());
@@ -54,12 +56,19 @@ public class LoginController {
         }
 
         User user = new User();
+        LoginRequestDto req = new LoginRequestDto();
+
+        req.setUsername(form.getLoginId());
+        req.setPassword(form.getPassword());
+
+
         try{
-            user = webClient.mutate()
-                    .baseUrl("http://127.0.0.1:8060")
+            LoginResponseDto res = webClient.mutate()
+                    .baseUrl("http://127.0.0.1:8000")
                     .build()
-                    .get()
-                    .uri("/auth/login?userId=" + form.getLoginId() + "&userPw=" + form.getPassword())
+                    .post()
+                    .uri("/user/login")
+                    .bodyValue(req)
                     .retrieve()
                     .onStatus(
                             HttpStatus.NOT_FOUND::equals,
@@ -67,15 +76,20 @@ public class LoginController {
                     .onStatus(
                             HttpStatus.UNAUTHORIZED::equals,
                             response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .bodyToMono(User.class)
+                    .onStatus(
+                            HttpStatus.INTERNAL_SERVER_ERROR::equals,
+                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
+                    .bodyToMono(LoginResponseDto.class)
                     .block();
+//            log.info("Retrieve TOKEN : ");
+//            log.info("Retrieve TOKEN : {}",res.getToken());
+            httpServletResponse.addHeader("Set-Cookie","Bearer "+res.getToken());
         }catch (CustomThrowableException e){
-            if (e.getErrorResponse().getStatus()==HttpStatus.NOT_FOUND.value()){
-                bindingResult.rejectValue("loginId", null, e.getErrorResponse().getMessage());
-            }
-            if (e.getErrorResponse().getStatus()==HttpStatus.UNAUTHORIZED.value()){
+
+            if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())){
                 bindingResult.rejectValue("password", null,e.getErrorResponse().getMessage());
             }
+
             return "login/loginForm";
         }
 
@@ -93,7 +107,7 @@ public class LoginController {
             webClient.mutate()
                     .build()
                     .get()
-                    .uri("/auth/logout?userId=" + loginUser.getUserId())
+                    .uri("/user/logout")
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,

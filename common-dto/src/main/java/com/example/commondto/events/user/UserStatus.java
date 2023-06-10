@@ -2,6 +2,7 @@ package com.example.commondto.events.user;
 
 public enum UserStatus {
     USER_INSERT,
+    USER_DUPLICATION,
     USER_DELETE,
     USER_INSERT_COMPLETE,
     USER_DELETE_COMPLETE,

@@ -5,6 +5,45 @@
   <link th:href="@{/css/common.css}"
         href="../css/common.css" rel="stylesheet">
 </head>
+<style>
+.greendot {
+  height: 25px;
+  width: 25px;
+  background-color: #5bf100;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.reddot {
+  height: 25px;
+  width: 25px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.orangedot {
+  height: 25px;
+  width: 25px;
+  background-color: #ffb310;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.container-4 {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  /* display: inline-grid; */
+}
+
+.item {
+  padding: 0px;
+  /* display: inline-grid; */
+}
+
+
+</style>
+
 <body>
 
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
@@ -16,11 +55,15 @@
 
   <div class="py-5 text-center">
     <h2>Register Form</h2>
+    <div class="container-4" id="userStatus">
+
+    </div>
+<!--    <h2 id="statsArea">Original forms</h2>-->
   </div>
 
 
 
-  <div id="statsArea"/>
+
 
   <form action="" th:action th:object="${userForm}" method="post">
 
@@ -104,12 +147,57 @@
     //4. subscribe(path, callback)으로 메세지를 받을 수 있음
     stomp.subscribe("/sub/user/" + userId.value, function (stats) {
       var content = JSON.parse(stats.body);
-
       console.log(stats);
-      str = "<div>";
-      str += content.userStatus + " : " + content.chatStatus + " : " + content.customerStatus;
+      str = "<div class=\"item\">";
+      if (content.userStatus == "USER_INSERT_COMPLETE"){
+        str += "<span class=\"greendot\"></span>";
+      }else if(content.userStatus == "USER_DUPLICATION"){
+        str += "<span class=\"reddot\"></span>";
+      }else{
+        str += "<span class=\"orangedot\"></span>";
+      }
       str += "</div>";
-      $("#statsArea").append(str);
+      str += "<div class=\"item\">";
+      str += "<p>";
+      str += "인증서버 Status"
+      str += "</p>";
+      str += "</div>";
+      str += "<div class=\"item\">";
+
+      if (content.chatStatus == "USER_SUCCES"){
+        str += "<span class=\"greendot\"></span>";
+      }else if(content.chatStatus == "USER_FAIL"){
+        str += "<span class=\"reddot\"></span>";
+      }else{
+        str += "<span class=\"orangedot\"></span>";
+      }
+      str += "</div>";
+      str += "<div class=\"item\">";
+      str += "<p>";
+      str += "채팅서버 Status"
+      str += "</p>";
+      str += "</div>";
+      str += "<div class=\"item\">";
+
+      if (content.customerStatus == "USER_SUCCES"){
+        str += "<span class=\"greendot\"></span>";
+      }else if(content.customerStatus == "USER_FAIL"){
+        str += "<span class=\"reddot\"></span>";
+      }else{
+        str += "<span class=\"orangedot\"></span>";
+      }
+      str += "</div>";
+      str += "<div class=\"item\">";
+      str += "<p>";
+      str += "고객서버 Status"
+      str += "</p>";
+      str += "</div>";
+
+
+      document.getElementById("userStatus").innerHTML = str;
+      // document.getElementById("statsArea").innerText(str);
+      // $("#statsArea").innerText(str);
+
     });
 
   }

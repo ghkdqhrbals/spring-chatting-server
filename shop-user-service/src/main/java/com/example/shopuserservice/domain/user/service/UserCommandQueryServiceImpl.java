@@ -114,40 +114,12 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             String userStatus = ut.getUserStatus();
 //            userTransactionRedisRepository.save(ut);
 //            sendRollbackIfStatusFail(ut, chatStatus, customerStatus);
-            if (userStatus.equals(UserStatus.USER_INSERT.name())){
-                Optional<User> findUser = userRepository.findById(ut.getUserId());
-                if (findUser.isEmpty()){
-                    // 유저 저장
-                    User user = new User(
-                            ut.getUserId(),
-                            ut.getUserPw(),
-                            ut.getEmail(),
-                            ut.getUserName(),
-                            LocalDateTime.now(),
-                            LocalDateTime.now(),
-                            LocalDateTime.now(),
-                            ut.getRole()
-                    );
-                    try {
-                        userRepositoryJDBC.saveAll2(Arrays.asList(user));
-                        log.info("저장 완료");
-                        // saga Choreography 로 Transaction 관리
-                    } catch (Exception e){
-                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-                        return CompletableFuture.failedFuture(e);
-                    }
-                } else {
-                    log.info("인증서버에 유저가 이미 존재합니다");
-                    // 유저가 이미 존재할 때
-                    ut.setUserStatus(UserStatus.USER_DUPLICATION.name());
-                }
-
-                ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
-
-            } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
-                userRepository.deleteById(ut.getUserId());
-                ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
-            }
+//            if (userStatus.equals(UserStatus.USER_INSERT.name())){
+//
+//            } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
+//                userRepository.deleteById(ut.getUserId());
+//                ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
+//            }
 
             userTransactionRedisRepository.save(ut);
             // 결과 Flux 전송
@@ -218,12 +190,44 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 pwe.encode(req.getUserPw()),
                 req.getRole());
 
+        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitNext(userTransaction);
         try {
 
             // 이벤트 Transaction 저장
             LocalDateTime now1 = LocalDateTime.now();
-            userTransactionRedisRepository.save(userTransaction);
+            UserTransactions ut = userTransactionRedisRepository.save(userTransaction);
             LocalDateTime now2 = LocalDateTime.now();
+
+            Optional<User> findUser = userRepository.findById(ut.getUserId());
+            if (findUser.isEmpty()){
+                // 유저 저장
+                User user = new User(
+                        ut.getUserId(),
+                        ut.getUserPw(),
+                        ut.getEmail(),
+                        ut.getUserName(),
+                        LocalDateTime.now(),
+                        LocalDateTime.now(),
+                        LocalDateTime.now(),
+                        ut.getRole()
+                );
+                try {
+                    userRepositoryJDBC.saveAll2(Arrays.asList(user));
+                    ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
+                    log.info("저장 완료");
+                    // saga Choreography 로 Transaction 관리
+                } catch (Exception e){
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
+                    return CompletableFuture.failedFuture(e);
+                }
+            } else {
+                log.info("인증서버에 유저가 이미 존재합니다");
+                // 유저가 이미 존재할 때
+                ut.setUserStatus(UserStatus.USER_DUPLICATION.name());
+            }
+            userTransactionRedisRepository.save(ut);
+
+            
 //            System.out.println(Duration.between(now, LocalDateTime.now()).toMillis());
             // 이벤트 Publishing key:userId = Partitioning
             sendToKafkaWithKey(
@@ -234,7 +238,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 LocalDateTime now3 = LocalDateTime.now();
                 log.info("Redis Save Time : "+Duration.between(now1, now2).toMillis() + " Kafka Sender Time : "+Duration.between(now2, now3).toMillis());
             }).exceptionally(e->{
-                log.error("에러발생 ㅜㅜ={}",e.getMessage());
+                log.error("에러발생 ={}",e.getMessage());
                 return null;
             });
         }catch(Exception e){

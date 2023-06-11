@@ -13,7 +13,7 @@ spring:
     basename: messages,errors
   datasource:
     hikari:
-      maximum-pool-size: 60
+      maximum-pool-size: 30
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect

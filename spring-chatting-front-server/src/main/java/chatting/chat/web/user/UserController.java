@@ -4,7 +4,6 @@ package chatting.chat.web.user;
 import chatting.chat.domain.data.User;
 import chatting.chat.web.dto.*;
 import chatting.chat.web.error.CustomThrowableException;
-import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.kafka.dto.CreateChatRoomUnitDTO;
@@ -25,6 +24,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,11 +55,13 @@ public class UserController {
         return "users/addUserForm";
     }
     @PostMapping
-    public String addUser(@Valid @ModelAttribute("userForm") UserForm form, BindingResult bindingResult, Model model){
+    public CompletableFuture<String> addUser(@Valid @ModelAttribute("userForm") UserForm form,
+                                             BindingResult bindingResult,
+                                             Model model){
 
         // Form 에러 모델 전달
         if (bindingResult.hasErrors()){
-            return "users/addUserForm";
+            return CompletableFuture.completedFuture("users/addUserForm");
         }
 
         RequestUser req = new RequestUser();
@@ -68,8 +71,8 @@ public class UserController {
         req.setUserName(form.getUserName());
         req.setRole("ROLE_USER"); // 기본적으로 일반 롤 부여
 
-        try{
-
+        // 동시성을 위한 별도 스레드 풀 사용
+        return CompletableFuture.supplyAsync(()->{
             Flux<AddUserResponse> res = webClient.mutate()
                     .build()
                     .post()
@@ -79,12 +82,24 @@ public class UserController {
                     .onStatus(
                             HttpStatus::is4xxClientError,
                             r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .onStatus(
+                            HttpStatus::is5xxServerError,
+                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
                     .bodyToFlux(AddUserResponse.class);
 
-            res.subscribe(response->{
+            // Mutex Lock
+            final Object lock = new Object();
+
+            // 메인 스레드는 flux 스레드가 onComplete 될 때 까지 block 되어야함
+            res.doOnComplete(() -> {
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }).subscribe(response -> {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(4000);
                 } catch (InterruptedException e) {
+                    log.info("Runtime Exception={}",e.getMessage());
                     throw new RuntimeException(e);
                 }
                 System.out.println(response.getUserStatus());
@@ -93,21 +108,47 @@ public class UserController {
 //                String returns = response.getUserStatus() + response.getChatStatus() + response.getCustomerStatus();
                 template.convertAndSend("/sub/user/" + req.getUserId(), response); // Direct send topic to stomp
             });
-//            model.addAttribute("stats",b);
 
-
-        }catch (CustomThrowableException e){
-
-            log.info(e.getErrorResponse().getCode());
-            log.info(e.getErrorResponse().getMessage());
-            if (e.getErrorResponse().getCode().equals(ErrorCode.DUPLICATE_RESOURCE.toString())){
-                bindingResult.rejectValue("userId", null, e.getErrorResponse().getMessage());
+            synchronized(lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                }
             }
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e2) {
+                throw new RuntimeException(e2);
+            }
+
+            return "redirect:/";
+        }).exceptionally((e)->{
+            log.info("Exceptions!={}",e.getMessage());
+            bindingResult.rejectValue("userId", null, e.getMessage());
             return "users/addUserForm";
-        }
+        });
 
 
-        return "redirect:/";
+
+//        try{
+//
+////            res.doOnCancel(()->{
+////                view.setViewName("redirect:/");
+////            });
+////            model.addAttribute("stats",b);
+//        }catch (CustomThrowableException e){
+//            log.info(e.getErrorResponse().getCode());
+//            log.info(e.getErrorResponse().getMessage());
+//            if (e.getErrorResponse().getCode().equals(ErrorCode.DUPLICATE_RESOURCE.toString())){
+//                bindingResult.rejectValue("userId", null, e.getErrorResponse().getMessage());
+//            }else{
+//                bindingResult.rejectValue("userId", null, e.getErrorResponse().getMessage());
+//            }
+//            return CompletableFuture.completedFuture("users/addUserForm");
+//        }
+//
+//        return CompletableFuture.completedFuture("redirect:/");
     }
 
 
@@ -141,6 +182,7 @@ public class UserController {
             log.info(e.getErrorResponse().getMessage());
             return "users/updateStatusForm";
         }
+
 
         return "redirect:/";
     }

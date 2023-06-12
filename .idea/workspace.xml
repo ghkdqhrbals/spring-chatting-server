@@ -5,14 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6318dff7-24c4-4c60-ac07-c5822e12f55f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/login/loginWaitForm.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apigateway-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/apigateway-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-dev.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -37,11 +39,11 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/redis/data/dump.rdb" beforeDir="false" afterPath="$PROJECT_DIR$/redis/data/dump.rdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/kafka/KafkaProducerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/HomeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/friend/FriendController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/friend/FriendController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/login/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/login/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/java/chatting/chat/web/user/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/css/common.css" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/css/common.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/login/loginForm.html" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/login/loginForm.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/users/addUserForm.html" beforeDir="false" afterPath="$PROJECT_DIR$/spring-chatting-front-server/src/main/resources/templates/users/addUserForm.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +190,7 @@
       <updated>1685952729005</updated>
       <workItem from="1685952730832" duration="645000" />
       <workItem from="1686034637467" duration="1287000" />
-      <workItem from="1686296888636" duration="39035000" />
+      <workItem from="1686296888636" duration="45618000" />
     </task>
     <servers />
   </component>

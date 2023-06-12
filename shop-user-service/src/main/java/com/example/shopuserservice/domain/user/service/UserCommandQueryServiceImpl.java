@@ -236,7 +236,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                     req.getUserId()
             ).thenRun(()->{
                 LocalDateTime now3 = LocalDateTime.now();
-                log.info("Redis Save Time : "+Duration.between(now1, now2).toMillis() + " Kafka Sender Time : "+Duration.between(now2, now3).toMillis());
+                log.info("Redis Save Time : "+Duration.between(now1, now2).toMillis() + "ms Kafka Sender Time : "+Duration.between(now2, now3).toMillis()+"ms");
             }).exceptionally(e->{
                 log.error("에러발생 ={}",e.getMessage());
                 return null;

@@ -51,7 +51,7 @@ public class HomeController {
             ResponseGetUser me = webClient.mutate()
                     .build()
                     .get()
-                    .uri("/chat/user?userId=" + loginUser.getUserId())
+                    .uri("http://localhost:8000/chat/user?userId=" + loginUser.getUserId())
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,
@@ -62,7 +62,7 @@ public class HomeController {
             Flux<ResponseGetFriend> response = webClient.mutate()
                     .build()
                     .get()
-                    .uri("/chat/friend?userId=" + loginUser.getUserId())
+                    .uri("http://localhost:8000/chat/friend?userId=" + loginUser.getUserId())
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,

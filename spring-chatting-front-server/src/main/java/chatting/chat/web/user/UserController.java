@@ -96,15 +96,12 @@ public class UserController {
                     lock.notify();
                 }
             }).subscribe(response -> {
-                try {
-                    Thread.sleep(4000);
-                } catch (InterruptedException e) {
-                    log.info("Runtime Exception={}",e.getMessage());
-                    throw new RuntimeException(e);
-                }
-                System.out.println(response.getUserStatus());
-                System.out.println(response.getChatStatus());
-                System.out.println(response.getCustomerStatus());
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    log.info("Runtime Exception={}",e.getMessage());
+//                    throw new RuntimeException(e);
+//                }
 //                String returns = response.getUserStatus() + response.getChatStatus() + response.getCustomerStatus();
                 template.convertAndSend("/sub/user/" + req.getUserId(), response); // Direct send topic to stomp
             });
@@ -116,11 +113,11 @@ public class UserController {
                 }
             }
 
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e2) {
-                throw new RuntimeException(e2);
-            }
+//            try {
+//                Thread.sleep(5000);
+//            } catch (InterruptedException e2) {
+//                throw new RuntimeException(e2);
+//            }
 
             return "redirect:/";
         }).exceptionally((e)->{

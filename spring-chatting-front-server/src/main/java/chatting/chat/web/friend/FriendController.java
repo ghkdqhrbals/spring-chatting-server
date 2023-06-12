@@ -57,6 +57,7 @@ public class FriendController {
 
         try{
             String response = webClient.mutate()
+                    .baseUrl(backEntry)
                     .build()
                     .post()
                     .uri("/chat/friend")

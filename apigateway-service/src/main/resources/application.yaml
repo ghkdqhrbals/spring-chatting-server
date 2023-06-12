@@ -80,6 +80,7 @@ spring:
             - Method=POST, GET, DELETE
           filters:
             - RemoveRequestHeader=Cookie
+            - AuthorizationHeaderFilter
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
 management:
   endpoints:

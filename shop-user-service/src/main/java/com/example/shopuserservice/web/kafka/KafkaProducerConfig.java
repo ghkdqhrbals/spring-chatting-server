@@ -31,11 +31,10 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
         // 메세지 재전송은 10번만!
-        configProps.put(ProducerConfig.RETRIES_CONFIG,10);
+        configProps.put(ProducerConfig.RETRIES_CONFIG,1);
 
-        // 카프카 트랜젝션에 id 부여
-        // 사실 우리는 non-transactional 이라서 딱히 필요는 없습니다.
-//        configProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString());
+        // 클라이언트 별 전송할 수 있는 최대 메세지 송출
+        configProps.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1000);
 
         // 카프카 메세지 배치 프로세스
         configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSize);

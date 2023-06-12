@@ -83,6 +83,7 @@ public class LoginController {
                     .block();
 //            log.info("Retrieve TOKEN : ");
 //            log.info("Retrieve TOKEN : {}",res.getToken());
+
             httpServletResponse.addHeader("Set-Cookie","Bearer "+res.getToken());
         }catch (CustomThrowableException e){
 

@@ -130,6 +130,74 @@ public class FluxTest {
         }
         t.destroy();
     }
+//
+//    @Test
+//    void sync_non_blocking() throws ExecutionException, InterruptedException {
+//        ThreadPoolTaskExecutor t = getThreadPoolTaskExecutor();
+//        System.out.println("[Thread 1] - 작업 시작할게요");
+//        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+//            try {Thread.sleep(500);} catch (InterruptedException e) {throw new RuntimeException(e);}
+//            System.out.println("[Thread 2] - [Thread 1]으로부터 전달받은 작업 처리할게요");
+//            return "Thread 2의 결과물";
+//        },t);
+//
+//        // Non-Block!
+//        while(!completableFuture.isDone()){
+//            Thread.sleep(200);
+//            System.out.println("[Thread 1] - Thread 2님 작업이 끝났나요? 그동안 저는 다른일 좀 할게요");
+//            System.out.println("[Thread 1] - 다른 일 중...");
+//        }
+//        // 다음 작업
+//        System.out.println("[Thread 1] - 끝났군요! 결과물은 : \""+completableFuture.get()+"\", 이제 다음 작업 수행할게요");
+//        System.out.println("[Thread 1] 다음 작업 수행 중...");
+//
+//        t.destroy();
+//    }
+//
+//    @Test
+//    void async_blocking() throws ExecutionException, InterruptedException {
+//        ThreadPoolTaskExecutor t = getThreadPoolTaskExecutor();
+//        System.out.println("[Thread 1] - 작업 시작할게요");
+//
+//        // Async
+//        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+//            try {Thread.sleep(500);} catch (InterruptedException e) {throw new RuntimeException(e);}
+//            System.out.println("[Thread 2] - [Thread 1]으로부터 전달받은 작업 처리할게요");
+//            return "Thread 2의 결과물";
+//        },t);
+//
+//        // Blocking
+//        String result = completableFuture.get();
+//
+//        System.out.println("[Thread 1] - 끝났군요! 결과물은 : \""+result+"\", 이제 다음 작업 수행할게요");
+//        System.out.println("[Thread 1] 다음 작업 수행 중...");
+//
+//        t.destroy();
+//    }
+//    @Test
+//    void async_non_blocking() throws ExecutionException, InterruptedException {
+//        ThreadPoolTaskExecutor t = getThreadPoolTaskExecutor();
+//        Sinks.Many<Object> sinks = Sinks.many().replay().all();
+//
+//        System.out.println("[Thread 1] - 작업 시작할게요");
+//
+//        // Async
+//        CompletableFuture.runAsync(() -> {
+//            try {Thread.sleep(500);} catch (InterruptedException e) {throw new RuntimeException(e);}
+//            System.out.println("[Thread 2] - [Thread 1]으로부터 전달받은 작업 처리할게요");
+//            sinks.tryEmitNext("Thread 2의 결과물");
+//        },t);
+//
+//        // Non-Blocking
+//        sinks.asFlux().log().subscribe(result->{
+//            System.out.println("[Thread 1] - 끝났군요! 결과물은 : \""+result+"\", 이제 다음 작업 수행할게요");
+//        });
+//
+//        System.out.println("[Thread 1] 다음 작업 수행 중...");
+//
+//        try {Thread.sleep(1000);} catch (InterruptedException e) {throw new RuntimeException(e);}
+//        t.destroy();
+//    }
 
     @Test
     void multiThreadSink2(){

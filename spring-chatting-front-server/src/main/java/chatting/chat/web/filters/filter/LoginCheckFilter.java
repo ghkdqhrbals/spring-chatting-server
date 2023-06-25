@@ -2,11 +2,15 @@ package chatting.chat.web.filters.filter;
 
 import chatting.chat.web.filters.cons.SessionConst;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Slf4j
 public class LoginCheckFilter implements HandlerInterceptor {
@@ -16,12 +20,8 @@ public class LoginCheckFilter implements HandlerInterceptor {
             response, Object handler) throws Exception {
         String requestURI = request.getRequestURI();
         log.info("인증 체크 인터셉터 실행 {}", requestURI);
-
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER)
-                == null) {
-            //로그인으로 redirect
-//            response.sendRedirect("/login?redirectURL=" + requestURI);
+        Cookie authCookie = WebUtils.getCookie(request, "jwttoken");
+        if ( authCookie == null ){
             response.sendRedirect("/login");
             log.info("인증 체크 인터셉터 실패 {}", requestURI);
             return false;

@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 
 @Slf4j
@@ -84,7 +87,14 @@ public class LoginController {
 //            log.info("Retrieve TOKEN : ");
 //            log.info("Retrieve TOKEN : {}",res.getToken());
 
-            httpServletResponse.addHeader("Set-Cookie","Bearer "+res.getToken());
+
+            String tokenCookie = URLEncoder.encode("Bearer " + res.getToken(), "utf-16").replaceAll("\\+", "%20");;
+            Cookie myCookie = new Cookie("jwttoken", tokenCookie);
+            myCookie.setMaxAge(10000);
+            myCookie.setPath("/");
+
+            httpServletResponse.addCookie(myCookie);
+//            httpServletResponse.addHeader("Set-Cookie","Bearer "+res.getToken());
         }catch (CustomThrowableException e){
 
             if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())){
@@ -92,18 +102,22 @@ public class LoginController {
             }
 
             return "login/loginForm";
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
 
         // logic
-        HttpSession session = request.getSession(true);
-        session.setAttribute(SessionConst.LOGIN_MEMBER, user);
-        log.info(redirectURL);
+//        HttpSession session = request.getSession(true);
+//        session.setAttribute(SessionConst.LOGIN_MEMBER, user);
+
+
+//        log.info("redirect to = {} userId:{}, userPw:{}",redirectURL,user.getUserId(),user.getUserPw());
         return "redirect:"+redirectURL;
 
     }
 
     @GetMapping("/logout")
-    public String loginForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginUser, HttpSession session) {
+    public String loginForm(HttpServletResponse httpServletResponse) {
         try{
             webClient.mutate()
                     .build()
@@ -116,7 +130,10 @@ public class LoginController {
                     .bodyToMono(String.class)
                     .subscribe(log::info);
 
-            session.removeAttribute(SessionConst.LOGIN_MEMBER);
+            Cookie cookie = new Cookie("jwttoken", "");
+            cookie.setMaxAge(0);
+            httpServletResponse.addCookie(cookie);
+            
         }catch (CustomThrowableException e){
             log.info(e.getErrorResponse().getMessage());
             return "redirect:/";

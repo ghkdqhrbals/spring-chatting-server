@@ -158,7 +158,6 @@ services:
       - kafka1
       - kafka2
       - kafka3
-#      - user-server
       - discovery-server
       - configuration-server
       - chat-db
@@ -170,8 +169,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=chat
-    expose:
-      - "5433" # Publishes 5433 to other containers but NOT to host machine
     ports:
       - "5433:5433"
     volumes:
@@ -197,7 +194,6 @@ services:
       - kafka1
       - kafka2
       - kafka3
-#      - user-server
       - discovery-server
       - configuration-server
       - customer-db
@@ -230,7 +226,6 @@ services:
       SERVER_PORT: 8000
     depends_on:
       - rabbitmq
-#      - user-server
       - chatting-server
       - customer-server
       - discovery-server

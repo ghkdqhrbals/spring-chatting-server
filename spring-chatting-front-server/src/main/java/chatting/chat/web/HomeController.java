@@ -49,7 +49,7 @@ public class HomeController {
             ResponseGetUser me = webClient.mutate()
                     .build()
                     .get()
-                    .uri("http://localhost:8000/chat/user?userId=" + "ab1234")
+                    .uri("http://localhost:8000/chat/user")
                     .header(HttpHeaders.AUTHORIZATION,jwttoken)
                     .retrieve()
                     .onStatus(

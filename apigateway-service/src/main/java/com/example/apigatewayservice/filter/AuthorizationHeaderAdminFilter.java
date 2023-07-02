@@ -87,7 +87,14 @@ public class AuthorizationHeaderAdminFilter extends AbstractGatewayFilterFactory
             returnValue = false;
         }
 
-        exchange.getRequest().getHeaders().add("user_id",userId);
+        // readonly 라서 변경 불가능
+//        exchange.getRequest().getHeaders().add("user_id",userId);
+        if (returnValue){
+            String finalUserId = userId;
+            exchange.getRequest()
+                    .mutate()
+                    .headers(httpHeaders -> httpHeaders.set("user_id", finalUserId));
+        }
         return returnValue;
     }
 

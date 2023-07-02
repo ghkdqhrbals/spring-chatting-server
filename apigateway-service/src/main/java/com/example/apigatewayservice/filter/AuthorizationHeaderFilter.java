@@ -88,7 +88,15 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             returnValue = false;
         }
 
-        exchange.getRequest().getHeaders().add("user_id",userId);
+        if (returnValue){
+            if (returnValue){
+                String finalUserId = userId;
+                exchange.getRequest()
+                        .mutate()
+                        .headers(httpHeaders -> httpHeaders.set("user_id", finalUserId));
+            }
+        }
+
         return returnValue;
     }
 

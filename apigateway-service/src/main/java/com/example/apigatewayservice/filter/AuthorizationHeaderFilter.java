@@ -1,5 +1,7 @@
 package com.example.apigatewayservice.filter;
 
+import com.example.commondto.token.JwtTokenValues;
+import com.example.commondto.token.UserRoles;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
@@ -70,11 +72,11 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                 returnValue = false;
             }
 
-            permissions = (String) jwtBody.get("permissions");
+            permissions = (String) jwtBody.get(JwtTokenValues.permission);
             userId = (String) jwtBody.get("sub");
 
             // USER, ADMIN 둘 다 아니라면
-            if (!permissions.contains("ROLE_USER") && !permissions.contains("ROLE_ADMIN")){
+            if (!permissions.contains(UserRoles.userRole) && !permissions.contains(UserRoles.adminRole)){
                 returnValue = false;
             // USER, ADMIN 둘 중 하나는 있다면
             }else{

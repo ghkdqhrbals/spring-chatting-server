@@ -1,7 +1,7 @@
 package com.example.shopuserservice.domain.user.repository;
 
+import com.example.commondto.error.CustomException;
 import com.example.shopuserservice.domain.data.User;
-import com.example.shopuserservice.web.error.CustomException;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import static com.example.shopuserservice.web.error.ErrorCode.CANNOT_FIND_USER;
-import static com.example.shopuserservice.web.error.ErrorCode.DUPLICATE_RESOURCE;
+import static com.example.commondto.error.ErrorCode.CANNOT_FIND_USER;
+import static com.example.commondto.error.ErrorCode.DUPLICATE_RESOURCE;
 
 
 @Slf4j
@@ -88,72 +88,6 @@ public class UserRepositoryJDBC {
             throw new RuntimeException();
         });
     }
-
-//    // LOCAL VARIABLE contain Connection
-//    public CompletableFuture<User> findUser(String user_id, String user_pw) {
-//
-//        log.info("HikariCP[Total:{}, Active:{}, Idle:{}, Wait:{}]",
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getTotalConnections()),
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getActiveConnections()),
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getIdleConnections()),
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection())
-//        );
-//        return CompletableFuture.supplyAsync(()->{
-//            PreparedStatement pstmt = null;
-//            Connection conn = null; // local로 설정해야됩니다. Heap에 저장해버리면 Hikari가 활용 X
-//            ResultSet rs = null;
-//            PreparedStatementCreator creator = new PreparedStatementCreator() {
-//                @Override
-//                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-//                    PreparedStatement updateSales = con.prepareStatement(
-//                            "SELECT * FROM user_table WHERE user_id = ? OFFSET 0 LIMIT 1");
-//                    updateSales.setString(1, user_id);
-//                    return updateSales;
-//                }
-//            };
-//
-//            try {
-//                log.info(printHikariCPInfo()+" before get connection");
-//                conn = hikariDataSource.getConnection();
-//                log.info(printHikariCPInfo()+" after get connection");
-//                pstmt = creator.createPreparedStatement(conn);
-//                rs = pstmt.executeQuery();
-//                List<User> users = new ArrayList<>();
-//                while (rs.next())
-//                {
-//                    users.add(new User(
-//                            rs.getString("user_id"),
-//                            rs.getString("user_pw"),
-//                            rs.getString("email"),
-//                            rs.getString("user_name"),
-//                            rs.getTimestamp("join_date").toLocalDateTime(),
-//                            rs.getTimestamp("login_date").toLocalDateTime(),
-//                            rs.getTimestamp("logout_date").toLocalDateTime()));
-//                }
-//
-//                if (users.size() < 1){
-//                    throw new CustomException(CANNOT_FIND_USER);
-//                }
-//                return users.get(0);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            } catch (CustomException customException){
-//                throw customException;
-//            } finally {
-//                if(rs != null) try { rs.close();} catch(SQLException ex) {}
-//                if(pstmt != null) try { pstmt.close();} catch(SQLException ex) {}
-//                if(conn != null) try {
-//                    conn.close();
-//                } catch(SQLException ex) {}
-//            }
-//        },databaseExecutor).exceptionally(e->{
-//            log.info(e.getMessage());
-//            if (e.getCause().getClass() == CustomException.class){
-//                throw new CustomException(CANNOT_FIND_USER);
-//            }
-//            throw new RuntimeException();
-//        });
-//    }
 
     // Transaction 과 Connection, SQL 쿼리문, 스레드 모두 직접 컨트롤
     public CompletableFuture<?> login(String user_id, String user_pw) throws CustomException{

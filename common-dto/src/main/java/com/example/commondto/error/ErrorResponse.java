@@ -1,4 +1,4 @@
-package com.example.shopuserservice.web.error;
+package com.example.commondto.error;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +15,7 @@ public class ErrorResponse {
     private final String code;
     private final String message;
 
-    public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
+    public static ResponseEntity<Object> toResponseEntity(ErrorCode errorCode) {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(ErrorResponse.builder()

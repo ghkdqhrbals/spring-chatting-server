@@ -1,5 +1,8 @@
 package com.example.apigatewayservice.filter;
 
+import com.example.commondto.token.JwtTokenValues;
+import com.example.commondto.token.UserRoles;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +47,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String bearerToken = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = bearerToken.replace("Bearer ","");
 
-            if (!isJwtValid(jwt)){
+            if (!isJwtValid(exchange, jwt)){
                 return onError(exchange, "Non valid JWT token", HttpStatus.UNAUTHORIZED);
             }
 
@@ -52,24 +55,48 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         });
     }
 
-    private boolean isJwtValid(String jwt) {
+    private boolean isJwtValid(ServerWebExchange exchange, String jwt) {
         boolean returnValue = true;
         String subject = null;
+        String userId = null;
+        String permissions = null;
 
         try {
-            subject = Jwts.parser()
+            Claims jwtBody = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(jwt)
-                    .getBody()
-                    .getSubject();
+                    .getBody();
+
+            subject = jwtBody.getSubject();
+            if (subject == null || subject.isEmpty()){
+                returnValue = false;
+            }
+
+            permissions = (String) jwtBody.get(JwtTokenValues.permission);
+            userId = (String) jwtBody.get("sub");
+
+            // USER, ADMIN 둘 다 아니라면
+            if (!permissions.contains(UserRoles.userRole) && !permissions.contains(UserRoles.adminRole)){
+                returnValue = false;
+            // USER, ADMIN 둘 중 하나는 있다면
+            }else{
+                returnValue = true;
+            }
+
+        // 비정상 jwt 이라면
         }catch(Exception e){
             log.info(e.getMessage());
             // validation failed
             returnValue = false;
         }
 
-        if (subject == null || subject.isEmpty()){
-            returnValue = false;
+        if (returnValue){
+            if (returnValue){
+                String finalUserId = userId;
+                exchange.getRequest()
+                        .mutate()
+                        .headers(httpHeaders -> httpHeaders.set("user_id", finalUserId));
+            }
         }
 
         return returnValue;

@@ -1,5 +1,7 @@
 package com.example.apigatewayservice.filter;
 
+import com.example.commondto.token.JwtTokenValues;
+import com.example.commondto.token.UserRoles;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +45,8 @@ public class AuthorizationHeaderAdminFilter extends AbstractGatewayFilterFactory
             String bearerToken = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = bearerToken.replace("Bearer ","");
 
-            if (!isJwtValidAdmin(jwt)){
+
+            if (!isJwtValidAdmin(exchange, jwt)){
                 return onError(exchange, "Non valid JWT token", HttpStatus.UNAUTHORIZED);
             }
 
@@ -51,9 +54,10 @@ public class AuthorizationHeaderAdminFilter extends AbstractGatewayFilterFactory
         });
     }
 
-    private boolean isJwtValidAdmin(String jwt) {
+    private boolean isJwtValidAdmin(ServerWebExchange exchange,String jwt) {
         boolean returnValue = true;
         String subject = null;
+        String userId = null;
         String permissions = null;
 
         try {
@@ -63,23 +67,36 @@ public class AuthorizationHeaderAdminFilter extends AbstractGatewayFilterFactory
                     .getBody();
 
             subject = jwtBody.getSubject();
-            permissions = (String) jwtBody.get("permissions");
-
-            if (permissions.contains("ROLE_ADMIN")){
-                return returnValue;
-            }else{
+            if (subject == null || subject.isEmpty()){
                 returnValue = false;
             }
+
+            permissions = (String) jwtBody.get(JwtTokenValues.permission);
+            userId = (String) jwtBody.get("sub");
+
+            // USER, ADMIN 둘 다 아니라면
+            if (!permissions.contains(UserRoles.adminRole)){
+                returnValue = false;
+                // ADMIN 둘 중 하나는 있다면
+            }else{
+                returnValue = true;
+            }
+
+            // 비정상 jwt 이라면
         }catch(Exception e){
             log.info(e.getMessage());
             // validation failed
             returnValue = false;
         }
 
-        if (subject == null || subject.isEmpty()){
-            returnValue = false;
+        // readonly 라서 변경 불가능
+//        exchange.getRequest().getHeaders().add("user_id",userId);
+        if (returnValue){
+            String finalUserId = userId;
+            exchange.getRequest()
+                    .mutate()
+                    .headers(httpHeaders -> httpHeaders.set("user_id", finalUserId));
         }
-
         return returnValue;
     }
 

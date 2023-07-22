@@ -39,8 +39,7 @@ public class FriendController {
 
     // 친구 추가
     @GetMapping
-    public String addFriend(
-            @ModelAttribute("friendForm") FriendForm form){
+    public String addFriend(@ModelAttribute("friendForm") FriendForm form){
         return "users/addFriendForm";
     }
 

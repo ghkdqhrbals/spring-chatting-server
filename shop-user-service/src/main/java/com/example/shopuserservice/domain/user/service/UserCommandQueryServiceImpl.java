@@ -1,6 +1,5 @@
 package com.example.shopuserservice.domain.user.service;
 
-import com.example.commondto.error.ErrorResponse;
 import com.example.commondto.events.ServiceNames;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
@@ -15,7 +14,8 @@ import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
 import com.example.shopuserservice.domain.user.repository.UserTransactionRedisRepository;
 import com.example.shopuserservice.web.dto.UserDto;
-import com.example.commondto.error.CustomException;
+import com.example.shopuserservice.web.error.CustomException;
+import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseOrder;
 import com.zaxxer.hikari.HikariDataSource;
@@ -42,7 +42,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.example.commondto.error.ErrorCode.*;
+import static com.example.shopuserservice.web.error.ErrorCode.*;
 
 @Slf4j
 @Service

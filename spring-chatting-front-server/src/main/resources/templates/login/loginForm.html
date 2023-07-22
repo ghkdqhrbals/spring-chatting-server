@@ -35,7 +35,7 @@
                 <p class="col-l">id</p>
             </div>
             <div class="item-6">
-                <input type="text" id="id" th:field="*{loginId}" class="form-control"
+                <input type="text" th:field="*{loginId}" class="form-control"
                        th:errorclass="field-error">
             </div>
             <div class="item-6">
@@ -48,7 +48,7 @@
                 <p class="col-l">password</p>
             </div>
             <div class="item-6">
-                <input type="password" id="password" th:field="*{password}" class="form-control"
+                <input type="password" th:field="*{password}" class="form-control"
                        th:errorclass="field-error">
             </div>
             <div class="item-6">
@@ -59,7 +59,7 @@
 
         <div class="container-2" style="padding-top: 30px">
             <div class="item-6">
-                <button class="w-100 btn-primary" type="submit" >login</button>
+                <button class="w-100 btn-primary" type="submit">login</button>
             </div>
             <div class="item-6">
                 <button class="w-100 btn-primary" onclick="location.href='../users/addUserForm.html'"
@@ -73,41 +73,40 @@
 </body>
 </html>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    function login() {
+<!--<script th:inline="javascript">-->
+<!--    /*<![CDATA[*/-->
 
-        const id = $('#id').val();
-        const password = $('#password').val();
+<!--    var str = '';-->
+<!--    var sockJs = new SockJS("/stomp/chat");-->
 
-        const json = JSON.stringify({
-            'username': id,
-            'password': password,
-        });
+<!--    //1. SockJS를 내부에 들고있는 stomp를 내어줌-->
+<!--    var stomp = Stomp.over(sockJs);-->
 
-        $.ajax({
-            type: "POST",
-            url: "login",
-            contentType: 'application/json',
-            data: json,
-        }).done((response) => {
-            console.log(response);
-            var content = JSON.parse(response);
-            console.log(content.token);
-            localStorage.setItem('token', content.token);
-
-            //
-            // if (response == 'success') {
-            //     alert('로그인 성공')
-            //     localStorage.setItem('id', id);
-            //     location.href = "http://localhost:8086"
-            // } else {
-            //     alert(response);
-            // }
-        });
+<!--    //2. connection이 맺어지면 실행-->
+<!--    stomp.connect({}, function () {-->
+<!--        var userId = document.getElementById("processId");-->
+<!--        console.log("Successfully created STOMP connection with : "+userId );-->
 
 
-    }
+<!--        if (userId != null){-->
+<!--            console.log(userId);-->
+<!--            //4. subscribe(path, callback)으로 메세지를 받을 수 있음-->
+<!--            stomp.subscribe("/sub/user/" + userId.value, function (stats) {-->
+<!--                var content = JSON.parse(stats.body);-->
 
-    /*]]>*/
-</script>
+<!--                console.log(stats);-->
+<!--                str = "<div>";-->
+<!--                str += content.userStatus + " : " + content.chatStatus + " : " + content.customerStatus;-->
+<!--                str += "</div>";-->
+<!--                $("#statsArea").append(str);-->
+<!--            });-->
+<!--        }-->
+<!--        //3. send(path, header, message)로 메세지를 보낼 수 있음-->
+<!--        // stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId,writerId:writerId, writer: username, createAt:Date.now()}))-->
+<!--    });-->
+
+
+
+
+<!--    /*]]>*/-->
+<!--</script>-->

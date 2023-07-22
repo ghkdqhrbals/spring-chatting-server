@@ -46,7 +46,7 @@ public class ChatController {
 
     // 유저 조회
     @GetMapping("/user")
-    public ResponseEntity<?> findUser(@RequestHeader("user_id") String userId){
+    public ResponseEntity<?> findUser(@RequestParam("userId") String userId){
         User findUser = userService.findById(userId);
         return ResponseEntity.ok(new ResponseGetUser(findUser.getUserId(),findUser.getUserName(),findUser.getUserStatus()));
     }

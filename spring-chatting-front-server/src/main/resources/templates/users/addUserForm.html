@@ -133,6 +133,7 @@
   //1. SockJS를 내부에 들고있는 stomp를 내어줌
   var stomp = Stomp.over(sockJs);
 
+
   //2. connection이 맺어지면 실행
   stomp.connect({}, function () {
     console.log("Successfully created STOMP connection");
@@ -199,7 +200,6 @@
       // $("#statsArea").innerText(str);
 
     });
-
   }
 
 

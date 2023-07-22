@@ -36,6 +36,8 @@ public class DataSourceAspectLogger {
     @Before("execution(* com.example.shopuserservice.web.controller.UserController.*(..))")
     public void logBeforeController(JoinPoint jp) throws Throwable {
         log.info("BEFORE CONTROLLER ACCESS");
+        // get jp
+        
     }
 
     @After("execution(* com.example.shopuserservice.web.controller.UserController.*(..))")
@@ -62,6 +64,7 @@ public class DataSourceAspectLogger {
         int activeConnections = pool.getActiveConnections();
         int freeConnections = totalConnections - activeConnections;
         int connectionWaiting = pool.getThreadsAwaitingConnection();
+
         log.info(String.format("%s %s: [Total: %d, Active: %d, Idle: %d, Wait: %d]", time, method, ds.getMaximumPoolSize(),activeConnections,freeConnections,connectionWaiting));
     }
 }

@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: reactive
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -34,27 +36,26 @@ spring:
       lettuce:
         pool:
           max-active: 10
-
-#  main:
 #    allow-bean-definition-overriding: true
+
 
 
 
 server:
   error:
     include-stacktrace: never
-#  undertow:
-#    no-request-timeout: 10
-#    always-set-keep-alive: true # Whether the 'Connection: keep-alive' header should be added to all responses, even if not required by the HTTP specification.
-#    decode-url: true # Whether the URL should be decoded. When disabled, percent-encoded characters in the URL will be left as-is.
-#    eager-filter-init: true # Whether servlet filters should be initialized on startup.
-#    max-cookies: 200 # Maximum number of cookies that are allowed. This limit exists to prevent hash collision based DOS attacks.
-#    max-headers: 12 # Maximum number of headers that are allowed. This limit exists to prevent hash collision based DOS attacks.
-#    preserve-path-on-forward: false # Whether to preserve the path of a request when it is forwarded.
-#    url-charset: UTF-8 # Charset used to decode URLs
-##    threads:
-##      io: 16 # Number of I/O threads to create for the worker. The default is derived from the number of available processors.
-##      worker: 256
+  undertow:
+    no-request-timeout: 10
+    always-set-keep-alive: true # Whether the 'Connection: keep-alive' header should be added to all responses, even if not required by the HTTP specification.
+    decode-url: true # Whether the URL should be decoded. When disabled, percent-encoded characters in the URL will be left as-is.
+    eager-filter-init: true # Whether servlet filters should be initialized on startup.
+    max-cookies: 200 # Maximum number of cookies that are allowed. This limit exists to prevent hash collision based DOS attacks.
+    max-headers: 12 # Maximum number of headers that are allowed. This limit exists to prevent hash collision based DOS attacks.
+    preserve-path-on-forward: false # Whether to preserve the path of a request when it is forwarded.
+    url-charset: UTF-8 # Charset used to decode URLs
+#    threads:
+#      io: 16 # Number of I/O threads to create for the worker. The default is derived from the number of available processors.
+#      worker: 256
 #    options:
 #      server:
 #        # https://undertow.io/javadoc/1.3.x/io/undertow/UndertowOptions.html

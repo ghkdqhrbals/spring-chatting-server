@@ -12,7 +12,7 @@ import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
-import com.example.shopuserservice.domain.user.repository.UserTransactionRedisRepository;
+import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import com.example.shopuserservice.web.dto.UserDto;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorResponse;
@@ -40,7 +40,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.example.shopuserservice.web.error.ErrorCode.*;
 

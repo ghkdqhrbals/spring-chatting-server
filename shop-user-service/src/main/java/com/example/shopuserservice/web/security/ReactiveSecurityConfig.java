@@ -69,7 +69,7 @@ public class ReactiveSecurityConfig {
      * @return
      */
     @Bean
-    @DependsOn({"methodSecurityExpressionHandler"})
+//    @DependsOn({"methodSecurityExpressionHandler"})
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
                                                          JwtTokenProvider jwtTokenProvider,
                                                          ReactiveAuthenticationManager reactiveAuthenticationManager) {

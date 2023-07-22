@@ -3,14 +3,18 @@ package com.example.shopuserservice.domain.data;
 import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @RedisHash("UserTransaction")
 public class UserTransactions {
     @Id
@@ -25,6 +29,7 @@ public class UserTransactions {
     private String userPw;
     private String role;
 
+    @Builder
     public UserTransactions(UUID eventId, UserStatus userStatus,
                             UserResponseStatus u1,
                             UserResponseStatus u2,

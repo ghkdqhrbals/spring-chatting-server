@@ -15,5 +15,5 @@ spring:
         git:
           default-label: main
           uri: https://github.com/ghkdqhrbals/spring-chatting-server
-          timeout: 120
+          timeout: 180
 

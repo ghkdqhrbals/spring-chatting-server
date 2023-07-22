@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6318dff7-24c4-4c60-ac07-c5822e12f55f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose-prod.yaml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/config.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/.github/ISSUE_TEMPLATE/issue_report.md" beforeDir="false" />
@@ -31,15 +28,6 @@
       <change beforePath="$PROJECT_DIR$/docker-elk/docker-compose.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/elasticsearch/config/elasticsearch.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" beforeDir="false" afterPath="$PROJECT_DIR$/docker-elk/logstash/pipeline/logstash.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/OrderServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/data/UserTransactions.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/data/UserTransactions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/repository/UserTransactionRedisRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/redisrepository/UserTransactionRedisRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserCommandQueryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/domain/user/service/UserReadServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/security/ReactiveSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/java/com/example/shopuserservice/web/security/ReactiveSecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/shop-user-service/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

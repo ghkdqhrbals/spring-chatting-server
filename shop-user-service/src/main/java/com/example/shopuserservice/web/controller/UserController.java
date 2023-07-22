@@ -7,8 +7,7 @@ import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
-import com.example.commondto.error.CustomException;
-import com.example.shopuserservice.utils.ErrorUtils;
+import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.security.LoginRequestDto;
 import com.example.shopuserservice.web.security.LoginResponseDto;
 import com.example.shopuserservice.web.security.LoginService;
@@ -58,7 +57,7 @@ public class UserController {
         return ResponseEntity.badRequest().body("default Error");
     }
 
-    @GetMapping
+    @GetMapping("/")
     public CompletableFuture welcome(ServletRequest request){
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
@@ -66,7 +65,8 @@ public class UserController {
     @PostMapping("/login")
     public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
                                         ServerHttpResponse response){
-        return loginService.login(request, response).log();
+        Mono<LoginResponseDto> login = loginService.login(request, response).log();
+        return login;
     }
 
     @GetMapping("/health-check")
@@ -82,21 +82,34 @@ public class UserController {
      */
     // 유저 조회
     @GetMapping("/user")
-    public CompletableFuture<ResponseEntity<Object>> findUser(WebSession session){
+    public CompletableFuture<ResponseEntity<ResponseUser>> findUser(WebSession session){
         String userId = session.getAttribute("userId");
-        return ErrorUtils.sendResponseEntityOrError(
-                userCommandQueryService.getUserDetailsByUserId(userId).thenApply((userDto -> {
-                    List<UserTransactions> userTransactions = null;
-                    try {
-                        userReadService.getRecentUserAddTransaction(userId).get()
-                                .forEach(u ->userTransactions.add(u));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    ResponseUser result = new ModelMapper().map(userDto, ResponseUser.class);
-                    result.setUserTransaction(userTransactions);
-                    return ResponseEntity.ok(result);
-        })));
+        return userCommandQueryService.getUserDetailsByUserId(userId).thenApply((userDto -> {
+            List<UserTransactions> userTransactions = null;
+            try {
+                userReadService.getRecentUserAddTransaction(userId).get()
+                        .forEach(u ->userTransactions.add(u));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(userTransactions);
+            ResponseUser result = new ModelMapper().map(userDto, ResponseUser.class);
+            result.setUserTransaction(userTransactions);
+            return ResponseEntity.ok(result);
+        })).exceptionally(e->{
+            log.info(e.getCause().getClass().getName());
+
+            if( e.getCause() instanceof UsernameNotFoundException){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User name not found");
+            }
+
+            if (e.getCause() instanceof ResponseStatusException){
+                ResponseStatusException e2 = (ResponseStatusException) e.getCause();
+                throw e2;
+            }
+
+            return defaultErrorResponse();
+        });
     }
 
     // deferredResult examples
@@ -111,22 +124,48 @@ public class UserController {
         return dr;
     }
 
-    // 로그아웃
-    @GetMapping("/logout")
-    public Mono<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
-        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-        userCommandQueryService.logout(userId, userPw, dr);
-        return Mono.just((ResponseEntity) dr.getResult());
-    }
+//    // 로그아웃
+//    @GetMapping("/logout")
+//    public Mono<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
+//        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
+//        userCommandQueryService.logout(userId, userPw, dr);
+//        return Mono.just((ResponseEntity) dr.getResult());
+//    }
 
     /**
      * -------------- CREATE METHODS --------------
      */
+    // 유저 저장(deprecated)
+//    @PostMapping("/user")
+//    public CompletableFuture<ResponseEntity<ResponseAddUser>> addUser(@RequestBody RequestUser req) throws InterruptedException {
+//        // saga choreograhpy tx 관리 id;
+//        UUID eventId = UUID.randomUUID();
+//        UserEvent userEvent = new UserEvent(
+//                eventId,
+//                UserStatus.USER_INSERT,
+//                req.getUserId()
+//        );
+//        // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
+//        return userCommandQueryService.newUserEvent(req, eventId, userEvent).thenCompose((c)->{
+//            // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
+//            return userCommandQueryService.createUser(req, eventId);
+//        }).thenApply((user)->{
+//            ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
+//            return ResponseEntity.ok(res);
+//        }).exceptionally(e->{
+//            if (e.getCause() instanceof CustomException){
+//                CustomException e2 = ((CustomException) e.getCause());
+//                throw new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail());
+//            }else{
+//                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+//            }
+//        });
+//    }
 
     // 유저 저장 Server-Sent Event
     // produces = MediaType.TEXT_EVENT_STREAM_VALUE
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<?> addUser(@RequestBody RequestUser req) throws InterruptedException {
+    public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
         log.info("ADD USER");
         // saga choreograhpy tx 관리 id;
         UUID eventId = UUID.randomUUID();

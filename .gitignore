@@ -5,3 +5,4 @@
 /kafka-connect-jdbc
 /gradle
 /redis
+/docker-elk

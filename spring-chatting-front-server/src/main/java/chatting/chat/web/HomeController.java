@@ -13,11 +13,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,15 +44,14 @@ public class HomeController {
     }
     @GetMapping("/")
     public String mainHome(
-            @CookieValue String jwttoken,
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginUser,
             Model model) {
 
         try{
             ResponseGetUser me = webClient.mutate()
                     .build()
                     .get()
-                    .uri("http://localhost:8000/chat/user")
-                    .header(HttpHeaders.AUTHORIZATION,jwttoken)
+                    .uri("http://localhost:8000/chat/user?userId=" + loginUser.getUserId())
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,
@@ -61,7 +62,7 @@ public class HomeController {
             Flux<ResponseGetFriend> response = webClient.mutate()
                     .build()
                     .get()
-                    .uri("http://localhost:8000/chat/friend?userId=" + "ab1234")
+                    .uri("http://localhost:8000/chat/friend?userId=" + loginUser.getUserId())
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,

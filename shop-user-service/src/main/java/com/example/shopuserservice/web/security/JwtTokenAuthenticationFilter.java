@@ -32,7 +32,6 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 //            authentication.getAuthorities().forEach(a->{
 //                log.info("JWT 토큰으로 부터 얻는 Authorities={}",a.getAuthority());
 //            });
-            
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }

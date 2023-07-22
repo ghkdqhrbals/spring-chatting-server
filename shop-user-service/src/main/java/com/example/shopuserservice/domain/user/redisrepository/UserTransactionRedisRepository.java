@@ -1,4 +1,4 @@
-package com.example.shopuserservice.domain.user.repository;
+package com.example.shopuserservice.domain.user.redisrepository;
 
 import com.example.shopuserservice.domain.data.UserTransactions;
 import org.springframework.data.repository.CrudRepository;

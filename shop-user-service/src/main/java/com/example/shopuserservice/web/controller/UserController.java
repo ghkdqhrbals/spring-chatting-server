@@ -1,12 +1,10 @@
 package com.example.shopuserservice.web.controller;
 
-import com.example.commondto.error.ErrorCode;
-import com.example.commondto.error.ErrorResponse;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.UserTransactions;
-import com.example.shopuserservice.domain.user.repository.UserTransactionRedisRepository;
+import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.commondto.error.CustomException;
@@ -18,7 +16,6 @@ import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -29,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
@@ -38,7 +34,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

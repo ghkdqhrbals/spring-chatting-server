@@ -9,7 +9,10 @@ spring:
   messages:
     basename: messages,errors
   datasource:
+    url: 'jdbc:postgresql://localhost:5434/customer'
     hikari:
+      username: 'postgres'
+      password: 'password'
       maximum-pool-size: 5
   jpa:
     database: postgresql

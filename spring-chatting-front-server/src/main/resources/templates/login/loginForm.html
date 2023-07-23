@@ -73,40 +73,7 @@
 </body>
 </html>
 
-<!--<script th:inline="javascript">-->
-<!--    /*<![CDATA[*/-->
-
-<!--    var str = '';-->
-<!--    var sockJs = new SockJS("/stomp/chat");-->
-
-<!--    //1. SockJS를 내부에 들고있는 stomp를 내어줌-->
-<!--    var stomp = Stomp.over(sockJs);-->
-
-<!--    //2. connection이 맺어지면 실행-->
-<!--    stomp.connect({}, function () {-->
-<!--        var userId = document.getElementById("processId");-->
-<!--        console.log("Successfully created STOMP connection with : "+userId );-->
-
-
-<!--        if (userId != null){-->
-<!--            console.log(userId);-->
-<!--            //4. subscribe(path, callback)으로 메세지를 받을 수 있음-->
-<!--            stomp.subscribe("/sub/user/" + userId.value, function (stats) {-->
-<!--                var content = JSON.parse(stats.body);-->
-
-<!--                console.log(stats);-->
-<!--                str = "<div>";-->
-<!--                str += content.userStatus + " : " + content.chatStatus + " : " + content.customerStatus;-->
-<!--                str += "</div>";-->
-<!--                $("#statsArea").append(str);-->
-<!--            });-->
-<!--        }-->
-<!--        //3. send(path, header, message)로 메세지를 보낼 수 있음-->
-<!--        // stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId,writerId:writerId, writer: username, createAt:Date.now()}))-->
-<!--    });-->
-
-
-
-
-<!--    /*]]>*/-->
-<!--</script>-->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var d
+</script>

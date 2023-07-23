@@ -6,6 +6,7 @@ import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.user.LoginRequestDto;
 import chatting.chat.web.user.LoginResponseDto;
+import com.example.commondto.token.TokenConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 
 @Slf4j
@@ -81,10 +85,17 @@ public class LoginController {
                             response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
                     .bodyToMono(LoginResponseDto.class)
                     .block();
-//            log.info("Retrieve TOKEN : ");
-//            log.info("Retrieve TOKEN : {}",res.getToken());
+            log.trace("Retrieve TOKEN : ");
 
-            httpServletResponse.addHeader("Set-Cookie","Bearer "+res.getToken());
+            String encodeToken = URLEncoder.encode("Bearer "+res.getToken(), "utf-8");
+
+            Cookie cookie = new Cookie(TokenConst.keyName,encodeToken); // 토큰 쿠키 삽입
+//            cookie.setSecure(true); // TODO
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            httpServletResponse.addCookie(cookie);
+
+//            httpServletResponse.addHeader("Set-Cookie", TokenConst.keyName+"=Bearer "+res.getToken());  // 토큰 쿠키 삽입, TODO HttpOnly 설정 필요
         }catch (CustomThrowableException e){
 
             if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())){
@@ -92,6 +103,8 @@ public class LoginController {
             }
 
             return "login/loginForm";
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
 
         // logic

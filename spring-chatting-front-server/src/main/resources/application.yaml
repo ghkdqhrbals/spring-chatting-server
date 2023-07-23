@@ -1,0 +1,52 @@
+spring:
+  messages:
+    basename: 'messages,errors'
+  profiles:
+    active: local
+  datasource:
+    url:  'jdbc:postgresql://localhost:5432/chat'
+    username: gyuminhwangbo
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+    generate-ddl: true
+    show-sql: false
+
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(%-5level) [ %clr(%t{36}){magenta} ] [ %clr(%logger{36}){cyan} ] - %msg%n'
+  level:
+    chatting:
+      chat: TRACE
+    root: INFO
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+
+# backend endpoint
+backend:
+  api:
+    gateway: http://127.0.0.1:8000
+
+
+
+  # cookie
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
+
+
+kafka:
+  bootstrap-servers: localhost:8097,localhost:8098,localhost:8099
+  topic-login-response: login-response
+
+
+

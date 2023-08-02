@@ -1,8 +1,8 @@
 ---
-name: Custom issue template
-about: Describe this issue template's purpose here.
-title: ''
-labels: ''
+name: Question
+about: Ask anything!
+title: 'Question'
+labels: 'question'
 assignees: ''
 
 ---

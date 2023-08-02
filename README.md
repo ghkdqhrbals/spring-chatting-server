@@ -1,5 +1,11 @@
-# Spring Java 채팅서버구현
+# Chat & Order Service with Spring-Java
 현재 프로젝트는 MSA 이전중 임으로 불안정합니다. 따라서 채팅서버의 stable 한 버전인 [4.2.0v](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.2.0) 로 태그를 이동하고 Instruction 에 따라 실행해주세요. 
+
+Our project is unstable due to MSA migration. So move the tag to [4.2.0v](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.2.0), a stable version of project, and run it by its instruction!
+
+> Backend & Frontend Contributor 를 모집중입니다. 자유롭게 신청하세요 :) 학생이나 직장인 모두 재미삼아 참여하실 수 있어요!
+>
+> We are looking for contributors in any fields. Feel free to apply :) Both students and who work at a company can join this project for fun!
 
 ## Versions
 

@@ -79,6 +79,8 @@ services:
   configuration-server:
     container_name: configuration-server
     build: ./config-service
+    expose:
+      - 8888
     ports:
       - "8888:8888"
     environment:
@@ -109,6 +111,7 @@ services:
     links:
       - user-redis
     environment:
+      SPRING_MAIN_web-application-type: reactive
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
@@ -246,6 +249,7 @@ services:
       - "8000:8000"
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_MAIN_web-application-type: reactive
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
       SERVER_PORT: 8000

@@ -8,13 +8,13 @@ spring:
     password: guest
   redis:
     host: localhost
-    port: 6379
+    port: 6380
   application:
     name: user-service
   messages:
     basename: messages,errors
   datasource:
-    url: 'jdbc:postgresql://localhost:5435/user'
+    url: 'jdbc:postgresql://localhost:5439/testuser'
     hikari:
       username: 'postgres'
       password: 'password'
@@ -23,13 +23,13 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
-    show-sql: false
-    open-in-view: false
+    show-sql: true
+    open-in-view: true
     properties:
       hibernate:
         use-new-id-generator-mappings: true
         order_inserts: true
-        ddl-auto: validate
+        ddl-auto: create
         format_sql: true
         jdbc:
           time_zone: UTC

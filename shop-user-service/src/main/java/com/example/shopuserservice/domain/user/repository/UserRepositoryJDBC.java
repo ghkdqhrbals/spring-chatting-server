@@ -37,7 +37,7 @@ public class UserRepositoryJDBC {
         this.hikariDataSource = hikariDataSource;
     }
 
-    public void saveAll2(List<User> users) {
+    public void saveAll(List<User> users) {
         try{
             String sql = "INSERT INTO user_table (user_id, email, join_date, login_date, logout_date, user_name, user_pw, role) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
@@ -56,6 +56,7 @@ public class UserRepositoryJDBC {
                         ps.setString(8,user.getRole());
                     });
         } catch(Exception e){
+
             if (e.getClass() == DuplicateKeyException.class){
                 throw new CustomException(DUPLICATE_RESOURCE);
             }
@@ -63,107 +64,13 @@ public class UserRepositoryJDBC {
         }
     }
 
-    public CompletableFuture<?> saveAll(List<User> users) {
-        return CompletableFuture.runAsync(()->{
-            String sql = "INSERT INTO user_table (user_id, email, join_date, login_date, logout_date, user_name, user_pw) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?) ";
-
-            jdbcTemplate.batchUpdate(sql,
-                    users,
-                    batchSize,
-                    (PreparedStatement ps, User user) -> {
-                        ps.setString(1, user.getUserId());
-                        ps.setString(2, user.getEmail());
-                        ps.setObject(3, user.getJoinDate());
-                        ps.setObject(4, user.getLoginDate());
-                        ps.setObject(5, user.getLogoutDate());
-                        ps.setString(6,user.getUserName());
-                        ps.setString(7,user.getUserPw());
-                    });
-
-        }).exceptionally(e->{
-            if (e.getCause().getClass() == DuplicateKeyException.class){
-                throw new CustomException(DUPLICATE_RESOURCE);
-            }
-            throw new RuntimeException();
-        });
-    }
-
-//    // LOCAL VARIABLE contain Connection
-//    public CompletableFuture<User> findUser(String user_id, String user_pw) {
-//
-//        log.info("HikariCP[Total:{}, Active:{}, Idle:{}, Wait:{}]",
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getTotalConnections()),
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getActiveConnections()),
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getIdleConnections()),
-//                String.valueOf(hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection())
-//        );
-//        return CompletableFuture.supplyAsync(()->{
-//            PreparedStatement pstmt = null;
-//            Connection conn = null; // local로 설정해야됩니다. Heap에 저장해버리면 Hikari가 활용 X
-//            ResultSet rs = null;
-//            PreparedStatementCreator creator = new PreparedStatementCreator() {
-//                @Override
-//                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-//                    PreparedStatement updateSales = con.prepareStatement(
-//                            "SELECT * FROM user_table WHERE user_id = ? OFFSET 0 LIMIT 1");
-//                    updateSales.setString(1, user_id);
-//                    return updateSales;
-//                }
-//            };
-//
-//            try {
-//                log.info(printHikariCPInfo()+" before get connection");
-//                conn = hikariDataSource.getConnection();
-//                log.info(printHikariCPInfo()+" after get connection");
-//                pstmt = creator.createPreparedStatement(conn);
-//                rs = pstmt.executeQuery();
-//                List<User> users = new ArrayList<>();
-//                while (rs.next())
-//                {
-//                    users.add(new User(
-//                            rs.getString("user_id"),
-//                            rs.getString("user_pw"),
-//                            rs.getString("email"),
-//                            rs.getString("user_name"),
-//                            rs.getTimestamp("join_date").toLocalDateTime(),
-//                            rs.getTimestamp("login_date").toLocalDateTime(),
-//                            rs.getTimestamp("logout_date").toLocalDateTime()));
-//                }
-//
-//                if (users.size() < 1){
-//                    throw new CustomException(CANNOT_FIND_USER);
-//                }
-//                return users.get(0);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            } catch (CustomException customException){
-//                throw customException;
-//            } finally {
-//                if(rs != null) try { rs.close();} catch(SQLException ex) {}
-//                if(pstmt != null) try { pstmt.close();} catch(SQLException ex) {}
-//                if(conn != null) try {
-//                    conn.close();
-//                } catch(SQLException ex) {}
-//            }
-//        },databaseExecutor).exceptionally(e->{
-//            log.info(e.getMessage());
-//            if (e.getCause().getClass() == CustomException.class){
-//                throw new CustomException(CANNOT_FIND_USER);
-//            }
-//            throw new RuntimeException();
-//        });
-//    }
-
     // Transaction 과 Connection, SQL 쿼리문, 스레드 모두 직접 컨트롤
     public CompletableFuture<?> login(String user_id, String user_pw) throws CustomException{
         return CompletableFuture.supplyAsync(()->{
             Connection conn = null;
             try {
-                // Set "ThreadLocal" connection
-                conn = hikariDataSource.getConnection();
+                conn = hikariDataSource.getConnection();    // Set "ThreadLocal" connection
                 conn.setAutoCommit(false);
-                // Repository Logics
                 loginUser(user_id,user_pw, conn); // 지저분하긴 하지만, connection 을 그대로 넘겨줌.
 
                 // If everything is fine, Set "ThreadLocal" connection

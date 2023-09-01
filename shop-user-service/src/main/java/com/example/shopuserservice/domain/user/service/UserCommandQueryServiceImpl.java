@@ -161,7 +161,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         );
 
         try {
-            userRepositoryJDBC.saveAll2(Arrays.asList(user));
+            userRepositoryJDBC.saveAll(Arrays.asList(user));
             // saga Choreography 로 Transaction 관리
         } catch (CustomException e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
@@ -211,7 +211,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                         ut.getRole()
                 );
                 try {
-                    userRepositoryJDBC.saveAll2(Arrays.asList(user));
+                    userRepositoryJDBC.saveAll(Arrays.asList(user));
                     ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
                     log.info("저장 완료");
                     // saga Choreography 로 Transaction 관리

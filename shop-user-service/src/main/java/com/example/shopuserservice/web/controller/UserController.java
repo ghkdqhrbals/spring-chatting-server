@@ -48,9 +48,6 @@ public class UserController {
     private final UserCommandQueryService userCommandQueryService;
     private final LoginService loginService;
     private final UserReadService userReadService;
-    private final UserTransactionRedisRepository userTransactionRedisRepository;
-    private final HikariDataSource hikariDataSource;
-
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Environment env;
 
@@ -125,43 +122,6 @@ public class UserController {
         return dr;
     }
 
-//    // 로그아웃
-//    @GetMapping("/logout")
-//    public Mono<ResponseEntity<?>> logout(@RequestParam("userId") String userId, @RequestParam("userPw") String userPw){
-//        DeferredResult<ResponseEntity<?>> dr = new DeferredResult<>();
-//        userCommandQueryService.logout(userId, userPw, dr);
-//        return Mono.just((ResponseEntity) dr.getResult());
-//    }
-
-    /**
-     * -------------- CREATE METHODS --------------
-     */
-    // 유저 저장(deprecated)
-//    @PostMapping("/user")
-//    public CompletableFuture<ResponseEntity<ResponseAddUser>> addUser(@RequestBody RequestUser req) throws InterruptedException {
-//        // saga choreograhpy tx 관리 id;
-//        UUID eventId = UUID.randomUUID();
-//        UserEvent userEvent = new UserEvent(
-//                eventId,
-//                UserStatus.USER_INSERT,
-//                req.getUserId()
-//        );
-//        // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
-//        return userCommandQueryService.newUserEvent(req, eventId, userEvent).thenCompose((c)->{
-//            // 사용자 생성 -> 이벤트에 상관없이 루트 사용자 생성
-//            return userCommandQueryService.createUser(req, eventId);
-//        }).thenApply((user)->{
-//            ResponseAddUser res = new ModelMapper().map(user, ResponseAddUser.class);
-//            return ResponseEntity.ok(res);
-//        }).exceptionally(e->{
-//            if (e.getCause() instanceof CustomException){
-//                CustomException e2 = ((CustomException) e.getCause());
-//                throw new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail());
-//            }else{
-//                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
-//            }
-//        });
-//    }
 
     // 유저 저장 Server-Sent Event
     // produces = MediaType.TEXT_EVENT_STREAM_VALUE

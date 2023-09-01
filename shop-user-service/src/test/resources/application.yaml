@@ -13,27 +13,23 @@ spring:
     name: user-service
   messages:
     basename: messages,errors
+  # RDB
   datasource:
-    url: 'jdbc:postgresql://localhost:5439/testuser'
+    url: 'jdbc:h2:mem:testdb'
     hikari:
-      username: 'postgres'
-      password: 'password'
-      maximum-pool-size: 30
+      username: 'sa'
+      password:
+      jdbc-url: jdbc:h2:mem:testdb
+      driver-class-name: org.h2.Driver
+      idle-timeout: 0
+      leak-detection-threshold: 2000
+      max-lifetime: 30000
   jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: true
     show-sql: true
     open-in-view: true
-    properties:
-      hibernate:
-        use-new-id-generator-mappings: true
-        order_inserts: true
-        ddl-auto: create
-        format_sql: true
-        jdbc:
-          time_zone: UTC
-          batch_size: 50
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create # 어플리케이션을 시작할 때 데이터베이스를 초기화하고 다시 테이블 생성
   data:
     redis:
       lettuce:
@@ -68,10 +64,13 @@ server:
 #        MAX_BUFFERED_REQUEST_SIZE: 16384
   port: 8010
 
+
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
   client:
+    enabled: false
     register-with-eureka: true
     fetch-registry: true
     service-url:

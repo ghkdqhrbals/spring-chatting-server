@@ -2,10 +2,7 @@ package com.example.shopuserservice.domain.data;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 import java.time.LocalDateTime;
@@ -15,6 +12,8 @@ import java.util.Objects;
 @Table(name = "USER_TABLE")
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 @RequiredArgsConstructor
 public class User {
     @Builder
@@ -27,18 +26,6 @@ public class User {
         this.loginDate = loginDate;
         this.logoutDate = logoutDate;
         this.role = role;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return getUserId().equals(user.getUserId()) && getUserPw().equals(user.getUserPw()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getUserName(), user.getUserName()) && Objects.equals(getJoinDate(), user.getJoinDate()) && Objects.equals(getLoginDate(), user.getLoginDate()) && Objects.equals(getLogoutDate(), user.getLogoutDate()) && getRole().equals(user.getRole());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUserId(), getUserPw(), getEmail(), getUserName(), getJoinDate(), getLoginDate(), getLogoutDate(), getRole());
     }
 
     @Id

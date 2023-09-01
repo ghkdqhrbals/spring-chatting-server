@@ -31,6 +31,3 @@ jobs:
 
       - name: Build project
         run: ./gradlew build --daemon --build-cache --parallel
-
-      - name: Create cache docker image directory
-        run: mkdir -p ~/docker-image

@@ -4,5 +4,5 @@
 /docker-elk
 /backups
 /kafka-connect-jdbc
-/gradle
+
 /redis

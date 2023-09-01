@@ -1,6 +1,7 @@
 .idea
 .gradle
 .docker
+/docker-elk
 /backups
 /kafka-connect-jdbc
 /gradle

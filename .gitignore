@@ -1,7 +1,5 @@
 .idea
-.gradle
 .docker
 /backups
 /kafka-connect-jdbc
-/gradle
 /redis

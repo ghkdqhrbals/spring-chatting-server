@@ -152,7 +152,7 @@ To see the description of functions and simulation video, here is youtube link :
 6. See Results in Kafdrop [http://localhost:9000/](http://localhost:9000/)
 
 ### ELK stack
-1. Please cloning [docker-elk](https://github.com/deviantony/docker-elk) for running elk stacks
+1. Please cloning [docker-elk](https://github.com/deviantony/docker-elk) for running elk stacks(reset commit to hash: `3a3cdd7db830fa8038e9cc3274d111b274dbb305`)
 2. Edit `/docker-elk/logstash/pipeline/logstash.conf` with following configurations
     
    ```

@@ -24,8 +24,8 @@ ext {
 }
 
 dependencies {
-	// https://mvnrepository.com/artifact/org.springframework/spring-websocket
-//	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	implementation 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -43,12 +43,16 @@ dependencies {
 
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.27'
     testImplementation 'org.projectlombok:lombok:1.18.22'
+	testImplementation 'junit:junit:4.13.1'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 
 	// Thrid-party
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'

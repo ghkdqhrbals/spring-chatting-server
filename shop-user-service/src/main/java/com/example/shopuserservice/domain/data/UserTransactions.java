@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @RedisHash("UserTransaction")
-public class UserTransactions {
+public class UserTransactions implements Serializable {
     @Id
     private UUID eventId;
     private String userId;

@@ -4,6 +4,7 @@ import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.kafka.KafkaTopicPartition;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
@@ -12,6 +13,7 @@ import javax.annotation.PostConstruct;
 
 
 @Configuration
+@ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;

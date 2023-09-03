@@ -41,7 +41,8 @@ spring:
           max-active: 10
 #    allow-bean-definition-overriding: true
 
-
+kafka:
+  enabled: true
 
 
 server:

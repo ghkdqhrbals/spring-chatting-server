@@ -144,7 +144,7 @@ services:
     ports:
       - "5435:5435"
     volumes:
-      - ./backups:/home/backups
+      - pgdata:/home/backups
     command: -c wal_level=logical -p 5435
     restart: always
 
@@ -199,7 +199,7 @@ services:
     ports:
       - "5433:5433"
     volumes:
-      - ./backups:/home/backups
+      - pgdata:/home/backups
     command: -c wal_level=logical -p 5433
     restart: always
 
@@ -238,7 +238,7 @@ services:
     ports:
       - "5434:5434"
     volumes:
-      - ./backups:/home/backups
+      - pgdata:/home/backups
     command: -c wal_level=logical -p 5434
     restart: always
 
@@ -262,3 +262,11 @@ services:
       - configuration-server
     restart: always
 
+# Persistance DB Volume
+volumes:
+  pgdata-user:
+    name: user-db-volume
+  pgdata-chat:
+    name: chat-db-volume
+  pgdata-customer:
+    name: customer-db-volume

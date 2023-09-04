@@ -3,8 +3,6 @@ package com.example.shopuserservice;
 import com.example.shopuserservice.config.HikariConfig;
 import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
-import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
-import com.example.shopuserservice.domain.user.service.UserCommandQueryServiceImpl;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.domain.user.service.UserReadServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UnitTest {
-    @Autowired
-    protected UserRepositoryJDBC userRepositoryJDBC;
     @Autowired
     protected UserRepository userRepository;
     @Autowired

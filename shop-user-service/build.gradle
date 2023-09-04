@@ -52,11 +52,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+	testImplementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 
 	// Thrid-party
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
-//	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
 	implementation "io.jsonwebtoken:jjwt-api:0.11.1"
 	runtimeOnly "io.jsonwebtoken:jjwt-impl:0.11.1"
 	runtimeOnly "io.jsonwebtoken:jjwt-jackson:0.11.1"

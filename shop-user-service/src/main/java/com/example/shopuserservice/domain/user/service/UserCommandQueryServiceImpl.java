@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,8 +48,8 @@ import static com.example.shopuserservice.web.error.ErrorCode.*;
 public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     private final UserRepository userRepository;
     private final UserTransactionRedisRepository userTransactionRedisRepository;
-
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
+    private final TransactionTemplate transactionTemplate;
     private final Executor serviceExecutor;
     private final HikariDataSource hikariDataSource;
     private final PasswordEncoder pwe;
@@ -59,7 +60,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                                        HikariDataSource hikariDataSource,
                                        @Qualifier("bcrypt") PasswordEncoder pwe,
                                        OrderServiceClient orderServiceClient,
-                                       KafkaTemplate<String, Object> kafkaProducerTemplate) {
+                                       KafkaTemplate<String, Object> kafkaProducerTemplate, TransactionTemplate transactionTemplate) {
         this.userRepository = userRepository;
         this.userTransactionRedisRepository = userTransactionRedisRepository;
         this.serviceExecutor = serviceExecutor;
@@ -67,6 +68,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         this.pwe = pwe;
         this.orderServiceClient = orderServiceClient;
         this.kafkaProducerTemplate = kafkaProducerTemplate;
+        this.transactionTemplate = transactionTemplate;
     }
 
 
@@ -141,31 +143,22 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     // 유저 저장
     @Override
-    @Async
-    @Transactional
     public CompletableFuture<User> createUser(RequestUser request, UUID eventId) {
+        return CompletableFuture.supplyAsync(()->{
+            User user = User.builder()
+                    .userName(request.getUserName())
+                    .email(request.getEmail())
+                    .role(request.getRole())
+                    .userPw(pwe.encode(request.getUserPw()))
+                    .userId(request.getUserId())
+                    .loginDate(LocalDateTime.now())
+                    .logoutDate(LocalDateTime.now())
+                    .build();
 
-        User user = User.builder()
-                .userName(request.getUserName())
-                .email(request.getEmail())
-                .role(request.getRole())
-                .userPw(pwe.encode(request.getUserPw()))
-                .userId(request.getUserId())
-                .loginDate(LocalDateTime.now())
-                .logoutDate(LocalDateTime.now())
-                .build();
-
-        try {
-            userRepository.save(user);
-            // saga Choreography 로 Transaction 관리
-        } catch (CustomException e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-            return CompletableFuture.failedFuture(e);
-        } catch ( Exception e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-            return CompletableFuture.failedFuture(e);
-        }
-        return CompletableFuture.completedFuture(user);
+            return transactionTemplate.execute((status) -> {
+                return userRepository.save(user);
+            });
+        });
     }
 
 

@@ -23,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
-@EnableAutoConfiguration(exclude = {KafkaAutoConfiguration.class, RedisAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {KafkaAutoConfiguration.class})
 public class UnitTest {
     @SpyBean
     protected UserRepositoryJDBC userRepositoryJDBC;

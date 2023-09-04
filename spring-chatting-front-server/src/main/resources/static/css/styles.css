@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500&display=swap');
+
+@import "reset.css";
+@import "variables.css";
+
+/* components */
+@import "components/status-bar.css";
+@import "components/nav-bar.css";
+@import "components/screen-header.css";
+@import "components/friends.css";
+@import "components/user-component.css";
+@import "components/badge.css";
+@import "components/alt-screen-header.css";
+@import "components/icon-row.css";
+@import "components/no-mobile.css";
+
+/* screens */
+@import "screens/login.css";
+@import "screens/find.css";
+@import "screens/more.css";
+@import "screens/settings.css";
+@import "screens/chat.css";
+
+body {
+    color: #2e363e;
+    font-family: 'Golos Text', sans-serif;
+}
+
+.main-screen{
+    padding: 0px var(--horizontal-space);
+}

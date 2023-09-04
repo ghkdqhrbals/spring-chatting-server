@@ -24,27 +24,22 @@ public class UserReadServiceImpl implements UserReadService{
         this.userTransactionRepository = userTransactionRepository;
     }
     @Override
-    @Async
     public CompletableFuture<Optional<User>> getUserById(String id) {
         return CompletableFuture.completedFuture(userRepository.findById(id));
     }
 
     @Override
-    @Async
     public CompletableFuture<List<User>> getAllUser() {
         return CompletableFuture.completedFuture(userRepository.findAll());
     }
 
     @Override
-    @Async
     public CompletableFuture<Iterable<UserTransactions>> getAllUserAddTransaction() {
         return CompletableFuture.completedFuture(userTransactionRepository.findAll());
     }
 
     @Override
-    @Async
     public CompletableFuture<Iterable<UserTransactions>> getRecentUserAddTransaction(String id) {
         return CompletableFuture.completedFuture(userTransactionRepository.findAll());
-//        return CompletableFuture.completedFuture(userTransactionRepository.findAllByUserIdOrderByCreatedAt(id, Pageable.ofSize(1)));
     }
 }

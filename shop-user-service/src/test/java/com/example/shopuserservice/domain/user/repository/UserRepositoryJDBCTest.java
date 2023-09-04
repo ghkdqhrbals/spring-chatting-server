@@ -14,14 +14,14 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("유저 삽입 배치 테스트")
+@DisplayName("User Save Batch Test")
 class UserRepositoryJDBCTest extends UnitTest {
 
     @Nested
-    @DisplayName("유저 저장")
+    @DisplayName("Save User")
     class insertUserBatch{
         @Test
-        @DisplayName("단일 저장")
+        @DisplayName("Saving single user")
         void saveUserList(){
             // given
             LocalDateTime now = LocalDateTime.now();
@@ -44,12 +44,9 @@ class UserRepositoryJDBCTest extends UnitTest {
             assertThat(savedUser.getUserPw()).isEqualTo(user.getUserPw());
             assertThat(savedUser.getUserName()).isEqualTo(user.getUserName());
             assertThat(savedUser.getRole()).isEqualTo(user.getRole());
-
-            // TODO
             assertThat(Timestamp.valueOf(savedUser.getLogoutDate())).isEqualTo(Timestamp.valueOf(user.getLogoutDate()));
             assertThat(Timestamp.valueOf(savedUser.getLoginDate())).isEqualTo(Timestamp.valueOf(user.getLoginDate()));
             assertThat(Timestamp.valueOf(savedUser.getJoinDate())).isEqualTo(Timestamp.valueOf(user.getJoinDate()));
-
         }
     }
 }

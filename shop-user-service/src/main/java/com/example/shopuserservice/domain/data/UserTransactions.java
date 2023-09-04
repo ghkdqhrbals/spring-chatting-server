@@ -3,20 +3,19 @@ package com.example.shopuserservice.domain.data;
 import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
+@ToString
 @RedisHash("UserTransaction")
-public class UserTransactions {
+public class UserTransactions implements Serializable {
     @Id
     private UUID eventId;
     private String userId;

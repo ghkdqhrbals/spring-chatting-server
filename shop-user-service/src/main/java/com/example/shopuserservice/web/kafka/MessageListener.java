@@ -9,6 +9,7 @@ import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 @RequiredArgsConstructor
 public class MessageListener {
     private final UserCommandQueryService userService;

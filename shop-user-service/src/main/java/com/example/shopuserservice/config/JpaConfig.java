@@ -5,6 +5,7 @@ import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,6 @@ import java.util.concurrent.Executor;
 @Slf4j
 @Configuration
 public class JpaConfig {
-
     private final EntityManager entityManager;
     private final UserRepository userRepository;
     private final UserRepositoryJDBC userRepositoryJDBC;

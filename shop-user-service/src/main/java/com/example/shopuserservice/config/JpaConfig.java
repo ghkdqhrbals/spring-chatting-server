@@ -2,7 +2,6 @@ package com.example.shopuserservice.config;
 
 
 import com.example.shopuserservice.domain.user.repository.UserRepository;
-import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -21,19 +20,16 @@ import java.util.concurrent.Executor;
 public class JpaConfig {
     private final EntityManager entityManager;
     private final UserRepository userRepository;
-    private final UserRepositoryJDBC userRepositoryJDBC;
     private final JdbcTemplate jdbcTemplate;
     private final Executor serviceExecutor;
     private final HikariDataSource hikariDataSource;
 
     public JpaConfig(EntityManager entityManager,
                      UserRepository userRepository,
-                     UserRepositoryJDBC userRepositoryJDBC,
                      JdbcTemplate jdbcTemplate,
                      @Qualifier("taskExecutor") Executor serviceExecutor, HikariDataSource hikariDataSource) {
         this.entityManager = entityManager;
         this.userRepository = userRepository;
-        this.userRepositoryJDBC = userRepositoryJDBC;
         this.jdbcTemplate = jdbcTemplate;
         this.serviceExecutor = serviceExecutor;
         this.hikariDataSource = hikariDataSource;

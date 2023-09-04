@@ -33,20 +33,19 @@ class UserRepositoryJDBCTest extends UnitTest {
                     .email("hwang@gmail.com")
                     .loginDate(now)
                     .logoutDate(now)
-                    .joinDate(now)
                     .build();
 
             // when
-            userRepositoryJDBC.saveAll(Arrays.asList(user));
+            user = userRepository.save(user);   // re-initializing
 
             // then
             User savedUser = userRepository.findById("aa").orElseThrow(RuntimeException::new);
             assertThat(savedUser.getUserPw()).isEqualTo(user.getUserPw());
             assertThat(savedUser.getUserName()).isEqualTo(user.getUserName());
             assertThat(savedUser.getRole()).isEqualTo(user.getRole());
-            assertThat(Timestamp.valueOf(savedUser.getLogoutDate())).isEqualTo(Timestamp.valueOf(user.getLogoutDate()));
-            assertThat(Timestamp.valueOf(savedUser.getLoginDate())).isEqualTo(Timestamp.valueOf(user.getLoginDate()));
-            assertThat(Timestamp.valueOf(savedUser.getJoinDate())).isEqualTo(Timestamp.valueOf(user.getJoinDate()));
+            assertThat(savedUser.getLogoutDate()).isEqualTo(user.getLogoutDate());
+            assertThat(savedUser.getLoginDate()).isEqualTo(user.getLoginDate());
+            assertThat(savedUser.getCreatedAt()).isEqualTo(user.getCreatedAt());
         }
     }
 }

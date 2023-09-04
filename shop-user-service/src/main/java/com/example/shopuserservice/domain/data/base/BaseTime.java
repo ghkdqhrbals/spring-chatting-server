@@ -1,10 +1,7 @@
 package com.example.shopuserservice.domain.data.base;
 
 import com.example.commondto.format.DateFormat;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,7 +15,10 @@ import java.util.Objects;
 @Getter
 @MappedSuperclass
 public class BaseTime {
+
+    @Column(columnDefinition = "timestamp(9)")
     protected LocalDateTime createdAt;
+    @Column(columnDefinition = "timestamp(9)")
     protected LocalDateTime updatedAt;
 
     @PrePersist

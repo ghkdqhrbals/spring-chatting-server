@@ -13,8 +13,8 @@ import java.io.IOException;
 
 
 @Slf4j
-//@Profile("local") // profile local
-@TestConfiguration
+@Profile("local") // profile local
+@Configuration
 public class EmbeddedRedisConfig {
 
     @Value("${spring.data.redis.port}")

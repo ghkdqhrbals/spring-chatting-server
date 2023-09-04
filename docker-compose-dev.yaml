@@ -144,7 +144,7 @@ services:
     ports:
       - "5435:5435"
     volumes:
-      - pgdata:/home/backups
+      - pgdata-user:/home/backups
     command: -c wal_level=logical -p 5435
     restart: always
 
@@ -199,7 +199,7 @@ services:
     ports:
       - "5433:5433"
     volumes:
-      - pgdata:/home/backups
+      - pgdata-chat:/home/backups
     command: -c wal_level=logical -p 5433
     restart: always
 
@@ -238,7 +238,7 @@ services:
     ports:
       - "5434:5434"
     volumes:
-      - pgdata:/home/backups
+      - pgdata-customer:/home/backups
     command: -c wal_level=logical -p 5434
     restart: always
 

@@ -9,6 +9,7 @@ import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.domain.user.service.UserReadServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -22,14 +23,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
-@EnableAutoConfiguration(exclude = {KafkaAutoConfiguration.class})
 public class UnitTest {
-    @SpyBean
+    @Autowired
     protected UserRepositoryJDBC userRepositoryJDBC;
-    @SpyBean
+    @Autowired
     protected UserRepository userRepository;
-    @SpyBean
+    @Autowired
     protected UserTransactionRedisRepository userTransactionRedisRepository;
 
     @MockBean

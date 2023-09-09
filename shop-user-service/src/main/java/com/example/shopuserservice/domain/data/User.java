@@ -42,10 +42,10 @@ public class User extends BaseTime {
     @Column(name = "USER_NAME")
     private String userName;
 
-    @Column(name="LOGIN_DATE", columnDefinition = "timestamp(9)")
+    @Column(name="LOGIN_DATE", columnDefinition = "timestamp(6)")
     private LocalDateTime loginDate;
 
-    @Column(name="LOGOUT_DATE", columnDefinition = "timestamp(9)")
+    @Column(name="LOGOUT_DATE", columnDefinition = "timestamp(6)")
     private LocalDateTime logoutDate;
 
     @Column(name="ROLE")

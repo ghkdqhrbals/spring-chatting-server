@@ -25,16 +25,18 @@ public class LoginCheckFilter implements HandlerInterceptor {
         log.info("인터셉터 실행 {}", requestURI);
 
         Cookie[] cookies = request.getCookies();
+        if (cookies == null){
+            response.sendRedirect("/login?redirectURL=" + requestURI);
+            return false;
+        }
 
         ArrayList<String> accessTokens = Arrays.stream(request.getCookies()).filter(cookie -> {
-            log.trace("쿠키정보: {}",cookie.getValue());
+            log.info("쿠키정보: {}",cookie.getValue());
             if (cookie.getName().equals(TokenConst.keyName)) {
                 return true;
             }
             return false;
         }).map(c -> c.getValue()).collect(Collectors.toCollection(ArrayList::new));
-
-        log.trace("쿠키추출");
 
         if (accessTokens.size()==0){
             log.trace("쿠키에서 토큰정보를 찾을 수 없습니다");

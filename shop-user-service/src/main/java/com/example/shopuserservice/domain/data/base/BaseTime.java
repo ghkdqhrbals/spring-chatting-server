@@ -16,9 +16,9 @@ import java.util.Objects;
 @MappedSuperclass
 public class BaseTime {
 
-    @Column(columnDefinition = "timestamp(9)")
+    @Column(columnDefinition = "timestamp(6)")
     protected LocalDateTime createdAt;
-    @Column(columnDefinition = "timestamp(9)")
+    @Column(columnDefinition = "timestamp(6)")
     protected LocalDateTime updatedAt;
 
     @PrePersist

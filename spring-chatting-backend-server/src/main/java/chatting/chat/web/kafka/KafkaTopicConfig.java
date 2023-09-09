@@ -6,11 +6,13 @@ import jakarta.annotation.PostConstruct;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
 
 
 @Configuration
+@Profile("prod")
 public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;

@@ -3,17 +3,6 @@ spring:
     basename: 'messages,errors'
   profiles:
     active: local
-  datasource:
-    url:  'jdbc:postgresql://localhost:5432/chat'
-    username: gyuminhwangbo
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc:
-          time_zone: UTC
-    generate-ddl: true
-    show-sql: false
 
 logging:
   pattern:
@@ -22,13 +11,6 @@ logging:
     chatting:
       chat: TRACE
     root: INFO
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
 
 # backend endpoint
 backend:

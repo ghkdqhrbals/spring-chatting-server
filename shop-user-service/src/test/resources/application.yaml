@@ -1,0 +1,93 @@
+spring:
+  profiles:
+    active:
+      - local
+  main:
+    web-application-type: reactive
+  # RDB
+  datasource:
+    url: 'jdbc:h2:mem:testdb'
+    hikari:
+      username: 'sa'
+      password:
+      jdbc-url: jdbc:h2:mem:testdb
+      driver-class-name: org.h2.Driver
+      idle-timeout: 0
+      leak-detection-threshold: 2000
+      max-lifetime: 30000
+  jpa:
+    show-sql: true
+    open-in-view: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create # 어플리케이션을 시작할 때 데이터베이스를 초기화하고 다시 테이블 생성
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+  application:
+    name: user-service
+  messages:
+    basename: messages,errors
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: 10
+      host: 127.0.0.1
+      port: 6379
+#    allow-bean-definition-overriding: true
+
+
+server:
+  error:
+    include-stacktrace: never
+  undertow:
+    no-request-timeout: 10
+    always-set-keep-alive: true # Whether the 'Connection: keep-alive' header should be added to all responses, even if not required by the HTTP specification.
+    decode-url: true # Whether the URL should be decoded. When disabled, percent-encoded characters in the URL will be left as-is.
+    eager-filter-init: true # Whether servlet filters should be initialized on startup.
+    max-cookies: 200 # Maximum number of cookies that are allowed. This limit exists to prevent hash collision based DOS attacks.
+    max-headers: 12 # Maximum number of headers that are allowed. This limit exists to prevent hash collision based DOS attacks.
+    preserve-path-on-forward: false # Whether to preserve the path of a request when it is forwarded.
+    url-charset: UTF-8 # Charset used to decode URLs
+#    threads:
+#      io: 16 # Number of I/O threads to create for the worker. The default is derived from the number of available processors.
+#      worker: 256
+#    options:
+#      server:
+#        # https://undertow.io/javadoc/1.3.x/io/undertow/UndertowOptions.html
+#        MAX_CONCURRENT_REQUESTS_PER_CONNECTION: 2000
+#        HTTP2_SETTINGS_MAX_CONCURRENT_STREAMS: 2000
+#        MAX_QUEUED_READ_BUFFERS: 10
+#        MAX_BUFFERED_REQUEST_SIZE: 16384
+  port: 8010
+
+kafka:
+  enabled: false
+  bootstrap: http://localhost:8099,http://localhost:8098,http://localhost:8097
+
+token:
+  expiration_time: 86400000
+  secret: '45939b87daf906ea6bfce17b4c1d9c0feb3910ca3306a09e8f8cd55b6b9e4d5390302e09b7d03ad6d9fe26e603f8d20e4fe8639c6d1f9644895d991c3e9fae9d'
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    enabled: false
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, httpexchanges, beans, busrefresh
+
+logging:
+  level:
+    com.example.shopuserservice: TRACE

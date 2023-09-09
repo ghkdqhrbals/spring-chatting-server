@@ -9,11 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface UserRepository extends JpaRepository<User, String> {
-
-//    @Query("select u from User u where u.userId = :userId")
-//    List<User> findByUserId(@Param("userId") String userId);
-//
-//
+public interface UserRepository extends JpaRepository<User, String>{
     List<User> findAll();
 }

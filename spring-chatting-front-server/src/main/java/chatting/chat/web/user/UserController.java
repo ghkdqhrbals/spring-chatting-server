@@ -50,18 +50,18 @@ public class UserController {
     }
 
     // 유저 추가
-    @GetMapping
+    @GetMapping("/register")
     public String addUserPage(@ModelAttribute("userForm") UserForm form){
-        return "users/addUserForm";
+        return "users/addUserFormSingle";
     }
-    @PostMapping
+    @PostMapping("/register")
     public CompletableFuture<String> addUser(@Valid @ModelAttribute("userForm") UserForm form,
                                              BindingResult bindingResult,
                                              Model model){
 
         // Form 에러 모델 전달
         if (bindingResult.hasErrors()){
-            return CompletableFuture.completedFuture("users/addUserForm");
+            return CompletableFuture.completedFuture("users/addUserFormSingle");
         }
 
         RequestUser req = new RequestUser();
@@ -76,7 +76,7 @@ public class UserController {
             Flux<AddUserResponse> res = webClient.mutate()
                     .build()
                     .post()
-                    .uri("http://127.0.0.1:8000/user")
+                    .uri("/user")
                     .bodyValue(req)
                     .retrieve()
                     .onStatus(
@@ -87,65 +87,12 @@ public class UserController {
                             r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
                     .bodyToFlux(AddUserResponse.class);
 
-            // Mutex Lock
-            final Object lock = new Object();
-
-            // 메인 스레드는 flux 스레드가 onComplete 될 때 까지 block 되어야함
-            res.doOnComplete(() -> {
-                synchronized (lock) {
-                    lock.notify();
-                }
-            }).subscribe(response -> {
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    log.info("Runtime Exception={}",e.getMessage());
-//                    throw new RuntimeException(e);
-//                }
-//                String returns = response.getUserStatus() + response.getChatStatus() + response.getCustomerStatus();
-                template.convertAndSend("/sub/user/" + req.getUserId(), response); // Direct send topic to stomp
-            });
-
-            synchronized(lock) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                }
-            }
-
-//            try {
-//                Thread.sleep(5000);
-//            } catch (InterruptedException e2) {
-//                throw new RuntimeException(e2);
-//            }
-
             return "redirect:/";
         }).exceptionally((e)->{
             log.info("Exceptions!={}",e.getMessage());
             bindingResult.rejectValue("userId", null, e.getMessage());
-            return "users/addUserForm";
+            return "users/addUserFormSingle";
         });
-
-
-
-//        try{
-//
-////            res.doOnCancel(()->{
-////                view.setViewName("redirect:/");
-////            });
-////            model.addAttribute("stats",b);
-//        }catch (CustomThrowableException e){
-//            log.info(e.getErrorResponse().getCode());
-//            log.info(e.getErrorResponse().getMessage());
-//            if (e.getErrorResponse().getCode().equals(ErrorCode.DUPLICATE_RESOURCE.toString())){
-//                bindingResult.rejectValue("userId", null, e.getErrorResponse().getMessage());
-//            }else{
-//                bindingResult.rejectValue("userId", null, e.getErrorResponse().getMessage());
-//            }
-//            return CompletableFuture.completedFuture("users/addUserForm");
-//        }
-//
-//        return CompletableFuture.completedFuture("redirect:/");
     }
 
 

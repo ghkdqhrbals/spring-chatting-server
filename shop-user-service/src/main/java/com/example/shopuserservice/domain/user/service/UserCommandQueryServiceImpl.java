@@ -11,15 +11,16 @@ import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.User;
 import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
-import com.example.shopuserservice.domain.user.repository.UserRepositoryJDBC;
 import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import com.example.shopuserservice.web.dto.UserDto;
 import com.example.shopuserservice.web.error.CustomException;
+import com.example.shopuserservice.web.error.ErrorCode;
 import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseOrder;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,147 +49,110 @@ import static com.example.shopuserservice.web.error.ErrorCode.*;
 @Service
 public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     private final UserRepository userRepository;
-    private final UserRepositoryJDBC userRepositoryJDBC;
     private final UserTransactionRedisRepository userTransactionRedisRepository;
-
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
+    private final TransactionTemplate transactionTemplate;
     private final Executor serviceExecutor;
     private final HikariDataSource hikariDataSource;
     private final PasswordEncoder pwe;
     private final OrderServiceClient orderServiceClient;
 
     public UserCommandQueryServiceImpl(UserRepository userRepository,
-                                       UserRepositoryJDBC userRepositoryJDBC,
                                        UserTransactionRedisRepository userTransactionRedisRepository, @Qualifier("taskExecutor") Executor serviceExecutor,
                                        HikariDataSource hikariDataSource,
                                        @Qualifier("bcrypt") PasswordEncoder pwe,
                                        OrderServiceClient orderServiceClient,
-                                       KafkaTemplate<String, Object> kafkaProducerTemplate) {
+                                       KafkaTemplate<String, Object> kafkaProducerTemplate, TransactionTemplate transactionTemplate) {
         this.userRepository = userRepository;
-        this.userRepositoryJDBC = userRepositoryJDBC;
         this.userTransactionRedisRepository = userTransactionRedisRepository;
         this.serviceExecutor = serviceExecutor;
         this.hikariDataSource = hikariDataSource;
         this.pwe = pwe;
         this.orderServiceClient = orderServiceClient;
         this.kafkaProducerTemplate = kafkaProducerTemplate;
+        this.transactionTemplate = transactionTemplate;
     }
 
 
 
     // 유저 검색
     @Override
-    @Async
-    @Transactional
     public CompletableFuture<Optional<User>> getUserById(String id) {
-        Optional<User> user = Optional.of(new User());
-        try {
-            user = userRepository.findById(id);
-            if (user.isEmpty()) {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-            }
-        } catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-        }
-        return CompletableFuture.completedFuture(user);
+        return CompletableFuture.supplyAsync(()->{
+            return userRepository.findById(id);
+        });
     }
 
     @Override
-    public CompletableFuture<UserTransactions> updateStatus2(UserResponseEvent event) {
-        Optional<UserTransactions> tx = userTransactionRedisRepository.findById(event.getEventId());
+    public CompletableFuture<UserTransactions> updateStatus(UserResponseEvent event) {
+        return CompletableFuture.supplyAsync(()->{
+            UserTransactions userTransactions = userTransactionRedisRepository
+                    .findById(event.getEventId())
+                    .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
 
-        if (tx.isPresent()){
-            UserTransactions ut = tx.get();
-            switch (event.getServiceName()){
-                case ServiceNames.chat -> {
-                    ut.setChatStatus(event.getUserResponseStatus());
-                    break;
-                }
-                case ServiceNames.customer -> {
-                    ut.setCustomerStatus(event.getUserResponseStatus());
-                    break;
-                }
-            }
-            String chatStatus = ut.getChatStatus();
-            String customerStatus = ut.getCustomerStatus();
-            String userStatus = ut.getUserStatus();
-//            userTransactionRedisRepository.save(ut);
-//            sendRollbackIfStatusFail(ut, chatStatus, customerStatus);
-//            if (userStatus.equals(UserStatus.USER_INSERT.name())){
-//
-//            } else if (userStatus.equals(UserStatus.USER_DELETE.name())) {
-//                userRepository.deleteById(ut.getUserId());
-//                ut.setUserStatus(UserStatus.USER_DELETE_COMPLETE.name());
-//            }
-
-            userTransactionRedisRepository.save(ut);
-            // 결과 Flux 전송
-            checkCurrentStatus(ut,event.getUserId());
-        }else{
-            return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러"));
-        }
-        return CompletableFuture.completedFuture(tx.get());
+            userTransactions = changeUserRegisterStatusByKafkaEvent(event, userTransactions);   // redis status update
+            checkCurrentStatus(userTransactions,event.getUserId()); // 스레드 공통 전파
+            return userTransactionRedisRepository.save(userTransactions);   // redis status save
+        });
     }
 
-    private void checkCurrentStatus(UserTransactions ut,String userId) {
-        if (!ut.getChatStatus().equals(UserResponseStatus.USER_APPEND.name())
-                && !ut.getCustomerStatus().equals(UserResponseStatus.USER_APPEND.name())
-                && !ut.getUserStatus().equals(UserStatus.USER_INSERT.name())
-                && !ut.getUserStatus().equals(UserStatus.USER_DELETE.name())){
-            AsyncConfig.sinkMap.get(userId).tryEmitNext(ut);
+    private UserTransactions changeUserRegisterStatusByKafkaEvent(UserResponseEvent event, UserTransactions userTransactions) {
+        switch (event.getServiceName()){
+            case ServiceNames.chat -> {
+                userTransactions.setChatStatus(event.getUserResponseStatus());
+                break;
+            }
+            case ServiceNames.customer -> {
+                userTransactions.setCustomerStatus(event.getUserResponseStatus());
+                break;
+            }
+        }
+        return userTransactions;
+    }
+
+    /**
+     * userTransaction 에 따라서
+     *
+     * @param userTransactions
+     * @param userId
+     */
+    private void checkCurrentStatus(UserTransactions userTransactions,String userId) {
+        if (!userTransactions.getChatStatus().equals(UserResponseStatus.USER_APPEND.name())
+                && !userTransactions.getCustomerStatus().equals(UserResponseStatus.USER_APPEND.name())
+                && !userTransactions.getUserStatus().equals(UserStatus.USER_INSERT.name())
+                && !userTransactions.getUserStatus().equals(UserStatus.USER_DELETE.name())){
+            AsyncConfig.sinkMap.get(userId).tryEmitNext(userTransactions);
             AsyncConfig.sinkMap.get(userId).tryEmitComplete();
             AsyncConfig.sinkMap.remove(userId);
         }
         else{
-            AsyncConfig.sinkMap.get(userId).tryEmitNext(ut);
+            AsyncConfig.sinkMap.get(userId).tryEmitNext(userTransactions);
         }
     }
 
     // 유저 저장
     @Override
-    @Async
-    @Transactional
     public CompletableFuture<User> createUser(RequestUser request, UUID eventId) {
+        return CompletableFuture.supplyAsync(()->{
+            User user = User.builder()
+                    .userName(request.getUserName())
+                    .email(request.getEmail())
+                    .role(request.getRole())
+                    .userPw(pwe.encode(request.getUserPw()))
+                    .userId(request.getUserId())
+                    .loginDate(LocalDateTime.now())
+                    .logoutDate(LocalDateTime.now())
+                    .build();
 
-        User user = new User(
-                request.getUserId(),
-                pwe.encode(request.getUserPw()),
-                request.getEmail(),
-                request.getUserName(),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                request.getRole()
-        );
-
-        try {
-            userRepositoryJDBC.saveAll2(Arrays.asList(user));
-            // saga Choreography 로 Transaction 관리
-        } catch (CustomException e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-            return CompletableFuture.failedFuture(e);
-        } catch ( Exception e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-            return CompletableFuture.failedFuture(e);
-        }
-        return CompletableFuture.completedFuture(user);
+            return transactionTemplate.execute((status) -> {
+                return userRepository.save(user);
+            });
+        });
     }
 
-
     @Override
-    @Async
-    public CompletableFuture<UserTransactions> newUserEvent2(RequestUser req, UUID eventId, UserEvent userEvent) {
-        UserTransactions userTransaction = new UserTransactions(
-                eventId,
-                UserStatus.USER_INSERT,
-                UserResponseStatus.USER_APPEND,
-                UserResponseStatus.USER_APPEND,
-                req.getUserId(),
-                LocalDateTime.now(),
-                req.getEmail(),
-                req.getUserName(),
-                pwe.encode(req.getUserPw()),
-                req.getRole());
+    public CompletableFuture<UserTransactions> newUserEvent(RequestUser req, UUID eventId, UserEvent userEvent) {
+        UserTransactions userTransaction = getUserTransaction(req, eventId);
 
         AsyncConfig.sinkMap.get(req.getUserId()).tryEmitNext(userTransaction);
         try {
@@ -199,19 +164,19 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
             Optional<User> findUser = userRepository.findById(ut.getUserId());
             if (findUser.isEmpty()){
+
                 // 유저 저장
-                User user = new User(
-                        ut.getUserId(),
-                        ut.getUserPw(),
-                        ut.getEmail(),
-                        ut.getUserName(),
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        ut.getRole()
-                );
+                User user = User.builder()
+                        .userName(ut.getUserName())
+                        .email(ut.getEmail())
+                        .role(ut.getRole())
+                        .userPw(ut.getUserPw())
+                        .userId(ut.getUserId())
+                        .loginDate(LocalDateTime.now())
+                        .logoutDate(LocalDateTime.now())
+                        .build();
                 try {
-                    userRepositoryJDBC.saveAll2(Arrays.asList(user));
+                    userRepository.save(user);
                     ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
                     log.info("저장 완료");
                     // saga Choreography 로 Transaction 관리
@@ -226,16 +191,13 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             }
             userTransactionRedisRepository.save(ut);
 
-            
-//            System.out.println(Duration.between(now, LocalDateTime.now()).toMillis());
             // 이벤트 Publishing key:userId = Partitioning
             sendToKafkaWithKey(
                     KafkaTopic.userReq,
                     userEvent,
                     req.getUserId()
             ).thenRun(()->{
-                LocalDateTime now3 = LocalDateTime.now();
-                log.info("Redis Save Time : "+Duration.between(now1, now2).toMillis() + "ms Kafka Sender Time : "+Duration.between(now2, now3).toMillis()+"ms");
+                log.info("Redis Save Time : "+Duration.between(now1, now2).toMillis() + "ms Kafka Sender Time : "+Duration.between(now2, LocalDateTime.now()).toMillis()+"ms");
             }).exceptionally(e->{
                 log.error("에러발생 ={}",e.getMessage());
                 return null;
@@ -246,44 +208,20 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         return CompletableFuture.completedFuture(userTransaction);
     }
 
-//    @Override
-//    @Async
-//    @Transactional
-//    public CompletableFuture<UserTransaction> deleteUserEvent(UUID eventId, UserEvent userEvent) {
-//        Optional<User> findUser = userRepository.findById(userEvent.getUserId());
-//        if(findUser.isEmpty()){
-//            return CompletableFuture.failedFuture(new ResponseStatusException(HttpStatus.BAD_REQUEST,"사용자가 존재하지 않습니다"));
-//        }
-//        User u = findUser.get();
-//
-//        UserTransaction userTransaction = new UserTransaction(
-//                eventId,
-//                UserStatus.USER_DELETE,
-//                UserResponseStatus.USER_APPEND,
-//                UserResponseStatus.USER_APPEND,
-//                u.getUserId(),
-//                LocalDateTime.now(),
-//                u.getEmail(),
-//                u.getUserName(),
-//                u.getUserPw(),
-//                u.getRole());
-//        try {
-//            // 이벤트 Transaction 저장
-//            userTransactionRepository.save(userTransaction);
-//
-//            // 이벤트 Publishing key:userId = Partitioning
-//            sendToKafkaWithKey(
-//                    KafkaTopic.userReq,
-//                    userEvent,
-//                    u.getUserId()
-//            ).thenRun(()->{
-//                log.info("send kafka message successfully");
-//            });
-//        }catch(Exception e){
-//            return CompletableFuture.failedFuture(e);
-//        }
-//        return CompletableFuture.completedFuture(userTransaction);
-//    }
+    @NotNull
+    private UserTransactions getUserTransaction(RequestUser req, UUID eventId) {
+        return new UserTransactions(
+                eventId,
+                UserStatus.USER_INSERT,
+                UserResponseStatus.USER_APPEND,
+                UserResponseStatus.USER_APPEND,
+                req.getUserId(),
+                LocalDateTime.now(),
+                req.getEmail(),
+                req.getUserName(),
+                pwe.encode(req.getUserPw()),
+                req.getRole());
+    }
 
     private CompletableFuture<?> sendToKafkaWithKey(String topic,Object req, String key) {
         return kafkaProducerTemplate.send(topic,key, req);
@@ -292,16 +230,14 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     // 로그인
     @Override
     public DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr) {
-        printHikariCPInfo();
-        queryWithMethods(userId, userPw, dr, userRepositoryJDBC.login(userId, userPw)); // blocking
+
         return dr;
     }
 
     // 로그인
     @Override
     public DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr) {
-        printHikariCPInfo();
-        queryWithMethods(userId, userPw, dr, userRepositoryJDBC.logout(userId, userPw));
+
         return dr;
     }
 

@@ -1,0 +1,43 @@
+.screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 20px 20px 20px;
+    margin-bottom: 10px;
+    position: relative;
+}
+.screen-header__title {
+    font-size:  20px;
+    font-weight: 600;
+}
+ 
+.screen-header__icons span {
+    margin-left: 20px;
+}
+
+.screen-header__icons {
+    display: flex;
+    position: relative;
+
+}
+
+
+.screen-header__dot {
+    position: inherit;
+    left: 0px;
+    bottom: 5px;
+
+}
+
+@keyframes rotateCog{
+    from{
+        transform: none;        
+    }
+    to{
+        transform: rotateZ(360deg);
+    }
+}
+
+.screen-header__icons .fa-gear:hover{
+    animation: rotateCog 3s linear infinite;
+}

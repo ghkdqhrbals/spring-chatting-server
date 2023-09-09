@@ -1,0 +1,52 @@
+version : '3.7'
+
+services:
+  chatting-server:
+    container_name: chatting-server
+    build: ./spring-chatting-backend-server
+    ports:
+      - "8030:8030"
+    environment:
+      spring_config_activate_on-profile: prod
+      spring_profiles_active: local
+      spring_cloud_discovery_enabled: false
+      spring_datasource_hikari_maximum-pool-size: 70
+      spring_datasource_url: jdbc:postgresql://chat-db:5433/chat
+      spring_datasource_hikari_username: postgres
+      spring_datasource_hikari_password: password
+      SERVER_PORT: 8030
+    depends_on:
+      - chat-db
+    restart: always
+
+  chat-db:
+    container_name: chat-db
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=chat
+    expose:
+      - "5433" # Publishes 5433 to other containers but NOT to host machine
+    ports:
+      - "5433:5433"
+    volumes:
+      - pgdata-chat:/home/backups
+    command: -c wal_level=logical -p 5433
+    restart: always
+
+  front-server:
+    container_name: front-server
+    build: ./spring-chatting-front-server
+    environment:
+      - spring_profiles_active=local
+      - SERVER_PORT=8000
+      - BACKEND_API_GATEWAY=http://chatting-server:8030
+    ports:
+      - "80:8000"
+    restart: always
+
+# Persistance DB Volume
+volumes:
+  pgdata-chat:
+    name: chat-db-volume

@@ -1,14 +1,16 @@
 package chatting.chat.domain.data;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class User {
+
+    @Builder
     public User(String userId, String userPw, String email, String userName, LocalDate joinDate, LocalDate loginDate, LocalDate logoutDate) {
         this.userId = userId;
         this.userPw = userPw;
@@ -28,7 +30,4 @@ public class User {
     private LocalDate loginDate;
     private LocalDate logoutDate;
 
-    public User() {
-
-    }
 }

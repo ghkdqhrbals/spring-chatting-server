@@ -6,9 +6,6 @@ spring:
     port: 5672
     username: guest
     password: guest
-  redis:
-    host: localhost
-    port: 6379
   application:
     name: user-service
   messages:
@@ -29,7 +26,7 @@ spring:
       hibernate:
         use-new-id-generator-mappings: true
         order_inserts: true
-        ddl-auto: create
+        ddl-auto: validate
         format_sql: true
         jdbc:
           time_zone: UTC
@@ -39,9 +36,12 @@ spring:
       lettuce:
         pool:
           max-active: 10
+      host: 127.0.0.1
+      port: 6379
 #    allow-bean-definition-overriding: true
 
-
+kafka:
+  enabled: true
 
 
 server:

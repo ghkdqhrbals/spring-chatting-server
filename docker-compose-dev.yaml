@@ -79,6 +79,8 @@ services:
   configuration-server:
     container_name: configuration-server
     build: ./config-service
+    expose:
+      - 8888
     ports:
       - "8888:8888"
     environment:
@@ -109,6 +111,7 @@ services:
     links:
       - user-redis
     environment:
+      SPRING_MAIN_web-application-type: reactive
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
@@ -141,7 +144,7 @@ services:
     ports:
       - "5435:5435"
     volumes:
-      - ./backups:/home/backups
+      - pgdata-user:/home/backups
     command: -c wal_level=logical -p 5435
     restart: always
 
@@ -196,7 +199,7 @@ services:
     ports:
       - "5433:5433"
     volumes:
-      - ./backups:/home/backups
+      - pgdata-chat:/home/backups
     command: -c wal_level=logical -p 5433
     restart: always
 
@@ -235,7 +238,7 @@ services:
     ports:
       - "5434:5434"
     volumes:
-      - ./backups:/home/backups
+      - pgdata-customer:/home/backups
     command: -c wal_level=logical -p 5434
     restart: always
 
@@ -246,6 +249,7 @@ services:
       - "8000:8000"
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_MAIN_web-application-type: reactive
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
       SERVER_PORT: 8000
@@ -258,3 +262,11 @@ services:
       - configuration-server
     restart: always
 
+# Persistance DB Volume
+volumes:
+  pgdata-user:
+    name: user-db-volume
+  pgdata-chat:
+    name: chat-db-volume
+  pgdata-customer:
+    name: customer-db-volume

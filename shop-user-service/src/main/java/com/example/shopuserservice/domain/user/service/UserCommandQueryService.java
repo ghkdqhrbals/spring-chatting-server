@@ -21,9 +21,9 @@ import java.util.*;
 public interface UserCommandQueryService {
     CompletableFuture<List<User>> getAllUser();
     CompletableFuture<User> createUser(RequestUser request, UUID eventId);
-    CompletableFuture<UserTransactions> newUserEvent2(RequestUser request, UUID eventId, UserEvent userEvent);
+    CompletableFuture<UserTransactions> newUserEvent(RequestUser request, UUID eventId, UserEvent userEvent);
     CompletableFuture<Optional<User>> getUserById(String id);
-    CompletableFuture<UserTransactions> updateStatus2(UserResponseEvent event);
+    CompletableFuture<UserTransactions> updateStatus(UserResponseEvent event);
     DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
     DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
 //    CompletableFuture<Boolean> removeUser(UUID eventId, String userId);

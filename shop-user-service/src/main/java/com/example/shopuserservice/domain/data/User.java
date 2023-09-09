@@ -1,26 +1,29 @@
 package com.example.shopuserservice.domain.data;
 
 
+import com.example.commondto.format.DateFormat;
+import com.example.shopuserservice.domain.data.base.BaseTime;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "USER_TABLE")
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 @RequiredArgsConstructor
-public class User {
-    public User(String userId, String userPw, String email, String userName, LocalDateTime joinDate, LocalDateTime loginDate, LocalDateTime logoutDate, String role) {
+public class User extends BaseTime {
+    @Builder
+    public User(String userId, String userPw, String email, String userName, LocalDateTime loginDate, LocalDateTime logoutDate, String role) {
         this.userId = userId;
         this.userPw = userPw;
         this.email = email;
         this.userName = userName;
-        this.joinDate = joinDate;
         this.loginDate = loginDate;
         this.logoutDate = logoutDate;
         this.role = role;
@@ -39,13 +42,10 @@ public class User {
     @Column(name = "USER_NAME")
     private String userName;
 
-    @Column(name="JOIN_DATE")
-    private LocalDateTime joinDate;
-
-    @Column(name="LOGIN_DATE")
+    @Column(name="LOGIN_DATE", columnDefinition = "timestamp(6)")
     private LocalDateTime loginDate;
 
-    @Column(name="LOGOUT_DATE")
+    @Column(name="LOGOUT_DATE", columnDefinition = "timestamp(6)")
     private LocalDateTime logoutDate;
 
     @Column(name="ROLE")

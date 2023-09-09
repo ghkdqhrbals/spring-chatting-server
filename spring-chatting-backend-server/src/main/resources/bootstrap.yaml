@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: dev
   cloud:
     config:
       name:

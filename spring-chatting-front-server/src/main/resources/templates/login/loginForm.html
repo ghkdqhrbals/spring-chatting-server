@@ -1,9 +1,11 @@
 <!DOCTYPE HTML>
+
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/common.css}"
-          href="../css/common.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link th:href="@{/css/styles.css}"
+          href="../css/styles.css" rel="stylesheet">
 </head>
 <body>
 
@@ -12,101 +14,54 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<div class="center">
-
-    <div class="py-5 text-center">
-        <h2>Login</h2>
-<!--        <h2 th:field="${processId}"> 회원가입 진행중인 ID</h2>-->
-<!--        <p id="statsArea">HI</p>-->
+<div class="status-bar">
+    <div class="status-bar__column">
+        <span>No Service</span>
+        <i class="fa-solid fa-wifi"></i>
     </div>
 
+    <div class="status-bar__column">
+        <span>18:43</span>
+    </div>
+
+    <div class="status-bar__column">
+        <span>80%</span>
+        <i class="fa-solid fa-battery-full fa-lg"></i>
+        <i class="fa-solid fa-bolt-lightning"></i>
+    </div>
+</div>
+
+<header class="welcome-header">
+    <h1  class="welcome-header_title">Welcome to Kokoa Clone</h1>
+    <p class="welcome-header_text">
+        If you have a Kakao Account, <br> log in with your email or phone number.
+    </p>
+</header>
+
+<form action="../friends/friends.html" th:action th:object="${loginForm}" method="post" id="login-form">
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+    </div>
+
+    <input name="username" type="text" th:field="*{loginId}" th:errorclass="field-error" placeholder="Email or phone number"/>
+    <p class="field-error" th:errors="*{loginId}" >오류메세지</p>
+
+    <input name="password" th:field="*{password}" type="password" placeholder="Password"/>
+    <p class="field-error" th:errors="*{password}" >오류메세지</p>
 
 
-    <form action="" th:action th:object="${loginForm}" method="post">
+    <input type="submit" onclick="location.href='../home.html'" th:onclick="|location.href='/home'|" value="Log In"/>
+
+    <a href="#" >Find Kakao Account or Password, or</a>
+    <a style="margin-top: 10px" th:href="|localtion.href='/user/register'|" href="../users/addUserFormSingle.html" >Create Account</a>
+</form>
+<div class="no-mobile">
+    <span> Your screen is too big.. ㅠㅠ</span>
+</div>
 
 
-        <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error tc" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
-        </div>
+<script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
 
 
-        <div class="grid grid--block">
-            <div class="item-3">
-                <p class="col-l">id</p>
-            </div>
-            <div class="item-6">
-                <input type="text" th:field="*{loginId}" class="form-control"
-                       th:errorclass="field-error">
-            </div>
-            <div class="item-6">
-                <div class="field-error" th:errors="*{loginId}" >오류메세지</div>
-            </div>
-        </div>
-
-        <div class="grid grid--block">
-            <div class="item-3">
-                <p class="col-l">password</p>
-            </div>
-            <div class="item-6">
-                <input type="password" th:field="*{password}" class="form-control"
-                       th:errorclass="field-error">
-            </div>
-            <div class="item-6">
-                <div class="field-error" th:errors="*{password}" >오류메세지</div>
-            </div>
-        </div>
-
-
-        <div class="container-2" style="padding-top: 30px">
-            <div class="item-6">
-                <button class="w-100 btn-primary" type="submit">login</button>
-            </div>
-            <div class="item-6">
-                <button class="w-100 btn-primary" onclick="location.href='../users/addUserForm.html'"
-                        th:onclick="|location.href='@{/user}'|"
-                        type="button">register</button>
-            </div>
-        </div>
-    </form>
-
-</div> <!-- /container -->
 </body>
 </html>
-
-<!--<script th:inline="javascript">-->
-<!--    /*<![CDATA[*/-->
-
-<!--    var str = '';-->
-<!--    var sockJs = new SockJS("/stomp/chat");-->
-
-<!--    //1. SockJS를 내부에 들고있는 stomp를 내어줌-->
-<!--    var stomp = Stomp.over(sockJs);-->
-
-<!--    //2. connection이 맺어지면 실행-->
-<!--    stomp.connect({}, function () {-->
-<!--        var userId = document.getElementById("processId");-->
-<!--        console.log("Successfully created STOMP connection with : "+userId );-->
-
-
-<!--        if (userId != null){-->
-<!--            console.log(userId);-->
-<!--            //4. subscribe(path, callback)으로 메세지를 받을 수 있음-->
-<!--            stomp.subscribe("/sub/user/" + userId.value, function (stats) {-->
-<!--                var content = JSON.parse(stats.body);-->
-
-<!--                console.log(stats);-->
-<!--                str = "<div>";-->
-<!--                str += content.userStatus + " : " + content.chatStatus + " : " + content.customerStatus;-->
-<!--                str += "</div>";-->
-<!--                $("#statsArea").append(str);-->
-<!--            });-->
-<!--        }-->
-<!--        //3. send(path, header, message)로 메세지를 보낼 수 있음-->
-<!--        // stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId,writerId:writerId, writer: username, createAt:Date.now()}))-->
-<!--    });-->
-
-
-
-
-<!--    /*]]>*/-->
-<!--</script>-->

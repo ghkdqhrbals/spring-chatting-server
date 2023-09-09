@@ -1,5 +1,4 @@
 .idea
-.gradle
 .docker
 /docker-elk
 /backups

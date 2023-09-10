@@ -1,5 +1,6 @@
 package com.example.shopuserservice.domain.user.repository;
 
+import com.example.commondto.format.DateFormat;
 import com.example.shopuserservice.UnitTest;
 import com.example.shopuserservice.domain.data.User;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +21,7 @@ class UserRepositoryTest extends UnitTest {
         @DisplayName("Saving single user")
         void saveUser(){
             // given
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = DateFormat.getCurrentTime();
             User user = User.builder()
                     .userId("aa")
                     .userPw("1234")

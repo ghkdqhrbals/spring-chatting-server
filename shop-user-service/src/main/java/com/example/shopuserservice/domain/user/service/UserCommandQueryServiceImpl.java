@@ -1,6 +1,7 @@
 package com.example.shopuserservice.domain.user.service;
 
 import com.example.commondto.events.ServiceNames;
+import com.example.commondto.format.DateFormat;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
@@ -140,8 +141,8 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                     .role(request.getRole())
                     .userPw(pwe.encode(request.getUserPw()))
                     .userId(request.getUserId())
-                    .loginDate(LocalDateTime.now())
-                    .logoutDate(LocalDateTime.now())
+                    .loginDate(DateFormat.getCurrentTime())
+                    .logoutDate(DateFormat.getCurrentTime())
                     .build();
 
             return transactionTemplate.execute((status) -> {
@@ -172,8 +173,8 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                         .role(ut.getRole())
                         .userPw(ut.getUserPw())
                         .userId(ut.getUserId())
-                        .loginDate(LocalDateTime.now())
-                        .logoutDate(LocalDateTime.now())
+                        .loginDate(DateFormat.getCurrentTime())
+                        .logoutDate(DateFormat.getCurrentTime())
                         .build();
                 try {
                     userRepository.save(user);
@@ -216,7 +217,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 UserResponseStatus.USER_APPEND,
                 UserResponseStatus.USER_APPEND,
                 req.getUserId(),
-                LocalDateTime.now(),
+                DateFormat.getCurrentTime(),
                 req.getEmail(),
                 req.getUserName(),
                 pwe.encode(req.getUserPw()),

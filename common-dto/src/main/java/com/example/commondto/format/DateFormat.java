@@ -10,13 +10,11 @@ public class DateFormat {
     public static ChronoUnit truncation = ChronoUnit.MICROS;    // nano seconds removal
 
     public static LocalDateTime getCurrentTime(){
-        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(truncation);
-        return localDateTime;
+        return LocalDateTime.now().truncatedTo(truncation);
     }
 
 
     public static String formatToSix(LocalDateTime localDateTime){
-        String format = localDateTime.format(DateTimeFormatter.ofPattern(LocalDateTimeFormat));
-        return format;
+        return localDateTime.format(DateTimeFormatter.ofPattern(LocalDateTimeFormat));
     }
 }

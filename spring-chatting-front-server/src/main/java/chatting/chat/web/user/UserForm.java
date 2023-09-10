@@ -4,8 +4,6 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 

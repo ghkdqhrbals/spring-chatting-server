@@ -11,6 +11,7 @@ import com.example.commondto.events.user.UserStatus;
 import com.example.commondto.kafka.KafkaTopicPartition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
+@Profile("prod")
 @RequiredArgsConstructor
 public class MessageListener {
     private final UserService userService;

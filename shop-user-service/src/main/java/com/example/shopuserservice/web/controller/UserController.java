@@ -4,7 +4,6 @@ import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.UserTransactions;
-import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.web.error.CustomException;
@@ -13,7 +12,6 @@ import com.example.shopuserservice.web.security.LoginResponseDto;
 import com.example.shopuserservice.web.security.LoginService;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
-import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -142,7 +140,7 @@ public class UserController {
 
         // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
         userCommandQueryService
-                .newUserEvent2(req, eventId, userEvent)
+                .newUserEvent(req, eventId, userEvent)
                 .exceptionally(e -> {
                     if (e.getCause() instanceof CustomException) {
                         CustomException e2 = ((CustomException) e.getCause());

@@ -10,12 +10,9 @@ import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -30,7 +27,7 @@ public class MessageListener {
     // concurrency를 partition 개수에 맞추어 설정하는 것이 중요합니다.
     @KafkaListener(topics = KafkaTopic.userRes, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userRes)
     public void listenUser(UserResponseEvent req) {
-        userService.updateStatus2(req).exceptionally(e->{
+        userService.updateStatus(req).exceptionally(e->{
             log.info("이벤트 트랜젝션이 발견되지 않았습니다");
             AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(e);
             AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();

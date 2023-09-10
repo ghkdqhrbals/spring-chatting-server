@@ -29,3 +29,9 @@ body {
 .main-screen{
     padding: 0px var(--horizontal-space);
 }
+
+.field-error{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #842029;
+}

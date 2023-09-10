@@ -6,6 +6,7 @@ import chatting.chat.domain.friend.service.FriendService;
 import chatting.chat.domain.participant.service.ParticipantService;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
+import chatting.chat.web.dto.RequestUser;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
 import chatting.chat.web.kafka.dto.*;
@@ -30,15 +31,13 @@ public class ChatController {
     private final ChatService chatService;
 
     private final ParticipantService participantService;
-    private final KafkaTemplate<String, Object> kafkaProducerTemplate;
 
-    public ChatController(UserService userService, FriendService friendService, RoomService roomService, ChatService chatService,ParticipantService participantService, KafkaTemplate<String, Object> kafkaProducerTemplate) {
+    public ChatController(UserService userService, FriendService friendService, RoomService roomService, ChatService chatService,ParticipantService participantService) {
         this.userService = userService;
         this.friendService = friendService;
         this.roomService = roomService;
         this.chatService = chatService;
         this.participantService = participantService;
-        this.kafkaProducerTemplate = kafkaProducerTemplate;
     }
     /**
      * -------------- GET METHODS --------------
@@ -49,6 +48,12 @@ public class ChatController {
     public ResponseEntity<?> findUser(@RequestParam("userId") String userId){
         User findUser = userService.findById(userId);
         return ResponseEntity.ok(new ResponseGetUser(findUser.getUserId(),findUser.getUserName(),findUser.getUserStatus()));
+    }
+
+    // 유저 추가
+    @PostMapping("/user")
+    public ResponseEntity<?> addUser(RequestUser req){
+        return ResponseEntity.ok(userService.save(req.getUserId(),req.getUserName(),""));
     }
 
     // 채팅방 정보 조회
@@ -123,15 +128,9 @@ public class ChatController {
         Room findRoom = roomService.findByRoomId(req.getRoomId());
         User findUser = userService.findById(req.getWriterId());
 
-        // 성능개선을 위해 제거
-//        userService.findByRoomIdAndUserId(findRoom.getRoomId(), findUser.getUserId());
-
         // service-logic
         Chatting chatting = createChatting(findRoom, findUser, req.getMessage());
         chatService.save(chatting);
-
-        // kafka-logic
-//        sendToKafka(TOPIC_USER_ADD_CHAT_REQUEST, req);
 
         return ResponseEntity.ok("success");
     }

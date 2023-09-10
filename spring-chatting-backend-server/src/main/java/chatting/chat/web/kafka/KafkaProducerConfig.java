@@ -5,6 +5,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Configuration
 @EnableKafka
+@Profile("prod")
 public class KafkaProducerConfig {
 
     @Value("${kafka.bootstrap}")

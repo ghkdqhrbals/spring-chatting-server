@@ -85,7 +85,7 @@ public class LoginController {
                             response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
                     .bodyToMono(LoginResponseDto.class)
                     .block();
-            log.trace("Retrieve TOKEN : ");
+            log.trace("Retrieve TOKEN : {}", res.getToken());
 
             String encodeToken = URLEncoder.encode("Bearer "+res.getToken(), "utf-8");
 
@@ -95,7 +95,6 @@ public class LoginController {
             cookie.setPath("/");
             httpServletResponse.addCookie(cookie);
 
-//            httpServletResponse.addHeader("Set-Cookie", TokenConst.keyName+"=Bearer "+res.getToken());  // 토큰 쿠키 삽입, TODO HttpOnly 설정 필요
         }catch (CustomThrowableException e){
 
             if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())){
@@ -112,7 +111,6 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, user);
         log.info(redirectURL);
         return "redirect:"+redirectURL;
-
     }
 
     @GetMapping("/logout")

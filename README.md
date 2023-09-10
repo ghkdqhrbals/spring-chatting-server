@@ -1,5 +1,51 @@
-# Spring Java 채팅서버구현
+# Chat & Order Service with Spring-Java
+## Purpose of our project
+
+본 프로젝트의 목적은 다양한 기술을 실험적으로 적용하는 것입니다.
+
+The goal of our project is to **apply various techniques** experimentally.
+> Now this project aims MSA integration
+
 현재 프로젝트는 MSA 이전중 임으로 불안정합니다. 따라서 채팅서버의 stable 한 버전인 [4.2.0v](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.2.0) 로 태그를 이동하고 Instruction 에 따라 실행해주세요. 
+
+Our project is unstable due to MSA migration. So move the tag to [4.2.0v](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.2.0), a stable version of project, and run it by its instruction!
+
+> Backend & Frontend Contributor 를 모집중입니다. 자유롭게 신청하세요 :) 학생이나 직장인 모두 재미삼아 참여하실 수 있어요!
+>
+> We are looking for contributors in any fields. Feel free to apply :) Both students and who work at a company can join this project for fun!
+
+
+## Docker containers description
+
+Currently we run multiple containers and they run in **same bridge network**.
+> To maintain the server safe, we will separate network in later.
+
+Here are the containers that we run and their roles.
+
+#### Main
+
+* **configuration-server** : deploy configuration files through rabbitmq and actuator.
+* **chatting-server** : chatting API server
+* **customer-server** : order/product API server _#TODO_
+* **user-server** : authentication API server and user orchestration service
+* **discovery-server** : EUREKA server
+* **zookeeper** : observing kafka broker status
+* **kafka1** : kafka broker
+* **kafka2** : kafka broker
+* **kafka3** : kafka broker
+* **api-server** : spring-cloud-api-server
+* **spring-chatting-server_kafdrop_1** : monitoring kafka topic and messages
+* **customer-db** : rdb for managing order/product
+* **chat-db** : rdb for managing chat
+* **user-redis** : db for managing event status
+* **user-db** : rdb for managing user credentials
+* **rabbitmq** : configuration deploy bus
+
+#### Optional (monitoring kafka topic)
+
+* logstash
+* elasticsearch
+* kibana
 
 ## Versions
 
@@ -106,7 +152,7 @@ To see the description of functions and simulation video, here is youtube link :
 6. See Results in Kafdrop [http://localhost:9000/](http://localhost:9000/)
 
 ### ELK stack
-1. Please cloning [docker-elk](https://github.com/deviantony/docker-elk) for running elk stacks
+1. Please cloning [docker-elk](https://github.com/deviantony/docker-elk) for running elk stacks(reset commit to hash: `3a3cdd7db830fa8038e9cc3274d111b274dbb305`)
 2. Edit `/docker-elk/logstash/pipeline/logstash.conf` with following configurations
     
    ```

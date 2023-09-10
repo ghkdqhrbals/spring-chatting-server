@@ -68,7 +68,6 @@ public class LoginController {
 
         try{
             LoginResponseDto res = webClient.mutate()
-                    .baseUrl("http://127.0.0.1:8000")
                     .build()
                     .post()
                     .uri("/user/login")

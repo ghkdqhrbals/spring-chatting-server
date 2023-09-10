@@ -1,4 +1,4 @@
-package chatting.chat.web;
+package chatting.chat.config;
 
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Configuration;

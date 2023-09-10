@@ -1,4 +1,4 @@
-package chatting.chat.web;
+package chatting.chat.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;

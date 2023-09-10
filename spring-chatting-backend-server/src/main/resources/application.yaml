@@ -65,3 +65,5 @@ management:
 logging:
   level:
     com.example.shopuserservice.client: DEBUG
+    org.springframework.amqp: ERROR
+    org.springframework.boot.actuate.amqp: ERROR

@@ -10,6 +10,7 @@ import chatting.chat.web.dto.RequestUser;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
 import chatting.chat.web.kafka.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -45,6 +46,7 @@ public class ChatController {
 
     // 유저 조회
     @GetMapping("/user")
+    @Operation(summary = "Get user information")
     public ResponseEntity<?> findUser(@RequestParam("userId") String userId){
         User findUser = userService.findById(userId);
         return ResponseEntity.ok(new ResponseGetUser(findUser.getUserId(),findUser.getUserName(),findUser.getUserStatus()));
@@ -52,12 +54,14 @@ public class ChatController {
 
     // 유저 추가
     @PostMapping("/user")
+    @Operation(summary = "Save user")
     public ResponseEntity<?> addUser(RequestUser req){
         return ResponseEntity.ok(userService.save(req.getUserId(),req.getUserName(),""));
     }
 
     // 채팅방 정보 조회
     @GetMapping(value = "/room/{roomId}")
+    @Operation(summary = "Get room information")
     public ResponseEntity<?> findRoom(@PathVariable("roomId") Long roomId){
         Room room = roomService.findByRoomId(roomId);
         return ResponseEntity.ok(room);
@@ -65,6 +69,7 @@ public class ChatController {
 
     // 유저가 참여하고 있는 채팅방 목록 조회
     @GetMapping(value = "/rooms")
+    @Operation(summary = "Get room information that user participated")
     public ResponseEntity<?> findRoomWithUserId(@RequestParam("userId") String userId){
         List<ChatRoomDTO> findUserRooms = userService.findAllMyRooms(userId);
         return ResponseEntity.ok(findUserRooms);
@@ -72,6 +77,7 @@ public class ChatController {
 
     // 유저의 친구목록 조회
     @GetMapping("/friend")
+    @Operation(summary = "Get friends information that connected with user")
     public ResponseEntity<?> findFriend(@RequestParam("userId") String userId){
         User findUser = userService.findById(userId);
 
@@ -86,6 +92,7 @@ public class ChatController {
 
     // 이전 채팅기록 조회
     @GetMapping("/chats")
+    @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId){
         Room findRoom = roomService.findByRoomId(roomId);
         List<Chatting> findChattings = chatService.findAllByRoomId(findRoom.getRoomId());
@@ -96,6 +103,7 @@ public class ChatController {
 
     // 특정 채팅 조회
     @GetMapping(value = "/chat")
+    @Operation(summary = "Get a single chat with chat id")
     public ResponseEntity<?> findChatRecord(@RequestParam("chatId") Long chatId){
         Chatting findChatting = chatService.findById(chatId);
         return ResponseEntity.ok(findChatting);
@@ -107,6 +115,7 @@ public class ChatController {
 
     // 유저 상태메세지 변경
     @PostMapping("/status")
+    @Operation(summary = "Change user's status")
     public ResponseEntity<?> changeUserStatus(@RequestBody RequestChangeUserStatusDTO request){
         userService.updateUserStatus(request);
         return ResponseEntity.ok("success");
@@ -114,6 +123,7 @@ public class ChatController {
 
     // 채팅방 개설
     @PostMapping("/room")
+    @Operation(summary = "Open room with friends")
     public ResponseEntity<?> addChatRoom(@RequestBody RequestAddChatRoomDTO req){
         userService.makeRoomWithFriends(req);
         List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(req.getUserId());
@@ -122,6 +132,7 @@ public class ChatController {
 
     // 채팅 저장
     @PostMapping(value = "/chat")
+    @Operation(summary = "Save chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
 
         // validation
@@ -137,6 +148,7 @@ public class ChatController {
 
     // 친구 저장
     @PostMapping("/friend")
+    @Operation(summary = "Add friends")
     public ResponseEntity<?> addFriend(@RequestBody RequestAddFriendDTO req){
 
         // validation
@@ -158,6 +170,7 @@ public class ChatController {
      */
 
     @DeleteMapping("/friend")
+    @Operation(summary = "Remove friends")
     public ResponseEntity<?> removeFriend(@RequestParam("userId") String userId,@RequestParam("friendId") String friendId){
         friendService.removeFriend(userId,friendId);
         return ResponseEntity.ok("success");

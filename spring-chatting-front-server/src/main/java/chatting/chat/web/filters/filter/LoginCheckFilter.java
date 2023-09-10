@@ -26,7 +26,7 @@ public class LoginCheckFilter implements HandlerInterceptor {
 
         Cookie[] cookies = request.getCookies();
         if (cookies == null){
-            response.sendRedirect("/login?redirectURL=" + requestURI);
+            response.sendRedirect("/login");
             return false;
         }
 

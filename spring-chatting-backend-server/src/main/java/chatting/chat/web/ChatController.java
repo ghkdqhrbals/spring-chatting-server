@@ -55,7 +55,8 @@ public class ChatController {
     // 유저 추가
     @PostMapping("/user")
     @Operation(summary = "Save user")
-    public ResponseEntity<?> addUser(RequestUser req){
+    public ResponseEntity<?> addUser(@RequestBody RequestUser req){
+        log.trace(req.toString());
         return ResponseEntity.ok(userService.save(req.getUserId(),req.getUserName(),""));
     }
 

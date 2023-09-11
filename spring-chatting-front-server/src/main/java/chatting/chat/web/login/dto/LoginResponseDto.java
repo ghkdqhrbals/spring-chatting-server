@@ -1,4 +1,4 @@
-package chatting.chat.web.user;
+package chatting.chat.web.login.dto;
 
 import lombok.Builder;
 import lombok.Data;

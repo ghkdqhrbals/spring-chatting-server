@@ -37,7 +37,7 @@
   </div>
 </header>
 
-<form action="../login/loginForm.html" th:object="${userForm}" method="post" id="login-form">
+<form action="../users/addUserFormSingle.html" th:action th:object="${userForm}" method="post" id="login-form">
   <div th:if="${#fields.hasGlobalErrors()}">
     <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
   </div>
@@ -55,9 +55,9 @@
   <p class="field-error" th:errors="*{email}" >오류메세지</p>
 
 
-  <input type="submit" onclick="location.href='../login/loginForm.html'" th:onclick="|location.href='@{/login}'|" value="Register"/>
+  <input type="submit" onclick="location.href='../login/loginForm.html'" value="Register"/>
 
-  <a style="margin-top: 5px" href="../login/loginForm.html" >Back</a>
+  <a style="margin-top: 5px" href="../login/loginForm.html" th:href='@{/login}' >Back</a>
 </form>
 <div class="no-mobile">
   <span> Your screen is too big.. ㅠㅠ</span>

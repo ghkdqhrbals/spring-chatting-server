@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -35,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -153,64 +151,59 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     @Override
     public CompletableFuture<UserTransactions> newUserEvent(RequestUser req, UUID eventId, UserEvent userEvent) {
-        UserTransactions userTransaction = getUserTransaction(req, eventId);
+        return CompletableFuture.supplyAsync(()->{
+            return transactionTemplate.execute((status)->{
 
-        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitNext(userTransaction);
-        try {
+                UserTransactions userTransaction = createUserTransaction(req, eventId);
+                // userTransaction 1차 전송
+                AsyncConfig.sinkMap.get(req.getUserId()).tryEmitNext(userTransaction);
 
-            // 이벤트 Transaction 저장
-            LocalDateTime now1 = LocalDateTime.now();
-            UserTransactions ut = userTransactionRedisRepository.save(userTransaction);
-            LocalDateTime now2 = LocalDateTime.now();
+                // 이벤트 Transaction 저장
+                LocalDateTime now1 = LocalDateTime.now();
+                UserTransactions ut = userTransactionRedisRepository.save(userTransaction);
+                LocalDateTime now2 = LocalDateTime.now();
 
-            Optional<User> findUser = userRepository.findById(ut.getUserId());
-            if (findUser.isEmpty()){
+                Optional<User> findUser = userRepository.findById(ut.getUserId());
+                if (findUser.isEmpty()){
 
-                // 유저 저장
-                User user = User.builder()
-                        .userName(ut.getUserName())
-                        .email(ut.getEmail())
-                        .role(ut.getRole())
-                        .userPw(ut.getUserPw())
-                        .userId(ut.getUserId())
-                        .loginDate(DateFormat.getCurrentTime())
-                        .logoutDate(DateFormat.getCurrentTime())
-                        .build();
-                try {
+                    // 유저 저장
+                    User user = User.builder()
+                            .userName(ut.getUserName())
+                            .email(ut.getEmail())
+                            .role(ut.getRole())
+                            .userPw(ut.getUserPw())
+                            .userId(ut.getUserId())
+                            .loginDate(DateFormat.getCurrentTime())
+                            .logoutDate(DateFormat.getCurrentTime())
+                            .build();
+
                     userRepository.save(user);
                     ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
-                    log.info("저장 완료");
-                    // saga Choreography 로 Transaction 관리
-                } catch (Exception e){
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); // 롤백
-                    return CompletableFuture.failedFuture(e);
+                    log.debug("User save success");
+                } else {
+                    log.debug("Already user exist in authentication server");
+                    ut.setUserStatus(UserStatus.USER_DUPLICATION.name());
                 }
-            } else {
-                log.info("인증서버에 유저가 이미 존재합니다");
-                // 유저가 이미 존재할 때
-                ut.setUserStatus(UserStatus.USER_DUPLICATION.name());
-            }
-            userTransactionRedisRepository.save(ut);
 
-            // 이벤트 Publishing key:userId = Partitioning
-            sendToKafkaWithKey(
-                    KafkaTopic.userReq,
-                    userEvent,
-                    req.getUserId()
-            ).thenRun(()->{
-                log.info("Redis Save Time : "+Duration.between(now1, now2).toMillis() + "ms Kafka Sender Time : "+Duration.between(now2, LocalDateTime.now()).toMillis()+"ms");
-            }).exceptionally(e->{
-                log.error("에러발생 ={}",e.getMessage());
-                return null;
+                userTransactionRedisRepository.save(ut);
+
+                log.debug("Now send event to other server");
+                sendToKafkaWithKey(
+                        KafkaTopic.userReq,
+                        userEvent,
+                        req.getUserId()
+                ).thenRun(()->{
+                    log.debug("Redis saving time : "+Duration.between(now1, now2).toMillis() +
+                            "ms, Kafka sending Time : "+Duration.between(now2, LocalDateTime.now()).toMillis()+"ms");
+                });
+
+                return ut;
             });
-        }catch(Exception e){
-            return CompletableFuture.failedFuture(e);
-        }
-        return CompletableFuture.completedFuture(userTransaction);
+        });
     }
 
     @NotNull
-    private UserTransactions getUserTransaction(RequestUser req, UUID eventId) {
+    private UserTransactions createUserTransaction(RequestUser req, UUID eventId) {
         return new UserTransactions(
                 eventId,
                 UserStatus.USER_INSERT,

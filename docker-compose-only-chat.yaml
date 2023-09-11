@@ -46,7 +46,7 @@ services:
     environment:
       - spring_profiles_active=local
       - SERVER_PORT=8000
-      - BACKEND_API_GATEWAY=http://chatting-server:8030
+      - backend_api_gateway=http://chatting-server:8030
     ports:
       - "80:8000"
     restart: always

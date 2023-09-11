@@ -8,6 +8,7 @@ import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.kafka.dto.CreateChatRoomUnitDTO;
 import chatting.chat.web.kafka.dto.RequestChangeUserStatusDTO;
+import chatting.chat.web.user.dto.RequestUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,6 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -71,23 +71,25 @@ public class UserController {
         req.setUserName(form.getUserName());
         req.setRole("ROLE_USER"); // 기본적으로 일반 롤 부여
 
+        log.trace("Send Request in main thread{}", req.toString());
+
         // 동시성을 위한 별도 스레드 풀 사용
         return CompletableFuture.supplyAsync(()->{
-            Flux<AddUserResponse> res = webClient.mutate()
-                    .build()
-                    .post()
+            log.trace("Send Request inside another thread {}", req.toString());
+            webClient.post()
                     .uri("/user")
                     .bodyValue(req)
                     .retrieve()
-                    .onStatus(
-                            HttpStatus::is4xxClientError,
-                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                    .onStatus(
-                            HttpStatus::is5xxServerError,
-                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                    .bodyToFlux(AddUserResponse.class);
+//                    .onStatus(
+//                            HttpStatus::is4xxClientError,
+//                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+//                    .onStatus(
+//                            HttpStatus::is5xxServerError,
+//                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
+                    .bodyToMono(Object.class).block();
 
-            return "redirect:/";
+            return "redirect:/login";
+//            return "redirect:/";
         }).exceptionally((e)->{
             log.info("Exceptions!={}",e.getMessage());
             bindingResult.rejectValue("userId", null, e.getMessage());

@@ -1,23 +1,17 @@
 package chatting.chat.web.filters;
 
-import chatting.chat.web.filters.filter.LoginCheckFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import chatting.chat.web.filters.filter.URLCheckFilter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.servlet.Filter;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginCheckFilter())
+        registry.addInterceptor(new URLCheckFilter())
                 .order(1)
                 .addPathPatterns("/**");
-//                .excludePathPatterns("/user/register","/user/login","/user","/css/**","/*.ico","/error","/login","/message","/publish");
     }
-
 }

@@ -33,7 +33,6 @@ dependencies {
 	testImplementation 'junit:junit:4.13.1'
 	testImplementation 'junit:junit:4.13.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -41,6 +40,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
 
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '4.0.0'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.0.0'

@@ -9,6 +9,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RequestUser {
     @NotNull(message = "user id must not be null")

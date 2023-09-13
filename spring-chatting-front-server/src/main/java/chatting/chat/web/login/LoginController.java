@@ -4,8 +4,8 @@ import chatting.chat.domain.data.User;
 import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
-import chatting.chat.web.user.LoginRequestDto;
-import chatting.chat.web.user.LoginResponseDto;
+import chatting.chat.web.login.dto.LoginRequestDto;
+import chatting.chat.web.login.dto.LoginResponseDto;
 import com.example.commondto.token.TokenConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,10 +68,9 @@ public class LoginController {
 
         try{
             LoginResponseDto res = webClient.mutate()
-                    .baseUrl("http://127.0.0.1:8000")
                     .build()
                     .post()
-                    .uri("/user/login")
+                    .uri("/login")
                     .bodyValue(req)
                     .retrieve()
                     .onStatus(

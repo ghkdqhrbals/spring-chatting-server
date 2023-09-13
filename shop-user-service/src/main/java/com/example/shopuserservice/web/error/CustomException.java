@@ -8,11 +8,12 @@ import lombok.Getter;
 public class CustomException extends RuntimeException { // RuntimeException 상속으로 Transactional Rollback
     private final ErrorCode errorCode;
 
-
     public static ErrorCode ExceptionToErrorCode(Throwable e) {
         CustomException customException = (CustomException) e;
         return customException.getErrorCode();
     }
+
+
 
     @Override
     public String toString() {

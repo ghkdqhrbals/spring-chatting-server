@@ -1,21 +1,13 @@
 package chatting.chat.web.filters.filter;
 
-import chatting.chat.web.filters.cons.SessionConst;
-import com.example.commondto.token.TokenConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.stream.Collectors;
 
 @Slf4j
-public class LoginCheckFilter implements HandlerInterceptor {
+public class URLCheckFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse

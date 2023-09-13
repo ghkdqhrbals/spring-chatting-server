@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-@RedisHash("UserTransaction")
+@RedisHash(value = "UserTransaction", timeToLive = 600)
 public class UserTransactions implements Serializable {
     @Id
     private UUID eventId;

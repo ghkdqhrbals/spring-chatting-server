@@ -125,8 +125,8 @@ public class UserController {
     // produces = MediaType.TEXT_EVENT_STREAM_VALUE
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
-        log.info("ADD USER");
-        // saga choreograhpy tx 관리 id;
+        log.trace("ADD USER");
+        // saga orchestration tx 관리 id;
         UUID eventId = UUID.randomUUID();
 
         AsyncConfig.sinkMap.put(req.getUserId(), Sinks.many().multicast().onBackpressureBuffer());

@@ -1,6 +1,11 @@
 spring:
   main:
     web-application-type: reactive
+  task:
+    scheduling:
+      pool:
+        size: 2  # Thread Pool Size
+      thread-name-prefix: scheduled-task-  # Thread Name Prefix
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -42,7 +47,6 @@ spring:
 
 kafka:
   enabled: true
-
 
 server:
   error:

@@ -1,5 +1,6 @@
 package com.example.shopuserservice.web.util.reactor;
 
+import lombok.Builder;
 import reactor.core.publisher.Sinks;
 
 import java.time.LocalDateTime;
@@ -17,5 +18,23 @@ public class SinkStream {
      * time when sink is created. using this time, we can check how long it takes to emit data to the subscriber.
      * and scheduler can check if the sink is not emitting data for a long time.
      */
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt = LocalDateTime.now();
+
+    public Sinks.Many<Object> getSink() {
+        return sink;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @Builder
+    public SinkStream(Sinks.Many<Object> sink) {
+        this.sink = sink;
+    }
+
+    // if current time is after 10 minutes from createdAt, return true
+    public boolean isExpired() {
+        return createdAt.plusMinutes(10).isBefore(LocalDateTime.now());
+    }
 }

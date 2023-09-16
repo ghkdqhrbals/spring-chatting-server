@@ -16,13 +16,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class Reactor {
     // create concurrentHashMap for sink storage
-    private static final ConcurrentHashMap<String, Sinks.Many<Object>> sinkMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, SinkStream> sinkMap = new ConcurrentHashMap<>();
+
+    public static ConcurrentHashMap<String, SinkStream> getSinkMap() {
+        return sinkMap;
+    }
 
     // add sinkMap if value is null, else throw exception
     public static void addSink(String key) throws Exception{
         if (sinkMap.get(key) == null) {
             Sinks.Many<Object> sink = Sinks.many().multicast().onBackpressureBuffer();
-            sinkMap.put(key, sink);
+            sinkMap.put(key, new SinkStream(sink));
         }else{
             throw new Exception("sink is not null");
         }
@@ -38,7 +42,7 @@ public class Reactor {
     }
     // emit data with complete to sinkMap using key and remove from sinkMap
     public static void emitAndComplete(String key, Object data){
-        Sinks.Many<Object> sink = sinkMap.get(key);
+        Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             sink.tryEmitNext(data);
             sink.tryEmitComplete();
@@ -50,7 +54,7 @@ public class Reactor {
 
     // get sink from sinkMap using key and transform to flux
     public static Flux<Object> getSink(String key){
-        Sinks.Many<Object> sink = sinkMap.get(key);
+        Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             return sink.asFlux();
         }else{
@@ -60,7 +64,7 @@ public class Reactor {
 
     // emit data to sinkMap using key
     public static void emit(String key, Object data){
-        Sinks.Many<Object> sink = sinkMap.get(key);
+        Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             sink.tryEmitNext(data);
         }else{
@@ -70,7 +74,7 @@ public class Reactor {
 
     // emit error to sinkMap using key
     public static void emitError(String key, Throwable error){
-        Sinks.Many<Object> sink = sinkMap.get(key);
+        Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             sink.tryEmitError(error);
         }else{
@@ -80,7 +84,7 @@ public class Reactor {
 
     // emit error with complete to sinkMap using key and remove from sinkMap
     public static void emitErrorAndComplete(String key, Throwable error){
-        Sinks.Many<Object> sink = sinkMap.get(key);
+        Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             sink.tryEmitError(error);
             sink.tryEmitComplete();

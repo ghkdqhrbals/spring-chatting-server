@@ -20,6 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.reactive.config.EnableWebFlux;
@@ -33,6 +34,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @Import(JpaConfig.class)
 @EnableKafka
 @EnableWebFlux
+@EnableScheduling
 public class OrderServiceApplication {
 
 	public static void main(String[] args) {

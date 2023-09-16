@@ -5,8 +5,8 @@ package com.example.shopuserservice.web.kafka;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.kafka.KafkaTopicPartition;
-import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
+import com.example.shopuserservice.web.util.reactor.Reactor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,11 +29,7 @@ public class MessageListener {
     public void listenUser(UserResponseEvent req) {
         userService.updateStatus(req).exceptionally(e->{
             log.info("이벤트 트랜젝션이 발견되지 않았습니다");
-            AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(e);
-            AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();
-            AsyncConfig.sinkMap.remove(req.getUserId());
-//            sendToKafkaWithKey(KafkaTopic.userCustomerRollback, req.getUserId(), req.getUserId());
-//            sendToKafkaWithKey(KafkaTopic.userChatRollback, req.getUserId(), req.getUserId());
+            Reactor.emitErrorAndComplete(req.getUserId(), e);
             return null;
         });
     }

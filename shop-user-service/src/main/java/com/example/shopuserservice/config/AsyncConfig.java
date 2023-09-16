@@ -14,8 +14,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 public class AsyncConfig  {
 
-    public static ConcurrentHashMap<String, Sinks.Many<Object>> sinkMap = new ConcurrentHashMap<>();
-
     @Bean(name = "taskExecutor")
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
@@ -31,6 +29,4 @@ public class AsyncConfig  {
         t.initialize();
         return t;
     }
-
-
 }

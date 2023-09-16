@@ -71,6 +71,21 @@ public class FluxTest {
     }
 
     @Test
+    void fluxConcatWithValuesTest(){
+        // 함수형 프로그래밍
+        Flux<String> flux = Flux.just("A", "B");
+
+        Flux<String> fluxWithC = flux.concatWithValues("C");
+        Sinks.ManySpec many = Sinks.many();
+
+        flux.subscribe(System.out::println);
+
+        fluxWithC.subscribe(System.out::println);
+
+
+    }
+
+    @Test
     void flux2(){
         Flux<Integer> f = Flux.just(1, 2, 3, 4, 5)
                 .delayElements(Duration.ofSeconds(1))

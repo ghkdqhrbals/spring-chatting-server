@@ -17,6 +17,7 @@ import com.example.shopuserservice.web.dto.UserDto;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorCode;
 import com.example.shopuserservice.web.error.ErrorResponse;
+import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseOrder;
 import com.zaxxer.hikari.HikariDataSource;
@@ -120,12 +121,9 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 && !userTransactions.getCustomerStatus().equals(UserResponseStatus.USER_APPEND.name())
                 && !userTransactions.getUserStatus().equals(UserStatus.USER_INSERT.name())
                 && !userTransactions.getUserStatus().equals(UserStatus.USER_DELETE.name())){
-            AsyncConfig.sinkMap.get(userId).tryEmitNext(userTransactions);
-            AsyncConfig.sinkMap.get(userId).tryEmitComplete();
-            AsyncConfig.sinkMap.remove(userId);
-        }
-        else{
-            AsyncConfig.sinkMap.get(userId).tryEmitNext(userTransactions);
+            Reactor.emitAndComplete(userId, userTransactions);
+        } else{
+            Reactor.emit(userId, userTransactions);
         }
     }
 
@@ -156,7 +154,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
                 UserTransactions userTransaction = createUserTransaction(req, eventId);
                 // userTransaction 1차 전송
-                AsyncConfig.sinkMap.get(req.getUserId()).tryEmitNext(userTransaction);
+                Reactor.emit(req.getUserId(), userTransaction);
 
                 // 이벤트 Transaction 저장
                 LocalDateTime now1 = LocalDateTime.now();

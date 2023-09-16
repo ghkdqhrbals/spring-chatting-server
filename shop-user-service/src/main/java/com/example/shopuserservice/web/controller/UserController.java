@@ -2,14 +2,15 @@ package com.example.shopuserservice.web.controller;
 
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
-import com.example.shopuserservice.config.AsyncConfig;
 import com.example.shopuserservice.domain.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.web.error.CustomException;
+import com.example.shopuserservice.web.error.ErrorCode;
 import com.example.shopuserservice.web.security.LoginRequestDto;
 import com.example.shopuserservice.web.security.LoginResponseDto;
 import com.example.shopuserservice.web.security.LoginService;
+import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
 import jakarta.servlet.ServletRequest;
@@ -30,7 +31,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
 
 import java.util.List;
 import java.util.UUID;
@@ -121,15 +121,15 @@ public class UserController {
     }
 
 
-    // 유저 저장 Server-Sent Event
-    // produces = MediaType.TEXT_EVENT_STREAM_VALUE
+    // add user with sse
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<?> addUser2(@RequestBody RequestUser req) throws InterruptedException {
-        log.trace("ADD USER");
-        // saga orchestration tx 관리 id;
+    public Flux<?> addUser(@RequestBody RequestUser req) throws Exception {
+        log.trace("addUser method is called");
+        // event id for kafka
         UUID eventId = UUID.randomUUID();
 
-        AsyncConfig.sinkMap.put(req.getUserId(), Sinks.many().multicast().onBackpressureBuffer());
+        // add sink for sse
+        Reactor.addSink(req.getUserId());
 
         UserEvent userEvent = new UserEvent(
                 eventId,
@@ -138,23 +138,18 @@ public class UserController {
         );
 
 
-        // 이벤트 Publishing (만약 MQ가 닫혀있으면 exception)
+        // event publishing to kafka and event handling
         userCommandQueryService
                 .newUserEvent(req, eventId, userEvent)
                 .exceptionally(e -> {
                     if (e.getCause() instanceof CustomException) {
-                        CustomException e2 = ((CustomException) e.getCause());
-                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail()));
-                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();
-                        AsyncConfig.sinkMap.remove(req.getUserId());
+                        Reactor.emitErrorAndComplete(req.getUserId(), e.getCause());
                     } else {
-                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitError(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
-                        AsyncConfig.sinkMap.get(req.getUserId()).tryEmitComplete();
-                        AsyncConfig.sinkMap.remove(req.getUserId());
+                        Reactor.emitErrorAndComplete(req.getUserId(), new CustomException(ErrorCode.SERVER_ERROR));
                     }
                     return null;
                 });
-        return AsyncConfig.sinkMap.get(req.getUserId()).asFlux();
+        return Reactor.getSink(req.getUserId());
     }
 
     /**

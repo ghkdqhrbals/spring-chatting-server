@@ -1,9 +1,9 @@
+
 FROM openjdk:17-alpine
 
+WORKDIR /null
 
-ENV APP_HOME=/config
-
-WORKDIR $APP_HOME
-
-COPY /build/libs/config-service-0.0.1-SNAPSHOT.jar $APP_HOME/app.jar
+COPY /build/libs/config-service-1.0.1.jar /null/app.jar
 ENTRYPOINT java -jar app.jar
+
+LABEL version="1.0.1"

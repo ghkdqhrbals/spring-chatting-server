@@ -151,6 +151,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     public CompletableFuture<UserTransactions> newUserEvent(RequestUser req, UUID eventId, UserEvent userEvent) {
         return CompletableFuture.supplyAsync(()->{
             return transactionTemplate.execute((status)->{
+                log.trace("newUserEvent method is called");
 
                 UserTransactions userTransaction = createUserTransaction(req, eventId);
                 // userTransaction 1차 전송
@@ -158,7 +159,10 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
                 // 이벤트 Transaction 저장
                 LocalDateTime now1 = LocalDateTime.now();
+                log.trace("UserTransaction save to redis");
                 UserTransactions ut = userTransactionRedisRepository.save(userTransaction);
+                log.trace("UserTransaction save to redis complete");
+
                 LocalDateTime now2 = LocalDateTime.now();
 
                 Optional<User> findUser = userRepository.findById(ut.getUserId());
@@ -175,23 +179,24 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                             .logoutDate(DateFormat.getCurrentTime())
                             .build();
 
+                    log.trace("User save to postgres");
                     userRepository.save(user);
                     ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
-                    log.debug("User save success");
+                    log.trace("User save to postgres complete");
                 } else {
-                    log.debug("Already user exist in authentication server");
+                    log.trace("Already user exist in postgres");
                     ut.setUserStatus(UserStatus.USER_DUPLICATION.name());
                 }
 
                 userTransactionRedisRepository.save(ut);
 
-                log.debug("Now send event to other server");
+                log.trace("Now send event to other server");
                 sendToKafkaWithKey(
                         KafkaTopic.userReq,
                         userEvent,
                         req.getUserId()
                 ).thenRun(()->{
-                    log.debug("Redis saving time : "+Duration.between(now1, now2).toMillis() +
+                    log.trace("Redis saving time : "+Duration.between(now1, now2).toMillis() +
                             "ms, Kafka sending Time : "+Duration.between(now2, LocalDateTime.now()).toMillis()+"ms");
                 });
 

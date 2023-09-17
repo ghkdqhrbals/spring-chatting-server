@@ -1,0 +1,6 @@
+
+// -Pversion default 1.0.0
+//e./gradlew build --parallel -Pversion=1.0.0
+ext {
+	projectVersion = project.hasProperty('version') ? project.property('version') : '1.0.0'
+}

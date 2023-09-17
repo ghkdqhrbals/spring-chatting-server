@@ -1,9 +1,9 @@
+
 FROM openjdk:17-alpine
 
+WORKDIR /null
 
-ENV APP_HOME=/chat
-
-WORKDIR $APP_HOME
-
-COPY /build/libs/spring-chatting-backend-server-0.0.1-SNAPSHOT.jar $APP_HOME/app.jar
+COPY /build/libs/spring-chatting-backend-server-1.0.1.jar /null/app.jar
 ENTRYPOINT java -jar app.jar
+
+LABEL version="1.0.1"

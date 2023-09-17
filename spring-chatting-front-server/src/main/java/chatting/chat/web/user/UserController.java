@@ -12,6 +12,7 @@ import chatting.chat.web.user.dto.RequestUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,7 +77,7 @@ public class UserController {
         // 동시성을 위한 별도 스레드 풀 사용
         return CompletableFuture.supplyAsync(()->{
             log.trace("Send Request inside another thread {}", req.toString());
-            webClient.post()
+            Flux<ServerSentEvent> temp = webClient.post()
                     .uri("/user")
                     .bodyValue(req)
                     .retrieve()
@@ -86,8 +87,15 @@ public class UserController {
 //                    .onStatus(
 //                            HttpStatus::is5xxServerError,
 //                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                    .bodyToMono(Object.class).block();
+                    .bodyToFlux(ServerSentEvent.class).log();
 
+            model.addAttribute("sseStream", temp);
+
+            temp.doFinally((s)->{
+                log.info("Complete");
+            }).subscribe((s)->{
+                log.info("{}",s);
+            });
             return "redirect:/login";
 //            return "redirect:/";
         }).exceptionally((e)->{

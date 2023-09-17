@@ -1,4 +1,4 @@
-package com.example.shopuserservice.web.scheduler;
+package com.example.shopuserservice.web.util.reactor.scheduler;
 
 import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.util.reactor.SinkStream;

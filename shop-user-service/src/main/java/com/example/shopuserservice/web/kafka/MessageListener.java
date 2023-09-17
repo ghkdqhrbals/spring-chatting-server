@@ -1,7 +1,5 @@
 package com.example.shopuserservice.web.kafka;
 
-
-
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.kafka.KafkaTopicPartition;

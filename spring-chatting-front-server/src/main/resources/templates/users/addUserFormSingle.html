@@ -37,6 +37,15 @@
   </div>
 </header>
 
+<div id="sse-events">
+  <ul>
+    <li th:each="event : ${sseStream}">
+      <!-- SSE 이벤트 내용을 표시 -->
+      <span th:text="${event.data}"></span>
+    </li>
+  </ul>
+</div>
+
 <form action="../users/addUserFormSingle.html" th:action th:object="${userForm}" method="post" id="login-form">
   <div th:if="${#fields.hasGlobalErrors()}">
     <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>

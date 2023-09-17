@@ -27,9 +27,6 @@ spring:
           time_zone: UTC
           batch_size: 50
 
-
-
-
 #  main:
 #    allow-bean-definition-overriding: true
 

@@ -24,7 +24,7 @@ jobs:
       # PR title contains "[patch]" -> 5.0.1 -> 5.0.2
       # PR title contains "[minor]" -> 5.0.1 -> 5.1.0
       # PR title contains "[major]" -> 5.0.1 -> 6.0.0
-      - name: Increment version based on commit message
+      - name: Increment version based on commit message with commit hash
         id: increment_version
         run: |
           current_version=${LATEST_TAG#"v"}
@@ -35,6 +35,7 @@ jobs:
           patch=${version_parts[2]}
           
           pr_title=${{ github.event.pull_request.title }}
+          short_commit_hash=$(git rev-parse --short HEAD)
           
           if [[ $pr_title == *"[major]"* ]]; then
             major=$(( major + 1 ))
@@ -47,7 +48,7 @@ jobs:
             patch=$(( patch + 1 ))
           fi
           
-          new_version="$major.$minor.$patch"
+          new_version="$major.$minor.$patch-$short_commit_hash"
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
       - name: Create and push new tag to Github

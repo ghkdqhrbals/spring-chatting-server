@@ -67,8 +67,6 @@ jobs:
           EC2_URL: ${{ secrets.EC2_URL }}
           NEW_VERSION: ${{ env.NEW_VERSION }}
         run: |
-          scp -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") docker-compose.yml ${EC2_URL}:/path/on/ec2/
-          
           ssh -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") ${EC2_URL} << EOF
             cd /spring-chatting-server
             git pull origin main

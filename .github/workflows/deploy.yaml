@@ -95,6 +95,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Grant execute permission for push_to_ecr.sh
+        run: chmod +x ./push_to_ecr.sh
+
       - name: Tag Push images to ECR
         run: ./push_to_ecr.sh ${{ steps.login-ecr.outputs.registry }} ${{ env.NEW_VERSION }}
         env:

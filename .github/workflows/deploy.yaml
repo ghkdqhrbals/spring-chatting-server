@@ -61,15 +61,16 @@ jobs:
           git tag v${NEW_VERSION}
           git push origin v${NEW_VERSION}
 
-      - name: Access to EC2
+      - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          EC2_URL: ${{ secrets.EC2_URL }}
+          NEW_VERSION: ${{ env.NEW_VERSION }}
         run: |
-          scp -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") docker-compose.yml ec2-user@your-ec2-ip-address:/path/on/ec2/
+          scp -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") docker-compose.yml ${EC2_URL}:/path/on/ec2/
           
-          ssh -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") ec2-user@your-ec2-ip-address << EOF
+          ssh -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") ${EC2_URL} << EOF
             cd /spring-chatting-server
             git pull origin main
-            ./gradlew build --daemon --build-cache --parallel -Pversion=0.0.1
-            sh run.sh
+            sh run.sh ${NEW_VERSION}
           EOF

@@ -1,4 +1,4 @@
-package com.example.shopuserservice.web.dto;
+package com.example.shopuserservice.domain.user.dto;
 
 import com.example.shopuserservice.web.vo.ResponseOrder;
 import jakarta.persistence.Column;

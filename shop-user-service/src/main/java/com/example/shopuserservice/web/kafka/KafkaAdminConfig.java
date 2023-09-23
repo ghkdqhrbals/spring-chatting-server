@@ -13,10 +13,8 @@ import java.util.Map;
 @Configuration
 @ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 public class KafkaAdminConfig {
-
     @Value("${kafka.bootstrap}")
     private String bootstrapServer;
-
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();

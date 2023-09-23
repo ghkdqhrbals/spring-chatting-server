@@ -28,7 +28,6 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableAsync
 @SpringBootApplication(scanBasePackages = "com.example",exclude={DataSourceAutoConfiguration.class,WebMvcAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = {"com.example.shopuserservice.domain.user.repository"})
-@EnableRedisRepositories(basePackages = {"com.example.shopuserservice.domain.user.redisrepository"})
 @EnableDiscoveryClient
 @EnableFeignClients
 @Import(JpaConfig.class)

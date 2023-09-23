@@ -5,8 +5,16 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = project.rootProject.ext.projectVersion
 sourceCompatibility = '17'
+
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = false
+}
 
 configurations {
     compileOnly {
@@ -65,3 +73,48 @@ dependencyManagement {
 //tasks.named('test') {
 //    useJUnitPlatform()
 //}
+// find the latest jar file in the build/libs directory
+def findLatestJar() {
+    def jarDir = file("${project.buildDir}/libs")
+    def latestJar = null
+    if (jarDir.isDirectory()) {
+        jarDir.eachFile { file ->
+            if (file.name.endsWith('.jar') && !file.name.endsWith('-plain.jar')) { // plain JAR 파일 제외
+                if (latestJar == null || file.lastModified() > latestJar.lastModified()) {
+                    latestJar = file
+                }
+            }
+        }
+    }
+    return latestJar
+}
+
+// create Dockerfile
+task generateDockerfile {
+    doLast {
+        println "Generating Dockerfile from the latest JAR file..."
+        def latestJarFile = findLatestJar()
+        if (latestJarFile != null) {
+            println "Latest Path: \${projectPath}${latestJarFile.absolutePath.replace(project.projectDir.absolutePath, '')}"
+            def dockerfileContent =
+                    """
+FROM openjdk:17-alpine
+
+WORKDIR /${group}
+
+COPY ${latestJarFile.absolutePath.replace(project.projectDir.absolutePath, '')} /${group}/app.jar
+ENTRYPOINT java -jar app.jar
+
+LABEL version="${version}"
+"""
+
+            // 생성된 Dockerfile 내용을 저장
+            file("${project.projectDir}/Dockerfile").text = dockerfileContent
+        } else {
+            throw new GradleException("No JAR files found in ${project.buildDir}/libs")
+        }
+    }
+}
+
+// build Dockerfile using the latest jar file after the jar file is created
+build.finalizedBy generateDockerfile

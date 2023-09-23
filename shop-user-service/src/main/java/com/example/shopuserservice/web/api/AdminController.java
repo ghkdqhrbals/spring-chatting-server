@@ -1,7 +1,7 @@
-package com.example.shopuserservice.web.controller;
+package com.example.shopuserservice.web.api;
 
-import com.example.shopuserservice.domain.data.User;
-import com.example.shopuserservice.domain.data.UserTransactions;
+import com.example.shopuserservice.domain.user.data.User;
+import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import lombok.RequiredArgsConstructor;

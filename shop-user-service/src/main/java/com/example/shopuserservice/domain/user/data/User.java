@@ -1,4 +1,4 @@
-package com.example.shopuserservice.domain.data;
+package com.example.shopuserservice.domain.user.data;
 
 
 import com.example.commondto.format.DateFormat;
@@ -14,7 +14,6 @@ import java.util.Objects;
 @Table(name = "USER_TABLE")
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 @RequiredArgsConstructor
 public class User extends BaseTime {
@@ -50,5 +49,22 @@ public class User extends BaseTime {
 
     @Column(name="ROLE")
     private String role;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(getUserId(), user.getUserId()) && Objects.equals(getUserPw(), user.getUserPw()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getUserName(), user.getUserName()) && Objects.equals(getLoginDate(), user.getLoginDate()) && Objects.equals(getLogoutDate(), user.getLogoutDate()) && Objects.equals(getRole(), user.getRole());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getUserId(), getUserPw(), getEmail(), getUserName(), getLoginDate(), getLogoutDate(), getRole());
+    }
+
+    public void updateLoginDate(){
+        this.loginDate = DateFormat.getCurrentTime();
+    }
 
 }

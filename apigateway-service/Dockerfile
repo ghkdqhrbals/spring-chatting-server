@@ -1,9 +1,9 @@
+
 FROM openjdk:17-alpine
 
+WORKDIR /null
 
-ENV APP_HOME=/gateway
-
-WORKDIR $APP_HOME
-
-COPY /build/libs/apigateway-service-0.0.1-SNAPSHOT.jar $APP_HOME/app.jar
+COPY /build/libs/apigateway-service-1.0.2.jar /null/app.jar
 ENTRYPOINT java -jar app.jar
+
+LABEL version="1.0.2"

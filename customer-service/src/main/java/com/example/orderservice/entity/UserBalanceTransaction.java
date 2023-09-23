@@ -1,5 +1,6 @@
 package com.example.orderservice.entity;
 
+import com.example.commondto.events.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,10 +21,10 @@ public class UserBalanceTransaction {
     @Column(name = "EVENT_ID", unique = true)
     private UUID eventId;
     private String userId;
-    private String customerStatus;
+    private UserStatus customerStatus;
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public UserBalanceTransaction(UUID eventId, String userId, String customerStatus) {
+    public UserBalanceTransaction(UUID eventId, String userId, UserStatus customerStatus) {
         this.eventId = eventId;
         this.userId = userId;
         this.customerStatus = customerStatus;

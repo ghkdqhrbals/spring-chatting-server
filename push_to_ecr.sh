@@ -3,13 +3,13 @@
 ECR_URL="$1"
 NEW_VERSION="$2"
 
-# 현재 빌드된 Docker 이미지의 목록을 가져옵니다.
+# get list of images with spring-chatting-server prefix
 images=$(docker images --format "{{.Repository}}" | grep "^spring-chatting-server_" | grep -v "$ECR_URL")
 
-# 각 이미지를 ECR에 태깅 및 푸시합니다.
+# tagging and push to ECR
 for image in $images; do
-  ecr_image="$ECR_URL/chat:$NEW_VERSION"
-
+  IMAGE_NAME=$(echo "$image" | cut -d'_' -f2)_
+  ecr_image="$ECR_URL/chat:$IMAGE_NAME$NEW_VERSION"
   docker tag "$image" "$ecr_image"
   docker push "$ecr_image"
 done

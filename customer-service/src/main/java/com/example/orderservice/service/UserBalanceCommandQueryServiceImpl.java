@@ -1,6 +1,5 @@
 package com.example.orderservice.service;
 
-import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import com.example.orderservice.entity.UserBalance;
 import com.example.orderservice.entity.UserBalanceTransaction;
@@ -36,18 +35,18 @@ public CompletableFuture<UserBalance> saveUserBalance(String userId, UUID eventI
         userBalanceTransactionRepository.save(new UserBalanceTransaction(
                 eventId,
                 userId,
-                UserResponseStatus.USER_APPEND.name()
+                UserStatus.USER_INSERT_APPEND
         ));
     }catch (Exception e){
-        return CompletableFuture.failedFuture(new RuntimeException("이벤트 ID unique-violation"));
+        return CompletableFuture.failedFuture(new RuntimeException("event Id unique-violation"));
     }
 
     Optional<UserBalance> findUserBalance = userBalanceRepository.findById(userId);
     UserBalance savedUserBalance = null;
     if (findUserBalance.isPresent()){
-        return CompletableFuture.failedFuture(new RuntimeException("사용자 Balance가 이미 존재합니다"));
+        return CompletableFuture.failedFuture(new RuntimeException("Already exist user balance"));
     }else{
-        log.info("저장!");
+        log.info("saved user balance");
         savedUserBalance = userBalanceRepository.save(new UserBalance(userId, 0L));
     }
     return CompletableFuture.completedFuture(savedUserBalance);

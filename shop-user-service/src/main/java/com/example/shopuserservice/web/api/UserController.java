@@ -1,12 +1,13 @@
-package com.example.shopuserservice.web.controller;
+package com.example.shopuserservice.web.api;
 
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
-import com.example.shopuserservice.domain.data.UserTransactions;
+import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorCode;
+import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.security.LoginRequestDto;
 import com.example.shopuserservice.web.security.LoginResponseDto;
 import com.example.shopuserservice.web.security.LoginService;
@@ -49,12 +50,8 @@ public class UserController {
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Environment env;
 
-    private ResponseEntity defaultErrorResponse(){
-        return ResponseEntity.badRequest().body("default Error");
-    }
-
     @GetMapping("/")
-    public CompletableFuture welcome(ServletRequest request){
+    public CompletableFuture<String> welcome(ServletRequest request){
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
 
@@ -104,7 +101,7 @@ public class UserController {
                 throw e2;
             }
 
-            return defaultErrorResponse();
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         });
     }
 
@@ -130,13 +127,11 @@ public class UserController {
 
         // add sink for sse
         Reactor.addSink(req.getUserId());
-
         UserEvent userEvent = new UserEvent(
                 eventId,
-                UserStatus.USER_INSERT,
+                UserStatus.USER_INSERT_APPEND,
                 req.getUserId()
         );
-
 
         // event publishing to kafka and event handling
         userCommandQueryService
@@ -149,7 +144,7 @@ public class UserController {
                     }
                     return null;
                 });
-        return Reactor.getSink(req.getUserId());
+        return Reactor.getSink(req.getUserId()).log();
     }
 
     /**
@@ -230,13 +225,4 @@ public class UserController {
             return res;
         });
     }
-
-    /**
-     * -------------- Utils --------------
-     */
-
-    private CompletableFuture<?> sendToKafkaWithKey(String topic,Object req, String key) {
-        return kafkaProducerTemplate.send(topic,key, req);
-    }
-
 }

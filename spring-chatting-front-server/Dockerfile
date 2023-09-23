@@ -3,7 +3,7 @@ FROM openjdk:17-alpine
 
 WORKDIR /null
 
-COPY /build/libs/spring-chatting-front-server-1.0.1.jar /null/app.jar
+COPY /build/libs/spring-chatting-front-server-1.0.2.jar /null/app.jar
 ENTRYPOINT java -jar app.jar
 
-LABEL version="1.0.1"
+LABEL version="1.0.2"

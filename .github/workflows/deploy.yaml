@@ -113,6 +113,9 @@ jobs:
           echo "$PRIVATE_KEY" > temp_key.pem
           chmod 600 temp_key.pem
           ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
+            if [ ! -d "spring-chatting-server" ]; then
+              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
+            fi
             cd spring-chatting-server
             git pull origin main
             sh run.sh ${{ steps.login-ecr.outputs.registry }} ${NEW_VERSION}

@@ -1,0 +1,75 @@
+name: Deploy to EC2 with Docker Compose
+
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows: ["Build & Test"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # get all history so we can checkout any branch
+      - name: Get latest tag
+        id: latesttag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV 
+
+      # Increment version number(ex) 5.0.1 -> 5.0.2)
+      # PR title contains "[patch]" -> 5.0.1 -> 5.0.2
+      # PR title contains "[minor]" -> 5.0.1 -> 5.1.0
+      # PR title contains "[major]" -> 5.0.1 -> 6.0.0
+      - name: Increment version based on commit message
+        id: increment_version
+        run: |
+          current_version=${LATEST_TAG#"v"}
+          IFS='.' read -ra version_parts <<< "$current_version"
+          
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+          
+          pr_title=${{ github.event.pull_request.title }}
+          
+          if [[ $pr_title == *"[major]"* ]]; then
+            major=$(( major + 1 ))
+            minor=0
+            patch=0
+          elif [[ $pr_title == *"[minor]"* ]]; then
+            minor=$(( minor + 1 ))
+            patch=0
+          else
+            patch=$(( patch + 1 ))
+          fi
+          
+          new_version="$major.$minor.$patch"
+          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+
+      - name: Create and push new tag
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git tag v${NEW_VERSION}
+          git push origin v${NEW_VERSION}
+
+      - name: Access to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        run: |
+          scp -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") docker-compose.yml ec2-user@your-ec2-ip-address:/path/on/ec2/
+          
+          ssh -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") ec2-user@your-ec2-ip-address << EOF
+            cd /spring-chatting-server
+            git pull origin main
+            ./gradlew build --daemon --build-cache --parallel -Pversion=0.0.1
+            sh run.sh
+          EOF

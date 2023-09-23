@@ -61,7 +61,7 @@ jobs:
           git tag v${NEW_VERSION}
           git push origin v${NEW_VERSION}
 
-      - name: Access to EC2
+      - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           EC2_URL: ${{ secrets.EC2_URL }}
@@ -72,6 +72,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") ${EC2_URL} << EOF
             cd /spring-chatting-server
             git pull origin main
-            ./gradlew build --daemon --build-cache --parallel -Pversion=${NEW_VERSION}
-            sh run.sh
+            sh run.sh ${NEW_VERSION}
           EOF

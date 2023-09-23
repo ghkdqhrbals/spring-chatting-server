@@ -8,7 +8,7 @@ images=$(docker images --format "{{.Repository}}" | grep "^spring-chatting-serve
 
 # 각 이미지를 ECR에 태깅 및 푸시합니다.
 for image in $images; do
-  ecr_image="$ECR_URL/$image:$NEW_VERSION"
+  ecr_image="$ECR_URL/chat:$NEW_VERSION"
 
   docker tag "$image" "$ecr_image"
   docker push "$ecr_image"

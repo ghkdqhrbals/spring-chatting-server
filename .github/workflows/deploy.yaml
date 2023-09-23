@@ -111,11 +111,6 @@ jobs:
           echo "$PRIVATE_KEY" > temp_key.pem
           chmod 600 temp_key.pem
           ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
-            $(aws ecr get-login --no-include-email --region ap-northeast-2)
-            images_to_pull=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?ends_with(imageTag, '=${NEW_VERSION}')].imageTag" --output text)
-            for image in $images_to_pull; do
-              docker pull $ECR_URL/chat:$image
-            done
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi

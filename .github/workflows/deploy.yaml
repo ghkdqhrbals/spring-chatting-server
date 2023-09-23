@@ -70,7 +70,7 @@ jobs:
           echo "$PRIVATE_KEY" > temp_key.pem
           chmod 600 temp_key.pem
           ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
-            cd /spring-chatting-server
+            cd spring-chatting-server
             git pull origin main
             sh run.sh ${NEW_VERSION}
           EOF

@@ -10,13 +10,13 @@ if [ -z "$inputValue" ]; then
     inputValue="$defaultValue"
 fi
 
-echo "0. Remove old build files older than 30 days";
+echo "0. Remove old build files older than 30 days"
 # find every build directories which are older than 30 days and remove them
 find . -type d -name build -exec find {} -type f -mtime +30 -exec rm -f {} \; \;
 # remove empty build directories
 find . -type d -name build -exec find {} -type d -empty -delete \;
 
-echo "1. Build";
+echo "1. Build project with version ${inputValue}";
 
 ./gradlew build --build-cache --parallel -Pversion=${inputValue} || { echo "Gradle build failed"; exit 1; }
 

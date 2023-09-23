@@ -1,7 +1,7 @@
 package com.example.commondto.events.user;
 
-import com.example.commondto.dto.ResponseUserChangeDto;
 import com.example.commondto.events.Event;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,17 +14,19 @@ public class UserResponseEvent implements Event {
     private UUID eventId;
     private Date date = new Date();
     private String userId;
-    private String userResponseStatus;
+    private String userStatus;
     private String serviceName;
+    private String message;
 
 
     public UserResponseEvent() {
     }
 
-    public UserResponseEvent(UUID eventId, String userId, String userResponseStatus, String serviceName) {
+    @Builder
+    public UserResponseEvent(UUID eventId, String userId, String userStatus, String serviceName, String message) {
         this.eventId = eventId;
         this.userId = userId;
-        this.userResponseStatus = userResponseStatus;
+        this.userStatus = userStatus;
         this.serviceName = serviceName;
     }
     @Override

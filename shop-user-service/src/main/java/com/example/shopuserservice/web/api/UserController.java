@@ -1,8 +1,8 @@
-package com.example.shopuserservice.web.controller;
+package com.example.shopuserservice.web.api;
 
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
-import com.example.shopuserservice.domain.data.UserTransactions;
+import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.web.error.CustomException;
@@ -130,13 +130,11 @@ public class UserController {
 
         // add sink for sse
         Reactor.addSink(req.getUserId());
-
         UserEvent userEvent = new UserEvent(
                 eventId,
-                UserStatus.USER_INSERT,
+                UserStatus.USER_INSERT_APPEND,
                 req.getUserId()
         );
-
 
         // event publishing to kafka and event handling
         userCommandQueryService
@@ -149,7 +147,7 @@ public class UserController {
                     }
                     return null;
                 });
-        return Reactor.getSink(req.getUserId());
+        return Reactor.getSink(req.getUserId()).log();
     }
 
     /**
@@ -230,13 +228,4 @@ public class UserController {
             return res;
         });
     }
-
-    /**
-     * -------------- Utils --------------
-     */
-
-    private CompletableFuture<?> sendToKafkaWithKey(String topic,Object req, String key) {
-        return kafkaProducerTemplate.send(topic,key, req);
-    }
-
 }

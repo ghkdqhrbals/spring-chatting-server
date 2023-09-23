@@ -1,11 +1,10 @@
 package com.example.shopuserservice.domain.user.service;
 
-import com.example.shopuserservice.domain.data.User;
-import com.example.shopuserservice.domain.data.UserTransactions;
+import com.example.shopuserservice.domain.user.data.User;
+import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

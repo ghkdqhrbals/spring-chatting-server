@@ -1,4 +1,4 @@
-package com.example.shopuserservice.web.util;
+package com.example.shopuserservice.web.util.log;
 
 public class LogTrace {
 

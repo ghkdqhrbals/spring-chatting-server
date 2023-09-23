@@ -1,21 +1,19 @@
 package com.example.shopuserservice.domain.user.service;
 
-import com.example.commondto.events.ServiceNames;
 import com.example.commondto.format.DateFormat;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
-import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.client.OrderServiceClient;
-import com.example.shopuserservice.config.AsyncConfig;
-import com.example.shopuserservice.domain.data.User;
-import com.example.shopuserservice.domain.data.UserTransactions;
+import com.example.shopuserservice.domain.user.data.User;
+import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
-import com.example.shopuserservice.web.dto.UserDto;
+import com.example.shopuserservice.domain.user.dto.UserDto;
+import com.example.shopuserservice.domain.user.service.modules.UserRedisManager;
+import com.example.shopuserservice.domain.user.service.reactor.UserStatusManager;
 import com.example.shopuserservice.web.error.CustomException;
-import com.example.shopuserservice.web.error.ErrorCode;
 import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.vo.RequestUser;
@@ -32,7 +30,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -85,46 +82,17 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     @Override
     public CompletableFuture<UserTransactions> updateStatus(UserResponseEvent event) {
-        return CompletableFuture.supplyAsync(()->{
+        return CompletableFuture.supplyAsync(() -> {
             UserTransactions userTransactions = userTransactionRedisRepository
                     .findById(event.getEventId())
                     .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
 
-            userTransactions = changeUserRegisterStatusByKafkaEvent(event, userTransactions);   // redis status update
-            checkCurrentStatus(userTransactions,event.getUserId()); // 스레드 공통 전파
+            UserRedisManager.changeUserRegisterStatusByEventResponse(event, userTransactions);
+
+            UserStatusManager.sendUserStatusToClient(userTransactions, event.getUserId());
+
             return userTransactionRedisRepository.save(userTransactions);   // redis status save
         });
-    }
-
-    private UserTransactions changeUserRegisterStatusByKafkaEvent(UserResponseEvent event, UserTransactions userTransactions) {
-        switch (event.getServiceName()){
-            case ServiceNames.chat -> {
-                userTransactions.setChatStatus(event.getUserResponseStatus());
-                break;
-            }
-            case ServiceNames.customer -> {
-                userTransactions.setCustomerStatus(event.getUserResponseStatus());
-                break;
-            }
-        }
-        return userTransactions;
-    }
-
-    /**
-     * userTransaction 에 따라서
-     *
-     * @param userTransactions
-     * @param userId
-     */
-    private void checkCurrentStatus(UserTransactions userTransactions,String userId) {
-        if (!userTransactions.getChatStatus().equals(UserResponseStatus.USER_APPEND.name())
-                && !userTransactions.getCustomerStatus().equals(UserResponseStatus.USER_APPEND.name())
-                && !userTransactions.getUserStatus().equals(UserStatus.USER_INSERT.name())
-                && !userTransactions.getUserStatus().equals(UserStatus.USER_DELETE.name())){
-            Reactor.emitAndComplete(userId, userTransactions);
-        } else{
-            Reactor.emit(userId, userTransactions);
-        }
     }
 
     // 유저 저장
@@ -154,21 +122,21 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 log.trace("newUserEvent method is called");
 
                 UserTransactions userTransaction = createUserTransaction(req, eventId);
-                // userTransaction 1차 전송
+                // userTransaction event publish to client
                 Reactor.emit(req.getUserId(), userTransaction);
 
-                // 이벤트 Transaction 저장
-                LocalDateTime now1 = LocalDateTime.now();
+                // userTransaction save to redis
+                // && Lcoaldatetime for check redis saving time and kafka sending time
+                LocalDateTime beforeRedisSaved = LocalDateTime.now();
                 log.trace("UserTransaction save to redis");
                 UserTransactions ut = userTransactionRedisRepository.save(userTransaction);
                 log.trace("UserTransaction save to redis complete");
-
-                LocalDateTime now2 = LocalDateTime.now();
+                LocalDateTime afterRedisSaved = LocalDateTime.now();
 
                 Optional<User> findUser = userRepository.findById(ut.getUserId());
                 if (findUser.isEmpty()){
 
-                    // 유저 저장
+                    // create UserEntity
                     User user = User.builder()
                             .userName(ut.getUserName())
                             .email(ut.getEmail())
@@ -179,25 +147,31 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                             .logoutDate(DateFormat.getCurrentTime())
                             .build();
 
+                    LocalDateTime beforeRDBSaved = LocalDateTime.now();
                     log.trace("User save to postgres");
                     userRepository.save(user);
-                    ut.setUserStatus(UserStatus.USER_INSERT_COMPLETE.name());
+                    LocalDateTime afterRDBSaved = LocalDateTime.now();
+
+                    ut.setUserStatus(UserStatus.USER_INSERT_SUCCESS);
                     log.trace("User save to postgres complete");
                 } else {
                     log.trace("Already user exist in postgres");
-                    ut.setUserStatus(UserStatus.USER_DUPLICATION.name());
+                    ut.setUserStatus(UserStatus.USER_DUPLICATION);
                 }
 
                 userTransactionRedisRepository.save(ut);
 
                 log.trace("Now send event to other server");
                 sendToKafkaWithKey(
-                        KafkaTopic.userReq,
-                        userEvent,
-                        req.getUserId()
+                        KafkaTopic.userReq, // topic
+                        userEvent,  // event
+                        req.getUserId() // key
                 ).thenRun(()->{
-                    log.trace("Redis saving time : "+Duration.between(now1, now2).toMillis() +
-                            "ms, Kafka sending Time : "+Duration.between(now2, LocalDateTime.now()).toMillis()+"ms");
+                    log.trace("Redis saving time : " +
+                            Duration.between(beforeRedisSaved, afterRedisSaved).toMillis() +
+                            "ms, Kafka sending Time : " +
+                            Duration.between(afterRedisSaved, LocalDateTime.now()).toMillis()+
+                            "ms");
                 });
 
                 return ut;
@@ -207,17 +181,19 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     @NotNull
     private UserTransactions createUserTransaction(RequestUser req, UUID eventId) {
-        return new UserTransactions(
-                eventId,
-                UserStatus.USER_INSERT,
-                UserResponseStatus.USER_APPEND,
-                UserResponseStatus.USER_APPEND,
-                req.getUserId(),
-                DateFormat.getCurrentTime(),
-                req.getEmail(),
-                req.getUserName(),
-                pwe.encode(req.getUserPw()),
-                req.getRole());
+        LocalDateTime currentTime = DateFormat.getCurrentTime();
+        return UserTransactions.builder()
+                .eventId(eventId)
+                .createdAt(currentTime)
+                .userId(req.getUserId())
+                .email(req.getEmail())
+                .userName(req.getUserName())
+                .userPw(pwe.encode(req.getUserPw()))
+                .role(req.getRole())
+                .userStatus(UserStatus.USER_INSERT_APPEND)
+                .chatStatus(UserStatus.USER_INSERT_APPEND)
+                .customerStatus(UserStatus.USER_INSERT_APPEND)
+                .build();
     }
 
     private CompletableFuture<?> sendToKafkaWithKey(String topic,Object req, String key) {
@@ -227,14 +203,12 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     // 로그인
     @Override
     public DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr) {
-
         return dr;
     }
 
     // 로그인
     @Override
     public DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr) {
-
         return dr;
     }
 

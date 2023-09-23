@@ -18,21 +18,33 @@ public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;
 
-    // 계산 잘 해야한다. Partition 개수 >= Group내 Conusmer 개수
-    // 생성하고자 하는 Conumser=2 Partition은 2이기에, 각각 conusmer에게 leader-partition 매칭가능
-    private NewTopic generateTopic(String topicName,int partitionNum, int brokerNum) {
-        return TopicBuilder.name(topicName)
-                .partitions(partitionNum) // 할당하고자 하는 파티션 개수
-                .replicas(brokerNum) // replica sync를 위한 broker 개수
-                .build(); // 토픽은 총 2개의 leader-partition, 4개의 follow-partition 로 설정할 것임
-    }
-
+    /**
+     * Create topics with the number of partition and replica.
+     */
     @PostConstruct
     public void init() {
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userReq,Integer.parseInt(KafkaTopicPartition.userReq),3));
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userRes,Integer.parseInt(KafkaTopicPartition.userRes),3));
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userChatRollback,Integer.parseInt(KafkaTopicPartition.userChatRollback),3));
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userCustomerRollback,Integer.parseInt(KafkaTopicPartition.userCustomerRollback),3));
+    }
+
+    /**
+     * Create topic with the number of partition and replica.
+     * The number of partition should be greater than or equal to the number of consumer in a group.
+     * `sizeOf.Partition >= sizeOf.Consumer
+     * If the number of partition is 2, then 2 consumer can be matched with 2 leader-partition
+     *
+     * @param topicName
+     * @param partitionNum
+     * @param brokerNum
+     * @return NewTopic
+     */
+    private NewTopic generateTopic(String topicName,int partitionNum, int brokerNum) {
+        return TopicBuilder.name(topicName)
+                .partitions(partitionNum) // the number of partitions
+                .replicas(brokerNum) // the number of replica sync brokers
+                .build(); // topics will have 2 leader-partition, 4 follow-partition
     }
 
 }

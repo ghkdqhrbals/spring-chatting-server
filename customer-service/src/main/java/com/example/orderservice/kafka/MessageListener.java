@@ -26,38 +26,38 @@ public class MessageListener {
 
     @KafkaListener(topics = KafkaTopic.userReq, containerFactory = "userKafkaListenerContainerFactory", concurrency = KafkaTopicPartition.userReq)
     public void listenUser(UserEvent req) {
-        if (req.getUserStatus().equals(UserStatus.USER_INSERT.name())) {
+        if (req.getUserStatus().equals(UserStatus.USER_INSERT_APPEND.name())) {
             userService.saveUserBalance(req.getUserId(), req.getEventId())
                     .thenRun(()->{
                         sendToKafkaWithKey(KafkaTopic.userRes,
                                 new UserResponseEvent(req.getEventId(),
                                     req.getUserId(),
-                                    UserResponseStatus.USER_SUCCES.name(),
-                                    ServiceNames.customer), req.getEventId().toString());
+                                    UserStatus.USER_INSERT_SUCCESS.name(),
+                                    ServiceNames.customer,""), req.getEventId().toString());
             }).exceptionally(e->{
                 sendToKafkaWithKey(KafkaTopic.userRes,
                         new UserResponseEvent(req.getEventId(),
                                 req.getUserId(),
-                                UserResponseStatus.USER_FAIL.name(),
-                                ServiceNames.customer), req.getEventId().toString());
+                                UserStatus.USER_INSERT_FAIL.name(),
+                                ServiceNames.customer,e.getMessage()), req.getEventId().toString());
                 log.info("saveUser={}",e.getMessage());
                 return null;
             });
-        } else if (req.getUserStatus().equals(UserStatus.USER_DELETE.name())) {
+        } else if (req.getUserStatus().equals(UserStatus.USER_DELETE_APPEND.name())) {
             userService.removeUserBalance(req.getUserId())
                     .thenRun(()->{
                         sendToKafkaWithKey(KafkaTopic.userRes,
                                 new UserResponseEvent(req.getEventId(),
                                         req.getUserId(),
-                                        UserResponseStatus.USER_SUCCES.name(),
-                                        ServiceNames.customer),req.getEventId().toString());
+                                        UserStatus.USER_DELETE_SUCCESS.name(),
+                                        ServiceNames.customer,""),req.getEventId().toString());
                     })
                     .exceptionally(e->{
                         sendToKafkaWithKey(KafkaTopic.userRes,
                                 new UserResponseEvent(req.getEventId(),
                                         req.getUserId(),
-                                        UserResponseStatus.USER_FAIL.name(),
-                                        ServiceNames.customer),req.getEventId().toString());
+                                        UserStatus.USER_DELETE_FAIL.name(),
+                                        ServiceNames.customer,e.getMessage()),req.getEventId().toString());
                         return null;
                     });;
         }

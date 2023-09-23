@@ -2,9 +2,9 @@ package com.example.shopuserservice.domain.user.service;
 
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
-import com.example.shopuserservice.domain.data.User;
-import com.example.shopuserservice.domain.data.UserTransactions;
-import com.example.shopuserservice.web.dto.UserDto;
+import com.example.shopuserservice.domain.user.data.User;
+import com.example.shopuserservice.domain.user.data.UserTransactions;
+import com.example.shopuserservice.domain.user.dto.UserDto;
 import com.example.shopuserservice.web.vo.RequestUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;

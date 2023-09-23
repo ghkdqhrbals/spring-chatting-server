@@ -1,4 +1,4 @@
-package com.example.shopuserservice.domain.data;
+package com.example.shopuserservice.domain.user.data;
 
 
 import com.example.commondto.format.DateFormat;

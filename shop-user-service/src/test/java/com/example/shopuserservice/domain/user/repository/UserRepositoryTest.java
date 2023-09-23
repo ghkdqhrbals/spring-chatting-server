@@ -2,7 +2,7 @@ package com.example.shopuserservice.domain.user.repository;
 
 import com.example.commondto.format.DateFormat;
 import com.example.shopuserservice.UnitTest;
-import com.example.shopuserservice.domain.data.User;
+import com.example.shopuserservice.domain.user.data.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

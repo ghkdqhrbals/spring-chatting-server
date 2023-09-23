@@ -3,7 +3,6 @@ import com.example.commondto.events.ServiceNames;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
-import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import com.example.commondto.kafka.KafkaTopicPartition;
 import com.example.orderservice.service.UserBalanceCommandQueryService;

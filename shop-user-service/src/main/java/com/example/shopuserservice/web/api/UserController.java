@@ -7,6 +7,7 @@ import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorCode;
+import com.example.shopuserservice.web.error.ErrorResponse;
 import com.example.shopuserservice.web.security.LoginRequestDto;
 import com.example.shopuserservice.web.security.LoginResponseDto;
 import com.example.shopuserservice.web.security.LoginService;
@@ -49,12 +50,8 @@ public class UserController {
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Environment env;
 
-    private ResponseEntity defaultErrorResponse(){
-        return ResponseEntity.badRequest().body("default Error");
-    }
-
     @GetMapping("/")
-    public CompletableFuture welcome(ServletRequest request){
+    public CompletableFuture<String> welcome(ServletRequest request){
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
 
@@ -104,7 +101,7 @@ public class UserController {
                 throw e2;
             }
 
-            return defaultErrorResponse();
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         });
     }
 

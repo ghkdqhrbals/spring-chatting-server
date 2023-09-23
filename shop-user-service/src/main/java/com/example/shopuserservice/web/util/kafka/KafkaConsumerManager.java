@@ -19,17 +19,18 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
  * setDeserializer()
  */
 @Configuration
-public class ConsumerManager {
+public class KafkaConsumerManager {
 
     @Value("${kafka.bootstrap}")
     private String bootstrapServer;
 
     @Bean
-    public ConsumerManager consumerManager() {
+    public KafkaConsumerManager consumerManager() {
         return this;
     }
 
     public <T> ConcurrentKafkaListenerContainerFactory<String, T> getContainerFactory(String groupId, Class<T> classType) {
+
         ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(getKafkaConsumerFactory(groupId, classType));
         return factory;

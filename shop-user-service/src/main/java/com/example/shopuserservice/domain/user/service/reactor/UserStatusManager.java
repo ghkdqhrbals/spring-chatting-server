@@ -1,6 +1,5 @@
 package com.example.shopuserservice.domain.user.service.reactor;
 
-import com.example.commondto.events.user.UserResponseStatus;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.web.util.reactor.Reactor;

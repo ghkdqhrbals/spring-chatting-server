@@ -101,8 +101,6 @@ jobs:
 
       - name: Tag Push images to ECR
         run: ./push_to_ecr.sh ${{ steps.login-ecr.outputs.registry }} ${{ env.NEW_VERSION }}
-        env:
-          AWS_DEFAULT_REGION: your-region-here
 
       - name: Deploy to EC2
         env:

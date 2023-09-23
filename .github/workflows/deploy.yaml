@@ -67,8 +67,11 @@ jobs:
           EC2_URL: ${{ secrets.EC2_URL }}
           NEW_VERSION: ${{ env.NEW_VERSION }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i <(echo "$PRIVATE_KEY") ${EC2_URL} << EOF
+          echo "$PRIVATE_KEY" > temp_key.pem
+          chmod 600 temp_key.pem
+          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
             cd /spring-chatting-server
             git pull origin main
             sh run.sh ${NEW_VERSION}
           EOF
+          rm temp_key.pem

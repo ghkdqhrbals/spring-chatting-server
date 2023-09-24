@@ -83,7 +83,7 @@ jobs:
       - name: Build project and create Dockerfiles
         env:
           NEW_VERSION: ${{ env.NEW_VERSION }}
-        run: ./gradlew build --daemon --build-cache --parallel --info -Pversion=${NEW_VERSION}
+        run: ./gradlew build --daemon --parallel --info -Pversion=${NEW_VERSION}
 
       - name: Build docker images
         run: docker-compose -f docker-compose-prod.yaml build

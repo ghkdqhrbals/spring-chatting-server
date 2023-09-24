@@ -8,7 +8,7 @@ echo "1. ECR Login";
 $(aws ecr get-login --no-include-email --region ap-northeast-2)
 
 # $NEW_VERSION으로 끝나는 모든 이미지 태그를 ECR에서 가져옵니다.
-images_to_pull=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?ends_with(imageTag, '=${NEW_VERSION}')].imageTag" --output text)
+images_to_pull=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?ends_with(imageTag, '=${TAG}')].imageTag" --output text)
 
 echo "1. ECR image pull and re-tag, re-name";
 # 이미지 목록을 반복하며 각 이미지를 가져온 다음 새로운 태그를 설정합니다.

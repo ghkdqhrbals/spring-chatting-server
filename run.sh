@@ -10,7 +10,7 @@ aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS
 echo "1. Pull and re-tag, re-name with $TAG";
 # $NEW_VERSION으로 끝나는 모든 이미지 태그를 ECR에서 가져옵니다.
 images_to_pull=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?contains(imageTag, '${TAG}')].imageTag" --output text)
-echo "images_to_pull: $images_to_pull"
+echo "images_to_pull list: $images_to_pull"
 
 # 이미지 목록을 반복하며 각 이미지를 가져온 다음 새로운 태그를 설정합니다.
 for image in $images_to_pull; do

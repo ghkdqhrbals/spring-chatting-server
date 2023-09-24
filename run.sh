@@ -20,8 +20,14 @@ for image in $images_to_pull; do
   image_name=$(echo $image | cut -d'_' -f1)
   new_tag=$(echo $image | cut -d'_' -f2)
 
+  # 존재하는 태그가 있는지 확인합니다.
+  if docker inspect $image_name:latest > /dev/null 2>&1; then
+    # 중복된 태그가 있으면 "old" 로 태그합니다. 여러 버전을 저장할 순 있지만, 용량문제로 현재는 최신버전과 그 이전버전만 저장합니다.
+    docker tag $image_name:latest $image_name:old
+  fi
+
   # 새로운 이미지 이름과 태그로 이미지를 다시 태그합니다.
-  docker tag $REPOSITORY_URL:$image $image_name:$new_tag
+  docker tag $REPOSITORY_URL:$image $image_name:latest
 
   # 원본 태그의 이미지를 삭제합니다.
   docker rmi $REPOSITORY_URL:$image

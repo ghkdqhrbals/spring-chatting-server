@@ -28,11 +28,14 @@ jobs:
         id: increment_version
         run: |
           current_version=${LATEST_TAG#"v"}
+          echo "CURRENT_VERSION=$current_version" >> $GITHUB_ENV
+          
           IFS='.' read -ra version_parts <<< "$current_version"
           
           major=${version_parts[0]}
           minor=${version_parts[1]}
           patch=${version_parts[2]}
+          patch=$(echo $patch | cut -d'-' -f1)
           
           pr_title=${{ github.event.pull_request.title }}
           short_commit_hash=$(git rev-parse --short HEAD)

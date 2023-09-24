@@ -48,7 +48,7 @@ services:
   # -------- Config Service --------
   configuration-server:
     container_name: configuration-server
-    build: ./config-service
+    image: configuration-server:latest
     expose:
       - 8888
     ports:
@@ -63,7 +63,7 @@ services:
   # -------- Discovery Service --------
   discovery-server:
     container_name: discovery-server
-    build: ./discovery
+    image: discovery-server:latest
     ports:
       - "8761:8761"
     environment:
@@ -75,7 +75,7 @@ services:
   # Service
   user-server:
     container_name: user-server
-    build: ./shop-user-service
+    image: user-server:latest
     ports:
       - "8010:8010"
     links:
@@ -134,7 +134,7 @@ services:
 
   chatting-server:
     container_name: chatting-server
-    build: ./spring-chatting-backend-server
+    image: chatting-server:latest
     ports:
       - "8030:8030"
     environment:
@@ -171,7 +171,7 @@ services:
 
   customer-server:
     container_name: customer-server
-    build: ./customer-service
+    image: customer-server:latest
     ports:
       - "8020:8020"
     environment:
@@ -208,7 +208,7 @@ services:
 
   api-server:
     container_name: api-server
-    build: ./apigateway-service
+    image: api-server:latest
     ports:
       - "8000:8000"
     environment:

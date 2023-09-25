@@ -1,6 +1,8 @@
 # Chat & Order Service with Spring-Java
 ## Purpose of our project
 
+**To see the tasks of our projects, join [https://github.com/users/ghkdqhrbals/projects/3](https://github.com/users/ghkdqhrbals/projects/3)**
+
 본 프로젝트의 목적은 다양한 기술을 실험적으로 적용하는 것입니다.
 
 The goal of our project is to **apply various techniques** experimentally.

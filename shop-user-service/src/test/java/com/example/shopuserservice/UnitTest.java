@@ -1,6 +1,7 @@
 package com.example.shopuserservice;
 
 import com.example.shopuserservice.config.HikariConfig;
+import com.example.shopuserservice.domain.user.redisrepository.Initializer;
 import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.service.UserReadService;
@@ -23,7 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UnitTest {
+public class UnitTest extends Initializer {
     @Autowired
     protected UserRepository userRepository;
     @Autowired

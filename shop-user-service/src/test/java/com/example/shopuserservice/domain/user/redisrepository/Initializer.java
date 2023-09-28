@@ -20,6 +20,7 @@ public class Initializer {
             System.out.println("Local Redis Server Already Running");
         }
     }
+
     @AfterAll
     public static void stopRedis() {
         if (redisServer != null && redisServer.isActive()) {

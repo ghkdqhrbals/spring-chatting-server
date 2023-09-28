@@ -3,6 +3,7 @@ package com.example.shopuserservice.domain.user.redisrepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.boot.test.context.SpringBootTest;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import static com.example.shopuserservice.web.util.server.PortChecker.isPortAvailable;
 
 @Slf4j
+@SpringBootTest
 public class Initializer {
     private static RedisServer redisServer;
     public static int redisPort;

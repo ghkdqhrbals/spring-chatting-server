@@ -51,7 +51,7 @@ services:
     build:
       context: ./config-service
       dockerfile: Dockerfile
-    image: configuration-server:latest
+    image: main-service_configuration-server:latest
     expose:
       - 8888
     ports:
@@ -69,7 +69,7 @@ services:
     build:
       context: ./discovery
       dockerfile: Dockerfile
-    image: discovery-server:latest
+    image: main-service_discovery-server:latest
     ports:
       - "8761:8761"
     environment:
@@ -84,7 +84,7 @@ services:
     build:
       context: ./shop-user-service
       dockerfile: Dockerfile
-    image: user-server:latest
+    image: main-service_user-server:latest
     ports:
       - "8010:8010"
     links:
@@ -143,7 +143,7 @@ services:
 
   chatting-server:
     container_name: chatting-server
-    image: chatting-server:latest
+    image: main-service_chatting-server:latest
     build:
       context: ./spring-chatting-backend-server
       dockerfile: Dockerfile
@@ -186,7 +186,7 @@ services:
     build:
       context: ./customer-service
       dockerfile: Dockerfile
-    image: customer-server:latest
+    image: main-service_customer-server:latest
     ports:
       - "8020:8020"
     environment:
@@ -226,7 +226,7 @@ services:
     build:
       context: ./apigateway-service
       dockerfile: Dockerfile
-    image: api-server:latest
+    image: main-service_api-server:latest
     ports:
       - "8000:8000"
     environment:

@@ -2,7 +2,7 @@
 
 ECR_URL="$1"
 NEW_VERSION="$2"
-PREFIX="spring-chatting-server_"
+PREFIX="main-service_"
 
 
 echo "ECR_URL: $ECR_URL"

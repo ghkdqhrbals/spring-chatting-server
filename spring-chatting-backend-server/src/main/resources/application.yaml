@@ -1,4 +1,6 @@
 spring:
+  profiles:
+      active: prod
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -29,7 +31,9 @@ spring:
 
 #  main:
 #    allow-bean-definition-overriding: true
-
+kafka:
+  broker:
+      number: 1
 
 server:
   error:

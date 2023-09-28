@@ -11,9 +11,11 @@ echo "Push to AWS-ECR start"
 echo "Get docker images with spring-chatting-server prefix"
 
 # get list of images with spring-chatting-server prefix
+echo "Get all docker images --format "{{.Repository}}""
+
 images=$(docker images --format "{{.Repository}}" | grep "^${PREFIX}")
 
-echo "${images}"
+echo "Filtered ${images}"
 
 # tagging and push to ECR
 for image in $images; do

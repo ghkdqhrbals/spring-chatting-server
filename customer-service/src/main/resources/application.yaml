@@ -30,7 +30,9 @@ spring:
           time_zone: UTC
           batch_size: 50
 
-
+kafka:
+  broker:
+    number: 1
 
 
 #  main:

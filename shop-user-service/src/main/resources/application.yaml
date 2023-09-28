@@ -47,6 +47,8 @@ spring:
 
 kafka:
   enabled: true
+  broker:
+    number: 1
 
 server:
   error:

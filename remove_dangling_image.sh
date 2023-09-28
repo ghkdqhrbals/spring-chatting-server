@@ -7,7 +7,7 @@ dockerDanglingArray=$(docker image list --filter "dangling=true" -q)
 
 echo "${dockerDanglingArray}"
 
-echo "2. Remove empty image string";
+echo "2. Remove empty image string"
 
 # Temporary Image List
 NEW=()

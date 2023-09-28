@@ -5,6 +5,7 @@ import com.example.commondto.kafka.KafkaTopicPartition;
 import jakarta.annotation.PostConstruct;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
@@ -14,6 +15,9 @@ import org.springframework.kafka.core.KafkaAdmin;
 public class KafkaTopicConfig {
     @Autowired
     private KafkaAdmin kafkaAdmin;
+
+    @Value("${kafka.broker.number}")
+    private int brokerNum;
 
     // 계산 잘 해야한다. Partition 개수 >= Group내 Conusmer 개수
     // 생성하고자 하는 Conumser=2 Partition은 2이기에, 각각 conusmer에게 leader-partition 매칭가능
@@ -26,7 +30,7 @@ public class KafkaTopicConfig {
 
     @PostConstruct
     public void init() {
-        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userReq,Integer.parseInt(KafkaTopicPartition.userReq),3));
-        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userRes,Integer.parseInt(KafkaTopicPartition.userRes),3));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userReq,Integer.parseInt(KafkaTopicPartition.userReq),brokerNum));
+        kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userRes,Integer.parseInt(KafkaTopicPartition.userRes),brokerNum));
     }
 }

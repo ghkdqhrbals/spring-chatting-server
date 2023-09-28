@@ -22,47 +22,17 @@ services:
       KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8097,INTERNAL://kafka1:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
     restart: always
-  kafka2:
-    image: confluentinc/cp-kafka:7.2.1
-    container_name: kafka2
-    ports:
-      - "8098:8098"
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8098,INTERNAL://kafka2:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-    restart: always
-  kafka3:
-    image: confluentinc/cp-kafka:7.2.1
-    container_name: kafka3
-    ports:
-      - "8099:8099"
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8099,INTERNAL://kafka3:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-    restart: always
   # -------- kafdrop for visualization --------
   kafdrop:
     image: obsidiandynamics/kafdrop
     restart: "no"
     environment:
-      KAFKA_BROKERCONNECT: "kafka1:9092,kafka2:9092,kafka3:9092"
+      KAFKA_BROKERCONNECT: "kafka1:9092"
       JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     ports:
       - 9010:9000
     depends_on:
       - kafka1
-      - kafka2
-      - kafka3
   # -------- Rabbit MQ for configuration --------
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -78,7 +48,7 @@ services:
   # -------- Config Service --------
   configuration-server:
     container_name: configuration-server
-    build: ./config-service
+    image: configuration-server:latest
     expose:
       - 8888
     ports:
@@ -93,7 +63,7 @@ services:
   # -------- Discovery Service --------
   discovery-server:
     container_name: discovery-server
-    build: ./discovery
+    image: discovery-server:latest
     ports:
       - "8761:8761"
     environment:
@@ -105,7 +75,7 @@ services:
   # Service
   user-server:
     container_name: user-server
-    build: ./shop-user-service
+    image: user-server:latest
     ports:
       - "8010:8010"
     links:
@@ -125,8 +95,6 @@ services:
       server_undertow_no-request-timeout: 100
     depends_on:
       - kafka1
-      - kafka2
-      - kafka3
       - user-db
       - discovery-server
       - configuration-server
@@ -166,7 +134,7 @@ services:
 
   chatting-server:
     container_name: chatting-server
-    build: ./spring-chatting-backend-server
+    image: chatting-server:latest
     ports:
       - "8030:8030"
     environment:
@@ -180,8 +148,6 @@ services:
       SERVER_PORT: 8030
     depends_on:
       - kafka1
-      - kafka2
-      - kafka3
       - user-server
       - discovery-server
       - configuration-server
@@ -205,7 +171,7 @@ services:
 
   customer-server:
     container_name: customer-server
-    build: ./customer-service
+    image: customer-server:latest
     ports:
       - "8020:8020"
     environment:
@@ -219,8 +185,6 @@ services:
       SERVER_PORT: 8020
     depends_on:
       - kafka1
-      - kafka2
-      - kafka3
       - user-server
       - discovery-server
       - configuration-server
@@ -244,7 +208,7 @@ services:
 
   api-server:
     container_name: api-server
-    build: ./apigateway-service
+    image: api-server:latest
     ports:
       - "8000:8000"
     environment:

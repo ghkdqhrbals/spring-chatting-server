@@ -1,24 +1,40 @@
-#!bin/bash
+#!/bin/bash
 
-inputValue="$1"
+REPOSITORY_URL=${1}
+TAG=${2}
 
-# deafult value
-defaultValue="0.0.1"
+echo "0. ECR Login";
+# ECR Login
+aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${REPOSITORY_URL}
 
-# if inputValue is empty, set the default value
-if [ -z "$inputValue" ]; then
-    inputValue="$defaultValue"
-fi
+echo "1. Pull and re-tag, re-name with $TAG";
+# Get image lists that postfix with $NEW_VERSION from AWS-ECR
+images_to_pull=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?contains(imageTag, '${TAG}')].imageTag" --output text)
+echo "images_to_pull list: $images_to_pull"
 
-echo "0. Remove old build files older than 30 days";
-# find every build directories which are older than 30 days and remove them
-find . -type d -name build -exec find {} -type f -mtime +30 -exec rm -f {} \; \;
-# remove empty build directories
-find . -type d -name build -exec find {} -type d -empty -delete \;
+# Naming and Tagging process
+for image in $images_to_pull; do
+  docker pull $REPOSITORY_URL:$image
 
-echo "1. Build";
+  # Split tag with delimiter "_" and get image name and tag
+  image_name=$(echo $image | cut -d'_' -f1)
+  new_tag=$(echo $image | cut -d'_' -f2)
 
-./gradlew build --build-cache --parallel -Pversion=${inputValue} || { echo "Gradle build failed"; exit 1; }
+  # Check exist image with same name and tag
+  if docker inspect $image_name:latest > /dev/null 2>&1; then
+    # If duplicated name and tag exist, change tag to "old"
+    docker tag $image_name:latest $image_name:old
+  fi
+
+  # Change name and tag of newly pulled image to $image_name:latest
+  docker tag $REPOSITORY_URL:$image $image_name:latest
+
+  # Echo newly tagged image name and tag
+  echo "Newly tagged image: $image_name:latest"
+
+  # Removing outdated image
+  docker rmi $REPOSITORY_URL:$image
+done
 
 echo "2. Remove Dangling Docker Images";
 
@@ -26,4 +42,4 @@ sh remove_dangling_image.sh
 
 echo "3. Run Server and DB Container";
 
-docker compose -f docker-compose-prod.yaml up -d --build
+docker compose -f docker-compose-prod.yaml up -d

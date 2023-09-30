@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  ECR_URL: ${{ secrets.ECR_URL }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -104,7 +107,7 @@ jobs:
 
       - name: Tag Push images to ECR
         env:
-          ECR_URL: ${{ secrets.ECR_URL }}
+          ECR_URL: ${{ env.ECR_URL }}
         run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
 
       - name: Deploy to EC2
@@ -121,6 +124,6 @@ jobs:
             fi
             cd spring-chatting-server
             git pull origin main
-            sh run.sh ${{ steps.login-ecr.outputs.registry }} ${NEW_VERSION}
+            sh run.sh ${{ env.ECR_URL }} ${NEW_VERSION}
           EOF
           rm temp_key.pem

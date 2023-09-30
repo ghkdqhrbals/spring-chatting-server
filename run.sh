@@ -16,9 +16,8 @@ echo "images_to_pull list: $images_to_pull"
 for image in $images_to_pull; do
   docker pull $REPOSITORY_URL:$image
 
-  # Split tag with delimiter "_" and get image name and tag
-  image_name=$(echo $image | cut -d'_' -f1)
-  new_tag=$(echo $image | cut -d'_' -f2)
+  # Split tag with delimiter "_" and get image name and tag, and re-add "main-service_" prefix
+  image_name=main-service_$(echo $image | cut -d'_' -f1)
 
   # Check exist image with same name and tag
   if docker inspect $image_name:latest > /dev/null 2>&1; then

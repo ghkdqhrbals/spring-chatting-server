@@ -1,6 +1,4 @@
 spring:
-  profiles:
-      active: prod
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -32,8 +30,9 @@ spring:
 #  main:
 #    allow-bean-definition-overriding: true
 kafka:
+  enabled: true
   broker:
-      number: 1
+    number: 1
 
 server:
   error:
@@ -42,8 +41,8 @@ server:
     accept-count: 1000
     connection-timeout: 10s
     threads:
-      max: 1200
-    max-connections: 10000
+      max: 100
+    max-connections: 1000
     max-swallow-size: 2MB
   port: 0
 

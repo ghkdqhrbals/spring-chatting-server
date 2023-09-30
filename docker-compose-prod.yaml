@@ -12,11 +12,12 @@ services:
     image: confluentinc/cp-kafka:7.2.1
     container_name: kafka1
     ports:
-      - "8097:8097"
+      - "8097:9092"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8097,INTERNAL://kafka1:9092
@@ -90,6 +91,7 @@ services:
     links:
       - user-redis
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       SPRING_MAIN_web-application-type: reactive
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
@@ -150,6 +152,7 @@ services:
     ports:
       - "8030:8030"
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
@@ -190,6 +193,7 @@ services:
     ports:
       - "8020:8020"
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka

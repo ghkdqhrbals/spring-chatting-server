@@ -103,7 +103,9 @@ jobs:
         run: chmod +x ./push_to_ecr.sh
 
       - name: Tag Push images to ECR
-        run: ./push_to_ecr.sh ${{ steps.login-ecr.outputs.registry }} ${{ env.NEW_VERSION }}
+        env:
+          ECR_URL: ${{ secrets.ECR_URL }}
+        run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
 
       - name: Deploy to EC2
         env:

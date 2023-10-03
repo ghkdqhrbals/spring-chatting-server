@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: chat-db
+  name: chat-db-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chat-db
+    spec:
+      containers:
+        - args:
+            - -c
+            - wal_level=logical
+            - -p
+            - "5433"
+          env:
+            - name: POSTGRES_DB
+              value: chat
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_USER
+              value: postgres
+          image: postgres:12-alpine
+          name: chat-db
+          ports:
+            - containerPort: 5433
+              hostPort: 5433
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /home/backups
+              name: pgdata-chat
+      restartPolicy: Always
+      volumes:
+        - name: pgdata-chat
+          persistentVolumeClaim:
+            claimName: pgdata-chat

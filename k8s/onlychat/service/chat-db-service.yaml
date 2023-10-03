@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: chat-db
+  name: chat-db
+  namespace: only-chat-namespace
+spec:
+  ports:
+    - name: "5433"
+      port: 5433
+      targetPort: 5433
+    - name: 5433-tcp
+      port: 5433
+      targetPort: 5433
+  selector:
+    app: chat-db

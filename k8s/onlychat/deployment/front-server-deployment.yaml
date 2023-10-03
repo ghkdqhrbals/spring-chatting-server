@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: front-server
+  name: front-server
+  namespace: only-chat-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-server
+  template:
+    metadata:
+      labels:
+        io.kompose.network/spring-chatting-server-default: "true"
+        app: front-server
+    spec:
+      imagePullSecrets:
+        - name: ecr-cred
+      containers:
+        - env:
+            - name: SERVER_PORT
+              value: "8000"
+            - name: backend_api_gateway
+              value: http://chatting-server:8030
+            - name: spring_profiles_active
+              value: local
+          image: main-service_front-server:latest
+          name: front-server
+          ports:
+            - containerPort: 8000
+              hostPort: 80
+              protocol: TCP
+      restartPolicy: Always

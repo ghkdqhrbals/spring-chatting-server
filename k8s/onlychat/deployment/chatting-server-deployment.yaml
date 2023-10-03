@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: chatting-server
+  name: chatting-server
+  namespace: only-chat-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatting-server
+  template:
+    metadata:
+      labels:
+        io.kompose.network/spring-chatting-server-default: "true"
+        app: chatting-server
+    spec:
+      imagePullSecrets:
+        - name: ecr-cred
+      containers:
+        - env:
+            - name: SERVER_PORT
+              value: "8030"
+            - name: spring_autoconfigure_exclude
+              value: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+            - name: spring_cloud_discovery_enabled
+              value: "false"
+            - name: spring_config_activate_on-profile
+              value: prod
+            - name: spring_datasource_hikari_maximum-pool-size
+              value: "70"
+            - name: spring_datasource_hikari_password
+              value: password
+            - name: spring_datasource_hikari_username
+              value: postgres
+            - name: spring_datasource_url
+              value: jdbc:postgresql://chat-db:5433/chat
+            - name: spring_profiles_active
+              value: local
+            - name: spring_rabbitmq_listener_direct_auto-startup
+              value: "false"
+            - name: spring_rabbitmq_listener_simple_auto-startup
+              value: "false"
+            - name: spring_rabbitmq_listener_stream_auto-startup
+              value: "false"
+            - name: springdoc_version
+              value: v1
+          image: 305603388825.dkr.ecr.ap-northeast-2.amazonaws.com/chat:chatting-server_5.0.23-b0c7c52
+          name: chatting-server
+          ports:
+            - containerPort: 8030
+              hostPort: 8030
+              protocol: TCP
+      restartPolicy: Always

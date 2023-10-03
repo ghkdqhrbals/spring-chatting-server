@@ -15,7 +15,7 @@ services:
       springdoc_version: v1
       spring_config_activate_on-profile: prod
       spring_profiles_active: local
-      spring_cloud_discovery_enabled: false
+      spring_cloud_discovery_enabled: "false"
       spring_datasource_hikari_maximum-pool-size: 70
       spring_datasource_url: jdbc:postgresql://chat-db:5433/chat
       spring_datasource_hikari_username: postgres

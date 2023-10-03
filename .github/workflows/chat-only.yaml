@@ -1,7 +1,7 @@
 name: Deployment(Only Chat)
 
 on:
-  push:
+  pull_request:
     branches:
       - test/only-chat
 
@@ -40,7 +40,7 @@ jobs:
           patch=${version_parts[2]}
           patch=$(echo $patch | cut -d'-' -f1)
           
-          pr_title=${{ github.event.head_commit.message }}
+          pr_title=${{ github.event.pull_request.title }}
           echo "PR_TITLE=$pr_title"
           short_commit_hash=$(git rev-parse --short HEAD)
           
@@ -124,10 +124,10 @@ jobs:
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi
             cd spring-chatting-server
+            git reset --hard
             git pull origin main
             cd k8s/onlychat/deployment
             sudo -i
-            git reset --hard
             sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
             kubectl apply -f ./namespace/
             kubectl apply -f ./service/

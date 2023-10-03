@@ -40,8 +40,7 @@ jobs:
           patch=${version_parts[2]}
           patch=$(echo $patch | cut -d'-' -f1)
           
-          pr_title=${{ github.event.pull_request.title }}
-          echo "PR_TITLE=$pr_title"
+          pr_title="${{ github.event.pull_request.title }}"
           short_commit_hash=$(git rev-parse --short HEAD)
           
           if [[ $pr_title == *"[major]"* ]]; then

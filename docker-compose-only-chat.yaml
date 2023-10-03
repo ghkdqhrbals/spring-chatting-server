@@ -8,9 +8,9 @@ services:
     ports:
       - "8030:8030"
     environment:
-      spring_rabbitmq_listener_direct_auto-startup: false
-      spring_rabbitmq_listener_simple_auto-startup: false
-      spring_rabbitmq_listener_stream_auto-startup: false
+      spring_rabbitmq_listener_direct_auto-startup: "false"
+      spring_rabbitmq_listener_simple_auto-startup: "false"
+      spring_rabbitmq_listener_stream_auto-startup: "false"
       spring_autoconfigure_exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
       springdoc_version: v1
       spring_config_activate_on-profile: prod

@@ -34,6 +34,7 @@ services:
       - 9010:9000
     depends_on:
       - kafka1
+      - zookeeper
   # -------- Rabbit MQ for configuration --------
   rabbitmq:
     image: rabbitmq:3-management-alpine

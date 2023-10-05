@@ -35,6 +35,6 @@ for file in *-deployment.yaml; do
   echo "[DESIRED_TAG]: $DESIRED_TAG"
 
   # deploy.yaml 파일 내의 이미지 태그 업데이트
-  sed -i '' "s#image: main-service_$SERVICE_NAME.*#image: $REPOSITORY_NAME:$DESIRED_TAG#g" "$file"
+  sed -i "s#image: main-service_$SERVICE_NAME.*#image: $REPOSITORY_NAME:$DESIRED_TAG#g" "$file"
   echo "Updated $file"
 done

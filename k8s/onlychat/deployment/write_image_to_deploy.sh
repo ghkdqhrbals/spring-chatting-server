@@ -15,6 +15,7 @@ ALL_TAGS=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED
 echo "ALL_TAGS: $ALL_TAGS"
 for file in *-deployment.yaml; do
   # 현재 서비스 이름 추출
+  echo "Processing file: $file"
   SERVICE_NAME=$(grep "image: main-service_" "$file" | awk -F':' '{print $2}' | awk -F'_' '{print $2}' | awk '{print $1}')
 
   # SERVICE_NAME이 없다면 다음 파일로 넘어간다
@@ -26,12 +27,13 @@ for file in *-deployment.yaml; do
 
   # ALL_TAGS에서 해당 서비스 이름에 맞고, VERSION으로 끝나는 최신 이미지 태그 찾기
   DESIRED_TAG=$(echo "$ALL_TAGS" | tr '\t' '\n' | grep "${SERVICE_NAME}_${VERSION}")
-  echo "[DESIRED_TAG]: $DESIRED_TAG"
 
   # 만약 DESIRED_TAG가 비어있다면 (즉, 해당 버전의 태그를 찾지 못했다면) 다음 파일로 넘어간다
   if [ -z "$DESIRED_TAG" ]; then
     continue
   fi
+
+  echo "[DESIRED_TAG]: $DESIRED_TAG"
 
   # deploy.yaml 파일 내의 이미지 태그 업데이트
   sed -i '' "s#image: main-service_$SERVICE_NAME.*#image: $REPOSITORY_NAME:$DESIRED_TAG#g" "$file"

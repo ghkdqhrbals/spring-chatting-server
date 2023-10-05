@@ -126,9 +126,9 @@ jobs:
             cd spring-chatting-server
             git reset --hard
             git fetch origin
-            git checkout origin/test/only-chat
+            git switch origin/test/only-chat
             git pull origin test/only-chat
-            cd k8s/onlychat/deployment
+            cd k8s/onlychat/
             sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
             kubectl apply -f ./namespace/
             kubectl apply -f ./service/

@@ -22,6 +22,7 @@ jobs:
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV 
+          echo "LATEST_TAG=$LATEST_TAG"
 
       # Increment version number(ex) 5.0.1 -> 5.0.2)
       # PR title contains "[patch]" -> 5.0.1 -> 5.0.2

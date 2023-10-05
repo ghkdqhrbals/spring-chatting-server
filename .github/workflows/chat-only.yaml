@@ -39,6 +39,7 @@ jobs:
           minor=${version_parts[1]}
           patch=${version_parts[2]}
           patch=$(echo $patch | cut -d'-' -f1)
+          echo "Before: $major $minor $patch"
           
           pr_title="${{ github.event.pull_request.title }}"
           short_commit_hash=$(git rev-parse --short HEAD)
@@ -53,8 +54,10 @@ jobs:
           else
             patch=$(( patch + 1 ))
           fi
+          echo "After: $major $minor $patch"
           
           new_version="$major.$minor.$patch-$short_commit_hash"
+          echo "New Version: $new_version"
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
       - name: Create and push new tag to Github
@@ -128,8 +131,9 @@ jobs:
             git fetch origin
             git switch origin/test/only-chat
             git pull origin test/only-chat
-            cd k8s/onlychat/
+            cd k8s/onlychat/deployment
             sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            cd ..
             kubectl apply -f ./namespace/
             kubectl apply -f ./service/
             kubectl apply -f ./deployment/

@@ -21,7 +21,7 @@ jobs:
         id: latesttag
         run: |
           git fetch --tags
-          LATEST_TAG=$(git tag -l --sort=-creatordate | head -n 1)
+          LATEST_TAG=$(git fetch --tags && git tag -l --sort=-creatordate | head -n 1)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV 
           echo "LATEST_TAG=$LATEST_TAG"
 
@@ -137,6 +137,7 @@ jobs:
             sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
             cd ..
             kubectl apply -f ./namespace/
+            kubectl apply -f ./volume/
             kubectl apply -f ./service/
             kubectl apply -f ./deployment/
           EOF

@@ -20,11 +20,10 @@ for file in *-deployment.yaml; do
 
   # SERVICE_NAME이 없다면 다음 파일로 넘어간다
   # 있다면, SERVICE_NAME 이 "chatting-server" 로 됩니다
-  echo "[SERVICE_NAME]: $SERVICE_NAME"
-  if [ -z "$SERVICE_NAME" ]; then
+   if [ -z "$SERVICE_NAME" ]; then
     continue
   fi
-
+  echo "[SERVICE_NAME]: $SERVICE_NAME"
   # ALL_TAGS에서 해당 서비스 이름에 맞고, VERSION으로 끝나는 최신 이미지 태그 찾기
   DESIRED_TAG=$(echo "$ALL_TAGS" | tr '\t' '\n' | grep "${SERVICE_NAME}_${VERSION}")
 

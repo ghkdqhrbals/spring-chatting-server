@@ -11,7 +11,7 @@ REGION=$2
 VERSION=$3
 
 # ECR에서 모든 이미지 태그 가져오기
-ALL_TAGS=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?contains(imageTag, '${VERSION}')].imageTag" --output text)
+ALL_TAGS=$(aws ecr list-images --repository-name $REPOSITORY_NAME --filter "tagStatus=TAGGED" --query "imageIds[?contains(imageTag, '${VERSION}')].imageTag" --output text --region ap-northeast-2)
 echo "ALL_TAGS: $ALL_TAGS"
 for file in *-deployment.yaml; do
   # 현재 서비스 이름 추출

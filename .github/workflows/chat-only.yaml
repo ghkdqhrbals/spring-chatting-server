@@ -1,7 +1,7 @@
 name: Deployment(Only Chat)
 
 on:
-  pull_request:
+  push:
     branches:
       - test/only-chat
 
@@ -20,8 +20,10 @@ jobs:
       - name: Get latest tag
         id: latesttag
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0)
+          git fetch --tags
+          LATEST_TAG=$(git fetch --tags && git tag -l --sort=-creatordate | head -n 1)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV 
+          echo "LATEST_TAG=$LATEST_TAG"
 
       # Increment version number(ex) 5.0.1 -> 5.0.2)
       # PR title contains "[patch]" -> 5.0.1 -> 5.0.2
@@ -39,6 +41,7 @@ jobs:
           minor=${version_parts[1]}
           patch=${version_parts[2]}
           patch=$(echo $patch | cut -d'-' -f1)
+          echo "Before: $major $minor $patch"
           
           pr_title="${{ github.event.pull_request.title }}"
           short_commit_hash=$(git rev-parse --short HEAD)
@@ -53,8 +56,10 @@ jobs:
           else
             patch=$(( patch + 1 ))
           fi
+          echo "After: $major $minor $patch"
           
           new_version="$major.$minor.$patch-$short_commit_hash"
+          echo "New Version: $new_version"
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
       - name: Create and push new tag to Github
@@ -119,16 +124,20 @@ jobs:
           echo "$PRIVATE_KEY" > temp_key.pem
           chmod 600 temp_key.pem
           ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
+            sudo -i
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi
             cd spring-chatting-server
             git reset --hard
-            git pull origin main
+            git fetch origin
+            git switch origin/test/only-chat
+            git pull origin test/only-chat
             cd k8s/onlychat/deployment
-            sudo -i
             sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            cd ..
             kubectl apply -f ./namespace/
+            kubectl apply -f ./volume/
             kubectl apply -f ./service/
             kubectl apply -f ./deployment/
           EOF

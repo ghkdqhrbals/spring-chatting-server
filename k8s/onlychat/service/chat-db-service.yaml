@@ -7,9 +7,6 @@ metadata:
   namespace: only-chat-namespace
 spec:
   ports:
-    - name: "5433"
-      port: 5433
-      targetPort: 5433
     - name: 5433-tcp
       port: 5433
       targetPort: 5433

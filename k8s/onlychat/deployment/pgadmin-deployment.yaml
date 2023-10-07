@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4
+          ports:
+            - containerPort: 80
+          env:
+            - name: PGADMIN_CONFIG_PROXY_X_FOR_COUNT
+              value: "1"
+            - name: PGADMIN_CONFIG_PROXY_X_PROTO_COUNT
+              value: "1"
+            - name: PGADMIN_CONFIG_PROXY_X_HOST_COUNT
+              value: "1"
+            - name: PGADMIN_CONFIG_PROXY_X_PORT_COUNT
+              value: "1"
+            - name: PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT
+              value: "1"
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: pgadmin4@pgadmin.org
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: password

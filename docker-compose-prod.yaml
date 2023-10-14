@@ -213,6 +213,17 @@ services:
       - customer-server
       - discovery-server
     restart: always
+  front-server:
+    container_name: front-server
+    build: ./spring-chatting-front-server
+    image: main-service_front-server:latest
+    environment:
+      - spring_profiles_active=local
+      - SERVER_PORT=8000
+      - backend_api_gateway=http://chatting-server:8030
+    ports:
+      - "80:8000"
+    restart: always
 
 # Persistance DB Volume
 volumes:

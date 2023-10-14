@@ -1,6 +1,9 @@
 server:
   port: 8888
 
+encrypt:
+  key: abcd1234abcd16a1ab3yzpq74
+
 spring:
   rabbitmq:
     host: 127.0.0.1
@@ -13,7 +16,7 @@ spring:
     config:
       server:
         git:
-          default-label: main
-          uri: https://github.com/ghkdqhrbals/spring-chatting-server
+          label: main
+          uri: https://github.com/ghkdqhrbals/spring-chatting-server.git
           timeout: 180
 

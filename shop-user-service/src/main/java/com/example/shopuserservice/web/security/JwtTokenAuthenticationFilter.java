@@ -1,5 +1,7 @@
 package com.example.shopuserservice.web.security;
 
+import org.springframework.core.Ordered;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.web.server.*;
 
 import lombok.RequiredArgsConstructor;
@@ -20,30 +22,17 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenAuthenticationFilter implements WebFilter {
-    public static final String HEADER_PREFIX = "Bearer ";
-
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String token = resolveToken(exchange.getRequest());
+        String token = exchange.getRequest().getCookies().getFirst("refreshToken").getValue();
+//        String token = resolveToken(exchange.getRequest());
         if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token, exchange)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
-//            authentication.getAuthorities().forEach(a->{
-//                log.info("JWT 토큰으로 부터 얻는 Authorities={}",a.getAuthority());
-//            });
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }
         return chain.filter(exchange);
-    }
-
-    // Header에서 JWT 토큰을 Bear 프리픽스 떼서 가져옵니다
-    private String resolveToken(ServerHttpRequest request) {
-        String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 }

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-prod.yaml
+    kompose.version: 1.31.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chat-db
+  name: chat-db
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chat-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose-prod.yaml
+        kompose.version: 1.31.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/spring-chatting-server-default: "true"
+        io.kompose.service: chat-db
+    spec:
+      containers:
+        - args:
+            - -c
+            - wal_level=logical
+            - -p
+            - "5433"
+          env:
+            - name: POSTGRES_DB
+              value: chat
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_USER
+              value: postgres
+          image: postgres:12-alpine
+          name: chat-db
+          ports:
+            - containerPort: 5433
+              hostPort: 5433
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /home/backups
+              name: pgdata-chat
+      restartPolicy: Always
+      volumes:
+        - name: pgdata-chat
+          persistentVolumeClaim:
+            claimName: pgdata-chat
+status: {}

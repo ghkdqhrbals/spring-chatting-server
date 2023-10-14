@@ -69,7 +69,8 @@ kafka:
   bootstrap: http://localhost:8099,http://localhost:8098,http://localhost:8097
 
 token:
-  expiration_time: 86400000
+  expiration_time: 300000 # 30 seconds
+  refresh_expiration_time: 86400000 # 24 hours
   secret: '45939b87daf906ea6bfce17b4c1d9c0feb3910ca3306a09e8f8cd55b6b9e4d5390302e09b7d03ad6d9fe26e603f8d20e4fe8639c6d1f9644895d991c3e9fae9d'
 
 eureka:

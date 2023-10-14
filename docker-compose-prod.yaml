@@ -1,5 +1,5 @@
 version : '3.7'
-
+# Config-server : "43.202.52.177"
 services:
   # ********** Backbone **********
   # -------- KAFKA --------
@@ -12,11 +12,12 @@ services:
     image: confluentinc/cp-kafka:7.2.1
     container_name: kafka1
     ports:
-      - "8097:8097"
+      - "8097:9092"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8097,INTERNAL://kafka1:9092
@@ -33,35 +34,8 @@ services:
       - 9010:9000
     depends_on:
       - kafka1
-  # -------- Rabbit MQ for configuration --------
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
-    ports:
-      - 5672:5672
-      - 15672:15672
-    volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - zookeeper
 
-  # ********** SERVICES **********
-  # -------- Config Service --------
-  configuration-server:
-    container_name: configuration-server
-    build:
-      context: ./config-service
-      dockerfile: Dockerfile
-    image: main-service_configuration-server:latest
-    expose:
-      - 8888
-    ports:
-      - "8888:8888"
-    environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-      spring_cloud_config_server_git_uri: https://github.com/ghkdqhrbals/spring-chatting-server
-    depends_on:
-      - rabbitmq
-    restart: always
 
   # -------- Discovery Service --------
   discovery-server:
@@ -73,9 +47,7 @@ services:
     ports:
       - "8761:8761"
     environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-    depends_on:
-      - rabbitmq
+      SPRING_RABBITMQ_HOST: "43.202.52.177"
     restart: always
 
   # Service
@@ -90,9 +62,10 @@ services:
     links:
       - user-redis
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       SPRING_MAIN_web-application-type: reactive
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      SPRING_RABBITMQ_HOST: "43.202.52.177"
+      SPRING_CLOUD_CONFIG_URI: http://43.202.52.177:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
       spring_datasource_hikari_maximum-pool-size: 30
       spring_datasource_url: jdbc:postgresql://user-db:5435/user
@@ -106,7 +79,6 @@ services:
       - kafka1
       - user-db
       - discovery-server
-      - configuration-server
       - user-redis
     restart: always
   user-db:
@@ -150,8 +122,9 @@ services:
     ports:
       - "8030:8030"
     environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      SPRING_RABBITMQ_HOST: "43.202.52.177"
+      SPRING_CLOUD_CONFIG_URI: http://43.202.52.177:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
       spring_datasource_hikari_maximum-pool-size: 70
       spring_datasource_url: jdbc:postgresql://chat-db:5433/chat
@@ -162,7 +135,6 @@ services:
       - kafka1
       - user-server
       - discovery-server
-      - configuration-server
       - chat-db
     restart: always
   chat-db:
@@ -190,8 +162,9 @@ services:
     ports:
       - "8020:8020"
     environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      SPRING_RABBITMQ_HOST: "43.202.52.177"
+      SPRING_CLOUD_CONFIG_URI: http://43.202.52.177:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
       spring_datasource_hikari_maximum-pool-size: 70
       spring_datasource_url: jdbc:postgresql://customer-db:5434/customer
@@ -202,7 +175,6 @@ services:
       - kafka1
       - user-server
       - discovery-server
-      - configuration-server
       - customer-db
     restart: always
   customer-db:
@@ -230,18 +202,16 @@ services:
     ports:
       - "8000:8000"
     environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_HOST: "43.202.52.177"
       SPRING_MAIN_web-application-type: reactive
-      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8888
+      SPRING_CLOUD_CONFIG_URI: http://43.202.52.177:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
       SERVER_PORT: 8000
     depends_on:
-      - rabbitmq
       - user-server
       - chatting-server
       - customer-server
       - discovery-server
-      - configuration-server
     restart: always
 
 # Persistance DB Volume

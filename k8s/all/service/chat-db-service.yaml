@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-prod.yaml
+    kompose.version: 1.31.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chat-db
+  name: chat-db-service
+  namespace: default
+spec:
+  ports:
+    - name: "5433"
+      port: 5433
+      targetPort: 5433
+    - name: 5433-tcp
+      port: 5433
+      targetPort: 5433
+  selector:
+    io.kompose.service: chat-db
+status:
+  loadBalancer: {}

@@ -5,6 +5,7 @@ import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
+import com.example.shopuserservice.domain.user.service.modules.UserRedisManager;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorCode;
 import com.example.shopuserservice.web.error.ErrorResponse;
@@ -38,6 +39,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 
+import static com.example.shopuserservice.web.security.JwtTokenProvider.getUserIdFromSpringSecurityContext;
+
 
 @Slf4j
 @RestController
@@ -56,10 +59,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
+    public Mono<String> login(@RequestBody LoginRequestDto request,
                                         ServerHttpResponse response){
-        Mono<LoginResponseDto> login = loginService.login(request, response).log();
-        return login;
+        return loginService.login(request, response).log();
     }
 
     @GetMapping("/health-check")
@@ -75,8 +77,8 @@ public class UserController {
      */
     // 유저 조회
     @GetMapping("/user")
-    public CompletableFuture<ResponseEntity<ResponseUser>> findUser(WebSession session){
-        String userId = session.getAttribute("userId");
+    public CompletableFuture<ResponseEntity<ResponseUser>> findUser(){
+        String userId = getUserIdFromSpringSecurityContext();
         return userCommandQueryService.getUserDetailsByUserId(userId).thenApply((userDto -> {
             List<UserTransactions> userTransactions = null;
             try {
@@ -89,34 +91,8 @@ public class UserController {
             ResponseUser result = new ModelMapper().map(userDto, ResponseUser.class);
             result.setUserTransaction(userTransactions);
             return ResponseEntity.ok(result);
-        })).exceptionally(e->{
-            log.info(e.getCause().getClass().getName());
-
-            if( e.getCause() instanceof UsernameNotFoundException){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User name not found");
-            }
-
-            if (e.getCause() instanceof ResponseStatusException){
-                ResponseStatusException e2 = (ResponseStatusException) e.getCause();
-                throw e2;
-            }
-
-            throw new CustomException(ErrorCode.SERVER_ERROR);
-        });
+        }));
     }
-
-    // deferredResult examples
-    @GetMapping(value = "/deferredResult")
-    public DeferredResult<String> useDeferredResult() {
-        DeferredResult<String> dr = new DeferredResult<>();
-        dr.onCompletion(() -> log.info("onCompletion"));
-        ForkJoinPool.commonPool().submit(() -> {
-            dr.setResult("Results Here");
-            log.info("Results set");
-        });
-        return dr;
-    }
-
 
     // add user with sse
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

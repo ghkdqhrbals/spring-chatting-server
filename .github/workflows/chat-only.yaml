@@ -1,0 +1,135 @@
+name: Deployment(Only Chat)
+
+on:
+  pull_request:
+    branches:
+      - test/only-chat
+
+env:
+  ECR_URL: ${{ secrets.ECR_URL }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # get all history so we can checkout any branch
+
+      - name: Get latest tag
+        id: latesttag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV 
+
+      # Increment version number(ex) 5.0.1 -> 5.0.2)
+      # PR title contains "[patch]" -> 5.0.1 -> 5.0.2
+      # PR title contains "[minor]" -> 5.0.1 -> 5.1.0
+      # PR title contains "[major]" -> 5.0.1 -> 6.0.0
+      - name: Increment version based on commit message with commit hash
+        id: increment_version
+        run: |
+          current_version=${LATEST_TAG#"v"}
+          echo "CURRENT_VERSION=$current_version" >> $GITHUB_ENV
+          
+          IFS='.' read -ra version_parts <<< "$current_version"
+          
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+          patch=$(echo $patch | cut -d'-' -f1)
+          
+          pr_title="${{ github.event.pull_request.title }}"
+          short_commit_hash=$(git rev-parse --short HEAD)
+          
+          if [[ $pr_title == *"[major]"* ]]; then
+            major=$(( major + 1 ))
+            minor=0
+            patch=0
+          elif [[ $pr_title == *"[minor]"* ]]; then
+            minor=$(( minor + 1 ))
+            patch=0
+          else
+            patch=$(( patch + 1 ))
+          fi
+          
+          new_version="$major.$minor.$patch-$short_commit_hash"
+          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+
+      - name: Create and push new tag to Github
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git tag v${NEW_VERSION}
+          git push origin v${NEW_VERSION}
+
+      - name: Set up Corretto openJDK 17
+        uses: actions/setup-java@v3 # check specific version in https://github.com/actions/setup-java
+        with:
+          distribution: 'corretto' # using Amazon openJDK
+          java-version: '17'
+
+      - name: Gradle caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build project and create Dockerfiles
+        env:
+          NEW_VERSION: ${{ env.NEW_VERSION }}
+        run: ./gradlew build --daemon --parallel -Pversion=${NEW_VERSION}
+
+      - name: Build docker images
+        run: docker-compose -f docker-compose-only-chat.yaml build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Grant execute permission for push_to_ecr.sh
+        run: chmod +x ./push_to_ecr.sh
+
+      - name: Tag Push images to ECR
+        env:
+          ECR_URL: ${{ env.ECR_URL }}
+        run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
+
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          EC2_URL: ${{ secrets.EC2_URL }}
+          NEW_VERSION: ${{ env.NEW_VERSION }}
+        run: |
+          echo "$PRIVATE_KEY" > temp_key.pem
+          chmod 600 temp_key.pem
+          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
+            if [ ! -d "spring-chatting-server" ]; then
+              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
+            fi
+            cd spring-chatting-server
+            git reset --hard
+            git pull origin main
+            cd k8s/onlychat/deployment
+            sudo -i
+            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            kubectl apply -f ./namespace/
+            kubectl apply -f ./service/
+            kubectl apply -f ./deployment/
+          EOF
+          rm temp_key.pem

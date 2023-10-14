@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-prod.yaml
+    kompose.version: 1.31.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: user-db
+  name: user-db
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: user-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.network/spring-chatting-server-default: "true"
+        io.kompose.service: user-db
+    spec:
+      containers:
+        - args:
+            - -c
+            - wal_level=logical
+            - -p
+            - "5435"
+          env:
+            - name: POSTGRES_DB
+              value: user
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_USER
+              value: postgres
+          image: postgres:12-alpine
+          name: user-db
+          ports:
+            - containerPort: 5435
+              hostPort: 5435
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /home/backups
+              name: pgdata-user
+      restartPolicy: Always
+      volumes:
+        - name: pgdata-user
+          persistentVolumeClaim:
+            claimName: pgdata-user
+status: {}

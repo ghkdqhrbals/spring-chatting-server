@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-prod.yaml
+    kompose.version: 1.31.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chatting-server
+  name: chatting-server
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chatting-server
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose-prod.yaml
+        kompose.version: 1.31.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/spring-chatting-server-default: "true"
+        io.kompose.service: chatting-server
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: SERVER_PORT
+              value: "8030"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: http://configuration-server:8888
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+            - name: eureka_client_service-url_defaultZone
+              value: http://discovery-server:8761/eureka
+            - name: spring_datasource_hikari_maximum-pool-size
+              value: "70"
+            - name: spring_datasource_hikari_password
+              value: password
+            - name: spring_datasource_hikari_username
+              value: postgres
+            - name: spring_datasource_url
+              value: jdbc:postgresql://chat-db:5433/chat
+          image: main-service_chatting-server:latest
+          name: chatting-server
+          ports:
+            - containerPort: 8030
+              hostPort: 8030
+              protocol: TCP
+          resources: {}
+      restartPolicy: Always
+status: {}

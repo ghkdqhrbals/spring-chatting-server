@@ -86,6 +86,7 @@ public class ReactiveSecurityConfig {
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 // authenticate
                 .addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterAfter(new JwtRefreshTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
                 .authorizeExchange(exchange -> exchange
                         // 승인 목록
                         .pathMatchers(HttpMethod.OPTIONS).permitAll() // 사용가능 Method

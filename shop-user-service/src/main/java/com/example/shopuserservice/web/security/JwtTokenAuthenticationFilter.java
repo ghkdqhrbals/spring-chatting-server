@@ -1,5 +1,7 @@
 package com.example.shopuserservice.web.security;
 
+import org.springframework.core.Ordered;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.web.server.*;
 
 import lombok.RequiredArgsConstructor;
@@ -29,16 +31,13 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         String token = resolveToken(exchange.getRequest());
         if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token, exchange)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
-//            authentication.getAuthorities().forEach(a->{
-//                log.info("JWT 토큰으로 부터 얻는 Authorities={}",a.getAuthority());
-//            });
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }
         return chain.filter(exchange);
     }
 
-    // Header에서 JWT 토큰을 Bear 프리픽스 떼서 가져옵니다
+    // Get JWT string from bearer-token in header
     private String resolveToken(ServerHttpRequest request) {
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
@@ -46,4 +45,5 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         }
         return null;
     }
+
 }

@@ -2,9 +2,11 @@ package com.example.shopuserservice.web.security;
 
 
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,18 +23,29 @@ public class LoginService {
     private final ReactiveAuthenticationManager authenticationManager;
 
 
-    public Mono<LoginResponseDto> login(LoginRequestDto loginRequestDto, ServerHttpResponse response) {
+    public Mono<String> login(LoginRequestDto loginRequestDto, ServerHttpResponse response) {
 
         if (loginRequestDto.getPassword() == null || loginRequestDto.getUsername() == null)
             return Mono.error(new ServerWebInputException("User Input Invalidation"));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(),
                 loginRequestDto.getPassword());
+
         return authenticationManager.authenticate(authentication)
-                .map(jwtTokenProvider::createToken)
-                .map(token -> {
-                    response.getHeaders().add("Authorization","Bearer "+token);
-                    return new LoginResponseDto(token);
+                .map(auth -> {
+                    // create Tokens
+                    String refreshToken = jwtTokenProvider.createRefreshToken(auth);
+                    String accessToken = jwtTokenProvider.createToken(auth);
+
+                    response.addCookie(ResponseCookie.from("accessToken", accessToken)
+                            .httpOnly(true)
+                            .path("/")
+                            .build());
+                    response.addCookie(ResponseCookie.from("refreshToken", refreshToken)
+                            .httpOnly(true)
+                            .path("/")
+                            .build());
+                    return "login success";
                 });
     }
 }

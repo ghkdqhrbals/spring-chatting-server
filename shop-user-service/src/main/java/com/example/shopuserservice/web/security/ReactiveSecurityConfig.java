@@ -1,6 +1,7 @@
 package com.example.shopuserservice.web.security;
 
 import com.example.shopuserservice.domain.user.data.User;
+import com.example.shopuserservice.domain.user.redisrepository.UserRefreshTokenRedisRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ import java.util.Optional;
 public class ReactiveSecurityConfig {
 
     private final ApplicationContext applicationContext;
+    private final UserRefreshTokenRedisRepository userRefreshTokenRedisRepository;
 
     /**
      * ServerHttpSecurity는 스프링 시큐리티의 HttpSecurity와 비슷한 웹플럭스용 클래스다.
@@ -86,7 +88,7 @@ public class ReactiveSecurityConfig {
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 // authenticate
                 .addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
-                .addFilterAfter(new JwtRefreshTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterAfter(new JwtRefreshTokenAuthenticationFilter(jwtTokenProvider,userRefreshTokenRedisRepository), SecurityWebFiltersOrder.HTTP_BASIC)
                 .authorizeExchange(exchange -> exchange
                         // 승인 목록
                         .pathMatchers(HttpMethod.OPTIONS).permitAll() // 사용가능 Method

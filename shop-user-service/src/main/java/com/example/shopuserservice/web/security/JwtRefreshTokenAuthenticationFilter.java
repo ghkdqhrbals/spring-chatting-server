@@ -1,5 +1,7 @@
 package com.example.shopuserservice.web.security;
 
+import com.example.shopuserservice.domain.user.data.UserRefreshToken;
+import com.example.shopuserservice.domain.user.redisrepository.UserRefreshTokenRedisRepository;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +17,20 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
-    public static final String HEADER_PREFIX = "Bearer ";
-
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRefreshTokenRedisRepository userRefreshTokenRedisRepository;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String refreshToken = resolveToken(exchange.getRequest());
-        if(StringUtils.hasText(refreshToken) && this.jwtTokenProvider.validateToken(refreshToken, exchange)) {
+        if(StringUtils.hasText(refreshToken)
+                && this.jwtTokenProvider.validateToken(refreshToken, exchange)
+                && isTokenInRedis(refreshToken)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(refreshToken);
 
             // if refresh token is valid, create new access token and add it to cookie
@@ -44,8 +49,15 @@ public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
         return chain.filter(exchange);
     }
 
-    // Get JWT string from bearer-token in header
     private String resolveToken(ServerHttpRequest request) {
         return request.getCookies().getFirst("refreshToken").getValue();
+    }
+
+    private Boolean isTokenInRedis(String refreshToken) {
+        Optional<UserRefreshToken> findUserId = userRefreshTokenRedisRepository.findById(refreshToken);
+        if(findUserId.isPresent()){
+            return true;
+        }
+        return false;
     }
 }

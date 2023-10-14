@@ -15,8 +15,8 @@ import java.io.Serializable;
 @RedisHash(value = "UserRefreshToken", timeToLive = 600)
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class UserRefreshToken implements Serializable {
-    @Id
     private String userId;
+    @Id
     private String refreshToken;
 
     @Builder

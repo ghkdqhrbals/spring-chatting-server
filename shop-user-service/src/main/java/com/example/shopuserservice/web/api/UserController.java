@@ -5,6 +5,7 @@ import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
+import com.example.shopuserservice.domain.user.service.modules.UserRedisManager;
 import com.example.shopuserservice.web.error.CustomException;
 import com.example.shopuserservice.web.error.ErrorCode;
 import com.example.shopuserservice.web.error.ErrorResponse;
@@ -48,6 +49,7 @@ import static com.example.shopuserservice.web.security.JwtTokenProvider.getUserI
 public class UserController {
     private final UserCommandQueryService userCommandQueryService;
     private final LoginService loginService;
+    private final UserRedisManager userRedisManager;
     private final UserReadService userReadService;
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Environment env;

@@ -22,13 +22,12 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenAuthenticationFilter implements WebFilter {
-    public static final String HEADER_PREFIX = "Bearer ";
-
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String token = resolveToken(exchange.getRequest());
+        String token = exchange.getRequest().getCookies().getFirst("refreshToken").getValue();
+//        String token = resolveToken(exchange.getRequest());
         if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token, exchange)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
             return chain.filter(exchange)
@@ -36,14 +35,4 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         }
         return chain.filter(exchange);
     }
-
-    // Get JWT string from bearer-token in header
-    private String resolveToken(ServerHttpRequest request) {
-        String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
 }

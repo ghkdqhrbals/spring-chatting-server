@@ -13,10 +13,7 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
   configuration-server:
     container_name: configuration-server
-    build:
-      context: ./config-service
-      dockerfile: Dockerfile
-    image: main-service_configuration-server:latest
+    image: ghkdqhrbals/config-chat:latest
     expose:
       - 8888
     ports:

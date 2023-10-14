@@ -1,0 +1,29 @@
+version : '3.7'
+
+services:
+  # -------- Rabbit MQ for configuration --------
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  configuration-server:
+    container_name: configuration-server
+    build:
+      context: ./config-service
+      dockerfile: Dockerfile
+    image: main-service_configuration-server:latest
+    expose:
+      - 8888
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      spring_cloud_config_server_git_uri: https://github.com/ghkdqhrbals/spring-chatting-server
+    depends_on:
+      - rabbitmq
+    restart: always

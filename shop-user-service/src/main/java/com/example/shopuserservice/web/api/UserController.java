@@ -49,7 +49,6 @@ import static com.example.shopuserservice.web.security.JwtTokenProvider.getUserI
 public class UserController {
     private final UserCommandQueryService userCommandQueryService;
     private final LoginService loginService;
-    private final UserRedisManager userRedisManager;
     private final UserReadService userReadService;
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Environment env;

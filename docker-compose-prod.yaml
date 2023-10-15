@@ -213,6 +213,7 @@ services:
       - customer-server
       - discovery-server
     restart: always
+
   front-server:
     container_name: front-server
     build: ./spring-chatting-front-server

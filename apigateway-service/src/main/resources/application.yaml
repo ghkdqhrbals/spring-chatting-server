@@ -45,7 +45,7 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
+            - RewritePath=/user/(?<segment>.*) /$\{segment}
         # 회원가입
         - id: user-service
           uri: lb://USER-SERVICE
@@ -61,7 +61,6 @@ spring:
             - Path=/user/admin/**
             - Method=GET, POST
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/user/(?<segment>.*), /$\{segment}
         # 일반 사용자 access
         - id: user-service

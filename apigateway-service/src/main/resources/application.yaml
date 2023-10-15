@@ -63,7 +63,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderAdminFilter
         # 일반 사용자 access
         - id: user-service
           uri: lb://USER-SERVICE
@@ -72,7 +71,6 @@ spring:
             - Method=GET, POST, DELETE
           filters:
             - RemoveRequestHeader=Cookie
-            - AuthorizationHeaderFilter
         - id: chat-service
           uri: lb://CHAT-SERVICE
           predicates:
@@ -80,7 +78,6 @@ spring:
             - Method=POST, GET, DELETE
           filters:
             - RemoveRequestHeader=Cookie
-            - AuthorizationHeaderFilter
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
 management:
   endpoints:

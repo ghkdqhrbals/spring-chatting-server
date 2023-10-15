@@ -28,7 +28,7 @@ public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String refreshToken = resolveToken(exchange.getRequest());
-        if(StringUtils.hasText(refreshToken)
+        if(refreshToken != null
                 && this.jwtTokenProvider.validateToken(refreshToken, exchange)
                 && isTokenInRedis(refreshToken)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(refreshToken);
@@ -50,7 +50,11 @@ public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
     }
 
     private String resolveToken(ServerHttpRequest request) {
-        return request.getCookies().getFirst("refreshToken").getValue();
+        HttpCookie refreshToken = request.getCookies().getFirst("refreshToken");
+        if(refreshToken == null){
+            return null;
+        }
+        return refreshToken.getValue();
     }
 
     private Boolean isTokenInRedis(String refreshToken) {

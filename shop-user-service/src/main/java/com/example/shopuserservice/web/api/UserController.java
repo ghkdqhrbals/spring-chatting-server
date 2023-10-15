@@ -113,6 +113,7 @@ public class UserController {
         userCommandQueryService
                 .newUserEvent(req, eventId, userEvent)
                 .exceptionally(e -> {
+                    log.trace("exception is occurred: "+ e.getMessage());
                     if (e.getCause() instanceof CustomException) {
                         Reactor.emitErrorAndComplete(req.getUserId(), e.getCause());
                     } else {

@@ -72,8 +72,8 @@ services:
       spring_datasource_hikari_username: postgres
       spring_datasource_hikari_password: password
       SERVER_PORT: 8010
-      spring_redis_host: user-redis
-      spring_redis_port: 6379
+      spring_data_redis_host: user-redis
+      spring_data_redis_port: 6379
       server_undertow_no-request-timeout: 100
     depends_on:
       - kafka1
@@ -220,7 +220,7 @@ services:
     environment:
       - spring_profiles_active=local
       - SERVER_PORT=8000
-      - backend_api_gateway=http://chatting-server:8030
+      - backend_api_gateway=http://api-server:8000
     ports:
       - "80:8000"
     restart: always

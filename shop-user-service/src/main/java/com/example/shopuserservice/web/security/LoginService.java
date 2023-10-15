@@ -24,6 +24,7 @@ public class LoginService {
 
 
     public Mono<String> login(LoginRequestDto loginRequestDto, ServerHttpResponse response) {
+        log.trace("login service access");
 
         if (loginRequestDto.getPassword() == null || loginRequestDto.getUsername() == null)
             return Mono.error(new ServerWebInputException("User Input Invalidation"));

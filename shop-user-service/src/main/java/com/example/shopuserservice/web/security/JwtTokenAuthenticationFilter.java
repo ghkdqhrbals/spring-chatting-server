@@ -1,6 +1,7 @@
 package com.example.shopuserservice.web.security;
 
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpCookie;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.web.server.*;
 
@@ -26,8 +27,12 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String token = exchange.getRequest().getCookies().getFirst("refreshToken").getValue();
-//        String token = resolveToken(exchange.getRequest());
+        HttpCookie tokenCookie = exchange.getRequest().getCookies().getFirst("accessToken");
+        if (tokenCookie == null){
+            return chain.filter(exchange);
+        }
+
+        String token = tokenCookie.getValue();
         if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token, exchange)) {
             Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
             return chain.filter(exchange)

@@ -26,12 +26,15 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "permissions";
 
     private final UserRedisSessionRepository userRedisSessionRepository;
+
+    public JwtTokenProvider(UserRedisSessionRepository userRedisSessionRepository) {
+        this.userRedisSessionRepository = userRedisSessionRepository;
+    }
 
     @Value("${token.expiration_time}")
     String expirationTime;

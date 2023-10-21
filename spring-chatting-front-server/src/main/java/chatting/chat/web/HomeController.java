@@ -8,6 +8,7 @@ import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.login.LoginForm;
+import chatting.chat.web.user.UserForm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,7 @@ import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,8 +42,7 @@ public class HomeController {
         this.webClient = WebClient.create(backEntry);
     }
     @GetMapping("/")
-    public String mainHome(Model model) {
-
+    public String mainHome(@ModelAttribute("loginForm") LoginForm form, Model model) {
         try{
             ResponseGetUser me = webClient.mutate()
                     .build()
@@ -78,4 +75,39 @@ public class HomeController {
 
         return "users";
     }
+//
+//    @PostMapping("/")
+//    public String loginReq(@ModelAttribute("loginForm") LoginForm form, Model model) {
+//        try{
+//            ResponseGetUser me = webClient.mutate()
+//                    .build()
+//                    .get()
+//                    .uri(backEntry+"/chat/user?userId=" + 1234)
+//                    .retrieve()
+//                    .onStatus(
+//                            HttpStatus::is4xxClientError,
+//                            r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
+//                    .bodyToMono(ResponseGetUser.class).block();
+//            model.addAttribute("user",me);
+//
+//            Flux<ResponseGetFriend> response = webClient.mutate()
+//                    .build()
+//                    .get()
+//                    .uri("http://localhost:8000/chat/friend?userId=" + 1234)
+//                    .retrieve()
+//                    .onStatus(
+//                            HttpStatus::is4xxClientError,
+//                            r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
+//                    .bodyToFlux(ResponseGetFriend.class);
+//            List<ResponseGetFriend> readers = response.collect(Collectors.toList())
+//                    .share().block();
+//            model.addAttribute("friends",readers);
+//
+//        }catch (CustomThrowableException e){
+//            log.info(e.getErrorResponse().getMessage());
+//            return "login/loginForm";
+//        }
+//
+//        return "users";
+//    }
 }

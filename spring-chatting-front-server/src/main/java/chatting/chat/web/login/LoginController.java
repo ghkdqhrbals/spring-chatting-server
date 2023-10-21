@@ -36,7 +36,7 @@ public class LoginController {
 
     @PostConstruct
     public void initWebClient() {
-        log.info(backEntry);
+        log.info("Connected gateway : "+backEntry);
         this.webClient = WebClient.create(backEntry);
     }
 

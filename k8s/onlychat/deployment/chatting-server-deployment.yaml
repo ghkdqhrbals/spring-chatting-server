@@ -46,7 +46,7 @@ spec:
               value: "false"
             - name: springdoc_version
               value: v1
-          image: main-service_chatting-server:latest
+          image: 305603388825.dkr.ecr.ap-northeast-2.amazonaws.com/chat:chatting-server_5.0.23-b0c7c52
           name: chatting-server
           ports:
             - containerPort: 8030

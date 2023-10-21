@@ -3,6 +3,7 @@ package com.example.shopuserservice.web.security;
 import com.example.shopuserservice.domain.user.data.User;
 import com.example.shopuserservice.domain.user.redisrepository.UserRefreshTokenRedisRepository;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
+import com.example.shopuserservice.web.security.filter.JwtTokenAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;

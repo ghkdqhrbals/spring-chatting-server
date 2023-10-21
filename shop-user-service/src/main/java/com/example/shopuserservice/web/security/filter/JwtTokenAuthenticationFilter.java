@@ -1,5 +1,7 @@
-package com.example.shopuserservice.web.security;
+package com.example.shopuserservice.web.security.filter;
 
+import com.example.shopuserservice.web.security.JwtTokenProvider;
+import com.example.shopuserservice.web.security.token.TokenUtil;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpCookie;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -15,11 +17,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 
-/**
- * JWT 토큰이 http request header에 있는지 확인하기 위한 필터
- * 토근이 있을 경우, 유효성 체크 후, 토큰을 이용하여 인증 정보를 만든다.
- */
 
+// for access token
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenAuthenticationFilter implements WebFilter {
@@ -27,14 +26,14 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        HttpCookie tokenCookie = exchange.getRequest().getCookies().getFirst("accessToken");
-        if (tokenCookie == null){
+
+        String accessToken = TokenUtil.getAccessToken(exchange.getRequest());
+        if (accessToken != null) {
             return chain.filter(exchange);
         }
 
-        String token = tokenCookie.getValue();
-        if(StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token, exchange)) {
-            Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
+        if(this.jwtTokenProvider.validateToken(accessToken, exchange)) {
+            Authentication authentication = this.jwtTokenProvider.getAuthentication(accessToken);
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
         }

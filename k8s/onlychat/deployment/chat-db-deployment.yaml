@@ -37,7 +37,7 @@ spec:
               hostPort: 5433
               protocol: TCP
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
+            - mountPath: /home/backups
               name: pgdata-chat
       restartPolicy: Always
       volumes:

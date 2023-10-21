@@ -1,5 +1,6 @@
 package com.example.shopuserservice.web.util.reactor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * And managing the sink.
  */
 @Configuration
+@Slf4j
 public class Reactor {
     // create concurrentHashMap for sink storage
     private static final ConcurrentHashMap<String, SinkStream> sinkMap = new ConcurrentHashMap<>();
@@ -27,6 +29,7 @@ public class Reactor {
         if (sinkMap.get(key) == null) {
             Sinks.Many<Object> sink = Sinks.many().multicast().onBackpressureBuffer();
             sinkMap.put(key, new SinkStream(sink));
+            log.trace("sink is added");
         }else{
             throw new Exception("sink is not null");
         }
@@ -36,17 +39,20 @@ public class Reactor {
     public static void removeSink(String key) {
         if (sinkMap.get(key) != null) {
             sinkMap.remove(key);
+            log.trace("sink is removed");
         }else{
             throw new RuntimeException("sink is null");
         }
     }
     // emit data with complete to sinkMap using key and remove from sinkMap
     public static void emitAndComplete(String key, Object data){
+        log.trace("sink try to emit and completed");
         Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             sink.tryEmitNext(data);
             sink.tryEmitComplete();
             sinkMap.remove(key);
+            log.trace("sink is emitted and completed");
         }else{
             throw new RuntimeException("sink is null");
         }
@@ -54,6 +60,7 @@ public class Reactor {
 
     // get sink from sinkMap using key and transform to flux
     public static Flux<Object> getSink(String key){
+        log.trace("try to get sink");
         Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             return sink.asFlux();
@@ -84,6 +91,7 @@ public class Reactor {
 
     // emit error with complete to sinkMap using key and remove from sinkMap
     public static void emitErrorAndComplete(String key, Throwable error){
+        log.trace("emit error with complete to {} and remove from sinkMap", key);
         Sinks.Many<Object> sink = sinkMap.get(key).getSink();
         if (sink != null) {
             sink.tryEmitError(error);

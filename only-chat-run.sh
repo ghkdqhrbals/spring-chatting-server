@@ -20,4 +20,4 @@ sh remove_dangling_image.sh
 
 echo "3. Run";
 
-docker compose -f docker-compose-only-chat.yaml up --build -d
+docker compose -f docker-compose-prod.yaml up --build -d

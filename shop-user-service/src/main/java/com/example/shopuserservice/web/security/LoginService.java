@@ -42,10 +42,14 @@ public class LoginService {
                     response.addCookie(ResponseCookie.from("accessToken", accessToken)
                             .httpOnly(true)
                             .path("/")
+                            .sameSite("Lax")
+                            .secure(true)
                             .build());
                     response.addCookie(ResponseCookie.from("refreshToken", refreshToken)
                             .httpOnly(true)
                             .path("/")
+                            .sameSite("Lax")
+                            .secure(true)
                             .build());
                     return "login success";
                 });

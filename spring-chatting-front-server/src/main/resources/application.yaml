@@ -18,14 +18,18 @@ backend:
     gateway: http://127.0.0.1:8000
 
 
-
   # cookie
 server:
   servlet:
     session:
       tracking-modes: cookie
-  port: 7320
-
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: file:/app/keystore.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+    key-alias: bns-ssl
 
 kafka:
   bootstrap-servers: localhost:8097,localhost:8098,localhost:8099

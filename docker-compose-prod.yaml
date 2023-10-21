@@ -223,7 +223,7 @@ services:
       - SERVER_PORT=8000
       - backend_api_gateway=http://api-server:8000
     ports:
-      - "80:8000"
+      - "443:8000"
     restart: always
 
 # Persistance DB Volume

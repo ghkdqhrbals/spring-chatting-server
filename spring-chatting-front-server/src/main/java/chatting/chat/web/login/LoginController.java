@@ -9,10 +9,14 @@ import chatting.chat.web.login.dto.LoginResponseDto;
 import com.example.commondto.token.TokenConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
@@ -67,49 +71,40 @@ public class LoginController {
 
 
         try{
-            LoginResponseDto res = webClient.mutate()
+            ClientResponse response = webClient.mutate()
                     .build()
                     .post()
-                    .uri("/login")
+                    .uri("/user/login")
                     .bodyValue(req)
-                    .retrieve()
-                    .onStatus(
-                            HttpStatus.NOT_FOUND::equals,
-                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .onStatus(
-                            HttpStatus.UNAUTHORIZED::equals,
-                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .onStatus(
-                            HttpStatus.INTERNAL_SERVER_ERROR::equals,
-                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .bodyToMono(LoginResponseDto.class)
+                    .exchange()
                     .block();
-            log.trace("Retrieve TOKEN : {}", res.getToken());
 
-            String encodeToken = URLEncoder.encode("Bearer "+res.getToken(), "utf-8");
+            // 응답에서 쿠키 추출
+            MultiValueMap<String, ResponseCookie> cookies = response.cookies();
+            ResponseCookie accessTokenCookie = cookies.getFirst("accessToken");
+            ResponseCookie refreshTokenCookie = cookies.getFirst("refreshToken");
 
-            Cookie cookie = new Cookie(TokenConst.keyName,encodeToken); // 토큰 쿠키 삽입
-//            cookie.setSecure(true); // TODO
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            httpServletResponse.addCookie(cookie);
+            log.info(accessTokenCookie.toString());
+            log.info(refreshTokenCookie.toString());
 
-        }catch (CustomThrowableException e){
+            // 클라이언트로 응답을 보낼 때 쿠키 추가
 
-            if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())){
-                bindingResult.rejectValue("password", null,e.getErrorResponse().getMessage());
+            // accessToken=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYWEiLCJwZXJtaXNzaW9ucyI6IlJPTEVfVVNFUiIsImlhdCI6MTY5Nzg3MzU1MSwiZXhwIjoxNjk3ODczODUxfQ.rZyIaKfw9Qzxod89sWjrbau6W8m0lzDJPCAy6FY9wULrGlGsp9bkGxMaKWzWHOetKVwxWUTSLIq8wb8CvkBLPQ; Path=/; HttpOnly; SameSite=None
+            httpServletResponse.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+            httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
+        } catch (CustomThrowableException e) {
+            if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())) {
+                bindingResult.rejectValue("password", null, e.getErrorResponse().getMessage());
             }
 
             return "login/loginForm";
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
         }
 
+        return "login/loginForm";
         // logic
-        HttpSession session = request.getSession(true);
-        session.setAttribute(SessionConst.LOGIN_MEMBER, user);
-        log.info(redirectURL);
-        return "redirect:"+redirectURL;
+//        log.info(redirectURL);
+//        return "redirect:"+redirectURL;
     }
 
     @GetMapping("/logout")

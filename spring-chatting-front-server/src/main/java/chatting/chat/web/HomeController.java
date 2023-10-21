@@ -42,12 +42,14 @@ public class HomeController {
         this.webClient = WebClient.create(backEntry);
     }
     @GetMapping("/")
-    public String mainHome(@ModelAttribute("loginForm") LoginForm form, Model model) {
+    public String mainHome(Model model) {
+        model.addAttribute("userName",)
         try{
             ResponseGetUser me = webClient.mutate()
+                    .baseUrl(backEntry)
                     .build()
                     .get()
-                    .uri(backEntry+"/chat/user?userId=" + 1234)
+                    .uri("/chat/user?userId=" + 1234)
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,
@@ -56,9 +58,10 @@ public class HomeController {
             model.addAttribute("user",me);
 
             Flux<ResponseGetFriend> response = webClient.mutate()
+                    .baseUrl(backEntry)
                     .build()
                     .get()
-                    .uri("http://localhost:8000/chat/friend?userId=" + 1234)
+                    .uri("/chat/friend?userId=" + 1234)
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,
@@ -73,7 +76,7 @@ public class HomeController {
             return "login/loginForm";
         }
 
-        return "users";
+        return "friends/friends";
     }
 //
 //    @PostMapping("/")

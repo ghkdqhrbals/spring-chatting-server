@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/styles.css">
@@ -52,8 +52,8 @@
                 <img src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"
                 class="user-component__avatar user-component__avatar--xl"/>
                 <div class="user-component__text">
-                    <h4 class="user-component__title">Munkyeong</h4>
-                        <h6 class="user-component__subtitle">this text whatever</h6>
+                    <h4 class="user-component__title" th:text="${userName}">Munkyeong</h4>
+                        <h6 class="user-component__subtitle" th:text="${userDescription}">this text whatever</h6>
                 </div>
             </div>
             <div class="user-component__colunm">
@@ -65,7 +65,7 @@
 
         <div class="friends-screen__channel">
             <div class="friends-screen__channel-header">
-                <span>Channel</span>
+                <span>Friends</span>
                 <i class="fa-solid fa-chevron-up fa-xs check"></i>
             </div>
 
@@ -86,6 +86,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
     </main>

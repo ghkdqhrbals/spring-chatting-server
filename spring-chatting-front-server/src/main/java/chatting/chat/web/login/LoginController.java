@@ -8,6 +8,7 @@ import chatting.chat.web.login.dto.LoginRequestDto;
 import chatting.chat.web.login.dto.LoginResponseDto;
 import com.example.commondto.token.TokenConst;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,9 @@ import java.net.URLEncoder;
 public class LoginController {
 
     private WebClient webClient;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     @Value("${backend.api.gateway}")
     private String backEntry;
@@ -71,7 +75,7 @@ public class LoginController {
 
 
         try{
-            ClientResponse response = webClient.mutate()
+            ClientResponse response = webClientBuilder
                     .build()
                     .post()
                     .uri("/user/login")
@@ -97,7 +101,6 @@ public class LoginController {
             if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())) {
                 bindingResult.rejectValue("password", null, e.getErrorResponse().getMessage());
             }
-
             return "login/loginForm";
         }
 

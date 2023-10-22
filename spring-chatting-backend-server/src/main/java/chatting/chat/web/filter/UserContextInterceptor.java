@@ -40,7 +40,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
 
     private String extractUserIdFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-
+        log.info("cookies: {}", cookies);
         if (cookies != null) {
             Cookie findCookie = Arrays.stream(cookies)
                     .filter(cookie -> "refreshToken".equals(cookie.getName()))
@@ -49,8 +49,10 @@ public class UserContextInterceptor implements HandlerInterceptor {
             if (findCookie != null) {
                 Optional<UserRefreshToken> findUser = userRefreshTokenRedisRepository.findById(findCookie.getValue());
                 if (findUser.isPresent()) {
+                    log.info("user found in redis session");
                     return findUser.get().getUserId();
                 }
+                log.info("user not found in redis session");
                 return null;
             }
         }

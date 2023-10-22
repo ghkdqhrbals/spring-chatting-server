@@ -58,7 +58,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(String userId, String userName, String userStatus) {
         throwErrorWhenUserFind(userId);
-        return userRepository.save(createUser(userId, userName, userStatus));
+        User savedUser = userRepository.save(createUser(userId, userName, userStatus));
+        return savedUser;
     }
 
     // 유저 상태메세지 업데이트

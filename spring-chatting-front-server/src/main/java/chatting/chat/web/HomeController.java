@@ -8,6 +8,7 @@ import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.login.LoginForm;
+import chatting.chat.web.login.util.CookieUtil;
 import chatting.chat.web.user.UserForm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -42,26 +43,37 @@ public class HomeController {
         this.webClient = WebClient.create(backEntry);
     }
     @GetMapping("/")
-    public String mainHome(Model model) {
-        model.addAttribute("userName",)
+    public String mainHome(HttpServletRequest request,Model model) {
+        String accessToken = CookieUtil.getCookie(request, "accessToken");
+        String refreshToken = CookieUtil.getCookie(request, "refreshToken");
+
+        if (accessToken == null || refreshToken == null) {
+            return "redirect:/login";
+        }
+
         try{
             ResponseGetUser me = webClient.mutate()
                     .baseUrl(backEntry)
                     .build()
                     .get()
-                    .uri("/chat/user?userId=" + 1234)
+                    .uri("/chat/user")
+                    .cookies(c -> {
+                        c.add("accessToken",accessToken);
+                        c.add("refreshToken",refreshToken);
+                    })
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,
                             r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
                     .bodyToMono(ResponseGetUser.class).block();
-            model.addAttribute("user",me);
+            model.addAttribute("userName",me.getUserName());
+            model.addAttribute("userDescription",me.getUserStatus());
 
             Flux<ResponseGetFriend> response = webClient.mutate()
                     .baseUrl(backEntry)
                     .build()
                     .get()
-                    .uri("/chat/friend?userId=" + 1234)
+                    .uri("/chat/friend")
                     .retrieve()
                     .onStatus(
                             HttpStatus::is4xxClientError,

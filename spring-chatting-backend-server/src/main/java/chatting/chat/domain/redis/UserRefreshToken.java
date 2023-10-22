@@ -1,4 +1,4 @@
-package com.example.shopuserservice.domain.user.data;
+package chatting.chat.domain.redis;
 
 
 import lombok.Builder;

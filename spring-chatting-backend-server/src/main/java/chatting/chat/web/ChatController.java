@@ -9,6 +9,7 @@ import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.dto.RequestUser;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
+import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.kafka.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +48,8 @@ public class ChatController {
     // 유저 조회
     @GetMapping("/user")
     @Operation(summary = "Get user information")
-    public ResponseEntity<?> findUser(@RequestParam("userId") String userId){
-        User findUser = userService.findById(userId);
+    public ResponseEntity<?> findUser(){
+        User findUser = userService.findById(UserContext.getUserId());
         return ResponseEntity.ok(new ResponseGetUser(findUser.getUserId(),findUser.getUserName(),findUser.getUserStatus()));
     }
 
@@ -79,8 +80,8 @@ public class ChatController {
     // 유저의 친구목록 조회
     @GetMapping("/friend")
     @Operation(summary = "Get friends information that connected with user")
-    public ResponseEntity<?> findFriend(@RequestParam("userId") String userId){
-        User findUser = userService.findById(userId);
+    public ResponseEntity<?> findFriend(){
+        User findUser = userService.findById(UserContext.getUserId());
 
         Stream<ResponseGetFriend> rGetFriend = findUser.getFriends().stream().map(f -> {
             User findFriend = userService.findById(f.getFriendId());

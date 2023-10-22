@@ -130,6 +130,8 @@ services:
       spring_datasource_url: jdbc:postgresql://chat-db:5433/chat
       spring_datasource_hikari_username: postgres
       spring_datasource_hikari_password: password
+      SPRING_DATA_REDIS_HOST: user-redis
+      SPRING_DATA_REDIS_PORT: 6379
       SERVER_PORT: 8030
     depends_on:
       - kafka1
@@ -205,7 +207,7 @@ services:
       SPRING_RABBITMQ_HOST: "43.202.52.177"
       SPRING_MAIN_web-application-type: reactive
       SPRING_CLOUD_CONFIG_URI: http://43.202.52.177:8888
-      eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
+      EUREKA_CLIENT_service-url_defaultZone: "http://discovery-server:8761/eureka"
       SERVER_PORT: 8000
     depends_on:
       - user-server

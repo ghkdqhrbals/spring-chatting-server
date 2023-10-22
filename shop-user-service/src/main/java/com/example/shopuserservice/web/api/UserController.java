@@ -58,12 +58,6 @@ public class UserController {
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
 
-    @PostMapping("/login")
-    public Mono<String> login(@RequestBody LoginRequestDto request,
-                                        ServerHttpResponse response){
-        return loginService.login(request, response).log();
-    }
-
     @GetMapping("/health-check")
     public Mono<String> hello(ServerHttpRequest request){
         return Mono.just("Access auth-controller port "+

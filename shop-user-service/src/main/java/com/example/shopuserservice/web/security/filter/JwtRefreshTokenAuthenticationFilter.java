@@ -29,9 +29,8 @@ public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String refreshToken = resolveToken(exchange.getRequest());
-        if(refreshToken != null
-                && this.jwtTokenProvider.validateToken(refreshToken, exchange)
-                && isTokenInRedis(refreshToken)) {
+        if(refreshToken != null && this.jwtTokenProvider.validateToken(refreshToken, exchange) && isTokenInRedis(refreshToken)){
+
             Authentication authentication = this.jwtTokenProvider.getAuthentication(refreshToken);
 
             // if refresh token is valid, create new access token and add it to cookie
@@ -45,9 +44,9 @@ public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
                             .secure(true)
                             .build()
             );
-
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
+
         }
         return chain.filter(exchange);
     }

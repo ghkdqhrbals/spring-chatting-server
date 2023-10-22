@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
+    INVALID_TOKEN(BAD_REQUEST, "토큰이 유효하지않습니다"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_PASSWORD(UNAUTHORIZED, "잘못된 비밀번호입니다"),

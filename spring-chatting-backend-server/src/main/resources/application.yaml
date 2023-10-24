@@ -21,7 +21,7 @@ spring:
       hibernate:
         use-new-id-generator-mappings: true
         order_inserts: true
-        ddl-auto: create
+        ddl-auto: validate
         format_sql: true
         jdbc:
           time_zone: UTC

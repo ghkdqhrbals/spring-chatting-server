@@ -135,6 +135,7 @@ services:
       SERVER_PORT: 8030
     depends_on:
       - kafka1
+      - user-redis
       - user-server
       - discovery-server
       - chat-db

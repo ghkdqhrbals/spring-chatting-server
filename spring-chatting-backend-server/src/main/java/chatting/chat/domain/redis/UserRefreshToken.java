@@ -13,16 +13,15 @@ import java.io.Serializable;
 @Getter
 @ToString
 @RedisHash(value = "UserRefreshToken", timeToLive = 600)
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class UserRefreshToken implements Serializable {
 
-    private String userId;
     @Id
     private String refreshToken;
+    private String userId;
 
     @Builder
-    public UserRefreshToken(String userId, String refreshToken) {
-        this.userId = userId;
+    public UserRefreshToken(String refreshToken, String userId) {
         this.refreshToken = refreshToken;
+        this.userId = userId;
     }
 }

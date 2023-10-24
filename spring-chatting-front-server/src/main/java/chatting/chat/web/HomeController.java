@@ -46,6 +46,8 @@ public class HomeController {
     public String mainHome(HttpServletRequest request,Model model) {
         String accessToken = CookieUtil.getCookie(request, "accessToken");
         String refreshToken = CookieUtil.getCookie(request, "refreshToken");
+        log.trace("accessToken: {}",accessToken);
+        log.trace("refreshToken: {}",refreshToken);
 
         if (accessToken == null || refreshToken == null) {
             return "redirect:/login";
@@ -66,6 +68,7 @@ public class HomeController {
                             HttpStatus::is4xxClientError,
                             r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
                     .bodyToMono(ResponseGetUser.class).block();
+            log.trace(me.toString());
             model.addAttribute("userName",me.getUserName());
             model.addAttribute("userDescription",me.getUserStatus());
 

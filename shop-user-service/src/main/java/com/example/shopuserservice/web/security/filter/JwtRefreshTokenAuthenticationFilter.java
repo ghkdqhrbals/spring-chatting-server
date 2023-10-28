@@ -1,8 +1,8 @@
 package com.example.shopuserservice.web.security.filter;
 
-import com.example.shopuserservice.domain.user.data.UserRefreshToken;
-import com.example.shopuserservice.domain.user.redisrepository.UserRefreshTokenRedisRepository;
 import com.example.shopuserservice.web.security.JwtTokenProvider;
+import com.example.shopuserservice.web.security.token.UserRedisSession;
+import com.example.shopuserservice.web.security.token.UserRedisSessionRepository;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRefreshTokenRedisRepository userRefreshTokenRedisRepository;
+    private final UserRedisSessionRepository userRedisSessionRepository;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -60,7 +60,7 @@ public class JwtRefreshTokenAuthenticationFilter implements WebFilter {
     }
 
     private Boolean isTokenInRedis(String refreshToken) {
-        Optional<UserRefreshToken> findUserId = userRefreshTokenRedisRepository.findById(refreshToken);
+        Optional<UserRedisSession> findUserId = userRedisSessionRepository.findById(refreshToken);
         if(findUserId.isPresent()){
             return true;
         }

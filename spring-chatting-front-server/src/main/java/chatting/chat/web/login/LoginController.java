@@ -1,7 +1,9 @@
 package chatting.chat.web.login;
 
 import chatting.chat.domain.data.User;
+import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.CustomThrowableException;
+import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.login.dto.LoginRequestDto;
@@ -95,21 +97,19 @@ public class LoginController {
 
                         return Mono.empty();
                     })
-                    .onStatus(
-                            HttpStatus::is4xxClientError,
-                            r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
+                    .onStatus(HttpStatus::is4xxClientError,(response)->{
+                        throw new CustomException(ErrorCode.CANNOT_FIND_USER);
+                    })
                     .bodyToMono(String.class).block();
 
-        } catch (CustomThrowableException e) {
-            log.info(e.getErrorResponse().getMessage());
-            if ("Invalid Credentials ".equals(e.getErrorResponse().getMessage())) {
-                bindingResult.rejectValue("password", null, e.getErrorResponse().getMessage());
-            }
+        } catch (CustomException e) {
+            log.trace(e.getMessage());
+            bindingResult.rejectValue("globalErrorCode", "loginForm.credential.bad", e.getMessage());
             return "login/loginForm";
         }
 
         // logic
-//        log.info(redirectURL);
+        log.info(redirectURL);
         return "redirect:"+redirectURL;
     }
 

@@ -12,14 +12,10 @@ public class UserForm {
 
     @NotEmpty
     private String userId;
-
     @NotEmpty
     private String userPw;
-
     @NotEmpty
     private String email;
-
     @NotEmpty
     private String userName;
-
 }

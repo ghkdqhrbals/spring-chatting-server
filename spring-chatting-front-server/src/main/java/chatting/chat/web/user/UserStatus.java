@@ -11,6 +11,4 @@ import java.util.Objects;
 public class UserStatus {
 
     private String userId;
-
-
 }

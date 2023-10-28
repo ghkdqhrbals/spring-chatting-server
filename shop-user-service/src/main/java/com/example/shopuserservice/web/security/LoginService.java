@@ -1,8 +1,8 @@
 package com.example.shopuserservice.web.security;
 
 
-import com.example.shopuserservice.domain.user.redisrepository.UserRefreshTokenRedisRepository;
 import com.example.shopuserservice.web.security.token.CookieUtil;
+import com.example.shopuserservice.web.security.token.UserRedisSessionRepository;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
@@ -27,7 +27,7 @@ public class LoginService {
     private final JwtTokenProvider jwtTokenProvider;
     private final ReactiveAuthenticationManager authenticationManager;
 
-    private final UserRefreshTokenRedisRepository userRefreshTokenRedisRepository;
+    private final UserRedisSessionRepository userRedisSessionRepository;
 
 
 
@@ -64,7 +64,7 @@ public class LoginService {
 
     public Mono<String> logout(HttpServletResponse response) {
         log.trace("Delete refresh token in redis");
-        userRefreshTokenRedisRepository.deleteById(SecurityContextHolder.getContext().getAuthentication().getName());
+        userRedisSessionRepository.deleteById(SecurityContextHolder.getContext().getAuthentication().getName());
         CookieUtil.removeCookie(response, "accessToken");
         CookieUtil.removeCookie(response, "refreshToken");
         return Mono.just("logout success");

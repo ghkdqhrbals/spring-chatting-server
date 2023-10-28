@@ -1,6 +1,5 @@
 package chatting.chat.domain.redis.util;
 
-import chatting.chat.domain.redis.UserRefreshToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class RedisUtil {
     private final ObjectMapper objectMapper;
 
     public <T> Optional<T> getData(String key, Class<T> classType) {
-
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String value = valueOperations.get(key);
         if (value == null) {
@@ -36,7 +34,7 @@ public class RedisUtil {
         }
     }
     public Set<String> getAllKeys() {
-        // 특정 패턴과 일치하는 모든 키 가져오기 (예: "*"는 모든 키를 나타냄)
+        // Get all keys
         Set<String> keys = redisTemplate.keys("*");
         return keys;
     }

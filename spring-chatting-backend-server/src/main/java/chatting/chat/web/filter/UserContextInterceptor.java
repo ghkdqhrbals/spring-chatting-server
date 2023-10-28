@@ -1,7 +1,7 @@
 package chatting.chat.web.filter;
 
-import chatting.chat.domain.redis.UserRefreshToken;
-import chatting.chat.domain.redis.UserRefreshTokenRedisRepository;
+import chatting.chat.domain.redis.UserRedisSession;
+import chatting.chat.domain.redis.UserRedisSessionRepository;
 import chatting.chat.domain.redis.util.RedisUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserContextInterceptor implements HandlerInterceptor {
 
-    private final UserRefreshTokenRedisRepository userRefreshTokenRedisRepository;
+    private final UserRedisSessionRepository userRedisSessionRepository;
     private final RedisUtil redisUtil;
 
 
@@ -32,6 +32,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
             return false;
         }
         UserContext.setUserId(userId);
+        log.trace("ThreadLocal save userId: {}",userId);
         return true;
     }
 
@@ -42,8 +43,6 @@ public class UserContextInterceptor implements HandlerInterceptor {
 
     private String extractUserIdFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        log.info("cookies: {}", Arrays.stream(cookies).toList());
-        log.info("cookies length: {}", cookies.length);
         if (cookies != null) {
             Cookie findCookie = Arrays.stream(cookies)
                     .filter((cookie) -> {
@@ -52,15 +51,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
                     .findFirst()
                     .orElse(null);
             if (findCookie != null) {
-                log.info("findCookie: {}", findCookie.getValue());
-                log.info("get all keys: {}", redisUtil.getAllKeys());
-                log.info("is exsist? {}",redisUtil.getData(findCookie.getValue(), UserRefreshToken.class).isPresent());
-                log.info("find userRefreshToken {}",redisUtil.getData(findCookie.getValue(), UserRefreshToken.class).get());
-                userRefreshTokenRedisRepository.findAll().forEach((userRefreshToken) -> {
-                    log.info("userRefreshToken: {}", userRefreshToken);
-                });
-
-                Optional<UserRefreshToken> findUser = userRefreshTokenRedisRepository.findById(findCookie.getValue());
+                Optional<UserRedisSession> findUser = userRedisSessionRepository.findById(findCookie.getValue());
                 if (findUser.isPresent()) {
                     log.info("user found in redis session");
                     return findUser.get().getUserId();

@@ -1,6 +1,6 @@
 package chatting.chat.domain.participant.service;
 
-import chatting.chat.domain.data.Participant;
+import chatting.chat.domain.participant.entity.Participant;
 
 import java.util.List;
 

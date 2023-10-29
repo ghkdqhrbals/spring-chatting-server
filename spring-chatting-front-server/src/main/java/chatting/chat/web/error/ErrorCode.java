@@ -11,10 +11,13 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
-    INVALID_TOKEN(BAD_REQUEST, "토큰이 유효하지않습니다"),
+    INVALID_TOKEN(BAD_REQUEST, "server.user.invalidToken"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
-    INVALID_PASSWORD(UNAUTHORIZED, "잘못된 비밀번호입니다"),
+    INVALID_CREDENTIAL(UNAUTHORIZED, "server.user.invalidCredential"),
+
+    /* 403 UNAUTHORIZED : 접근권한제한 사용자 */
+    FORBIDDEN_USER(HttpStatus.FORBIDDEN, "server.user.forbidden"),
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     CANNOT_FIND_USER(NOT_FOUND, "server.user.notFound"),

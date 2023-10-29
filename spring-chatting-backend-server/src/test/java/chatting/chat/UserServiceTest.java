@@ -1,20 +1,17 @@
 package chatting.chat;
 
 
-import chatting.chat.domain.data.Friend;
-import chatting.chat.domain.data.Participant;
-import chatting.chat.domain.data.Room;
-import chatting.chat.domain.data.User;
+import chatting.chat.domain.friend.entity.Friend;
+import chatting.chat.domain.room.entity.Room;
+import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.friend.repository.FriendRepository;
 import chatting.chat.domain.friend.service.FriendServiceImpl;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.room.repository.RoomRepository;
-import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.room.service.RoomServiceImpl;
 import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.domain.user.service.UserServiceImpl;
 import chatting.chat.web.error.CustomException;
-import chatting.chat.web.kafka.dto.RequestAddChatRoomDTO;
 import chatting.chat.web.kafka.dto.RequestChangeUserStatusDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -32,10 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

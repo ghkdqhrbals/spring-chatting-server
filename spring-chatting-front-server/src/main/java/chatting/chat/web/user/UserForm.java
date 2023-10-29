@@ -10,12 +10,12 @@ import java.time.LocalDate;
 @Data
 public class UserForm {
 
-    @NotEmpty
+    @NotEmpty(message = "{userForm.userId.notEmpty}")
     private String userId;
-    @NotEmpty
+    @NotEmpty(message = "{userForm.userPw.notEmpty}")
     private String userPw;
-    @NotEmpty
+    @NotEmpty(message="{userForm.email.notEmpty}")
     private String email;
-    @NotEmpty
+    @NotEmpty(message="{userForm.username.notEmpty}")
     private String userName;
 }

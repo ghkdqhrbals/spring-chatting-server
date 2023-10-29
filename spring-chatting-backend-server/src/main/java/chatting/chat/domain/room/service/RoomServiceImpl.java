@@ -1,6 +1,6 @@
 package chatting.chat.domain.room.service;
 
-import chatting.chat.domain.data.Room;
+import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.room.repository.RoomRepository;
 import chatting.chat.web.error.CustomException;
 import lombok.extern.slf4j.Slf4j;

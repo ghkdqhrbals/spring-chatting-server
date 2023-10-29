@@ -1,6 +1,6 @@
 package chatting.chat.domain.participant.service;
 
-import chatting.chat.domain.data.Participant;
+import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.web.error.CustomException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static chatting.chat.web.error.ErrorCode.DUPLICATE_PARTICIPANT;
-import static chatting.chat.web.error.ErrorCode.DUPLICATE_USER_RESOURCE;
 
 @Slf4j
 @Service

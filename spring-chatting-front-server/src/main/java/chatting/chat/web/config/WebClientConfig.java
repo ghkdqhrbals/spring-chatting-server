@@ -27,9 +27,12 @@ public class WebClientConfig {
     private ExchangeFilterFunction handle401And403ThrowAuthorizedException() throws AuthorizedException {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
             log.info("Response status code: {}", clientResponse.statusCode());
-            if (clientResponse.statusCode().value()==401 || clientResponse.statusCode().value()==403) {
+            if (clientResponse.statusCode().value()==401) {
                 String redirectUrl = "/login";
-                return Mono.error(new AuthorizedException(ErrorCode.INVALID_TOKEN,redirectUrl));
+                return Mono.error(new AuthorizedException(ErrorCode.INVALID_CREDENTIAL,redirectUrl));
+            }else if (clientResponse.statusCode().value()==403) {
+                String redirectUrl = "/login";
+                return Mono.error(new AuthorizedException(ErrorCode.FORBIDDEN_USER,redirectUrl));
             }
             return Mono.just(clientResponse);
         });

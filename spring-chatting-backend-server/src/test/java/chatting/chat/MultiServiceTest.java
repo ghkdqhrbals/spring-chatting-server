@@ -1,16 +1,14 @@
 package chatting.chat;
 
 import chatting.chat.domain.chat.ChatService;
-import chatting.chat.domain.data.Friend;
-import chatting.chat.domain.data.Participant;
-import chatting.chat.domain.data.Room;
-import chatting.chat.domain.data.User;
+import chatting.chat.domain.friend.entity.Friend;
+import chatting.chat.domain.participant.entity.Participant;
+import chatting.chat.domain.room.entity.Room;
+import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.friend.repository.FriendRepository;
-import chatting.chat.domain.friend.service.FriendServiceImpl;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.participant.service.ParticipantServiceImpl;
 import chatting.chat.domain.room.repository.RoomRepository;
-import chatting.chat.domain.room.service.RoomServiceImpl;
 import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.domain.user.service.UserServiceImpl;
 import chatting.chat.web.error.CustomException;

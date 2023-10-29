@@ -1,7 +1,6 @@
 package chatting.chat.domain.chat;
 
-import chatting.chat.domain.data.Chatting;
-import chatting.chat.domain.data.Friend;
+import chatting.chat.domain.chat.entity.Chatting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

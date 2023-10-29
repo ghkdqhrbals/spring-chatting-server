@@ -1,6 +1,5 @@
 package com.example.commondto.events.user;
 
-import com.example.commondto.dto.RequestUserChangeDto;
 import com.example.commondto.events.Event;
 import lombok.Data;
 

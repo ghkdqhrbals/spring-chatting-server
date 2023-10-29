@@ -1,9 +1,9 @@
 package chatting.chat.domain.chat;
 
 
-import chatting.chat.domain.data.Chatting;
-import chatting.chat.domain.data.Participant;
-import chatting.chat.domain.data.Room;
+import chatting.chat.domain.chat.entity.Chatting;
+import chatting.chat.domain.participant.entity.Participant;
+import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.room.repository.RoomRepository;
 import chatting.chat.web.error.CustomException;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static chatting.chat.web.error.ErrorCode.*;
 

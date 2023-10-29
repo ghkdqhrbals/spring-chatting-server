@@ -12,6 +12,7 @@ import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.kafka.dto.RequestAddFriendDTO;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,8 @@ import java.util.Arrays;
 @RequestMapping("/friend")
 public class FriendController {
 
-    private WebClient webClient;
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     @Value("${backend.api.gateway}")
     private String backEntry;
@@ -40,7 +42,6 @@ public class FriendController {
     @PostConstruct
     public void initWebClient() {
         log.info(backEntry);
-        this.webClient = WebClient.create(backEntry);
     }
 
     // 친구 추가
@@ -62,8 +63,7 @@ public class FriendController {
         }
 
         try {
-            String response = webClient.mutate()
-                .baseUrl(backEntry)
+            String response = webClientBuilder
                 .build()
                 .post()
                 .uri("/chat/friend")

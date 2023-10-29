@@ -1,11 +1,14 @@
 package chatting.chat.web;
 
+import chatting.chat.domain.util.MessageUtil;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
+import chatting.chat.web.error.AppException;
 import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.login.util.CookieUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -23,14 +26,14 @@ import java.util.stream.Collectors;
 @Controller
 public class HomeController {
 
-    private WebClient webClient;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+    @Autowired
+    private MessageUtil messageUtil;
     @Value("${backend.api.gateway}")
     private String backEntry;
 
-    @PostConstruct
-    public void initWebClient() {
-        this.webClient = WebClient.create(backEntry);
-    }
 
     @GetMapping("/")
     public String mainHome(HttpServletRequest request, Model model) {
@@ -44,8 +47,7 @@ public class HomeController {
         }
 
         try {
-            ResponseGetUser me = webClient.mutate()
-                .baseUrl(backEntry)
+            ResponseGetUser me = webClientBuilder
                 .build()
                 .get()
                 .uri("/chat/user")
@@ -60,11 +62,14 @@ public class HomeController {
                 .bodyToMono(ResponseGetUser.class).log().block();
             model.addAttribute("userName", me.getUserName());
             model.addAttribute("userDescription", me.getUserStatus());
-            Flux<ResponseGetFriend> resGetFriend = webClient.mutate()
-                .baseUrl(backEntry)
+            Flux<ResponseGetFriend> resGetFriend = webClientBuilder
                 .build()
                 .get()
                 .uri("/chat/friend")
+                .cookies(c -> {
+                    c.add("accessToken", accessToken);
+                    c.add("refreshToken", refreshToken);
+                })
                 .retrieve()
                 .onStatus(
                     HttpStatus::is4xxClientError, (r) -> {
@@ -76,9 +81,9 @@ public class HomeController {
                 .share().block();
             model.addAttribute("friends", readers);
 
-        } catch (CustomException e) {
-            log.info(e.getErrorCode().getDetail());
-            return "login/loginForm";
+        } catch (AppException e) {
+            log.info("Exception Message {}", messageUtil.getMessage(e));
+            return "redirect:/login";
         }
 
         return "friends/friends";

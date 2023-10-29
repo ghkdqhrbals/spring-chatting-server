@@ -1,5 +1,7 @@
 package chatting.chat.web.login;
 
+import chatting.chat.domain.util.MessageUtil;
+import chatting.chat.web.error.AppException;
 import chatting.chat.web.error.AuthorizedException;
 import chatting.chat.web.error.CustomException;
 import chatting.chat.web.login.dto.LoginRequestDto;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -27,7 +30,8 @@ import javax.validation.Valid;
 @Controller
 public class LoginController {
 
-    private WebClient webClient;
+    @Autowired
+    private MessageUtil messageUtil;
 
     @Autowired
     private WebClient.Builder webClientBuilder;
@@ -38,7 +42,6 @@ public class LoginController {
     @PostConstruct
     public void initWebClient() {
         log.info("Connected gateway : "+backEntry);
-        this.webClient = WebClient.create(backEntry);
     }
 
     @GetMapping("/login")
@@ -47,7 +50,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginForm") LoginForm form,
+    public String login(@Validated @ModelAttribute("loginForm") LoginForm form,
                             BindingResult bindingResult,
                             HttpServletRequest request,
                             HttpServletResponse httpServletResponse,
@@ -87,13 +90,10 @@ public class LoginController {
                     })
                     .bodyToMono(String.class).block();
 
-        } catch (CustomException e) {
-            log.trace(e.getMessage());
-            bindingResult.rejectValue("globalErrorCode", "loginForm.credential.bad", e.getMessage());
-            return "login/loginForm";
-        } catch (AuthorizedException e2){
-            log.trace(e2.getMessage());
-            bindingResult.rejectValue("globalErrorCode", "loginForm.credential.bad", e2.getMessage());
+        } catch (AppException e) {
+            String message = messageUtil.getMessage(e);
+            log.trace(message);
+            bindingResult.reject( e.getErrorCode().getDetail(), message);
             return "login/loginForm";
         }
 

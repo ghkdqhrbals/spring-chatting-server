@@ -1,7 +1,7 @@
 package chatting.chat.domain.friend.service;
 
-import chatting.chat.domain.data.Friend;
-import chatting.chat.domain.data.User;
+import chatting.chat.domain.friend.entity.Friend;
+import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.friend.repository.FriendRepository;
 import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.web.error.CustomException;

@@ -1,14 +1,13 @@
 package chatting.chat.web.filter;
 
-import chatting.chat.domain.redis.UserRedisSession;
-import chatting.chat.domain.redis.UserRedisSessionRepository;
-import chatting.chat.domain.redis.util.RedisUtil;
+import chatting.chat.web.sessionCluster.redis.UserRedisSession;
+import chatting.chat.web.sessionCluster.redis.UserRedisSessionRepository;
+import chatting.chat.web.sessionCluster.redis.util.RedisUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

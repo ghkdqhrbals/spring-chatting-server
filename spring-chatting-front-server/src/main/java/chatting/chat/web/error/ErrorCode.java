@@ -17,7 +17,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(UNAUTHORIZED, "잘못된 비밀번호입니다"),
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
-    CANNOT_FIND_USER(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
+    CANNOT_FIND_USER(NOT_FOUND, "server.user.notFound"),
     CANNOT_FIND_ROOM(NOT_FOUND, "해당 채팅방 정보를 찾을 수 없습니다"),
     CANNOT_FIND_FRIEND_USER(NOT_FOUND, "해당 친구 정보를 찾을 수 없습니다"),
     CANNOT_FIND_FRIEND(NOT_FOUND, "해당 유저와 친구가 아닙니다"),

@@ -7,10 +7,10 @@ import javax.validation.constraints.NotNull;
 @Data
 public class LoginForm {
 
-    @NotEmpty(message = "loginForm.loginId.notEmpty")
+    @NotEmpty(message = "{loginForm.loginId.notEmpty}")
     private String loginId;
 
-    @NotEmpty(message = "loginForm.password.notEmpty")
+    @NotEmpty(message = "{loginForm.password.notEmpty}")
     private String password;
 
 }

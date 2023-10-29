@@ -1,11 +1,15 @@
 package chatting.chat.web.error;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
-public class AuthorizedException extends RuntimeException{
-    private final ErrorCode errorCode;
+public class AuthorizedException extends AppException {
     private final String redirectUrl;
+
+    public AuthorizedException(ErrorCode errorCode, String redirectUrl) {
+        super(errorCode);
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
 }

@@ -1,8 +1,79 @@
-version : '3.7'
+version: '3.7'
 # Config-server : "43.202.52.177"
+# Persistance DB Volume
+volumes:
+  pgdata-user:
+    name: user-db-volume
+  pgdata-chat:
+    name: chat-db-volume
+  pgdata-customer:
+    name: customer-db-volume
 services:
-  # ********** Backbone **********
-  # -------- KAFKA --------
+  # -------- Relational Database --------
+  user-db:
+    container_name: user-db
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=user
+    expose:
+      - "5435"
+    ports:
+      - "5435:5435"
+    volumes:
+      - pgdata-user:/var/lib/postgresql/data
+    command: -c wal_level=logical -p 5435
+    restart: always
+  chat-db:
+    container_name: chat-db
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=chat
+    expose:
+      - "5433"
+    ports:
+      - "5433:5433"
+    volumes:
+      - pgdata-chat:/var/lib/postgresql/data
+    command: -c wal_level=logical -p 5433
+    restart: always
+  customer-db:
+    container_name: customer-db
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=customer
+    expose:
+      - "5434"
+    ports:
+      - "5434:5434"
+    volumes:
+      - pgdata-customer:/var/lib/postgresql/data
+    command: -c wal_level=logical -p 5434
+    restart: always
+
+  # -------- Redis --------
+  user-redis:
+    image: redis:latest
+    container_name: user-redis
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    restart: always
+    command: redis-server /usr/local/conf/redis.conf
+
+  # -------- Message Queue --------
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     container_name: zookeeper
@@ -23,7 +94,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8097,INTERNAL://kafka1:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
     restart: always
-  # -------- kafdrop for visualization --------
+
+  # -------- Visualization --------
   kafdrop:
     image: obsidiandynamics/kafdrop
     restart: "no"
@@ -35,7 +107,6 @@ services:
     depends_on:
       - kafka1
       - zookeeper
-
 
   # -------- Discovery Service --------
   discovery-server:
@@ -50,7 +121,7 @@ services:
       SPRING_RABBITMQ_HOST: "43.202.52.177"
     restart: always
 
-  # Service
+  # -------- Main Service --------
   user-server:
     container_name: user-server
     build:
@@ -81,37 +152,6 @@ services:
       - discovery-server
       - user-redis
     restart: always
-  user-db:
-    container_name: user-db
-    image: postgres:12-alpine
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=user
-    expose:
-      - "5435" # Publishes 5433 to other containers but NOT to host machine
-    ports:
-      - "5435:5435"
-    volumes:
-      - pgdata-user:/home/backups
-    command: -c wal_level=logical -p 5435
-    restart: always
-
-  user-redis:
-    image: redis:latest
-    container_name: user-redis
-    ports:
-      - 6379:6379
-    expose:
-      - 6379
-    volumes:
-      - ./redis/data:/data
-      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
-    labels:
-      - "name=redis"
-      - "mode=standalone"
-    restart: always
-    command: redis-server /usr/local/conf/redis.conf
 
   chatting-server:
     container_name: chatting-server
@@ -140,21 +180,6 @@ services:
       - discovery-server
       - chat-db
     restart: always
-  chat-db:
-    container_name: chat-db
-    image: postgres:12-alpine
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=chat
-    expose:
-      - "5433" # Publishes 5433 to other containers but NOT to host machine
-    ports:
-      - "5433:5433"
-    volumes:
-      - pgdata-chat:/home/backups
-    command: -c wal_level=logical -p 5433
-    restart: always
 
   customer-server:
     container_name: customer-server
@@ -180,22 +205,8 @@ services:
       - discovery-server
       - customer-db
     restart: always
-  customer-db:
-    container_name: customer-db
-    image: postgres:12-alpine
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=customer
-    expose:
-      - "5434" # Publishes 5433 to other containers but NOT to host machine
-    ports:
-      - "5434:5434"
-    volumes:
-      - pgdata-customer:/home/backups
-    command: -c wal_level=logical -p 5434
-    restart: always
 
+  # -------- API Gateway --------
   api-server:
     container_name: api-server
     build:
@@ -217,6 +228,7 @@ services:
       - discovery-server
     restart: always
 
+  # -------- Front Server --------
   front-server:
     container_name: front-server
     build: ./spring-chatting-front-server
@@ -229,12 +241,3 @@ services:
     ports:
       - "443:8000"
     restart: always
-
-# Persistance DB Volume
-volumes:
-  pgdata-user:
-    name: user-db-volume
-  pgdata-chat:
-    name: chat-db-volume
-  pgdata-customer:
-    name: customer-db-volume

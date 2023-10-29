@@ -1,15 +1,9 @@
 package chatting.chat.web.login;
 
-import chatting.chat.domain.data.User;
+import chatting.chat.web.error.AuthorizedException;
 import chatting.chat.web.error.CustomException;
-import chatting.chat.web.error.CustomThrowableException;
-import chatting.chat.web.error.ErrorCode;
-import chatting.chat.web.error.ErrorResponse;
-import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.login.dto.LoginRequestDto;
-import chatting.chat.web.login.dto.LoginResponseDto;
 import chatting.chat.web.login.util.CookieUtil;
-import com.example.commondto.token.TokenConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,22 +11,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 
 @Slf4j
@@ -97,45 +85,38 @@ public class LoginController {
 
                         return Mono.empty();
                     })
-                    .onStatus(HttpStatus::is4xxClientError,(response)->{
-                        throw new CustomException(ErrorCode.CANNOT_FIND_USER);
-                    })
                     .bodyToMono(String.class).block();
 
         } catch (CustomException e) {
             log.trace(e.getMessage());
             bindingResult.rejectValue("globalErrorCode", "loginForm.credential.bad", e.getMessage());
             return "login/loginForm";
+        } catch (AuthorizedException e2){
+            log.trace(e2.getMessage());
+            bindingResult.rejectValue("globalErrorCode", "loginForm.credential.bad", e2.getMessage());
+            return "login/loginForm";
         }
 
         // logic
-        log.info(redirectURL);
+        log.info("Redirect URL : {}", redirectURL.toString());
         return "redirect:"+redirectURL;
     }
 
     @GetMapping("/logout")
     public String loginForm(HttpServletRequest request, HttpServletResponse httpResponse) {
-        try{
-            webClientBuilder
-                    .build()
-                    .post()
-                    .uri("/user/logout")
-                    .cookies((cookies) -> {
-                        cookies.add("accessToken", CookieUtil.getCookie(request, "accessToken"));
-                        cookies.add("refreshToken", CookieUtil.getCookie(request, "refreshToken"));
-                    })
-                    .retrieve()
-                    .onStatus(
-                            HttpStatus::is4xxClientError,
-                            response -> response.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                    .bodyToMono(String.class)
-                    .block();
-            CookieUtil.removeCookie(httpResponse, "accessToken");
-            CookieUtil.removeCookie(httpResponse, "refreshToken");
-        }catch (CustomThrowableException e){
-            log.info(e.getErrorResponse().getMessage());
-            return "redirect:/login";
-        }
+        webClientBuilder
+            .build()
+            .post()
+            .uri("/user/logout")
+            .cookies((cookies) -> {
+                cookies.add("accessToken", CookieUtil.getCookie(request, "accessToken"));
+                cookies.add("refreshToken", CookieUtil.getCookie(request, "refreshToken"));
+            })
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        CookieUtil.removeCookie(httpResponse, "accessToken");
+        CookieUtil.removeCookie(httpResponse, "refreshToken");
         return "redirect:/login";
     }
 

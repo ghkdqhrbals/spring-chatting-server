@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/styles.css">
+  <link th:href="@{/css/styles.css}"
+        href="../css/styles.css" rel="stylesheet">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div class="status-bar">
+  <div class="status-bar__column">
+    <span>No Service</span>
+    <i class="fa-solid fa-wifi"></i>
+  </div>
+
+  <div class="status-bar__column">
+    <span>18:43</span>
+  </div>
+
+  <div class="status-bar__column">
+    <span>80%</span>
+    <i class="fa-solid fa-battery-full fa-lg"></i>
+    <i class="fa-solid fa-bolt-lightning"></i>
+  </div>
+</div>
+
+
+<header class="screen-header">
+  <h1 class="screen-header__title">Add Your Friends!</h1>
+  <div class="screen-header__icons">
+    <span><i class="fa-solid fa-magnifying-glass"></i></span>
+    <span><i class="fa-solid fa-music"></i></span>
+    <span><i class="fa-solid fa-gear"></i></span>
+  </div>
+</header>
+
+<form action="../friends/friends.html" th:action method="post" id="login-form">
+  <div th:if="${#fields.hasGlobalErrors()}">
+    <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+  </div>
+
+  <input name="username" type="text" th:field="${friendId}" th:errorclass="field-error" placeholder="ID"/>
+  <p class="field-error" th:errors="*{friendId}" >오류메세지</p>
+
+  <input type="submit" value="Register"/>
+
+  <a style="margin-top: 5px" href="../friends/friends.html" th:href='@{/}' >Back</a>
+</form>
+<!--<div class="no-mobile">-->
+<!--  <span> Your screen is too big.. ㅠㅠ</span>-->
+<!--</div>-->
+
+</body>
+</html>

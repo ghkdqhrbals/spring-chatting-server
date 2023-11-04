@@ -22,33 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/friend")
 @AllArgsConstructor
 public class FriendController {
 
     private final UserService userService;
     private final FriendService friendService;
 
-    @GetMapping
+    @GetMapping("/friend")
     @Operation(summary = "Get a friend information that connected with user")
     public ResponseEntity<FriendResponse.FriendDTO> findMyFriend(@RequestParam("friendId") String friendId) {
         return ResponseEntity.ok(friendService.findMyFriend(UserContext.getUserId(),friendId));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/friends")
     @Operation(summary = "Get friends information that connected with user")
     public ResponseEntity<List<FriendResponse.FriendDTO>> findFriends() {
         return ResponseEntity.ok(userService.findAllFriends(UserContext.getUserId()));
     }
 
-    @PostMapping
+    @PostMapping("/friend")
     @Operation(summary = "Add friends")
     public ResponseEntity<String> addFriend(@RequestBody FriendRequest.NewFriendDTO newFriendDTO) {
         friendService.save(UserContext.getUserId(), newFriendDTO.getFriendId());
         return ResponseEntity.ok("success");
     }
 
-    @DeleteMapping
+    @DeleteMapping("/friend")
     @Operation(summary = "Remove friends")
     public ResponseEntity<?> removeFriend(@RequestParam("userId") String userId,
         @RequestParam("friendId") String friendId) {

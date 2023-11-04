@@ -1,5 +1,6 @@
-package chatting.chat.web.friend;
+package chatting.chat.web.friend.dto;
 
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -7,6 +8,6 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class FriendForm {
 
-    @NotEmpty
+    @NotBlank(message = "friendId is mandatory")
     private String friendId;
 }

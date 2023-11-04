@@ -66,7 +66,7 @@ public class HomeController {
             Flux<FriendResponse.FriendDTO> resGetFriend = webClientBuilder
                 .build()
                 .get()
-                .uri("/chat/friend")
+                .uri("/chat/friends")
                 .cookies(c -> {
                     c.add("accessToken", accessToken);
                     c.add("refreshToken", refreshToken);

@@ -27,7 +27,7 @@
 
 
 <header class="screen-header">
-  <h1 class="screen-header__title">Add Your Friends!</h1>
+  <h1 class="screen-header__title">Add Your Friend</h1>
   <div class="screen-header__icons">
     <span><i class="fa-solid fa-magnifying-glass"></i></span>
     <span><i class="fa-solid fa-music"></i></span>
@@ -35,18 +35,20 @@
   </div>
 </header>
 
-<form action="../friends/friends.html" th:action method="post" id="login-form">
+<form action="../friends/friends.html" th:object="${friendForm}" th:action method="post" id="login-form">
   <div th:if="${#fields.hasGlobalErrors()}">
     <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
   </div>
 
-  <input name="username" type="text" th:field="${friendId}" th:errorclass="field-error" placeholder="ID"/>
+  <input name="username" type="text" th:field="*{friendId}" th:errorclass="field-error" placeholder="enter your friend's id"/>
   <p class="field-error" th:errors="*{friendId}" >오류메세지</p>
 
   <input type="submit" value="Register"/>
 
   <a style="margin-top: 5px" href="../friends/friends.html" th:href='@{/}' >Back</a>
 </form>
+
+<script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
 <!--<div class="no-mobile">-->
 <!--  <span> Your screen is too big.. ㅠㅠ</span>-->
 <!--</div>-->

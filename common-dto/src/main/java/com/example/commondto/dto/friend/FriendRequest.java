@@ -1,6 +1,7 @@
 package com.example.commondto.dto.friend;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import java.util.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,6 +15,7 @@ public class FriendRequest {
     @ToString
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class NewFriendDTO {
+        @NotBlank(message = "friendId is mandatory")
         @JsonProperty("friendId")
         private String friendId;
         @Builder

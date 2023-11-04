@@ -1,20 +1,17 @@
-package com.example.shopuserservice.config;
+package chatting.chat.config;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import reactor.core.publisher.Sinks;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 @EnableAsync
 @Slf4j
-public class AsyncConfig  {
+public class AsyncConfig {
 
     @Bean(name = "taskExecutor")
     public Executor getAsyncExecutor() {

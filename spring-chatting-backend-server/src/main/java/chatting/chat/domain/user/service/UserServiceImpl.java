@@ -29,7 +29,6 @@ import static chatting.chat.web.error.ErrorCode.*;
 
 @Slf4j
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -52,29 +51,36 @@ public class UserServiceImpl implements UserService {
 
     // 유저 검색
     @Override
+    @Transactional(readOnly = true)
     public User findById(String userId) {
         return getUser(userId);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FriendResponse.FriendDTO> findAllFriends(String userId) {
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
-        ArrayList<FriendDTO> collect = findFriends.stream()
-            .map(Friend::getUser)
-            .map(u -> {
+        ArrayList<FriendResponse.FriendDTO> collect = findFriends.stream()
+            .map(Friend::getFriendId)
+            .map(friendId -> {
+                // TODO(Query Optimizing) : SELECT QUERY N+1 문제 해결 필요
+                User user = userRepository.findById(friendId)
+                    .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
                 return FriendResponse.FriendDTO.builder()
-                    .friendId(u.getUserId())
-                    .friendName(u.getUserName())
-                    .friendStatus(u.getUserStatus())
+                    .friendId(user.getUserId())
+                    .friendName(user.getUserName())
+                    .friendStatus(user.getUserStatus())
                     .build();
             })
             .collect(Collectors.toCollection(ArrayList::new));
         return collect;
     }
 
+
+
     // 유저 저장
     @Override
+    @Transactional
     public User save(String userId, String userName, String userStatus) {
         throwErrorWhenUserFind(userId);
         User savedUser = userRepository.save(createUser(userId, userName, userStatus));
@@ -83,6 +89,7 @@ public class UserServiceImpl implements UserService {
 
     // 유저 상태메세지 업데이트
     @Override
+    @Transactional
     public void updateUserStatus(RequestChangeUserStatusDTO req) {
         User findUser = getUser(req.getUserId());
         findUser.setUserStatus(req.getStatus());

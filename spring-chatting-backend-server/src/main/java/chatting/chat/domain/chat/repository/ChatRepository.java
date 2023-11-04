@@ -1,4 +1,4 @@
-package chatting.chat.domain.chat;
+package chatting.chat.domain.chat.repository;
 
 import chatting.chat.domain.chat.entity.Chatting;
 import org.springframework.data.jpa.repository.JpaRepository;

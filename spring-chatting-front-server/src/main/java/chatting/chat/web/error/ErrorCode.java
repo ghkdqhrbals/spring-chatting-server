@@ -30,6 +30,10 @@ public enum ErrorCode {
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
+
+    // 503 SERVICE_UNAVAILABLE : 서비스 이용 불가
+    SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "server.service.notFound"),
+
     ;
 
     private final HttpStatus httpStatus;

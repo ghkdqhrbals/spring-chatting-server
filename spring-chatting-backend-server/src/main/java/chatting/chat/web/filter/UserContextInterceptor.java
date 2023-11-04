@@ -20,11 +20,11 @@ import java.util.Optional;
 public class UserContextInterceptor implements HandlerInterceptor {
 
     private final UserRedisSessionRepository userRedisSessionRepository;
-    private final RedisUtil redisUtil;
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         String userId = extractUserIdFromRequest(request);
         if (userId==null){
             response.sendError(401);
@@ -59,6 +59,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
                 return null;
             }
         }
+        log.info("cookie not found");
         return null;
     }
 }

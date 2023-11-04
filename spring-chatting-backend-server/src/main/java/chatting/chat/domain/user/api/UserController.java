@@ -12,16 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RestController("/user")
+@RestController
+@RequestMapping("/user")
 @AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
     
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "Get user information")
     public ResponseEntity<?> findUser() {
         User findUser = userService.findById(UserContext.getUserId());
@@ -29,7 +31,7 @@ public class UserController {
             findUser.getUserStatus()));
     }
 
-    @PostMapping("/")
+    @PostMapping
     @Operation(summary = "Save user")
     public ResponseEntity<?> addUser(@RequestBody RequestUser req) {
         log.trace(req.toString());

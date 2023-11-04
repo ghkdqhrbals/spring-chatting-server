@@ -1,7 +1,8 @@
-package chatting.chat.domain.chat;
+package chatting.chat.domain.chat.service;
 
 
 import chatting.chat.domain.chat.entity.Chatting;
+import chatting.chat.domain.chat.repository.ChatRepository;
 import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.participant.repository.ParticipantRepository;

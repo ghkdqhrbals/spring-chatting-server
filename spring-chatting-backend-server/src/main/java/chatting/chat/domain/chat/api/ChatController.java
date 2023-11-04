@@ -1,17 +1,11 @@
-package chatting.chat.web;
+package chatting.chat.domain.chat.api;
 
-import chatting.chat.domain.chat.ChatService;
+import chatting.chat.domain.chat.service.ChatService;
 import chatting.chat.domain.chat.entity.Chatting;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.user.entity.User;
-import com.example.commondto.dto.friend.FriendResponse;
-import chatting.chat.domain.friend.service.FriendService;
-import chatting.chat.domain.participant.service.ParticipantService;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
-import chatting.chat.web.dto.RequestUser;
-import chatting.chat.web.dto.ResponseGetUser;
-import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.kafka.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;

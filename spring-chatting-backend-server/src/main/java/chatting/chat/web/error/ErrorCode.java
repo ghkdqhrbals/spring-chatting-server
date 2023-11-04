@@ -32,7 +32,7 @@ public enum ErrorCode {
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
     DUPLICATE_USER_RESOURCE(CONFLICT, "유저 데이터가 이미 존재합니다"),
-    ;
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 기본 에러가 발생하였습니다" );
 
     private final HttpStatus httpStatus;
     private final String detail;

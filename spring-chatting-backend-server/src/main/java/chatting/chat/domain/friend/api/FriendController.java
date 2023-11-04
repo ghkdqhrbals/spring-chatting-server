@@ -16,37 +16,39 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RestController("/friend")
+@RestController
+@RequestMapping("/friend")
 @AllArgsConstructor
 public class FriendController {
 
     private final UserService userService;
     private final FriendService friendService;
 
-    @GetMapping("/")
+    @GetMapping
+    @Operation(summary = "Get a friend information that connected with user")
+    public ResponseEntity<FriendResponse.FriendDTO> findMyFriend(@RequestParam("friendId") String friendId) {
+        return ResponseEntity.ok(friendService.findMyFriend(UserContext.getUserId(),friendId));
+    }
+
+    @GetMapping("/all")
     @Operation(summary = "Get friends information that connected with user")
-    public ResponseEntity<List<FriendResponse.FriendDTO>> findFriend() {
+    public ResponseEntity<List<FriendResponse.FriendDTO>> findFriends() {
         return ResponseEntity.ok(userService.findAllFriends(UserContext.getUserId()));
     }
 
-    @PostMapping("/")
+    @PostMapping
     @Operation(summary = "Add friends")
-    public ResponseEntity<?> addFriend(@RequestBody FriendRequest.NewFriendDTO req) {
-        // validation
-        User findUser = userService.findById(req.getUserId());
-        List<String> friendIds = req.getFriendId();
-        for (String friendId : friendIds) {
-            User findUserFriend = userService.findById(friendId);
-            friendService.save(findUser.getUserId(), findUserFriend.getUserId());
-        }
+    public ResponseEntity<String> addFriend(@RequestBody FriendRequest.NewFriendDTO newFriendDTO) {
+        friendService.save(UserContext.getUserId(), newFriendDTO.getFriendId());
         return ResponseEntity.ok("success");
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping
     @Operation(summary = "Remove friends")
     public ResponseEntity<?> removeFriend(@RequestParam("userId") String userId,
         @RequestParam("friendId") String friendId) {

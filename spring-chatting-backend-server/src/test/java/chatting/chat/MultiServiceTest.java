@@ -1,6 +1,6 @@
 package chatting.chat;
 
-import chatting.chat.domain.chat.ChatService;
+import chatting.chat.domain.chat.service.ChatService;
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.room.entity.Room;

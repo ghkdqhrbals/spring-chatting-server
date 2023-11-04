@@ -7,6 +7,7 @@ import chatting.chat.web.error.AppException;
 import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.login.util.CookieUtil;
+import com.example.commondto.dto.friend.FriendResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,7 +63,7 @@ public class HomeController {
                 .bodyToMono(ResponseGetUser.class).log().block();
             model.addAttribute("userName", me.getUserName());
             model.addAttribute("userDescription", me.getUserStatus());
-            Flux<ResponseGetFriend> resGetFriend = webClientBuilder
+            Flux<FriendResponse.FriendDTO> resGetFriend = webClientBuilder
                 .build()
                 .get()
                 .uri("/chat/friend")
@@ -75,10 +76,13 @@ public class HomeController {
                     HttpStatus::is4xxClientError, (r) -> {
                         throw new CustomException(ErrorCode.INVALID_TOKEN);
                     })
-                .bodyToFlux(ResponseGetFriend.class);
+                .bodyToFlux(FriendResponse.FriendDTO.class);
 
-            List<ResponseGetFriend> readers = resGetFriend.collect(Collectors.toList())
+            List<FriendResponse.FriendDTO> readers = resGetFriend.collect(Collectors.toList())
                 .share().block();
+            readers.stream().forEach(friendDTO -> {
+                log.info("friendDTO: {}", friendDTO);
+            });
             model.addAttribute("friends", readers);
 
         } catch (AppException e) {

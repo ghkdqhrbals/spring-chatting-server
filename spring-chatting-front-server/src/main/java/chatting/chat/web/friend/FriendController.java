@@ -10,7 +10,10 @@ import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.kafka.dto.RequestAddFriendDTO;
+import chatting.chat.web.login.util.CookieUtil;
+import com.example.commondto.dto.friend.FriendRequest;
 import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -52,11 +56,12 @@ public class FriendController {
 
     // 친구 추가
     @PostMapping
-    public String addFriendForm(
-        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User loginUser,
-        @Valid @ModelAttribute("friendForm") FriendForm form,
-        BindingResult bindingResult,
-        Model model, HttpSession session) {
+    public String addFriendForm(@Validated @ModelAttribute("friendForm") FriendForm form,
+        HttpServletRequest request, BindingResult bindingResult) {
+        String accessToken = CookieUtil.getCookie(request, "accessToken");
+        String refreshToken = CookieUtil.getCookie(request, "refreshToken");
+
+        log.trace("add friends!");
 
         if (bindingResult.hasErrors()) {
             return "users/addFriendForm";
@@ -67,8 +72,13 @@ public class FriendController {
                 .build()
                 .post()
                 .uri("/chat/friend")
-                .bodyValue(new RequestAddFriendDTO(loginUser.getUserId(),
-                    Arrays.asList(form.getFriendId())))
+                .bodyValue(FriendRequest.NewFriendDTO.builder()
+                    .friendId(form.getFriendId())
+                    .build())
+                .cookies(c -> {
+                    c.add("accessToken", accessToken);
+                    c.add("refreshToken", refreshToken);
+                })
                 .retrieve()
                 .onStatus(
                     (status) -> status == HttpStatus.NOT_FOUND,

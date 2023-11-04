@@ -1,6 +1,7 @@
 package chatting.chat.web.config;
 
 import chatting.chat.web.error.AuthorizedException;
+import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,26 +14,36 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Configuration
 public class WebClientConfig {
+
     @Value("${backend.api.gateway}")
     private String backEntry;
 
     @Bean
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder()
-                .baseUrl(backEntry)
-                .filter(addCookiesFilterFunction())
-                .filter(handle401And403ThrowAuthorizedException());
+            .baseUrl(backEntry)
+            .filter(addCookiesFilterFunction())
+            .filter(handle401And403ThrowAuthorizedException());
     }
 
-    private ExchangeFilterFunction handle401And403ThrowAuthorizedException() throws AuthorizedException {
+    private ExchangeFilterFunction handle401And403ThrowAuthorizedException()
+        throws AuthorizedException {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
             log.info("Response status code: {}", clientResponse.statusCode());
-            if (clientResponse.statusCode().value()==401) {
+            if (clientResponse.statusCode().value() == 401) {
+                log.trace("User is not authenticated");
                 String redirectUrl = "/login";
-                return Mono.error(new AuthorizedException(ErrorCode.INVALID_CREDENTIAL,redirectUrl));
-            }else if (clientResponse.statusCode().value()==403) {
+                return Mono.error(
+                    new AuthorizedException(ErrorCode.INVALID_CREDENTIAL, redirectUrl));
+            } else if (clientResponse.statusCode().value() == 403) {
+                log.trace("User is not authorized");
                 String redirectUrl = "/login";
-                return Mono.error(new AuthorizedException(ErrorCode.FORBIDDEN_USER,redirectUrl));
+                return Mono.error(new AuthorizedException(ErrorCode.FORBIDDEN_USER, redirectUrl));
+            } else if (clientResponse.statusCode().value() == 503) {
+                // This occured when server is not initialized
+                log.trace("Server is not initialized in EUREKA");
+                String redirectUrl = "/login";
+                return Mono.error(new CustomException(ErrorCode.SERVICE_UNAVAILABLE));
             }
             return Mono.just(clientResponse);
         });
@@ -42,7 +53,7 @@ public class WebClientConfig {
 
         return (clientRequest, next) -> {
             log.info("Request: {} {}", clientRequest.method(), clientRequest.url());
-            log.info("With Cookies: {}",clientRequest.cookies());
+            log.info("With Cookies: {}", clientRequest.cookies());
             return next.exchange(clientRequest);
         };
     }

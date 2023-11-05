@@ -2,14 +2,17 @@ package chatting.chat.domain.participant.service;
 
 import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
-import chatting.chat.web.error.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static chatting.chat.web.error.ErrorCode.DUPLICATE_PARTICIPANT;
+import static com.example.commondto.error.ErrorCode.*;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
+import com.example.commondto.error.ErrorResponse;
+import com.example.commondto.error.AppException;
 
 @Slf4j
 @Service

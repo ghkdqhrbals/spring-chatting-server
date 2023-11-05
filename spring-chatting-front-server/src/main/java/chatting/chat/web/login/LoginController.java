@@ -1,12 +1,10 @@
 package chatting.chat.web.login;
 
 import chatting.chat.domain.util.MessageUtil;
-import chatting.chat.web.error.AppException;
-import chatting.chat.web.error.AuthorizedException;
-import chatting.chat.web.error.CustomException;
 import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.login.dto.LoginRequestDto;
 import chatting.chat.web.login.util.CookieUtil;
+import com.example.commondto.error.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +23,6 @@ import reactor.core.publisher.Mono;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 
 @Slf4j

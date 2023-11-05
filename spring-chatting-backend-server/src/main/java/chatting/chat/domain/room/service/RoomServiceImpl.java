@@ -1,15 +1,17 @@
 package chatting.chat.domain.room.service;
 
+import static com.example.commondto.error.ErrorCode.*;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
+import com.example.commondto.error.ErrorResponse;
+import com.example.commondto.error.AppException;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.room.repository.RoomRepository;
-import chatting.chat.web.error.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static chatting.chat.web.error.ErrorCode.CANNOT_FIND_ROOM;
 
 @Service
 @Transactional

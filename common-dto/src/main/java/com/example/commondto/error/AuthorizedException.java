@@ -1,4 +1,4 @@
-package chatting.chat.web.error;
+package com.example.commondto.error;
 
 
 public class AuthorizedException extends AppException {

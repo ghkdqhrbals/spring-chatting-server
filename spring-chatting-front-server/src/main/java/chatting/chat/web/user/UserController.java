@@ -3,9 +3,7 @@ package chatting.chat.web.user;
 
 import chatting.chat.domain.data.User;
 import chatting.chat.web.dto.*;
-import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.CustomThrowableException;
-import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
 import chatting.chat.web.friend.service.FriendService;
@@ -218,9 +216,8 @@ public class UserController {
                 );
             }
 
-        } catch (CustomThrowableException e) {
-            log.info(e.getErrorResponse().getCode());
-            log.info(e.getErrorResponse().getMessage());
+        } catch (Exception e) {
+            log.info("local msg : {}",e.getLocalizedMessage());
             return "users/room";
         }
 

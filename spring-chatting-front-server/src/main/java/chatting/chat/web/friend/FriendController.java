@@ -1,12 +1,13 @@
 package chatting.chat.web.friend;
 
-import chatting.chat.web.error.AuthorizedException;
-import chatting.chat.web.error.CustomException;
-import chatting.chat.web.error.ErrorCode;
+import chatting.chat.domain.util.MessageUtil;
 import chatting.chat.web.friend.dto.FriendForm;
 import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.login.util.CookieUtil;
-import com.example.commondto.dto.friend.FriendRequest;
+import com.example.commondto.dto.friend.FriendRequest.NewFriendDTO;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
+import com.example.commondto.error.ErrorResponse;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Controller
 @RequestMapping("/friend")
 public class FriendController {
 
+    @Autowired
+    private MessageUtil messageUtil;
     @Autowired
     private WebClient.Builder webClientBuilder;
 
@@ -55,12 +59,12 @@ public class FriendController {
             return "friends/friendAddForm";
         }
 
-        try {
-            String response = webClientBuilder
+        try{
+            webClientBuilder
                 .build()
                 .post()
                 .uri("/chat/friend")
-                .bodyValue(FriendRequest.NewFriendDTO.builder()
+                .bodyValue(NewFriendDTO.builder()
                     .friendId(form.getFriendId())
                     .build())
                 .cookies(c -> {
@@ -71,20 +75,29 @@ public class FriendController {
                 .onStatus(
                     (status) -> status == HttpStatus.NOT_FOUND,
                     (res) -> {
-                        throw new CustomException(ErrorCode.CANNOT_FIND_USER);
+                        return Mono.error(new CustomException(ErrorCode.CANNOT_FIND_USER));
                     })
+                .onStatus(
+                    (status) -> status == HttpStatus.BAD_REQUEST,
+                    (res) -> res.bodyToMono(com.example.commondto.error.ErrorResponse.class)
+                        .flatMap(errorResponse -> {
+                            log.info("errorResponse: {}", errorResponse);
+                            if (errorResponse != null && errorResponse.getCode() != null) {
+                                return Mono.error(new CustomException(ErrorCode.valueOf(errorResponse.getCode())));
+                            } else {
+                                return Mono.error(new CustomException(ErrorCode.BAD_REQUEST_DEFAULT));
+                            }
+                        }))
                 .bodyToMono(String.class).block();
-            log.info(response);
-
-        } catch (AuthorizedException authorizedException) {
-            return "redirect:" + authorizedException.getRedirectUrl();
-        } catch (CustomException e) {
-            bindingResult.rejectValue("friendId", e.getErrorCode().getDetail(),
-                new Object[]{form.getFriendId()}, e.getErrorCode().getDetail());
+        }catch (CustomException e){
+            String message = messageUtil.getMessage(e, form.getFriendId());
+            log.trace("CustomException : {}",message);
+            bindingResult.reject( e.getErrorCode().getDetail(), new Object[]{form.getFriendId(),"CHATTING"}, message);
             return "friends/friendAddForm";
         }
 
-        return "redirect:/"; // TODO
+
+        return "redirect:/";
     }
 
 }

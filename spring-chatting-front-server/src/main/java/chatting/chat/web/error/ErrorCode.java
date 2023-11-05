@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
-    INVALID_TOKEN(BAD_REQUEST, "server.user.invalidToken"),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "server.user.invalidToken"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_CREDENTIAL(UNAUTHORIZED, "server.user.invalidCredential"),
@@ -34,7 +34,7 @@ public enum ErrorCode {
     // 503 SERVICE_UNAVAILABLE : 서비스 이용 불가
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "server.service.notFound"),
 
-    ;
+    BAD_REQUEST(HttpStatus.BAD_REQUEST,"BAD REQUEST");
 
     private final HttpStatus httpStatus;
     private final String detail;

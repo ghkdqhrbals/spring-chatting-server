@@ -11,8 +11,8 @@ import chatting.chat.domain.participant.service.ParticipantServiceImpl;
 import chatting.chat.domain.room.repository.RoomRepository;
 import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.domain.user.service.UserServiceImpl;
-import chatting.chat.web.error.CustomException;
 import chatting.chat.web.kafka.dto.RequestAddChatRoomDTO;
+import com.example.commondto.error.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +28,10 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.List;
 
+import static com.example.commondto.error.ErrorCode.CANNOT_FIND_FRIEND;
+import static com.example.commondto.error.ErrorCode.CANNOT_FIND_USER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static chatting.chat.web.error.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 

@@ -10,7 +10,7 @@ import chatting.chat.domain.friend.repository.FriendRepository;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.room.repository.RoomRepository;
 import chatting.chat.domain.user.repository.UserRepository;
-import chatting.chat.web.error.CustomException;
+
 import chatting.chat.web.kafka.dto.ChatRoomDTO;
 import chatting.chat.web.kafka.dto.*;
 import java.util.stream.Collectors;
@@ -25,7 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static chatting.chat.web.error.ErrorCode.*;
+import static com.example.commondto.error.ErrorCode.*;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
+import com.example.commondto.error.ErrorResponse;
+import com.example.commondto.error.AppException;
 
 @Slf4j
 @Service
@@ -179,7 +183,7 @@ public class UserServiceImpl implements UserService {
     public void throwErrorWhenUserFind(String userId) throws CustomException {
         Optional<User> findUser = userRepository.findById(userId);
         if (findUser.isPresent()) {
-            throw new CustomException(DUPLICATE_USER_RESOURCE);
+            throw new CustomException(DUPLICATE_RESOURCE);
         }
     }
 

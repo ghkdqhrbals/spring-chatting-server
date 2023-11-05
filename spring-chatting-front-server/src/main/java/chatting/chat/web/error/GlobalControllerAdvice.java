@@ -1,6 +1,7 @@
 package chatting.chat.web.error;
 
 import chatting.chat.web.config.RedirectionException;
+import com.example.commondto.error.AuthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

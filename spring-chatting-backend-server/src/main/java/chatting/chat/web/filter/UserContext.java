@@ -1,7 +1,7 @@
 package chatting.chat.web.filter;
 
-import chatting.chat.web.error.CustomException;
-import chatting.chat.web.error.ErrorCode;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -1,8 +1,9 @@
 package chatting.chat.web.user.service;
 
 import chatting.chat.web.dto.ResponseGetUser;
-import chatting.chat.web.error.CustomException;
-import chatting.chat.web.error.ErrorCode;
+
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package chatting.chat.web.config;
 
-import chatting.chat.web.error.AuthorizedException;
-import chatting.chat.web.error.CustomException;
-import chatting.chat.web.error.ErrorCode;
+import com.example.commondto.error.AuthorizedException;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.example.shopuserservice.web.error;
+package com.example.commondto.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

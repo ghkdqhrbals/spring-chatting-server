@@ -1,10 +1,16 @@
 package chatting.chat.domain.friend.service;
 
+import static com.example.commondto.error.ErrorCode.*;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
+import com.example.commondto.error.ErrorResponse;
+import com.example.commondto.error.AppException;
+
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.friend.repository.FriendRepository;
 import chatting.chat.domain.user.repository.UserRepository;
-import chatting.chat.web.error.CustomException;
+
 import com.example.commondto.dto.friend.FriendResponse;
 import com.example.commondto.dto.friend.FriendResponse.FriendDTO;
 import java.util.ArrayList;
@@ -17,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static chatting.chat.web.error.ErrorCode.*;
+
 
 @Slf4j
 @Service
@@ -52,7 +58,7 @@ public class FriendServiceImpl implements FriendService {
 
         if (userId.equals(friendId)) {
             log.trace("cannot add self!");
-            throw new CustomException(DUPLICATE_FRIEND_SELF);
+            throw new CustomException(CANNOT_ADD_SELF);
         }
         log.trace("friend with me? : {}", isFriend1 != null ? "true" : "false");
         log.trace("me with friend? : {}", isFriend2 != null ? "true" : "false");
@@ -60,7 +66,7 @@ public class FriendServiceImpl implements FriendService {
         // 이미 나와 친구임
         if (isFriend1 != null) {
             log.trace("already friend!");
-            throw new CustomException(DUPLICATE_FRIEND);
+            throw new CustomException(ALREADY_FRIEND);
         }
         log.trace("not friend!");
 

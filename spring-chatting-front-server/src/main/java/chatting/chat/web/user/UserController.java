@@ -3,14 +3,21 @@ package chatting.chat.web.user;
 
 import chatting.chat.domain.data.User;
 import chatting.chat.web.dto.*;
+import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.CustomThrowableException;
+import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
+import chatting.chat.web.friend.service.FriendService;
 import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.kafka.dto.CreateChatRoomUnitDTO;
 import chatting.chat.web.kafka.dto.RequestChangeUserStatusDTO;
+import chatting.chat.web.login.util.CookieUtil;
 import chatting.chat.web.user.dto.RequestUser;
+import com.example.commondto.dto.friend.FriendResponse;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.ServerSentEvent;
@@ -36,6 +43,11 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private WebClient webClient;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+    @Autowired
+    private FriendService friendService;
 
     private final SimpMessagingTemplate template;
     @Value("${backend.api.gateway}")
@@ -80,7 +92,7 @@ public class UserController {
         // 동시성을 위한 별도 스레드 풀 사용
         return CompletableFuture.supplyAsync(() -> {
             log.trace("Send Request inside another thread {}", req.toString());
-            Flux<ServerSentEvent> temp = webClient.post()
+            Flux<ServerSentEvent> temp = webClientBuilder.build().post()
                 .uri("/user")
                 .bodyValue(req)
                 .retrieve()
@@ -125,9 +137,7 @@ public class UserController {
 
         // 상태 메세지 변경
         try {
-            webClient.mutate()
-                .build()
-                .post()
+            webClientBuilder.build().post()
                 .uri("/chat/status")
                 .bodyValue(
                     new RequestChangeUserStatusDTO(user.getUserId(), form.getStatusMessage()))
@@ -154,9 +164,7 @@ public class UserController {
         HttpSession session, Model model) {
         CommonModel.addCommonModel(model);
         try {
-            Flux<ChatRoomDTO> response = webClient.mutate()
-                .build()
-                .get()
+            Flux<ChatRoomDTO> response = webClientBuilder.build().get()
                 .uri("/chat/rooms?userId=" + user.getUserId())
                 .retrieve()
                 .onStatus(
@@ -183,21 +191,22 @@ public class UserController {
     //채팅방 개설
     @GetMapping("/room")
     public String createRoom(
-        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
-        @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model) {
+        @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model,
+        HttpServletRequest request) {
         CommonModel.addCommonModel(model);
+        CommonModel.addCommonModel(model);
+        String accessToken = CookieUtil.getCookie(request, "accessToken");
+        String refreshToken = CookieUtil.getCookie(request, "refreshToken");
+
+        if (accessToken == null || refreshToken == null) {
+            return "redirect:/login";
+        }
 
         try {
-            Flux<ResponseGetFriend> response = webClient.mutate()
-                .build()
-                .get()
-                .uri("/chat/friend?userId=" + user.getUserId())
-                .retrieve()
-                .onStatus(
-                    HttpStatus::is4xxClientError,
-                    r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                .bodyToFlux(ResponseGetFriend.class);
-            List<ResponseGetFriend> readers = response.collect(Collectors.toList()).share().block();
+            Flux<FriendResponse.FriendDTO> response = friendService.getMyFriends(accessToken,
+                refreshToken);
+            List<FriendResponse.FriendDTO> readers = response.collect(Collectors.toList()).share()
+                .block();
 
             if (readers.size() > 0) {
                 form.setFriends(

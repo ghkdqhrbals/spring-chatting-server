@@ -1,32 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="css/styles.css">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/css/styles.css}"
+          href="../css/styles.css" rel="stylesheet">
     <title>Chats - Kokoa Clone</title>
 </head>
 
 <body>
-    <div class="status-bar">
-        <div class="status-bar__column">
-            <span>No Service</span>
-            <i class="fa-solid fa-wifi"></i>
-        </div>
-
-        <div class="status-bar__column">
-            <span>18:43</span>
-        </div>
-
-        <div class="status-bar__column">
-            <span>80%</span>
-            <i class="fa-solid fa-battery-full fa-lg"></i>
-            <i class="fa-solid fa-bolt-lightning"></i>
-        </div>
-
-    </div>
+    <div th:replace="fragments/status-bar.html :: status-bar"></div>
+    <div th:replace="fragments/nav.html :: fragment-nav"></div>
 
     <header class="screen-header">
         <h1 class="screen-header__title">Chats</h1>
@@ -76,8 +62,6 @@
         </a>
 
     </main>
-
-    <div th:replace="/navigate/nav.html"></div>
 
     <script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
 

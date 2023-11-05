@@ -4,6 +4,7 @@ import chatting.chat.domain.util.MessageUtil;
 import chatting.chat.web.error.AppException;
 import chatting.chat.web.error.AuthorizedException;
 import chatting.chat.web.error.CustomException;
+import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.login.dto.LoginRequestDto;
 import chatting.chat.web.login.util.CookieUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -45,7 +47,8 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
+    public String loginForm(@ModelAttribute("loginForm") LoginForm form, Model model) {
+        CommonModel.addCommonModel(model);
         return "login/loginForm";
     }
 

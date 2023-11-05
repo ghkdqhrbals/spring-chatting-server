@@ -6,6 +6,7 @@ import chatting.chat.web.dto.ResponseGetUser;
 import chatting.chat.web.error.AppException;
 import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.ErrorCode;
+import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.login.util.CookieUtil;
 import com.example.commondto.dto.friend.FriendResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String mainHome(HttpServletRequest request, Model model) {
+        CommonModel.addCommonModel(model);
         String accessToken = CookieUtil.getCookie(request, "accessToken");
         String refreshToken = CookieUtil.getCookie(request, "refreshToken");
         log.trace("accessToken: {}", accessToken);

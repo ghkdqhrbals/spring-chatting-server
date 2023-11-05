@@ -3,35 +3,67 @@ package chatting.chat.web.battery;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 public class BatteryInfo {
 
-    public static String getBatteryStatus() throws IOException, InterruptedException {
+    public static Optional<String> getBatteryStatus() throws IOException, InterruptedException {
         String osName = System.getProperty("os.name").toLowerCase();
-        String command;
+        log.trace("osName: {}", osName);
+        int batteryPercentage = 100;
+
 
         if (osName.contains("win")) {
-            // Windows 운영 체제인 경우
-            command = "WMIC PATH Win32_Battery Get EstimatedChargeRemaining";
+            Process process = Runtime.getRuntime().exec("WMIC PATH Win32_Battery Get EstimatedChargeRemaining");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // 배터리 정보를 파싱하여 배터리 잔량을 추출합니다.
+                try {
+                    batteryPercentage = Integer.parseInt(line.trim());
+                    System.out.println("Battery Percentage: " + batteryPercentage);
+                } catch (NumberFormatException e) {
+                    // 숫자로 파싱할 수 없는 경우 무시합니다.
+                }
+            }
         } else if (osName.contains("mac")) {
-            // MacOS 운영 체제인 경우
-            command = "pmset -g batt";
+            Process process = Runtime.getRuntime().exec("pmset -g batt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("InternalBattery")) {
+                    // 배터리 정보를 파싱하여 배터리 잔량을 추출합니다.
+                    String[] parts = line.split("\\s+");
+                    String batteryPercentageString = parts[1];
+                    batteryPercentage = Integer.parseInt(batteryPercentageString.replace("%;", ""));
+                    System.out.println("Battery Percentage: " + batteryPercentageString);
+                }
+            }
+        } else if (osName.contains("linux")) {
+            // read battery capacity
+
+            Process process = Runtime.getRuntime().exec("upower -i /org/freedesktop/UPower/devices/battery_BAT0");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("percentage")) {
+                    // 배터리 정보를 파싱하여 배터리 잔량을 추출합니다.
+                    String[] parts = line.split(":");
+                    String batteryPercentageString = parts[1].trim();
+                    batteryPercentage = Integer.parseInt(batteryPercentageString.replace("%", ""));
+                    System.out.println("Battery Percentage: " + batteryPercentageString);
+                }
+            }
         } else {
-            // 다른 운영 체제인 경우 (명령어를 지정해야 함)
-            command = "YOUR_CUSTOM_COMMAND_HERE";
+            log.trace("Your OS " + osName + " is not support");
+            return Optional.empty();
         }
-
-        Process process = Runtime.getRuntime().exec(command);
-        process.waitFor();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-        String line;
-        StringBuilder output = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            output.append(line).append("\n");
-        }
-
-        return "Battery Status:\n" + output.toString();
+        return Optional.of(String.valueOf(batteryPercentage));
     }
 }

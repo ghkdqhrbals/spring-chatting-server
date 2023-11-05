@@ -4,6 +4,7 @@ import chatting.chat.web.error.AuthorizedException;
 import chatting.chat.web.error.CustomException;
 import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.friend.dto.FriendForm;
+import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.login.util.CookieUtil;
 import com.example.commondto.dto.friend.FriendRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,13 +37,12 @@ public class FriendController {
         log.info(backEntry);
     }
 
-    // 친구 추가
     @GetMapping
-    public String addFriend(@ModelAttribute("friendForm") FriendForm form) {
+    public String addFriend(@ModelAttribute("friendForm") FriendForm form, Model model) {
+        CommonModel.addCommonModel(model);
         return "friends/friendAddForm";
     }
 
-    // 친구 추가
     @PostMapping
     public String addFriendForm(@Validated @ModelAttribute("friendForm") FriendForm form,
         BindingResult bindingResult, HttpServletRequest request) {

@@ -1,18 +1,79 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div class="status-bar" th:fragment="status-bar">
+    <script th:inline="javascript">
+      /* 여기에 JavaScript 코드를 붙여넣습니다. */
+      function displayLocalizedInfo() {
+        // 브라우저 언어 설정 얻기
+        var userLanguage = navigator.language || navigator.userLanguage;
+
+        // 언어에 따라 국가 정보 결정
+        var countryInfo;
+        if (userLanguage.startsWith('ko')) {
+          // 한국어 언어 설정인 경우 (예: "ko", "ko-KR")
+          countryInfo = '대한민국 (South Korea)';
+        } else if (userLanguage.startsWith('en')) {
+          // 영어 언어 설정인 경우 (예: "en", "en-US")
+          countryInfo = 'United States';
+        } else {
+          // 기타 언어 설정인 경우
+          countryInfo = 'Other Country';
+        }
+
+        var currentTime = new Date().toLocaleTimeString(userLanguage, {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        // 시간을 웹 페이지에 표시
+        document.getElementById('localizedTime').textContent = currentTime;
+
+        // 언어와 국가 정보를 웹 페이지에 표시
+        document.getElementById('localizedInfo').textContent = countryInfo;
+
+      }
+      function getBatteryStatus() {
+        if ('getBattery' in navigator) {
+          navigator.getBattery().then(function (battery) {
+            document.getElementById('batteryPercentage').textContent = (battery.level * 100) + '%';
+            var iconElement = document.getElementById('chargingIcon');
+
+            if (battery.charging) {
+              iconElement.style.display = 'inline';
+            } else {
+              iconElement.style.display = 'none';
+            }
+          }).catch(function (error) {
+            console.error('Failed to get battery information: ' + error);
+          });
+        } else {
+          console.error('Battery API is not supported in this browser.');
+        }
+      }
+
+      window.addEventListener('load', getBatteryStatus);
+      window.addEventListener('load', displayLocalizedInfo);
+
+      setInterval(function () {
+        displayLocalizedInfo();
+        getBatteryStatus();
+      }, 5000); // recall 5 second
+    </script>
+
     <div class="status-bar__column">
-        <span>No Service</span>
-        <i class="fa-solid fa-wifi"></i>
+        <span th:id="localizedTime">18:45</span>
     </div>
 
     <div class="status-bar__column">
-        <span th:text="${currentTime}">18:43</span>
+        <span th:id="localizedInfo"></span>
     </div>
 
     <div class="status-bar__column">
-        <span>80%</span>
+<!--        <p th:id="batteryPercentage">Battery Level: </p>-->
+        <span th:id="batteryPercentage">80%</span>
         <i class="fa-solid fa-battery-full fa-lg"></i>
-        <i class="fa-solid fa-bolt-lightning"></i>
+
+        <i id="chargingIcon" class="fa-solid fa-bolt-lightning"></i>
     </div>
 </div>
+
 </html>

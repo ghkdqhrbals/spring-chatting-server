@@ -6,6 +6,7 @@ import chatting.chat.web.dto.*;
 import chatting.chat.web.error.CustomThrowableException;
 import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.filters.cons.SessionConst;
+import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.kafka.dto.CreateChatRoomUnitDTO;
 import chatting.chat.web.kafka.dto.RequestChangeUserStatusDTO;
 import chatting.chat.web.user.dto.RequestUser;
@@ -52,7 +53,8 @@ public class UserController {
 
     // 유저 추가
     @GetMapping("/register")
-    public String addUserPage(@ModelAttribute("userForm") UserForm form) {
+    public String addUserPage(@ModelAttribute("userForm") UserForm form, Model model) {
+        CommonModel.addCommonModel(model);
         return "users/addUserFormSingle";
     }
 
@@ -110,7 +112,8 @@ public class UserController {
     // 유저 상태메세지 변경
     @GetMapping("/status")
     public String updateUserStatus(
-        @ModelAttribute("userStatusUpdateDTO") UserStatusUpdateDTO form) {
+        @ModelAttribute("userStatusUpdateDTO") UserStatusUpdateDTO form, Model model) {
+        CommonModel.addCommonModel(model);
         return "users/updateStatusForm";
     }
 
@@ -149,6 +152,7 @@ public class UserController {
     public String rooms(
         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
         HttpSession session, Model model) {
+        CommonModel.addCommonModel(model);
         try {
             Flux<ChatRoomDTO> response = webClient.mutate()
                 .build()
@@ -181,6 +185,7 @@ public class UserController {
     public String createRoom(
         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
         @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model) {
+        CommonModel.addCommonModel(model);
 
         try {
             Flux<ResponseGetFriend> response = webClient.mutate()
@@ -218,6 +223,7 @@ public class UserController {
     public String createRoomForm(
         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
         @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model) {
+        CommonModel.addCommonModel(model);
 
         List<String> friendIds = new ArrayList<>();
         for (CreateChatRoomUnitDTO f : form.getFriends()) {
@@ -265,6 +271,7 @@ public class UserController {
     public String chattingRoom(
         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
         @RequestParam Long roomId, @RequestParam String roomName, Model model) {
+        CommonModel.addCommonModel(model);
 
         try {
 

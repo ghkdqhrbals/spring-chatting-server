@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chats - Kokoa Clone</title>
+</head>
+
+<body>
+    <div class="status-bar">
+        <div class="status-bar__column">
+            <span>No Service</span>
+            <i class="fa-solid fa-wifi"></i>
+        </div>
+
+        <div class="status-bar__column">
+            <span>18:43</span>
+        </div>
+
+        <div class="status-bar__column">
+            <span>80%</span>
+            <i class="fa-solid fa-battery-full fa-lg"></i>
+            <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+
+    </div>
+
+    <header class="screen-header">
+        <h1 class="screen-header__title">Chats</h1>
+        <div class="screen-header__icons">
+            <span><i class="fa-solid fa-magnifying-glass"></i></span>
+            <span><i class="fa-regular fa-comment-dots fa-lg"></i></span>
+            <span><i class="fa-solid fa-music"></i></span>
+            <span><i class="fa-solid fa-gear"></i></span>
+        </div>
+    </header>
+
+    <main class="main-screen">
+        <div class="user-component">
+            <div class="user-component__colunm">
+                <img src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"
+                    class="user-component__avatar" />
+                <div class="user-component__text">
+                    <h4 class="user-component__title">Munkyeong</h4>
+                    <h6 class="user-component__subtitle">Please check My KoKoa Account Info</h6>
+
+                </div>
+            </div>
+            <div class="user-component__colunm">
+                <span class="user-component__time">17:22</span>
+                <div class="badge">1</div>
+
+            </div>
+        </div>
+
+        <a href="chat.html">
+            <div class="user-component">
+                <div class="user-component__colunm">
+                    <img src="https://thumb.mt.co.kr/06/2015/09/2015092220221498877_1.jpg/dims/optimize/"
+                        class="user-component__avatar" />
+                    <div class="user-component__text">
+                        <h4 class="user-component__title">kangoll</h4>
+                        <h6 class="user-component__subtitle">Come into the LOL game</h6>
+            
+                    </div>
+                </div>
+                <div class="user-component__colunm">
+                    <span class="user-component__time">22:22</span>
+                    <div class="badge">3</div>
+            
+                </div>
+            </div>
+        </a>
+
+    </main>
+
+    <div th:replace="/navigate/nav.html"></div>
+
+    <script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

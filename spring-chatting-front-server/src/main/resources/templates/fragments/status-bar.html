@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="status-bar" th:fragment="status-bar">
+    <div class="status-bar__column">
+        <span>No Service</span>
+        <i class="fa-solid fa-wifi"></i>
+    </div>
+
+    <div class="status-bar__column">
+        <span th:text="${currentTime}">18:43</span>
+    </div>
+
+    <div class="status-bar__column">
+        <span>80%</span>
+        <i class="fa-solid fa-battery-full fa-lg"></i>
+        <i class="fa-solid fa-bolt-lightning"></i>
+    </div>
+</div>
+</html>

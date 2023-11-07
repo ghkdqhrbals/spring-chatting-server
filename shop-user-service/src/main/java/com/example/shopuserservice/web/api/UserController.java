@@ -1,15 +1,13 @@
 package com.example.shopuserservice.web.api;
 
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserStatus;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
-import com.example.shopuserservice.web.error.CustomException;
-import com.example.shopuserservice.web.error.ErrorCode;
-import com.example.shopuserservice.web.error.ErrorResponse;
-import com.example.shopuserservice.web.security.LoginRequestDto;
-import com.example.shopuserservice.web.security.LoginResponseDto;
+
 import com.example.shopuserservice.web.security.LoginService;
 import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.vo.RequestUser;
@@ -19,16 +17,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,7 +29,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ForkJoinPool;
+
+import static com.example.shopuserservice.web.security.JwtTokenProvider.getUserIdFromSpringSecurityContext;
 
 
 @Slf4j
@@ -55,13 +49,6 @@ public class UserController {
         return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
     }
 
-    @PostMapping("/login")
-    public Mono<LoginResponseDto> login(@RequestBody LoginRequestDto request,
-                                        ServerHttpResponse response){
-        Mono<LoginResponseDto> login = loginService.login(request, response).log();
-        return login;
-    }
-
     @GetMapping("/health-check")
     public Mono<String> hello(ServerHttpRequest request){
         return Mono.just("Access auth-controller port "+
@@ -75,8 +62,8 @@ public class UserController {
      */
     // 유저 조회
     @GetMapping("/user")
-    public CompletableFuture<ResponseEntity<ResponseUser>> findUser(WebSession session){
-        String userId = session.getAttribute("userId");
+    public CompletableFuture<ResponseEntity<ResponseUser>> findUser(){
+        String userId = getUserIdFromSpringSecurityContext();
         return userCommandQueryService.getUserDetailsByUserId(userId).thenApply((userDto -> {
             List<UserTransactions> userTransactions = null;
             try {
@@ -89,34 +76,8 @@ public class UserController {
             ResponseUser result = new ModelMapper().map(userDto, ResponseUser.class);
             result.setUserTransaction(userTransactions);
             return ResponseEntity.ok(result);
-        })).exceptionally(e->{
-            log.info(e.getCause().getClass().getName());
-
-            if( e.getCause() instanceof UsernameNotFoundException){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User name not found");
-            }
-
-            if (e.getCause() instanceof ResponseStatusException){
-                ResponseStatusException e2 = (ResponseStatusException) e.getCause();
-                throw e2;
-            }
-
-            throw new CustomException(ErrorCode.SERVER_ERROR);
-        });
+        }));
     }
-
-    // deferredResult examples
-    @GetMapping(value = "/deferredResult")
-    public DeferredResult<String> useDeferredResult() {
-        DeferredResult<String> dr = new DeferredResult<>();
-        dr.onCompletion(() -> log.info("onCompletion"));
-        ForkJoinPool.commonPool().submit(() -> {
-            dr.setResult("Results Here");
-            log.info("Results set");
-        });
-        return dr;
-    }
-
 
     // add user with sse
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -137,6 +98,7 @@ public class UserController {
         userCommandQueryService
                 .newUserEvent(req, eventId, userEvent)
                 .exceptionally(e -> {
+                    log.trace("exception is occurred: "+ e.getMessage());
                     if (e.getCause() instanceof CustomException) {
                         Reactor.emitErrorAndComplete(req.getUserId(), e.getCause());
                     } else {

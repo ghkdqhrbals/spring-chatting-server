@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="fragment-nav">
+        <nav class="nav">
+            <ul class="nav__list">
+                <li class="nav__btn"><a class="nav__link" th:href='@{/}' href="friends/friends.html"><i
+                    class="fa-regular fa-user fa-lg"></i></a></li>
+                <li class="nav__btn"><a class="nav__link" th:href='@{/chats}' href="chat/chats.html">
+                    <span class="nav__notification badge">1</span>
+                    <i class="fa-regular fa-comment fa-lg"></i></a></li>
+                <li class="nav__btn"><a class="nav__link" th:href='@{/friend}' href="friends/friendAddForm.html"><i
+                    class="fa-solid fa-magnifying-glass fa-lg"></i></a></li>
+                <li class="nav__btn"><a class="nav__link" href="more.html">
+                    <span class="nav__dot"></span>
+                    <i class="fa-solid fa-ellipsis fa-lg"></i></a></li>
+            </ul>
+        </nav>
+    </div>
+</html>

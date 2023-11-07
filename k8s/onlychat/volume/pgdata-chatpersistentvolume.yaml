@@ -9,6 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain # Reclaim 정책 (Delete, Retain, Recycle 중 선택)
-  storageClassName: standard # StorageClass 이름
-  hostPath:
-    path: /var/data # 호스트 머신 경로 (호스트 경로를 변경해야 합니다.)
+  storageClassName: pgchat # StorageClass 이름
+  nfs:
+    path: /nfs_shared/pgdata-chat # NFS 서버의 공유 경로
+    server: 172.31.15.86

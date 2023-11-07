@@ -1,11 +1,14 @@
 .status-bar__column {
     width: 33%;
+    text-align: center;
+    display: inline-block;
+    margin: 0 10px;
 }
 
 .status-bar {
     font-size: small;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     padding : 5px 3px;
     position: fixed;
     top: 0;
@@ -13,20 +16,20 @@
     background-color: white;
 }
 
-.status-bar__column:first-child span {
-    margin-right: 5px;
-}
+/*.status-bar__column:first-child span {*/
+/*    margin-right: 5px;*/
+/*}*/
 
-.status-bar__column:nth-child(2) {
-    display: flex;
-    justify-content: center;
-}
+/*.status-bar__column:nth-child(2) {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/
 
-.status-bar__column:nth-child(3) {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
+/*.status-bar__column:nth-child(3) {*/
+/*    display: flex;*/
+/*    justify-content: flex-end;*/
+/*    align-items: center;*/
+/*}*/
 
 .status-bar__column .fa-battery-full {
     margin: 0px 5px;

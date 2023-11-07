@@ -1,52 +1,56 @@
 package chatting.chat.web.login;
 
-import chatting.chat.domain.data.User;
-import chatting.chat.web.error.CustomThrowableException;
-import chatting.chat.web.error.ErrorResponse;
-import chatting.chat.web.filters.cons.SessionConst;
+import chatting.chat.domain.util.MessageUtil;
+import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.login.dto.LoginRequestDto;
-import chatting.chat.web.login.dto.LoginResponseDto;
-import com.example.commondto.token.TokenConst;
+import chatting.chat.web.login.util.CookieUtil;
+import com.example.commondto.error.AppException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 
 @Slf4j
 @Controller
 public class LoginController {
 
-    private WebClient webClient;
+    @Autowired
+    private MessageUtil messageUtil;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     @Value("${backend.api.gateway}")
     private String backEntry;
 
     @PostConstruct
     public void initWebClient() {
-        log.info(backEntry);
-        this.webClient = WebClient.create(backEntry);
+        log.info("Connected gateway : "+backEntry);
     }
 
     @GetMapping("/login")
-    public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
+    public String loginForm(@ModelAttribute("loginForm") LoginForm form, Model model) {
+        CommonModel.addCommonModel(model);
         return "login/loginForm";
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginForm") LoginForm form,
+    public String login(@Validated @ModelAttribute("loginForm") LoginForm form,
                             BindingResult bindingResult,
                             HttpServletRequest request,
                             HttpServletResponse httpServletResponse,
@@ -59,80 +63,61 @@ public class LoginController {
             return "login/loginForm";
         }
 
-        User user = new User();
         LoginRequestDto req = new LoginRequestDto();
-
         req.setUsername(form.getLoginId());
         req.setPassword(form.getPassword());
 
 
         try{
-            LoginResponseDto res = webClient.mutate()
+            webClientBuilder
                     .build()
                     .post()
-                    .uri("/login")
+                    .uri("/user/login")
                     .bodyValue(req)
                     .retrieve()
-                    .onStatus(
-                            HttpStatus.NOT_FOUND::equals,
-                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .onStatus(
-                            HttpStatus.UNAUTHORIZED::equals,
-                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .onStatus(
-                            HttpStatus.INTERNAL_SERVER_ERROR::equals,
-                            response -> response.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .bodyToMono(LoginResponseDto.class)
-                    .block();
-            log.trace("Retrieve TOKEN : {}", res.getToken());
+                    .onStatus(HttpStatus::is2xxSuccessful, (response) -> {
+                        MultiValueMap<String, ResponseCookie> cookies = response.cookies();
+                        ResponseCookie accessTokenCookie = cookies.getFirst("accessToken");
+                        ResponseCookie refreshTokenCookie = cookies.getFirst("refreshToken");
 
-            String encodeToken = URLEncoder.encode("Bearer "+res.getToken(), "utf-8");
+                        log.info(accessTokenCookie.toString());
+                        log.info(refreshTokenCookie.toString());
 
-            Cookie cookie = new Cookie(TokenConst.keyName,encodeToken); // 토큰 쿠키 삽입
-//            cookie.setSecure(true); // TODO
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            httpServletResponse.addCookie(cookie);
+                        httpServletResponse.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+                        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
-        }catch (CustomThrowableException e){
+                        return Mono.empty();
+                    })
+                    .bodyToMono(String.class).block();
 
-            if ("Invalid Credentials".equals(e.getErrorResponse().getMessage())){
-                bindingResult.rejectValue("password", null,e.getErrorResponse().getMessage());
-            }
-
+        } catch (AppException e) {
+            String message = messageUtil.getMessage(e);
+            log.trace(message);
+            bindingResult.reject( e.getErrorCode().getDetail(), message);
             return "login/loginForm";
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
         }
 
         // logic
-        HttpSession session = request.getSession(true);
-        session.setAttribute(SessionConst.LOGIN_MEMBER, user);
-        log.info(redirectURL);
+        log.info("Redirect URL : {}", redirectURL.toString());
         return "redirect:"+redirectURL;
     }
 
     @GetMapping("/logout")
-    public String loginForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginUser, HttpSession session) {
-        try{
-            webClient.mutate()
-                    .build()
-                    .get()
-                    .uri("/user/logout")
-                    .retrieve()
-                    .onStatus(
-                            HttpStatus::is4xxClientError,
-                            response -> response.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                    .bodyToMono(String.class)
-                    .subscribe(log::info);
-
-            session.removeAttribute(SessionConst.LOGIN_MEMBER);
-        }catch (CustomThrowableException e){
-            log.info(e.getErrorResponse().getMessage());
-            return "redirect:/";
-        }
-        return "redirect:/";
+    public String loginForm(HttpServletRequest request, HttpServletResponse httpResponse) {
+        webClientBuilder
+            .build()
+            .post()
+            .uri("/user/logout")
+            .cookies((cookies) -> {
+                cookies.add("accessToken", CookieUtil.getCookie(request, "accessToken"));
+                cookies.add("refreshToken", CookieUtil.getCookie(request, "refreshToken"));
+            })
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        CookieUtil.removeCookie(httpResponse, "accessToken");
+        CookieUtil.removeCookie(httpResponse, "refreshToken");
+        return "redirect:/login";
     }
-
 
 }

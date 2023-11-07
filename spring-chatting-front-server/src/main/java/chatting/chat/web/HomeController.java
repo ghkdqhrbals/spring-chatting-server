@@ -1,81 +1,77 @@
 package chatting.chat.web;
 
-import chatting.chat.domain.data.Friend;
-import chatting.chat.domain.data.User;
+import chatting.chat.domain.util.MessageUtil;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
-import chatting.chat.web.error.CustomThrowableException;
-import chatting.chat.web.error.ErrorResponse;
-import chatting.chat.web.filters.cons.SessionConst;
-import chatting.chat.web.login.LoginForm;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import chatting.chat.web.error.ErrorCode;
+import chatting.chat.web.friend.service.FriendService;
+import chatting.chat.web.global.CommonModel;
+import chatting.chat.web.login.util.CookieUtil;
+import chatting.chat.web.user.service.UserService;
+import com.example.commondto.dto.friend.FriendResponse;
+import com.example.commondto.error.AppException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Controller
 public class HomeController {
-    private WebClient webClient;
+
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+    @Autowired
+    private FriendService friendService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private MessageUtil messageUtil;
     @Value("${backend.api.gateway}")
     private String backEntry;
 
-    @PostConstruct
-    public void initWebClient() {
-        this.webClient = WebClient.create(backEntry);
-    }
+
     @GetMapping("/")
-    public String mainHome(Model model) {
+    public Mono<String> mainHome(HttpServletRequest request, Model model) {
+        CommonModel.addCommonModel(model);
+        String accessToken = CookieUtil.getCookie(request, "accessToken");
+        String refreshToken = CookieUtil.getCookie(request, "refreshToken");
 
-        try{
-            ResponseGetUser me = webClient.mutate()
-                    .build()
-                    .get()
-                    .uri(backEntry+"/chat/user?userId=" + 1234)
-                    .retrieve()
-                    .onStatus(
-                            HttpStatus::is4xxClientError,
-                            r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .bodyToMono(ResponseGetUser.class).block();
-            model.addAttribute("user",me);
-
-            Flux<ResponseGetFriend> response = webClient.mutate()
-                    .build()
-                    .get()
-                    .uri("http://localhost:8000/chat/friend?userId=" + 1234)
-                    .retrieve()
-                    .onStatus(
-                            HttpStatus::is4xxClientError,
-                            r -> r.bodyToMono(ErrorResponse.class).map(e -> new CustomThrowableException(e)))
-                    .bodyToFlux(ResponseGetFriend.class);
-            List<ResponseGetFriend> readers = response.collect(Collectors.toList())
-                    .share().block();
-            model.addAttribute("friends",readers);
-
-        }catch (CustomThrowableException e){
-            log.info(e.getErrorResponse().getMessage());
-            return "login/loginForm";
+        if (accessToken == null || refreshToken == null) {
+            return Mono.just("redirect:/login");
         }
 
-        return "users";
+        try {
+            Mono<ResponseGetUser> userInfo = userService.getUserInfo(accessToken, refreshToken);
+            Flux<FriendResponse.FriendDTO> resGetFriend = friendService.getMyFriends(accessToken,
+                refreshToken);
+
+            return Mono.zip(userInfo, resGetFriend.collectList())
+                .doOnNext(tuple -> {
+                    ResponseGetUser me = tuple.getT1();
+                    List<FriendResponse.FriendDTO> friends = tuple.getT2();
+
+                    model.addAttribute("userName", me.getUserName());
+                    model.addAttribute("userDescription", me.getUserStatus());
+                    model.addAttribute("friends", friends);
+                })
+                .then(Mono.just("friends/friends")).log();
+
+        } catch (AppException e) {
+            log.info("Exception Message {}", messageUtil.getMessage(e));
+            return Mono.just("redirect:/login");
+        }
     }
 }

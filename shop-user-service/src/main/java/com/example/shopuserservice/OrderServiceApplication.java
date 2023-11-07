@@ -10,6 +10,7 @@ import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeReposi
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -26,7 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 @EnableAsync
-@SpringBootApplication(scanBasePackages = "com.example",exclude={DataSourceAutoConfiguration.class,WebMvcAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = "com.example",exclude={DataSourceAutoConfiguration.class,WebMvcAutoConfiguration.class, SecurityAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = {"com.example.shopuserservice.domain.user.repository"})
 @EnableDiscoveryClient
 @EnableFeignClients

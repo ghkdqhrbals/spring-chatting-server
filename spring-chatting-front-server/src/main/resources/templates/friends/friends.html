@@ -1,92 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="css/styles.css">
-    <link th:href="@{/css/styles.css}"
-          href="../css/styles.css" rel="stylesheet">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends - Kokoa Clone</title>
-</head>
+  <html xmlns:th="http://www.thymeleaf.org">
+    <head>
+      <meta charset="utf-8" />
+      <link
+        th:href="@{/css/common.css}"
+        href="../css/common.css"
+        rel="stylesheet"
+      />
+      <link
+        th:href="@{/css/styles.css}"
+        href="../css/styles.css"
+        rel="stylesheet"
+      />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Friends - Kokoa Clone</title>
+    </head>
 
-<body>
+    <body>
+      <div th:replace="fragments/status-bar.html :: status-bar"></div>
+      <div th:replace="fragments/nav.html :: fragment-nav"></div>
 
-<div th:replace="fragments/status-bar.html :: status-bar"></div>
-<div th:replace="fragments/nav.html :: fragment-nav"></div>
+      <header class="screen-header">
+        <h1 class="screen-header__title">Friends</h1>
+        <div class="screen-header__icons">
+          <!-- 아이콘 -->
+          <span><i class="fa-regular fa-comments"></i></span>
+          <span><i class="fa-solid fa-magnifying-glass"></i></span>
+          <span><i class="fa-solid fa-music"></i></span>
+          <span><i class="fa-solid fa-gear"></i></span>
+        </div>
+      </header>
 
-<header class="screen-header">
-    <h1 class="screen-header__title">Friends</h1>
-    <div class="screen-header__icons">
-        <span><i class="fa-solid fa-magnifying-glass"></i></span>
-        <span><i class="fa-solid fa-music"></i></span>
-        <span><i class="fa-solid fa-gear"></i></span>
-    </div>
-</header>
+      <a id="friends-display-link">
+        <i class="fa-solid fa-circle-info"></i>
+        Friends's Names Display
+        <i class="fa-solid fa-chevron-right fa-xs"></i>
+      </a>
 
-<a id="friends-display-link">
-    <i class="fa-solid fa-circle-info"></i>
-    Friends's Names Display
-    <i class="fa-solid fa-chevron-right fa-xs"></i>
-</a>
-
-
-<main class="friends-screen">
-
-    <div class="user-component">
-        <div class="user-component__colunm">
+      <main class="friends-screen">
+        <div class="user-component">
+          <div class="user-component__colunm">
             <img
-                src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"
-                class="user-component__avatar user-component__avatar--xl"/>
+              src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"
+              class="user-component__avatar user-component__avatar--xl"
+            />
             <div class="user-component__text">
-                <h4 class="user-component__title" th:text="${userName}">Munkyeong</h4>
-                <h6 class="user-component__subtitle" th:text="${userDescription}">this text
-                    whatever</h6>
+              <h4 class="user-component__title" th:text="${userName}">
+                Munkyeong
+              </h4>
+              <h6 class="user-component__subtitle" th:text="${userDescription}">
+                this text whatever
+              </h6>
             </div>
+          </div>
+          <div class="user-component__colunm"></div>
         </div>
-        <div class="user-component__colunm">
-        </div>
-    </div>
 
-    <div class="friends-screen__channel" id="friends-display">
-
-        <div class="friends-screen__channel-header">
+        <div class="friends-screen__channel" id="friends-display">
+          <div class="friends-screen__channel-header">
             <span>Friends</span>
             <i class="fa-solid fa-chevron-up fa-xs check"></i>
-        </div>
+          </div>
 
-        <th:block th:each="friend : ${friends}">
+          <th:block th:each="friend : ${friends}">
             <div class="user-component">
-                <div class="user-component__colunm">
-                    <img src="http://placehold.it/50x50?text=Friend" class="user-component__avatar user-component__avatar--sm" />
-                    <div class="user-component__text">
-                        <h4 class="user-component__title user-component__title--not-bold" th:text="${friend.friendName}">gyumin</h4>
-                        <h6 class="user-component__subtitle" th:text="${friend.friendStatus}">hi!</h6>
-                    </div>
+              <div class="user-component__colunm">
+                <img
+                  src="http://placehold.it/50x50?text=Friend"
+                  class="user-component__avatar user-component__avatar--sm"
+                />
+                <div class="user-component__text">
+                  <h4
+                    class="user-component__title user-component__title--not-bold"
+                    th:text="${friend.friendName}"
+                  >
+                    gyumin
+                  </h4>
+                  <h6
+                    class="user-component__subtitle"
+                    th:text="${friend.friendStatus}"
+                  >
+                    hi!
+                  </h6>
                 </div>
-                <div class="user-component__colunm">
-                    <div>
-                        <span>2</span> <!-- 메세지 수신 개수 -->
-                        <i class="fa-solid fa-chevron-right fa-xs"></i>
-                    </div>
+              </div>
+              <div class="user-component__colunm">
+                <div>
+                  <span>2</span>
+                  <!-- 메세지 수신 개수 -->
+                  <i class="fa-solid fa-chevron-right fa-xs"></i>
                 </div>
+              </div>
             </div>
-        </th:block>
-    </div>
+          </th:block>
+        </div>
+      </main>
 
+      <div id="splash-screen">
+        <i class="fa-solid fa-comment"></i>
+      </div>
 
-
-</main>
-
-
-
-<div id="splash-screen">
-    <i class="fa-solid fa-comment "></i>
-</div>
-
-<script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
-
-</body>
-
+      <script
+        src="https://kit.fontawesome.com/6621720c97.js"
+        crossorigin="anonymous"
+      ></script>
+    </body>
+  </html>
 </html>

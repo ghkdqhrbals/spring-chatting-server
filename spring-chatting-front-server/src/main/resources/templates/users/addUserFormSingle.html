@@ -1,73 +1,182 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="css/styles.css">
-  <link th:href="@{/css/styles.css}"
-        href="../css/styles.css" rel="stylesheet">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <!-- <link rel="stylesheet" href="css/styles.css" /> -->
+    <link
+      th:href="@{/css/styles.css}"
+      href="../css/styles.css"
+      rel="stylesheet"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
 
-<body>
-<div class="status-bar">
-  <div class="status-bar__column">
-    <span>No Service</span>
-    <i class="fa-solid fa-wifi"></i>
-  </div>
+  <body>
+    <div class="status-bar">
+      <div class="status-bar__column">
+        <span>No Service</span>
+        <i class="fa-solid fa-wifi"></i>
+      </div>
 
-  <div class="status-bar__column">
-    <span>18:43</span>
-  </div>
+      <div class="status-bar__column">
+        <span>18:43</span>
+      </div>
 
-  <div class="status-bar__column">
-    <span>80%</span>
-    <i class="fa-solid fa-battery-full fa-lg"></i>
-    <i class="fa-solid fa-bolt-lightning"></i>
-  </div>
-</div>
+      <div class="status-bar__column">
+        <span>80%</span>
+        <i class="fa-solid fa-battery-full fa-lg"></i>
+        <i class="fa-solid fa-bolt-lightning"></i>
+      </div>
+    </div>
 
+    <header class="screen-header">
+      <h1 class="screen-header__title">Create Account</h1>
+      <div class="screen-header__icons">
+        <span><i class="fa-solid fa-magnifying-glass"></i></span>
+        <span><i class="fa-solid fa-music"></i></span>
+        <span><i class="fa-solid fa-gear"></i></span>
+      </div>
+    </header>
 
-<header class="screen-header">
-  <h1 class="screen-header__title">Create Account</h1>
-  <div class="screen-header__icons">
-    <span><i class="fa-solid fa-magnifying-glass"></i></span>
-    <span><i class="fa-solid fa-music"></i></span>
-    <span><i class="fa-solid fa-gear"></i></span>
-  </div>
-</header>
+    <div id="sse-events">
+      <ul>
+        <li th:each="event : ${sseStream}">
+          <!-- SSE 이벤트 내용을 표시 -->
+          <span th:text="${event.data}"></span>
+        </li>
+      </ul>
+    </div>
 
-<div id="sse-events">
-  <ul>
-    <li th:each="event : ${sseStream}">
-      <!-- SSE 이벤트 내용을 표시 -->
-      <span th:text="${event.data}"></span>
-    </li>
-  </ul>
-</div>
+    <form
+      action="../users/addUserFormSingle.html"
+      th:action
+      th:object="${userForm}"
+      method="post"
+      id="login-form"
+    >
+      <div th:if="${#fields.hasGlobalErrors()}">
+        <p
+          class="field-error"
+          th:each="err : ${#fields.globalErrors()}"
+          th:text="${err}"
+        >
+          전체 오류 메시지
+        </p>
+      </div>
 
-<form action="../users/addUserFormSingle.html" th:action th:object="${userForm}" method="post" id="login-form">
-  <div th:if="${#fields.hasGlobalErrors()}">
-    <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
-  </div>
+      <div class="signup__profile__box">
+        <div class="signup__profile">
+          <div class="signup__profile__img">
+            <img id="selectedImage" src="" style="display: none" />
+            <i class="fa-regular fa-user fa-3x"></i>
+            <input
+              type="file"
+              id="fileInput"
+              style="display: none"
+              accept="image/jpeg, image/jpg, image/png, image/gif"
+            />
+            <label
+              for="filelabal"
+              class="signup__profile__pls"
+              id="uploadButton"
+            >
+              <i class="fa-solid fa-plus"></i>
+            </label>
+          </div>
+        </div>
+        <div class="signup__profile__text">
+          <input
+            name="username"
+            th:field="*{userName}"
+            type="text"
+            placeholder="First-name"
+          />
+          <p class="field-error" th:errors="*{userFirstName}">오류메세지</p>
 
-  <input name="username" type="text" th:field="*{userId}" th:errorclass="field-error" placeholder="ID"/>
-  <p class="field-error" th:errors="*{userId}" >오류메세지</p>
+          <input
+            name="username"
+            th:field="*{userName}"
+            type="text"
+            placeholder="Second-name"
+          />
+          <p class="field-error" th:errors="*{userSecondName}">오류메세지</p>
+        </div>
+      </div>
 
-  <input name="password" th:field="*{userPw}" type="password" placeholder="Password"/>
-  <p class="field-error" th:errors="*{userPw}" >오류메세지</p>
+      <input
+        name="username"
+        type="text"
+        th:field="*{userId}"
+        th:errorclass="field-error"
+        placeholder="ID"
+      />
+      <p class="field-error" th:errors="*{userId}">오류메세지</p>
 
-  <input name="username" th:field="*{userName}" type="text" placeholder="Full-name"/>
-  <p class="field-error" th:errors="*{userName}" >오류메세지</p>
+      <input
+        name="password"
+        th:field="*{userPw}"
+        type="password"
+        placeholder="Password"
+      />
+      <p class="field-error" th:errors="*{userPw}">오류메세지</p>
 
-  <input name="email" th:field="*{email}" type="text" placeholder="Email"/>
-  <p class="field-error" th:errors="*{email}" >오류메세지</p>
+      <input name="email" th:field="*{email}" type="text" placeholder="Email" />
+      <p class="field-error" th:errors="*{email}">오류메세지</p>
 
+      <input
+        type="submit"
+        onclick="location.href='../login/loginForm.html'"
+        value="Register"
+      />
 
-  <input type="submit" onclick="location.href='../login/loginForm.html'" value="Register"/>
+      <a
+        style="margin-top: 5px"
+        href="../login/loginForm.html"
+        th:href="@{/login}"
+        >Back</a
+      >
+    </form>
+  </body>
+  <script
+    src="https://kit.fontawesome.com/6621720c97.js"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    document
+      .getElementById("uploadButton")
+      .addEventListener("click", function () {
+        console.log("uploadButton clicked");
+        document.getElementById("fileInput").click();
+      });
 
-  <a style="margin-top: 5px" href="../login/loginForm.html" th:href='@{/login}' >Back</a>
-</form>
+    document
+      .getElementById("fileInput")
+      .addEventListener("change", function () {
+        console.log("aa");
+        const selectedImage = document.getElementById("selectedImage");
+        const placeholderIcon = document.querySelector(
+          ".signup__profile__img i"
+        );
 
-</body>
+        if (selectedImage && placeholderIcon) {
+          selectedImage.style.display = "block";
+          placeholderIcon.style.display = "none";
+        }
+
+        const fileInput = this; // 파일 입력 요소
+        const file = fileInput.files[0]; // 선택한 파일
+
+        if (file) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            selectedImage.src = e.target.result;
+            // selectedImage.style.display = "block";
+          };
+
+          reader.readAsDataURL(file);
+        }
+      });
+  </script>
 </html>

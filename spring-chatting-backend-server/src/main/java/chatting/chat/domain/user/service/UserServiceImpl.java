@@ -34,6 +34,7 @@ import com.example.commondto.error.AppException;
 
 @Slf4j
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -145,6 +146,7 @@ public class UserServiceImpl implements UserService {
         List<Participant> findParticipants = participantRepository.findAllByUserId(userId);
         // 채팅방 DTO 생성
         List<ChatRoomDTO> chatRoomDTOS = getChatRoomDTOS(findParticipants);
+
         return chatRoomDTOS;
     }
 
@@ -219,13 +221,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     private List<ChatRoomDTO> getChatRoomDTOS(List<Participant> findParticipants) {
         List<ChatRoomDTO> chatRoomDTOS = new ArrayList<>();
         for (Participant p : findParticipants) {
             ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
             chatRoomDTO.setRoomId(p.getRoom().getRoomId());
             chatRoomDTO.setRoomName(p.getRoomName());
+            chatRoomDTO.setParticipantNames(
+                participantRepository.findAllByRoomId(p.getRoom().getRoomId()).stream()
+                    .map(Participant::getUser)
+                    .map(User::getUserName)
+                    .collect(Collectors.toList()));
             chatRoomDTOS.add(chatRoomDTO);
+
         }
         return chatRoomDTOS;
     }

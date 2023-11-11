@@ -94,12 +94,6 @@ public class UserController {
                 .uri("/user")
                 .bodyValue(req)
                 .retrieve()
-//                    .onStatus(
-//                            HttpStatus::is4xxClientError,
-//                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-//                    .onStatus(
-//                            HttpStatus::is5xxServerError,
-//                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
                 .bodyToFlux(ServerSentEvent.class).log();
 
             model.addAttribute("sseStream", temp);
@@ -157,13 +151,15 @@ public class UserController {
 
     //채팅방 목록 조회
     @GetMapping(value = "/rooms")
-    public String rooms(
-        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
-        HttpSession session, Model model) {
+    public String rooms(HttpServletRequest request, Model model) {
         CommonModel.addCommonModel(model);
         try {
             Flux<ChatRoomDTO> response = webClientBuilder.build().get()
-                .uri("/chat/rooms?userId=" + user.getUserId())
+                .uri("/chat/rooms")
+                .cookies(c -> {
+                    c.add("accessToken", CookieUtil.getCookie(request, "accessToken"));
+                    c.add("refreshToken", CookieUtil.getCookie(request, "refreshToken"));
+                })
                 .retrieve()
                 .onStatus(
                     HttpStatus::is4xxClientError,
@@ -171,6 +167,8 @@ public class UserController {
                 .bodyToFlux(ChatRoomDTO.class);
             List<ChatRoomDTO> readers = response.collect(Collectors.toList())
                 .share().block();
+            log.info("response: {}", readers);
+
 
             model.addAttribute("list", readers);
 
@@ -181,9 +179,9 @@ public class UserController {
             /**
              * TODO global error
              */
-            return "users/rooms";
+            return "redirect:/";
         }
-        return "users/rooms";
+        return "chat/chats";
     }
 
     //채팅방 개설

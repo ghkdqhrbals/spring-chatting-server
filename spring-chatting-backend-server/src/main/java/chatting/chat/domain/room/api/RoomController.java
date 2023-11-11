@@ -1,5 +1,6 @@
 package chatting.chat.domain.room.api;
 
+import chatting.chat.domain.participant.service.ParticipantService;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
@@ -25,6 +26,7 @@ public class RoomController {
 
     private final RoomService roomService;
     private final UserService userService;
+    private final ParticipantService participantService;
 
     @GetMapping(value = "/room/{roomId}")
     @Operation(summary = "Get room information")

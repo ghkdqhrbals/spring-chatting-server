@@ -25,22 +25,24 @@
     </header>
 
     <main class="main-screen">
-        <div class="user-component">
-            <div class="user-component__colunm">
-                <img src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"
-                    class="user-component__avatar" />
-                <div class="user-component__text">
-                    <h4 class="user-component__title">Munkyeong</h4>
-                    <h6 class="user-component__subtitle">Please check My KoKoa Account Info</h6>
+
+        <a th:each="room : ${list}" href='chat.html' th:href="@{/user/room}">
+            <div class="user-component">
+                <div class="user-component__colunm">
+                    <img src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"
+                         class="user-component__avatar" />
+                    <div class="user-component__text">
+                        <h4 class="user-component__title">[[${room.roomName}]]</h4>
+                        <h6 class="user-component__subtitle">Recent Message</h6>
+                    </div>
+                </div>
+                <div class="user-component__colunm">
+                    <span class="user-component__time">17:22</span>
+                    <div class="badge">1</div>
 
                 </div>
             </div>
-            <div class="user-component__colunm">
-                <span class="user-component__time">17:22</span>
-                <div class="badge">1</div>
-
-            </div>
-        </div>
+        </a>
 
         <a href="chat.html">
             <div class="user-component">

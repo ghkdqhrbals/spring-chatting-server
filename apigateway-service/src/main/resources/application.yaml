@@ -36,7 +36,7 @@ spring:
             - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
+            - RewritePath=/user(?<segment>/?.*), $\{segment}
         # 로그인
         - id: user-service
           uri: lb://USER-SERVICE
@@ -45,7 +45,7 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
+            - RewritePath=/user(?<segment>/?.*), $\{segment}
         # 회원가입
         - id: user-service
           uri: lb://USER-SERVICE
@@ -61,9 +61,7 @@ spring:
             - Path=/user/admin/**
             - Method=GET, POST
           filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderAdminFilter
+            - RewritePath=/user(?<segment>/?.*), $\{segment}
         # 일반 사용자 access
         - id: user-service
           uri: lb://USER-SERVICE
@@ -72,16 +70,13 @@ spring:
             - Method=GET, POST, DELETE
           filters:
             - RemoveRequestHeader=Cookie
-            - AuthorizationHeaderFilter
         - id: chat-service
           uri: lb://CHAT-SERVICE
           predicates:
             - Path=/chat/**
             - Method=POST, GET, DELETE
           filters:
-            - RemoveRequestHeader=Cookie
-            - AuthorizationHeaderFilter
-            - RewritePath=/chat/(?<segment>.*), /$\{segment}
+            - RewritePath=/chat(?<segment>/?.*), $\{segment}
 management:
   endpoints:
     web:

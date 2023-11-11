@@ -1,9 +1,10 @@
 package com.example.shopuserservice.web.controlleradvice;
 
 
-import com.example.shopuserservice.web.error.CustomException;
-import com.example.shopuserservice.web.error.ErrorCode;
-import com.example.shopuserservice.web.error.ErrorResponse;
+
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
+import com.example.commondto.error.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -19,11 +19,9 @@ public class RequestUser {
     @NotNull(message = "user id must not be null")
     @Size(min = 4, message = "user password must not be less than 4")
     private String userPw;
-
     @NotNull(message = "email should be not null")
     @Email
     private String email;
-
     @NotNull(message = "name should be not null")
     @Size(min = 3, message = "user name must not be less than 3")
     private String userName;

@@ -3,9 +3,11 @@ package chatting.chat.web.kafka.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CreateChatRoomUnitDTO {
     private String userId;
     private String userName;

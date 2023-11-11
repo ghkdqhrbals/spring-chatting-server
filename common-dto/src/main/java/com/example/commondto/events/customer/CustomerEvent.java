@@ -1,6 +1,6 @@
 package com.example.commondto.events.customer;
 
-import com.example.commondto.dto.CustomerDto;
+import com.example.commondto.dto.customer.CustomerRequest;
 import com.example.commondto.events.Event;
 import lombok.Data;
 
@@ -12,16 +12,8 @@ public class CustomerEvent implements Event {
 
     private final UUID eventId = UUID.randomUUID();
     private final Date date = new Date();
-    private CustomerDto payment;
+    private CustomerRequest.NewCustomerDTO payment;
     private CustomerStatus customerStatus;
-
-    public CustomerEvent() {
-    }
-
-    public CustomerEvent(CustomerDto payment, CustomerStatus status) {
-        this.payment = payment;
-        this.customerStatus = status;
-    }
 
     @Override
     public UUID getEventId() {
@@ -33,7 +25,7 @@ public class CustomerEvent implements Event {
         return this.date;
     }
 
-    public CustomerDto getPayment() {
+    public CustomerRequest.NewCustomerDTO getPayment() {
         return payment;
     }
 

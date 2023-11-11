@@ -1,5 +1,6 @@
 package com.example.shopuserservice.web.vo;
 
+import com.example.commondto.dto.order.ResponseOrder;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

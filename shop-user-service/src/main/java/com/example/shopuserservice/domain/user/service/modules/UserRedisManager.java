@@ -3,12 +3,7 @@ package com.example.shopuserservice.domain.user.service.modules;
 import com.example.commondto.events.ServiceNames;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.events.user.UserStatus;
-import com.example.shopuserservice.domain.user.data.UserRefreshToken;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
-import com.example.shopuserservice.domain.user.redisrepository.UserRefreshTokenRedisRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.Optional;
 
 public class UserRedisManager {

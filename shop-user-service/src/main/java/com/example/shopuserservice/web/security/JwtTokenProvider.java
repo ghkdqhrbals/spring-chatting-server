@@ -1,8 +1,11 @@
 package com.example.shopuserservice.web.security;
 
+import com.example.shopuserservice.web.security.token.UserRedisSession;
+import com.example.shopuserservice.web.security.token.UserRedisSessionRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +29,12 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "permissions";
+
+    private final UserRedisSessionRepository userRedisSessionRepository;
+
+    public JwtTokenProvider(UserRedisSessionRepository userRedisSessionRepository) {
+        this.userRedisSessionRepository = userRedisSessionRepository;
+    }
 
     @Value("${token.expiration_time}")
     String expirationTime;
@@ -68,6 +77,42 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String generateAccessToken(String userId, String role) {
+        // 토큰 클레임 (payload) 설정
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(AUTHORITIES_KEY, role);
+        claims.put("sub", userId);
+
+        // Access Token 생성
+        long now = (new Date()).getTime();
+        // Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + Integer.parseInt(expirationTime));
+        return Jwts.builder()
+                .setSubject(userId)
+                .setClaims(claims)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
+    public String generateRefreshToken(String userId, String role) {
+        // 토큰 클레임 (payload) 설정
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(AUTHORITIES_KEY, role);
+        claims.put("sub", userId);
+
+        // Access Token 생성
+        long now = (new Date()).getTime();
+        // Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + Integer.parseInt(refreshExpirationTime));
+        return Jwts.builder()
+                .setSubject(userId)
+                .setClaims(claims)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
     public String createRefreshToken(Authentication authentication) {
         String username = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -81,13 +126,20 @@ public class JwtTokenProvider {
         Long expirationTimeLong = Long.parseLong(refreshExpirationTime);
         final Date createdDate = new Date();
         final Date expirationDate = new Date(createdDate.getTime() + expirationTimeLong);
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
+
+        userRedisSessionRepository.save(UserRedisSession.builder()
+                .userId(username)
+                .refreshToken(refreshToken)
+                .build());
+
+        return refreshToken;
     }
 
     public Authentication getAuthentication(String token) {
@@ -131,4 +183,8 @@ public class JwtTokenProvider {
         return ((User) authentication.getPrincipal()).getUsername();
     }
 
+    public boolean isRefreshTokenInRedis(String refreshToken) {
+        Optional<UserRedisSession> findSession = userRedisSessionRepository.findById(refreshToken);
+        return findSession.isPresent();
+    }
 }

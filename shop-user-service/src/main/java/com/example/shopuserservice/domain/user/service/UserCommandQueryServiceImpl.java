@@ -1,5 +1,9 @@
 package com.example.shopuserservice.domain.user.service;
 
+import static com.example.commondto.error.ErrorCode.CANNOT_FIND_USER;
+
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
 import com.example.commondto.format.DateFormat;
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
@@ -10,14 +14,13 @@ import com.example.shopuserservice.domain.user.data.User;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.domain.user.redisrepository.UserTransactionRedisRepository;
-import com.example.shopuserservice.domain.user.dto.UserDto;
+import com.example.commondto.dto.user.UserDto;
 import com.example.shopuserservice.domain.user.service.modules.UserRedisManager;
 import com.example.shopuserservice.domain.user.service.reactor.UserStatusManager;
-import com.example.shopuserservice.web.error.CustomException;
-import com.example.shopuserservice.web.error.ErrorResponse;
+import com.example.commondto.error.ErrorResponse;
 import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.vo.RequestUser;
-import com.example.shopuserservice.web.vo.ResponseOrder;
+import com.example.commondto.dto.order.ResponseOrder;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -40,11 +43,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-import static com.example.shopuserservice.web.error.ErrorCode.*;
 
 @Slf4j
 @Service
 public class UserCommandQueryServiceImpl implements UserCommandQueryService {
+
     private final UserRepository userRepository;
     private final UserTransactionRedisRepository userTransactionRedisRepository;
     private final KafkaTemplate<String, Object> kafkaProducerTemplate;
@@ -55,11 +58,13 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     private final OrderServiceClient orderServiceClient;
 
     public UserCommandQueryServiceImpl(UserRepository userRepository,
-                                       UserTransactionRedisRepository userTransactionRedisRepository, @Qualifier("taskExecutor") Executor serviceExecutor,
-                                       HikariDataSource hikariDataSource,
-                                       @Qualifier("bcrypt") PasswordEncoder pwe,
-                                       OrderServiceClient orderServiceClient,
-                                       KafkaTemplate<String, Object> kafkaProducerTemplate, TransactionTemplate transactionTemplate) {
+        UserTransactionRedisRepository userTransactionRedisRepository,
+        @Qualifier("taskExecutor") Executor serviceExecutor,
+        HikariDataSource hikariDataSource,
+        @Qualifier("bcrypt") PasswordEncoder pwe,
+        OrderServiceClient orderServiceClient,
+        KafkaTemplate<String, Object> kafkaProducerTemplate,
+        TransactionTemplate transactionTemplate) {
         this.userRepository = userRepository;
         this.userTransactionRedisRepository = userTransactionRedisRepository;
         this.serviceExecutor = serviceExecutor;
@@ -71,11 +76,10 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     }
 
 
-
     // 유저 검색
     @Override
     public CompletableFuture<Optional<User>> getUserById(String id) {
-        return CompletableFuture.supplyAsync(()->{
+        return CompletableFuture.supplyAsync(() -> {
             return userRepository.findById(id);
         });
     }
@@ -84,8 +88,8 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     public CompletableFuture<UserTransactions> updateStatus(UserResponseEvent event) {
         return CompletableFuture.supplyAsync(() -> {
             UserTransactions userTransactions = userTransactionRedisRepository
-                    .findById(event.getEventId())
-                    .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
+                .findById(event.getEventId())
+                .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
 
             UserRedisManager.changeUserRegisterStatusByEventResponse(event, userTransactions);
 
@@ -98,16 +102,16 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     // 유저 저장
     @Override
     public CompletableFuture<User> createUser(RequestUser request, UUID eventId) {
-        return CompletableFuture.supplyAsync(()->{
+        return CompletableFuture.supplyAsync(() -> {
             User user = User.builder()
-                    .userName(request.getUserName())
-                    .email(request.getEmail())
-                    .role(request.getRole())
-                    .userPw(pwe.encode(request.getUserPw()))
-                    .userId(request.getUserId())
-                    .loginDate(DateFormat.getCurrentTime())
-                    .logoutDate(DateFormat.getCurrentTime())
-                    .build();
+                .userName(request.getUserName())
+                .email(request.getEmail())
+                .role(request.getRole())
+                .userPw(pwe.encode(request.getUserPw()))
+                .userId(request.getUserId())
+                .loginDate(DateFormat.getCurrentTime())
+                .logoutDate(DateFormat.getCurrentTime())
+                .build();
 
             return transactionTemplate.execute((status) -> {
                 return userRepository.save(user);
@@ -116,9 +120,10 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     }
 
     @Override
-    public CompletableFuture<UserTransactions> newUserEvent(RequestUser req, UUID eventId, UserEvent userEvent) {
-        return CompletableFuture.supplyAsync(()->{
-            return transactionTemplate.execute((status)->{
+    public CompletableFuture<UserTransactions> newUserEvent(RequestUser req, UUID eventId,
+        UserEvent userEvent) {
+        return CompletableFuture.supplyAsync(() -> {
+            return transactionTemplate.execute((status) -> {
                 log.trace("newUserEvent method is called");
 
                 UserTransactions userTransaction = createUserTransaction(req, eventId);
@@ -134,18 +139,18 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 LocalDateTime afterRedisSaved = LocalDateTime.now();
 
                 Optional<User> findUser = userRepository.findById(ut.getUserId());
-                if (findUser.isEmpty()){
+                if (findUser.isEmpty()) {
 
                     // create UserEntity
                     User user = User.builder()
-                            .userName(ut.getUserName())
-                            .email(ut.getEmail())
-                            .role(ut.getRole())
-                            .userPw(ut.getUserPw())
-                            .userId(ut.getUserId())
-                            .loginDate(DateFormat.getCurrentTime())
-                            .logoutDate(DateFormat.getCurrentTime())
-                            .build();
+                        .userName(ut.getUserName())
+                        .email(ut.getEmail())
+                        .role(ut.getRole())
+                        .userPw(ut.getUserPw())
+                        .userId(ut.getUserId())
+                        .loginDate(DateFormat.getCurrentTime())
+                        .logoutDate(DateFormat.getCurrentTime())
+                        .build();
 
                     LocalDateTime beforeRDBSaved = LocalDateTime.now();
                     log.trace("User save to postgres");
@@ -163,15 +168,15 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
                 log.trace("Now send event to other server");
                 sendToKafkaWithKey(
-                        KafkaTopic.userReq, // topic
-                        userEvent,  // event
-                        req.getUserId() // key
-                ).thenRun(()->{
+                    KafkaTopic.userReq, // topic
+                    userEvent,  // event
+                    req.getUserId() // key
+                ).thenRun(() -> {
                     log.trace("Redis saving time : " +
-                            Duration.between(beforeRedisSaved, afterRedisSaved).toMillis() +
-                            "ms, Kafka sending Time : " +
-                            Duration.between(afterRedisSaved, LocalDateTime.now()).toMillis()+
-                            "ms");
+                        Duration.between(beforeRedisSaved, afterRedisSaved).toMillis() +
+                        "ms, Kafka sending Time : " +
+                        Duration.between(afterRedisSaved, LocalDateTime.now()).toMillis() +
+                        "ms");
                 });
 
                 return ut;
@@ -183,54 +188,57 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     private UserTransactions createUserTransaction(RequestUser req, UUID eventId) {
         LocalDateTime currentTime = DateFormat.getCurrentTime();
         return UserTransactions.builder()
-                .eventId(eventId)
-                .createdAt(currentTime)
-                .userId(req.getUserId())
-                .email(req.getEmail())
-                .userName(req.getUserName())
-                .userPw(pwe.encode(req.getUserPw()))
-                .role(req.getRole())
-                .userStatus(UserStatus.USER_INSERT_APPEND)
-                .chatStatus(UserStatus.USER_INSERT_APPEND)
-                .customerStatus(UserStatus.USER_INSERT_APPEND)
-                .build();
+            .eventId(eventId)
+            .createdAt(currentTime)
+            .userId(req.getUserId())
+            .email(req.getEmail())
+            .userName(req.getUserName())
+            .userPw(pwe.encode(req.getUserPw()))
+            .role(req.getRole())
+            .userStatus(UserStatus.USER_INSERT_APPEND)
+            .chatStatus(UserStatus.USER_INSERT_APPEND)
+            .customerStatus(UserStatus.USER_INSERT_APPEND)
+            .build();
     }
 
-    private CompletableFuture<?> sendToKafkaWithKey(String topic,Object req, String key) {
-        return kafkaProducerTemplate.send(topic,key, req);
+    private CompletableFuture<?> sendToKafkaWithKey(String topic, Object req, String key) {
+        return kafkaProducerTemplate.send(topic, key, req);
     }
 
     // 로그인
     @Override
-    public DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr) {
+    public DeferredResult<ResponseEntity<?>> login(String userId, String userPw,
+        DeferredResult<ResponseEntity<?>> dr) {
         return dr;
     }
 
     // 로그인
     @Override
-    public DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr) {
+    public DeferredResult<ResponseEntity<?>> logout(String userId, String userPw,
+        DeferredResult<ResponseEntity<?>> dr) {
         return dr;
     }
 
-    private void queryWithMethods(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr, CompletableFuture<?> cf) {
-        CompletableFuture.runAsync(()->{
+    private void queryWithMethods(String userId, String userPw,
+        DeferredResult<ResponseEntity<?>> dr, CompletableFuture<?> cf) {
+        CompletableFuture.runAsync(() -> {
             try {
                 cf.get(); // Blocking
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e.getCause());
             }
-        },serviceExecutor).thenRunAsync(()->{
+        }, serviceExecutor).thenRunAsync(() -> {
             dr.setResult(ResponseEntity.ok("success"));
-        },serviceExecutor).exceptionally(e->{
-            if (e.getCause().getCause() instanceof CustomException){
-                dr.setResult(ErrorResponse.toResponseEntity(((CustomException) e.getCause().getCause()).getErrorCode()));
+        }, serviceExecutor).exceptionally(e -> {
+            if (e.getCause().getCause() instanceof CustomException) {
+                dr.setResult(ErrorResponse.toResponseEntity(
+                    ((CustomException) e.getCause().getCause()).getErrorCode()));
             } else {
                 dr.setResult(ResponseEntity.badRequest().body("default bad request response"));
             }
             return null;
         });
     }
-
 
 //    // 유저 삭제
 //    @Override
@@ -267,7 +275,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     @Override
     public void updateUser(User user) {
         Optional<User> findUser = userRepository.findById(user.getUserId());
-        if (findUser.isPresent()){
+        if (findUser.isPresent()) {
             findUser.get().setUserName(user.getUserName());
             findUser.get().setUserId(user.getUserId());
             findUser.get().setUserPw(user.getUserPw());
@@ -284,13 +292,14 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         Optional<User> user = userRepository.findById(username);
         List<ResponseOrder> orders = null;
 
-        if (!user.isPresent()){
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException(username);
         }
         UserDto userDto = new ModelMapper().map(user, UserDto.class);
-        try{
+        try {
             orders = orderServiceClient.getOrders(username);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         userDto.setOrders(orders);
         return CompletableFuture.completedFuture(userDto);
@@ -301,7 +310,7 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     @Transactional
     public CompletableFuture<String> changePassword(String userId, String userPw) {
         Optional<User> findUser = userRepository.findById(userId);
-        if (findUser.isPresent()){
+        if (findUser.isPresent()) {
             findUser.get().setUserPw(pwe.encode(userPw));
             return CompletableFuture.completedFuture("success");
         } else {
@@ -319,10 +328,10 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
 
     private void printHikariCPInfo() {
         log.info(String.format("HikariCP[Total:%s, Active:%s, Idle:%s, Wait:%s]",
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getTotalConnections()),
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getActiveConnections()),
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getIdleConnections()),
-                String.valueOf(hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection())
+            String.valueOf(hikariDataSource.getHikariPoolMXBean().getTotalConnections()),
+            String.valueOf(hikariDataSource.getHikariPoolMXBean().getActiveConnections()),
+            String.valueOf(hikariDataSource.getHikariPoolMXBean().getIdleConnections()),
+            String.valueOf(hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection())
         ));
     }
 }

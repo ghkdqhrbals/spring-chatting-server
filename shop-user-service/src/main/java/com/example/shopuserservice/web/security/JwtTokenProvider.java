@@ -134,7 +134,10 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
 
-        userRedisSessionRepository.save(UserRedisSession.builder().userId(username).refreshToken(refreshToken).build());
+        userRedisSessionRepository.save(UserRedisSession.builder()
+                .userId(username)
+                .refreshToken(refreshToken)
+                .build());
 
         return refreshToken;
     }

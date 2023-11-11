@@ -79,9 +79,11 @@ task generateDockerfile {
 					"""
 FROM openjdk:17-alpine
 
-WORKDIR /${group}
+WORKDIR /app
 
-COPY ${latestJarFile.absolutePath.replace(project.projectDir.absolutePath, '')} /${group}/app.jar
+COPY ${latestJarFile.absolutePath.replace(project.projectDir.absolutePath, '')} /app/app.jar
+# This part should be stored in the secret storage
+COPY keystore.p12 /app/keystore.p12
 ENTRYPOINT java -jar app.jar
 
 LABEL version="${version}"

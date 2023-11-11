@@ -1,19 +1,13 @@
 package com.example.shopuserservice.web.security.filter;
 
 import com.example.shopuserservice.web.security.JwtTokenProvider;
-import com.example.shopuserservice.web.security.token.TokenUtil;
-import org.springframework.core.Ordered;
-import org.springframework.http.HttpCookie;
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
+import com.example.shopuserservice.web.security.token.util.TokenUtil;
 import org.springframework.web.server.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 

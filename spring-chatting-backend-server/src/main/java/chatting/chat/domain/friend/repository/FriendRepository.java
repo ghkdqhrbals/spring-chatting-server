@@ -1,16 +1,13 @@
 package chatting.chat.domain.friend.repository;
 
-import chatting.chat.domain.compositekey.FriendId;
-import chatting.chat.domain.data.Friend;
-import chatting.chat.domain.data.User;
-import org.springframework.data.domain.Pageable;
+import chatting.chat.domain.friend.entity.Friend;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
@@ -19,6 +16,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     @Query("select f from Friend f where f.user.userId = :userId")
     List<Friend> findAllByUserId(@Param("userId") String userId);
+
+    @Query("select f from Friend f where f.friendId = :friendId")
+    Optional<Friend> findByFriendId(@Param("friendId") String friendId);
 
     @Nullable
     @Query("select f from Friend f where f.user.userId = :userId and f.friendId = :friendId")

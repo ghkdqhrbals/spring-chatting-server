@@ -1,5 +1,11 @@
 package chatting.chat.web.error;
 
+import static com.example.commondto.error.ErrorCode.*;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
+import com.example.commondto.error.ErrorResponse;
+import com.example.commondto.error.AppException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import static chatting.chat.web.error.ErrorCode.DUPLICATE_RESOURCE;
+
 
 @Slf4j
 @RestControllerAdvice
@@ -24,5 +30,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
         log.error("handleCustomException throw CustomException : {}", e.getErrorCode());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(value = { Exception.class })
+    protected ResponseEntity<ErrorResponse> handleDefaultException(Exception e) {
+        log.error("handleCustomException throw CustomException : {}", e.getMessage());
+        return ErrorResponse.toResponseEntity(SERVER_ERROR);
     }
 }

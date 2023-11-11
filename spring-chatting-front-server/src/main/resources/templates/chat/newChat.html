@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      th:href="@{/css/styles.css}"
+      href="../css/styles.css"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <header class="alt-header">
+      <h1 class="alt-header__column__newchat">Create new chat</h1>
+    </header>
+
+    <main class="main-screen">
+      <ul class="settings-list">
+        <form class="newChat">
+          <div class="newChat__colunm">
+            <input
+              type="text"
+              placeholder="Search for your friend"
+              id="newChat__colunm__input"
+            />
+            <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+          </div>
+        </form>
+        <div id="selectedValues"></div>
+
+        <div class="newChat_list">
+          <div class="newChat_list__title">친구 5</div>
+          <div id="newChat__searchResult"></div>
+
+          <div class="user-component">
+            <div class="user-component__colunm">
+              <img
+                src="http://placehold.it/50x50?text=Friend"
+                class="user-component__avatar user-component__avatar--sm"
+              />
+              <div class="user-component__text">
+                <h4
+                  class="user-component__title user-component__title--not-bold"
+                  th:text="${friend.friendName}"
+                >
+                  user1
+                </h4>
+              </div>
+            </div>
+            <div class="user-component__colunm">
+              <div>
+                <label class="user-component__checkbox">
+                  <input type="checkbox" name="user1" value="user1" />
+                  <span class="user-component__checkmark"> </span>
+                  <i class="fa-solid fa-check"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-component">
+            <div class="user-component__colunm">
+              <img
+                src="http://placehold.it/50x50?text=Friend"
+                class="user-component__avatar user-component__avatar--sm"
+              />
+              <div class="user-component__text">
+                <h4
+                  class="user-component__title user-component__title--not-bold"
+                  th:text="${friend.friendName}"
+                >
+                  user2
+                </h4>
+              </div>
+            </div>
+            <div class="user-component__colunm">
+              <div>
+                <label class="user-component__checkbox">
+                  <input type="checkbox" name="user2" value="user2" />
+                  <span class="user-component__checkmark"> </span>
+                  <i class="fa-solid fa-check"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-component">
+            <div class="user-component__colunm">
+              <img
+                src="http://placehold.it/50x50?text=Friend"
+                class="user-component__avatar user-component__avatar--sm"
+              />
+              <div class="user-component__text">
+                <h4
+                  class="user-component__title user-component__title--not-bold"
+                  th:text="${friend.friendName}"
+                >
+                  user3
+                </h4>
+              </div>
+            </div>
+            <div class="user-component__colunm">
+              <div>
+                <label class="user-component__checkbox">
+                  <input type="checkbox" name="user3" value="user3" />
+                  <span class="user-component__checkmark"> </span>
+                  <i class="fa-solid fa-check"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-component">
+            <div class="user-component__colunm">
+              <img
+                src="http://placehold.it/50x50?text=Friend"
+                class="user-component__avatar user-component__avatar--sm"
+              />
+              <div class="user-component__text">
+                <h4
+                  class="user-component__title user-component__title--not-bold"
+                  th:text="${friend.friendName}"
+                >
+                  user4
+                </h4>
+              </div>
+            </div>
+            <div class="user-component__colunm">
+              <div>
+                <label class="user-component__checkbox">
+                  <input type="checkbox" name="user4" value="user4" />
+                  <span class="user-component__checkmark"> </span>
+                  <i class="fa-solid fa-check"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-component">
+            <div class="user-component__colunm">
+              <img
+                src="http://placehold.it/50x50?text=Friend"
+                class="user-component__avatar user-component__avatar--sm"
+              />
+              <div class="user-component__text">
+                <h4
+                  class="user-component__title user-component__title--not-bold"
+                  th:text="${friend.friendName}"
+                >
+                  user5
+                </h4>
+              </div>
+            </div>
+            <div class="user-component__colunm">
+              <div>
+                <label class="user-component__checkbox">
+                  <input
+                    type="checkbox"
+                    name="user55555555"
+                    value="user55555555"
+                  />
+                  <span class="user-component__checkmark"> </span>
+                  <i class="fa-solid fa-check"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-component">
+            <div class="user-component__colunm">
+              <img
+                src="http://placehold.it/50x50?text=Friend"
+                class="user-component__avatar user-component__avatar--sm"
+              />
+              <div class="user-component__text">
+                <h4
+                  class="user-component__title user-component__title--not-bold"
+                  th:text="${friend.friendName}"
+                >
+                  user6
+                </h4>
+              </div>
+            </div>
+            <div class="user-component__colunm">
+              <div>
+                <label class="user-component__checkbox">
+                  <input
+                    type="checkbox"
+                    name="user66666666"
+                    value="user66666666"
+                  />
+                  <span class="user-component__checkmark"> </span>
+                  <i class="fa-solid fa-check"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ul>
+    </main>
+
+    <footer>
+      <form class="newChat__submit">
+        <button id="submit_btn">확인</button>
+        <button>취소</button>
+      </form>
+    </footer>
+    <script
+      src="https://kit.fontawesome.com/6621720c97.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const confirmButton = document.getElementById("submit_btn");
+        confirmButton.classList.add("newChat_notSelected");
+      });
+
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const selectedValuesDiv = document.getElementById("selectedValues");
+      const confirmButton = document.getElementById("submit_btn");
+      //   const confirmButton = document.querySelector(".newChat__submit button");
+      checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          const selectedValues = Array.from(checkboxes)
+            .filter((cb) => cb.checked)
+            .map((cb) => {
+              const spanElement = document.createElement("span");
+              spanElement.textContent = cb.value;
+              return spanElement;
+            });
+          selectedValuesDiv.innerHTML = ""; // 기존 내용 초기화
+          selectedValues.forEach((spanElement) => {
+            selectedValuesDiv.appendChild(spanElement);
+          });
+
+          if (selectedValues.length === 0) {
+            selectedValuesDiv.classList.remove("newChat__selected__list");
+            confirmButton.classList.add("newChat_notSelected");
+            confirmButton.classList.remove("newChat_Selected");
+          } else {
+            selectedValuesDiv.classList.add("newChat__selected__list");
+            confirmButton.classList.remove("newChat_notSelected");
+            confirmButton.classList.add("newChat_Selected");
+          }
+        });
+      });
+
+      /*  const searchInput = document.getElementById("newChat__colunm__input");
+      const searchResults = document.getElementById("newChat__searchResult");
+
+      // 예제로 사용할 친구 목록
+      const friends = ["user1", "user2", "user3", "user4", "user5", "user6"];
+
+      // 입력 필드의 입력 이벤트를 감지
+      searchInput.addEventListener("input", () => {
+        const searchText = searchInput.value.toLowerCase();
+        const filteredFriends = friends.filter((friend) =>
+          friend.toLowerCase().includes(searchText)
+        );
+
+        // 검색 결과를 화면에 표시
+        searchResults.innerHTML = "";
+        filteredFriends.forEach((friend) => {
+          const resultItem = document.createElement("div");
+          resultItem.textContent = friend;
+          searchResults.appendChild(resultItem);
+        });
+      }); */
+    </script>
+  </body>
+</html>

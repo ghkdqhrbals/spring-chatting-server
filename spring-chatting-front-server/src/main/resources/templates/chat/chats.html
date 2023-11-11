@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+    <link th:href="@{/css/styles.css}"
+          href="../css/styles.css" rel="stylesheet">
+    <title>Chats - Kokoa Clone</title>
+</head>
+
+<body>
+    <div th:replace="fragments/status-bar.html :: status-bar"></div>
+    <div th:replace="fragments/nav.html :: fragment-nav"></div>
+
+    <header class="screen-header">
+        <h1 class="screen-header__title">Chats</h1>
+        <div class="screen-header__icons">
+            <span><i class="fa-solid fa-magnifying-glass"></i></span>
+            <span><i class="fa-regular fa-comment-dots fa-lg"></i></span>
+            <span><i class="fa-solid fa-music"></i></span>
+            <span><i class="fa-solid fa-gear"></i></span>
+        </div>
+    </header>
+
+    <main class="main-screen">
+        <div class="user-component">
+            <div class="user-component__colunm">
+                <img src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"
+                    class="user-component__avatar" />
+                <div class="user-component__text">
+                    <h4 class="user-component__title">Munkyeong</h4>
+                    <h6 class="user-component__subtitle">Please check My KoKoa Account Info</h6>
+
+                </div>
+            </div>
+            <div class="user-component__colunm">
+                <span class="user-component__time">17:22</span>
+                <div class="badge">1</div>
+
+            </div>
+        </div>
+
+        <a href="chat.html">
+            <div class="user-component">
+                <div class="user-component__colunm">
+                    <img src="https://thumb.mt.co.kr/06/2015/09/2015092220221498877_1.jpg/dims/optimize/"
+                        class="user-component__avatar" />
+                    <div class="user-component__text">
+                        <h4 class="user-component__title">kangoll</h4>
+                        <h6 class="user-component__subtitle">Come into the LOL game</h6>
+            
+                    </div>
+                </div>
+                <div class="user-component__colunm">
+                    <span class="user-component__time">22:22</span>
+                    <div class="badge">3</div>
+            
+                </div>
+            </div>
+        </a>
+
+    </main>
+
+    <script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

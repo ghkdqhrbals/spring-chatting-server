@@ -76,7 +76,6 @@ spring:
             - Path=/chat/**
             - Method=POST, GET, DELETE
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/chat(?<segment>/?.*), $\{segment}
 management:
   endpoints:

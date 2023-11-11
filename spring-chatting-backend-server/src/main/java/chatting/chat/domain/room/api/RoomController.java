@@ -48,5 +48,4 @@ public class RoomController {
         List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(UserContext.getUserId());
         return ResponseEntity.ok(allMyRooms);
     }
-
 }

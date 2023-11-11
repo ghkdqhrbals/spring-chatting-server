@@ -212,24 +212,29 @@ Containers that we run and their roles
 4. In Kibana[http://localhost:5601](http://localhost:5601), create index of new-user and chat
 
 ## Update Logs
-### v5.x
+### v5.x.x
 #### PR
-* PR https://github.com/ghkdqhrbals/spring-chatting-server/pull/129
-* PR https://github.com/ghkdqhrbals/spring-chatting-server/pull/101
-* PR https://github.com/ghkdqhrbals/spring-chatting-server/pull/100
+* PR(MultipleImplementations) https://github.com/ghkdqhrbals/spring-chatting-server/pull/146
+* PR(ExceptionECR) https://github.com/ghkdqhrbals/spring-chatting-server/pull/106
+* PR(ExceptionECR) https://github.com/ghkdqhrbals/spring-chatting-server/pull/104
+* PR(AutoECRPushScript) https://github.com/ghkdqhrbals/spring-chatting-server/pull/101
+* PR(CI/CD pipelining) https://github.com/ghkdqhrbals/spring-chatting-server/pull/100
+* PR(LackResource) https://github.com/ghkdqhrbals/spring-chatting-server/pull/99
+* PR(TestPipelining) https://github.com/ghkdqhrbals/spring-chatting-server/pull/96
+* PR(AutoGradleScript) https://github.com/ghkdqhrbals/spring-chatting-server/pull/68
 #### Main Issues
 * Issue(RefreshToken) https://github.com/ghkdqhrbals/spring-chatting-server/issues/135
 * Issue(CI/CD Pipelining) https://github.com/ghkdqhrbals/spring-chatting-server/issues/78
 * Issue(CI/CD Pipelining) https://github.com/ghkdqhrbals/spring-chatting-server/issues/116
 * Issue(LackResource) https://github.com/ghkdqhrbals/spring-chatting-server/issues/113
 * Issue(KafkaIdempotency) https://github.com/ghkdqhrbals/spring-chatting-server/issues/62
-* Issue(SinkFlux) https://github.com/ghkdqhrbals/spring-chatting-server/issues/59
+* Issue(SinkFluxManaging) https://github.com/ghkdqhrbals/spring-chatting-server/issues/59
 * Issue(FrontServer) https://github.com/ghkdqhrbals/spring-chatting-server/issues/46
 * Issue(DockerUtilScript) https://github.com/ghkdqhrbals/spring-chatting-server/issues/45
 * Issue(KafkaConsumer) https://github.com/ghkdqhrbals/spring-chatting-server/issues/17
 * Issue(SpringBeanOverriding) https://github.com/ghkdqhrbals/spring-chatting-server/issues/24
 * Issue(K8S) https://github.com/ghkdqhrbals/spring-chatting-server/issues/115
-* Issue(AWS-ECR) https://github.com/ghkdqhrbals/spring-chatting-server/issues/111
+* Issue(awsECR) https://github.com/ghkdqhrbals/spring-chatting-server/issues/111
 
 ### v4.2.1
 

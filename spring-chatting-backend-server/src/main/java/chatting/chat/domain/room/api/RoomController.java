@@ -3,6 +3,7 @@ package chatting.chat.domain.room.api;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
+import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.kafka.dto.ChatRoomDTO;
 import chatting.chat.web.kafka.dto.RequestAddChatRoomDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +35,8 @@ public class RoomController {
 
     @GetMapping(value = "/rooms")
     @Operation(summary = "Get room information that user participated")
-    public ResponseEntity<?> findRoomWithUserId(@RequestParam("userId") String userId) {
-        List<ChatRoomDTO> findUserRooms = userService.findAllMyRooms(userId);
+    public ResponseEntity<?> findRoomWithUserId() {
+        List<ChatRoomDTO> findUserRooms = userService.findAllMyRooms(UserContext.getUserId());
         return ResponseEntity.ok(findUserRooms);
     }
 
@@ -44,7 +45,7 @@ public class RoomController {
     @Operation(summary = "Open room with friends")
     public ResponseEntity<?> addChatRoom(@RequestBody RequestAddChatRoomDTO req){
         userService.makeRoomWithFriends(req);
-        List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(req.getUserId());
+        List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(UserContext.getUserId());
         return ResponseEntity.ok(allMyRooms);
     }
 

@@ -6,11 +6,15 @@ import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
+import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.kafka.dto.*;
+import com.example.commondto.dto.chat.ChatRequest;
+import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTOsWithUser;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
+@Transactional
 @AllArgsConstructor
 public class ChatController {
 
@@ -34,10 +39,13 @@ public class ChatController {
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
         Room findRoom = roomService.findByRoomId(roomId);
         List<Chatting> findChattings = chatService.findAllByRoomId(findRoom.getRoomId());
-        List<ChatRecord> response = findChattings.stream().map(
-                c -> new ChatRecord(c.getId(), c.getRoom().getRoomId(), c.getSendUser().getUserId(),
-                    c.getSendUser().getUserName(), c.getMessage(), c.getCreatedAt()))
-            .collect(Collectors.toList());
+        ChatRequest.ChatRecordDTOsWithUser response = ChatRecordDTOsWithUser.builder()
+            .records(
+                findChattings.stream().map(
+                    Chatting::toChatRecordDTO).collect(Collectors.toList()))
+            .userId(UserContext.getUserId())
+            .userName(userService.findById(UserContext.getUserId()).getUserName())
+            .build();
 
         return ResponseEntity.ok(response);
     }

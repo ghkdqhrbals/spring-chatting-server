@@ -2,117 +2,281 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="css/styles.css">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/css/styles.css}"
+          href="../css/styles.css" rel="stylesheet">
     <title>Chat - Kokoa Clone</title>
 </head>
 
 <body id="chat-screen">
-    <div class="status-bar chat-status-bar">
-        <div class="status-bar__column">
-            <span>No Service</span>
-            <i class="fa-solid fa-wifi"></i>
-        </div>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<div th:replace="fragments/status-bar.html :: status-bar"></div>
+<div th:replace="fragments/nav.html :: fragment-nav"></div>
 
-        <div class="status-bar__column">
-            <span>18:43</span>
-        </div>
-
-        <div class="status-bar__column">
-            <span>80%</span>
-            <i class="fa-solid fa-battery-full fa-lg"></i>
-            <i class="fa-solid fa-bolt-lightning"></i>
-        </div>
-
+<div class="status-bar chat-status-bar">
+    <div class="status-bar__column">
+        <span>No Service</span>
+        <i class="fa-solid fa-wifi"></i>
     </div>
 
-    <header class="alt-header chat-alt-header">
-        <div class="alt-header__column">
-            <a href="chats.html">
-                <i class="fa-solid fa-angle-left fa-lg"></i>
-            </a>
-        </div>
-        
-        <div class="alt-header__column">
-            <h1 class="alt-header__column__title">Kangoll</h1>
-        </div>
+    <div class="status-bar__column">
+        <span>18:43</span>
+    </div>
 
-        <div class="alt-header__column">
-            <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-            <i class="fa-solid fa-bars fa-lg"></i>
-        </div>
-    </header>
+    <div class="status-bar__column">
+        <span>80%</span>
+        <i class="fa-solid fa-battery-full fa-lg"></i>
+        <i class="fa-solid fa-bolt-lightning"></i>
+    </div>
+</div>
 
-    <main class="main-screen main-chat">
-        <div class="chat__timestamp">
-            Friday, March 2, 2023
-        </div>
 
-        <div class="message-row  message-connected">
-            <img src="https://thumb.mt.co.kr/06/2015/09/2015092220221498877_1.jpg/dims/optimize/"/>
-            <div class="message-row__content">
-                <span class="message-author">kangoll</span>
-                <div class="message-info">
-                    <span class="message__bubble">Hey</span>
-                </div>
-            </div>
+<header class="alt-header chat-alt-header">
+    <div class="alt-header__column">
+        <a href="chats.html" th:href="@{/rooms}">
+            <i class="fa-solid fa-angle-left fa-lg"></i>
+        </a>
+    </div>
 
-        </div>
+    <div class="alt-header__column">
+        <h1 class="alt-header__column__title">Kangoll</h1>
+    </div>
 
-        <div class="message-row">
-            <img src="https://thumb.mt.co.kr/06/2015/09/2015092220221498877_1.jpg/dims/optimize/"  style="opacity: 0;"/>
+    <div class="alt-header__column">
+        <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+        <i class="fa-solid fa-bars fa-lg"></i>
+    </div>
+</header>
 
-            <div class="message-row__content">
-                <div class="message-info">
-                    <span class="message__bubble">Do U have a time?</span>
-                    <span class="messgae__time">22:21</span>
-                </div>
-            </div>
-        
-        </div>
+<main class="main-screen main-chat">
+    <div class="chat__timestamp">
+        Friday, March 2, 2023
+    </div>
+</main>
 
-        <div class="message-row">
-            <img src="https://thumb.mt.co.kr/06/2015/09/2015092220221498877_1.jpg/dims/optimize/" />
-            <div class="message-row__content">
-                <span class="message-author">kangoll</span>
-                <div class="message-info">
-                    <span class="message__bubble">Come into the LOL game</span>
-                    <span class="messgae__time">22:22</span>
-                </div>
-            </div>
-        
-        </div>
+<div class="reply">
+    <div class="reply__colunm">
+        <i class="fa-regular fa-square-plus fa-lg"></i>
+    </div>
+    <div class="reply__colunm">
+        <input type="text" id="chat-input" placeholder="Write a message.."
+               oninput="handleCompositionEnd(event)" onkeydown="handleKeyDown(event)">
+        <i class="fa-regular fa-face-smile fa-lg"></i>
+        <button th:onclick="msgSend()">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+    </div>
+</div>
 
-        <div class="message-row message-row--own">
-            <div class="message-row__content">
-                <div class="message-info">
-                    <span class="message__bubble">I'm connecting lol</span>
-                    <span class="messgae__time">22:22</span>
-                </div>
-            </div>
-        
-        </div>
-    </main>
-
-    <form class="reply">
-        <div class="reply__colunm">
-            <i class="fa-regular fa-square-plus fa-lg"></i>
-        </div>
-        <div class="reply__colunm">
-            <input type="text" placeholder="Write a message..">
-            <i class="fa-regular fa-face-smile fa-lg"></i>
-            <button>
-                <i class="fa-solid fa-arrow-up"></i>
-            </button>
-
-        </div>
-    </form>
-
-    <script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/6621720c97.js" crossorigin="anonymous"></script>
 
 
 </body>
 
 </html>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  var userLocale = navigator.language
+
+  // 한글 입력 완료 시 실행될 핸들러 함수
+  function handleKeyDown(event) {
+    if (event.key === "Enter" && !event.isComposing) {
+      event.preventDefault();
+      msgSend();
+    }
+  }
+
+  function handleCompositionEnd(event) {
+    event.preventDefault();
+  }
+
+  var roomName = [[${roomName}]];
+  var roomId = [[${roomId}]];
+  var username = [[${userName}]];
+  var userId = [[${userId}]];
+  var record = [[${records}]];
+  console.log(record);
+
+  record.forEach(function (r) {
+    // Assuming 'userId' is the user's ID and 'r.sendUserId' is the sender's ID
+    var mainChat = document.querySelector(".main-chat");
+
+    // Create a new message row element
+    var messageRow = document.createElement("div");
+    messageRow.className = "message-row";
+
+    // Create an image element for the sender's avatar
+
+    var img = document.createElement("img");
+    img.src = "https://thumb.mt.co.kr/06/2015/09/2015092220221498877_1.jpg/dims/optimize/";
+
+    // Create a message row content container
+    var messageRowContent = document.createElement("div");
+    messageRowContent.className = "message-row__content";
+
+    var messageInfo = document.createElement("div");
+    messageInfo.className = "message-info";
+
+    // Check if the message is from the user or someone else
+    if (r.sendUserId !== userId) { // Use 'r.sendUserId' here
+      // Create a span element for the sender's name
+      var messageAuthor = document.createElement("span");
+      messageAuthor.className = "message-author";
+      messageAuthor.textContent = "kangoll";
+
+      // Create a message bubble element
+      var messageBubble = document.createElement("span");
+      messageBubble.className = "message__bubble";
+      messageBubble.textContent = r.message; // Use 'r.message' here
+
+      // Append sender's name and message bubble to the content container
+      messageRowContent.appendChild(messageAuthor);
+      messageInfo.appendChild(messageBubble);
+    } else {
+      // Create a message bubble element for the user's own message
+      var messageBubbleOwn = document.createElement("span");
+      messageBubbleOwn.className = "message__bubble";
+      messageBubbleOwn.textContent = r.message; // Use 'r.message' here
+
+      // Append the user's own message bubble to the content container
+      messageInfo.appendChild(messageBubbleOwn);
+      // messageRowContent.appendChild(messageBubbleOwn);
+
+      // Add the 'message-row--own' class to the message row for the user's own message
+      messageRow.classList.add("message-row--own");
+    }
+
+    // Create a span element for the message time
+    var messageTime = document.createElement("span");
+    messageTime.className = "messgae__time";
+    var messageTimeDate = new Date(r.createdAt); // 문자열을 Date 객체로 변환
+
+    var options = {hour: '2-digit', minute: '2-digit'};
+    var formattedTime = messageTimeDate.toLocaleTimeString(userLocale, options);
+    messageTime.textContent = formattedTime;
+
+    // Append the message time to the content container
+    messageInfo.appendChild(messageTime);
+
+    // Append the sender's avatar and content container to the message row
+    if (r.sendUserId !== userId) {
+      messageRow.appendChild(img);
+    }
+
+    messageRowContent.appendChild(messageInfo);
+    messageRow.appendChild(messageRowContent);
+
+    // Append the message row to the main chat container
+    mainChat.appendChild(messageRow);
+  });
+
+  var sockJs = new SockJS("/stomp/chat");
+
+  //1. SockJS를 내부에 들고있는 stomp를 내어줌
+  var stomp = Stomp.over(sockJs);
+
+  //2. connection이 맺어지면 실행
+  stomp.connect({}, function () {
+    console.log("Successfully created STOMP connection")
+
+    //4. subscribe(path, callback)으로 메세지를 받을 수 있음
+    stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
+
+      var content = JSON.parse(chat.body);
+
+      var writer = content.writer;
+      var writerId = content.writerId;
+      var message = content.message;
+      var createdAt = content.createAt;
+
+      console.log("writer:" + writer + " message:" + message);
+      var mainChat = document.querySelector(".main-chat");
+
+      // Create a new message row element
+      var messageRow = document.createElement("div");
+      messageRow.className = "message-row";
+
+      // Create an image element for the sender's avatar
+
+      var img = document.createElement("img");
+      img.src = "https://thumb.mt.co.kr/06/2015/09/2015092220221498877_1.jpg/dims/optimize/";
+
+      // Create a message row content container
+      var messageRowContent = document.createElement("div");
+      messageRowContent.className = "message-row__content";
+
+      var messageInfo = document.createElement("div");
+      messageInfo.className = "message-info";
+
+      // Check if the message is from the user or someone else
+      if (writerId !== userId) { // Use 'r.sendUserId' here
+        // Create a span element for the sender's name
+        var messageAuthor = document.createElement("span");
+        messageAuthor.className = "message-author";
+        messageAuthor.textContent = "kangoll";
+
+        // Create a message bubble element
+        var messageBubble = document.createElement("span");
+        messageBubble.className = "message__bubble";
+        messageBubble.textContent = message; // Use 'r.message' here
+
+        // Append sender's name and message bubble to the content container
+        messageRowContent.appendChild(messageAuthor);
+        messageInfo.appendChild(messageBubble);
+      } else {
+        // Create a message bubble element for the user's own message
+        var messageBubbleOwn = document.createElement("span");
+        messageBubbleOwn.className = "message__bubble";
+        messageBubbleOwn.textContent = message;
+        messageInfo.appendChild(messageBubbleOwn);
+        messageRow.classList.add("message-row--own");
+      }
+
+      // Create a span element for the message time
+      var messageTime = document.createElement("span");
+      messageTime.className = "messgae__time";
+      console.log(createdAt)
+      var messageTimeDate = new Date(createdAt); // Convert the createdAt string to a Date object
+      var options = {hour: '2-digit', minute: '2-digit'};
+      var formattedTime = messageTimeDate.toLocaleTimeString(userLocale, options);
+      messageTime.textContent = formattedTime;
+
+      messageInfo.appendChild(messageTime);
+
+      if (writerId !== userId) {
+        messageRow.appendChild(img);
+      }
+
+      messageRowContent.appendChild(messageInfo);
+      messageRow.appendChild(messageRowContent);
+
+      // Append the message row to the main chat container
+      mainChat.appendChild(messageRow);
+    });
+
+    //3. send(path, header, message)로 메세지를 보낼 수 있음
+    // stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId,writerId:writerId, writer: username, createAt:Date.now()}))
+  });
+
+  function msgSend() {
+    var msg = document.getElementById("chat-input");
+    console.log(username + ":" + msg.value);
+
+    stomp.send('/pub/chat/message', {}, JSON.stringify({
+      roomId: roomId,
+      writerId: userId,
+      message: msg.value,
+      writer: username,
+      createAt: new Date(Date.now())
+    }));
+    msg.value = '';
+  }
+
+  /*]]>*/
+</script>

@@ -26,7 +26,7 @@
 
     <main class="main-screen">
 
-        <a th:each="room : ${list}" href='chat.html' th:href="@{/user/room}">
+        <a th:each="room : ${list}" href='chat.html' th:href="@{'/chat?roomId=' + ${room.roomId} + '&roomName=' + ${room.roomName}}">
             <div class="user-component">
                 <div class="user-component__colunm">
                     <img src="https://phinf.pstatic.net/contact/20211027_98/1635341323401tc5OB_JPEG/%C7%C1%BB%E7.jpg?type=s160"

@@ -2,7 +2,6 @@ package chatting.chat.web.room;
 
 import chatting.chat.web.dto.ChatRoomDTO;
 import chatting.chat.web.dto.RequestAddChatRoomDTO;
-import chatting.chat.web.error.CustomThrowableException;
 
 import chatting.chat.web.login.util.CookieUtil;
 import com.example.commondto.error.CustomException;
@@ -20,7 +19,6 @@ import java.util.*;
 @AllArgsConstructor
 public class RoomService {
     private final WebClient.Builder webClientBuilder;
-
 
     public Flux<ChatRoomDTO> getChatRooms(HttpServletRequest request) {
         return webClientBuilder.build().get()

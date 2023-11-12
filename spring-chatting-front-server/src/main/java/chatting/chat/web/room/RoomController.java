@@ -13,6 +13,7 @@ import chatting.chat.web.kafka.dto.CreateChatRoomUnitDTO;
 import chatting.chat.web.login.util.CookieUtil;
 import com.example.commondto.dto.friend.FriendResponse;
 import com.example.commondto.dto.friend.FriendResponse.FriendDTO;
+import com.example.commondto.error.CustomException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Controller
 @Slf4j
@@ -40,29 +42,18 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping(value = "/rooms")
-    public String rooms(HttpServletRequest request, Model model) {
+    public Mono<String> rooms(HttpServletRequest request, Model model) {
         CommonModel.addCommonModel(model);
-        try {
-            Flux<ChatRoomDTO> response = roomService.getChatRooms(request);
-            List<ChatRoomDTO> readers = response.collect(Collectors.toList())
-                .share().block();
-            log.info("response: {}", readers);
-            model.addAttribute("list", readers);
-        } catch (CustomThrowableException e) {
-
-            log.info(e.getErrorResponse().getCode());
-            log.info(e.getErrorResponse().getMessage());
-            /**
-             * TODO global error
-             */
-            return "redirect:/";
-        }
-        return "chat/chats";
+        return roomService.getChatRooms(request)
+            .collectList()
+            .map(chatRooms -> {
+                model.addAttribute("list", chatRooms);
+                return "chat/chats";
+            });
     }
 
     @GetMapping("/room")
-    public String createRoom(
-        @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model,
+    public String createRoom(@ModelAttribute("form") RoomCreationDTO form, Model model,
         HttpServletRequest request) {
 
         CommonModel.addCommonModel(model);
@@ -75,8 +66,7 @@ public class RoomController {
         }
 
         try {
-            Flux<FriendDTO> response = friendService.getMyFriends(accessToken,
-                refreshToken);
+            Flux<FriendDTO> response = friendService.getMyFriends(request);
             List<CreateChatRoomUnitDTO> friendsList = response.map(
                 f -> new CreateChatRoomUnitDTO(f.getFriendId(), f.getFriendName(),
                     false)).collect(Collectors.toList()).share().block();
@@ -89,7 +79,6 @@ public class RoomController {
             e.printStackTrace();
             return "chat/newChat";
         }
-
         return "chat/newChat";
     }
 

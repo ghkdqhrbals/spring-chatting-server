@@ -2,10 +2,12 @@ package chatting.chat.web.friend.service;
 
 
 import chatting.chat.web.error.ErrorResponse;
+import chatting.chat.web.login.util.CookieUtil;
 import com.example.commondto.dto.friend.FriendResponse;
 import com.example.commondto.dto.friend.FriendResponse.FriendDTO;
 import com.example.commondto.error.CustomException;
 import com.example.commondto.error.ErrorCode;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,12 +22,12 @@ public class FriendService {
     @Autowired
     public WebClient.Builder webClientBuilder;
 
-    public Flux<FriendResponse.FriendDTO> getMyFriends(String accessToken, String refreshToken) {
+    public Flux<FriendResponse.FriendDTO> getMyFriends(HttpServletRequest request) {
         return webClientBuilder.build().get()
             .uri("/chat/friends")
             .cookies(c -> {
-                c.add("accessToken", accessToken);
-                c.add("refreshToken", refreshToken);
+                c.add("accessToken", CookieUtil.getCookie(request, "accessToken"));
+                c.add("refreshToken", CookieUtil.getCookie(request, "refreshToken"));
             })
             .retrieve()
             .onStatus(

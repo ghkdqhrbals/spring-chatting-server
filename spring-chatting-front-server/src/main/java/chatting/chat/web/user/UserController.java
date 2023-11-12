@@ -149,40 +149,6 @@ public class UserController {
         return "redirect:/";
     }
 
-    //채팅방 목록 조회
-    @GetMapping(value = "/rooms")
-    public String rooms(HttpServletRequest request, Model model) {
-        CommonModel.addCommonModel(model);
-        try {
-            Flux<ChatRoomDTO> response = webClientBuilder.build().get()
-                .uri("/chat/rooms")
-                .cookies(c -> {
-                    c.add("accessToken", CookieUtil.getCookie(request, "accessToken"));
-                    c.add("refreshToken", CookieUtil.getCookie(request, "refreshToken"));
-                })
-                .retrieve()
-                .onStatus(
-                    HttpStatus::is4xxClientError,
-                    r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                .bodyToFlux(ChatRoomDTO.class);
-            List<ChatRoomDTO> readers = response.collect(Collectors.toList())
-                .share().block();
-            log.info("response: {}", readers);
-
-
-            model.addAttribute("list", readers);
-
-        } catch (CustomThrowableException e) {
-
-            log.info(e.getErrorResponse().getCode());
-            log.info(e.getErrorResponse().getMessage());
-            /**
-             * TODO global error
-             */
-            return "redirect:/";
-        }
-        return "chat/chats";
-    }
 
     //채팅방 개설
 

@@ -37,6 +37,28 @@ public class RoomController {
 
     private final WebClient.Builder webClientBuilder;
     private final FriendService friendService;
+    private final RoomService roomService;
+
+    @GetMapping(value = "/rooms")
+    public String rooms(HttpServletRequest request, Model model) {
+        CommonModel.addCommonModel(model);
+        try {
+            Flux<ChatRoomDTO> response = roomService.getChatRooms(request);
+            List<ChatRoomDTO> readers = response.collect(Collectors.toList())
+                .share().block();
+            log.info("response: {}", readers);
+            model.addAttribute("list", readers);
+        } catch (CustomThrowableException e) {
+
+            log.info(e.getErrorResponse().getCode());
+            log.info(e.getErrorResponse().getMessage());
+            /**
+             * TODO global error
+             */
+            return "redirect:/";
+        }
+        return "chat/chats";
+    }
 
     @GetMapping("/room")
     public String createRoom(

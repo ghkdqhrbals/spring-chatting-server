@@ -29,7 +29,7 @@ public class MessageListener {
 
         try {
             if (req.getUserStatus().equals(UserStatus.USER_INSERT_APPEND.name())) {
-                userService.save(req.getUserId(), req.getUserId(), "");
+                userService.save(req.getUserId(), req.getUserName(), "");
             } else if (req.getUserStatus().equals(UserStatus.USER_DELETE_APPEND.name())) {
                 userService.remove(req.getUserId());
             }

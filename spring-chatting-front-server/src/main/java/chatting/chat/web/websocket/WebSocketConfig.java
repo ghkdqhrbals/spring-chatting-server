@@ -45,7 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
                 @Override
                 public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                     WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-                    // JWT 토큰을 쿠키에서 읽어와 WebSocket 세션에 추가
+                    // read JWT from Cookie, and add it to WebSocket session
                     HttpServletRequest httpServletRequest = ((ServletServerHttpRequest) request).getServletRequest();
                     Cookie[] cookies = httpServletRequest.getCookies();
 
@@ -60,7 +60,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
                             }
                         }
                     }
-
                     return super.beforeHandshake(request, response, wsHandler, attributes);
                 }
 
@@ -70,17 +69,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
                     super.afterHandshake(request, response, wsHandler, ex);
                 }
             })
-
                 .setAllowedOrigins("http://localhost:8080")
                 .withSockJS();
     }
-    private HttpSession getSession(ServerHttpRequest request) {
-        if (request instanceof ServletServerHttpRequest) {
-            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
-            HttpServletRequest httpRequest = servletRequest.getServletRequest();
-            return httpRequest.getSession();
-        }
-        return null;
-    }
-
 }

@@ -5,9 +5,10 @@ import chatting.chat.web.dto.ChatMessage;
 import chatting.chat.web.dto.ChatRecord;
 import chatting.chat.web.dto.RequestAddChatRoomDTO;
 import chatting.chat.web.error.CustomThrowableException;
-import chatting.chat.web.error.ErrorResponse;
 import chatting.chat.web.kafka.dto.RequestAddChatMessageDTO;
 import chatting.chat.web.login.util.CookieUtil;
+import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorResponse;
 import java.security.Principal;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -59,32 +60,22 @@ public class StompChatController {
         String refreshToken = (String) accessor.getSessionAttributes().get("refreshToken");
 
         log.trace("[WEBSOCKET] accessToken: {}, refreshToken: {}", accessToken, refreshToken);
-
-
-        try {
-            webClientBuilder
-                .build()
-                .post()
-                .uri("/chat/chat")
-                .cookies(c -> {
-                    // get refreshToken from Cookie and add it to request header
-                    c.add("refreshToken", refreshToken);
-                    c.add("accessToken", accessToken);
-                })
-                .bodyValue(new RequestAddChatMessageDTO(message.getRoomId(), message.getWriter(),
-                    message.getWriterId(), message.getMessage()))
-                .retrieve()
-                .onStatus(
-                    HttpStatus::is4xxClientError,
-                    r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                .bodyToMono(String.class).block();
-
-        } catch (CustomThrowableException e) {
-            log.info(e.getErrorResponse().getCode());
-            log.info(e.getErrorResponse().getMessage());
-        }
-
-
+        webClientBuilder
+            .build()
+            .post()
+            .uri("/chat/chat")
+            .cookies(c -> {
+                // get refreshToken from Cookie and add it to request header
+                c.add("refreshToken", refreshToken);
+                c.add("accessToken", accessToken);
+            })
+            .bodyValue(new RequestAddChatMessageDTO(message.getRoomId(), message.getWriter(),
+                message.getWriterId(), message.getMessage()))
+            .retrieve()
+            .onStatus(
+                HttpStatus::is4xxClientError,
+                r -> r.bodyToMono(ErrorResponse.class).map(CustomException::new))
+            .bodyToMono(String.class).block();
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(),
             message); // Direct send topic to stomp
         // kafka topic send

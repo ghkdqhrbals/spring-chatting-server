@@ -17,5 +17,7 @@ public class UserForm {
     @NotEmpty(message="{userForm.email.notEmpty}")
     private String email;
     @NotEmpty(message="{userForm.username.notEmpty}")
-    private String userName;
+    private String userLastName;
+    @NotEmpty(message="{userForm.username.notEmpty}")
+    private String userFirstName;
 }

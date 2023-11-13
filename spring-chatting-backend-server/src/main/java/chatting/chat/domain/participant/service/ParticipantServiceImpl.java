@@ -2,6 +2,8 @@ package chatting.chat.domain.participant.service;
 
 import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
+import chatting.chat.domain.user.entity.User;
+import chatting.chat.domain.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,23 +12,29 @@ import java.util.List;
 
 import static com.example.commondto.error.ErrorCode.*;
 import com.example.commondto.error.CustomException;
-import com.example.commondto.error.ErrorCode;
-import com.example.commondto.error.ErrorResponse;
-import com.example.commondto.error.AppException;
 
 @Slf4j
 @Service
 @Transactional
 public class ParticipantServiceImpl implements ParticipantService{
     private final ParticipantRepository participantRepository;
+    private final UserRepository userRepository;
 
-    public ParticipantServiceImpl(ParticipantRepository participantRepository) {
+    public ParticipantServiceImpl(ParticipantRepository participantRepository,
+        UserRepository userRepository) {
         this.participantRepository = participantRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<Participant> findAllByUserId(String userId) {
         return participantRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public List<User> findParticipantByRoomId(Long roomId) {
+        List<Participant> participants = participantRepository.findAllByRoomId(roomId);
+        return null;
     }
 
     @Override

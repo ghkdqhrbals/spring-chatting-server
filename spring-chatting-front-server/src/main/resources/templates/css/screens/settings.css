@@ -1,36 +1,34 @@
 .settings-setting {
-    padding: 15px 10px;
-    border-bottom: var(--main-border);
-    border-color: rgba(0, 0, 0, 0.025);
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  padding: 15px 10px;
+  border-bottom: var(--main-border);
+  border-color: rgba(0, 0, 0, 0.025);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .settings-setting i {
-    margin-right:15px ;
-    opacity: 0.9;
+  margin-right: 15px;
+  opacity: 0.9;
 }
 
 .settings-list {
-    margin-bottom: 15px;
-    border-bottom: var(--main-border);
-    padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: var(--main-border);
+  padding-bottom: 15px;
 }
 
-
 .settings__setting-colunm:last-child {
-    opacity: 0.5;
-    font-size: 13px;
+  opacity: 0.5;
+  font-size: 13px;
 }
 
 .settings-setting:last-child {
-    border: none;
+  border: none;
 }
 
-
-.settings__setting-colunm{
-    display: flex;
-    align-items: center;
+.settings__setting-colunm {
+  display: flex;
+  align-items: center;
 }

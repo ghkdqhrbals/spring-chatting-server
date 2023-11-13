@@ -1,0 +1,66 @@
+.signup__profile__img {
+  background-color: rgb(237, 237, 237);
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: auto;
+}
+
+.signup__profile__box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-left: auto;
+  align-items: center;
+  /* background-color: bisque; */
+}
+
+.signup__profile__text input {
+  width: 100%;
+  /* background-color: antiquewhite; */
+}
+
+.signup__profile__text {
+  width: 70%;
+}
+
+.signup__profile__img .fa-user {
+  color: white;
+}
+.signup__profile {
+  position: relative;
+  width: 30%;
+}
+
+.signup__profile__pls {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background-color: black;
+  opacity: 30%;
+  position: absolute;
+  bottom: 0px;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup__profile__pls .fa-plus {
+  color: lightgray;
+}
+
+#selectedImage {
+  /* 이미지 크기를 100%로 설정하여 부모 요소에 맞춤 */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지의 종횡비를 유지하면서 부모 요소에 맞게 크기 조절 */
+  border-radius: 50%;
+  border: 1px solid gray;
+}

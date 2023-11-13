@@ -2,6 +2,7 @@ package chatting.chat.domain.chat.entity;
 
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.user.entity.User;
+import com.example.commondto.dto.chat.ChatRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,5 +37,16 @@ public class Chatting {
 
     public Chatting() {
 
+    }
+
+    public ChatRequest.ChatRecordDTO toChatRecordDTO() {
+        return ChatRequest.ChatRecordDTO.builder()
+                .id(this.id)
+                .roomId(this.room.getRoomId())
+                .sendUserId(this.sendUser.getUserId())
+                .sendUserName(this.sendUser.getUserName())
+                .message(this.message)
+                .createdAt(this.createdAt)
+                .build();
     }
 }

@@ -23,7 +23,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -69,11 +71,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public CompletableFuture<String> addUser(@Valid @ModelAttribute("userForm") UserForm form,
-        BindingResult bindingResult,
-        Model model) {
+    public CompletableFuture<String> addUser(@Validated @ModelAttribute("userForm") UserForm form,
+        BindingResult bindingResult, Model model) {
 
-        // Form 에러 모델 전달
         if (bindingResult.hasErrors()) {
             return CompletableFuture.completedFuture("users/addUserFormSingle");
         }
@@ -82,24 +82,17 @@ public class UserController {
         req.setUserId(form.getUserId());
         req.setUserPw(form.getUserPw());
         req.setEmail(form.getEmail());
-        req.setUserName(form.getUserName());
+        req.setUserName(form.getUserLastName()+" "+form.getUserFirstName());
         req.setRole("ROLE_USER"); // 기본적으로 일반 롤 부여
 
         log.trace("Send Request in main thread{}", req.toString());
 
-        // 동시성을 위한 별도 스레드 풀 사용
         return CompletableFuture.supplyAsync(() -> {
             log.trace("Send Request inside another thread {}", req.toString());
             Flux<ServerSentEvent> temp = webClientBuilder.build().post()
                 .uri("/user")
                 .bodyValue(req)
                 .retrieve()
-//                    .onStatus(
-//                            HttpStatus::is4xxClientError,
-//                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-//                    .onStatus(
-//                            HttpStatus::is5xxServerError,
-//                            r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
                 .bodyToFlux(ServerSentEvent.class).log();
 
             model.addAttribute("sseStream", temp);
@@ -155,121 +148,9 @@ public class UserController {
         return "redirect:/";
     }
 
-    //채팅방 목록 조회
-    @GetMapping(value = "/rooms")
-    public String rooms(
-        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
-        HttpSession session, Model model) {
-        CommonModel.addCommonModel(model);
-        try {
-            Flux<ChatRoomDTO> response = webClientBuilder.build().get()
-                .uri("/chat/rooms?userId=" + user.getUserId())
-                .retrieve()
-                .onStatus(
-                    HttpStatus::is4xxClientError,
-                    r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                .bodyToFlux(ChatRoomDTO.class);
-            List<ChatRoomDTO> readers = response.collect(Collectors.toList())
-                .share().block();
-
-            model.addAttribute("list", readers);
-
-        } catch (CustomThrowableException e) {
-
-            log.info(e.getErrorResponse().getCode());
-            log.info(e.getErrorResponse().getMessage());
-            /**
-             * TODO global error
-             */
-            return "users/rooms";
-        }
-        return "users/rooms";
-    }
 
     //채팅방 개설
-    @GetMapping("/room")
-    public String createRoom(
-        @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model,
-        HttpServletRequest request) {
-        CommonModel.addCommonModel(model);
-        CommonModel.addCommonModel(model);
-        String accessToken = CookieUtil.getCookie(request, "accessToken");
-        String refreshToken = CookieUtil.getCookie(request, "refreshToken");
 
-        if (accessToken == null || refreshToken == null) {
-            return "redirect:/login";
-        }
-
-        try {
-            Flux<FriendResponse.FriendDTO> response = friendService.getMyFriends(accessToken,
-                refreshToken);
-            List<FriendResponse.FriendDTO> readers = response.collect(Collectors.toList()).share()
-                .block();
-
-            if (readers.size() > 0) {
-                form.setFriends(
-                    readers
-                        .stream()
-                        .map(f -> new CreateChatRoomUnitDTO(f.getFriendId(), f.getFriendName(),
-                            false))
-                        .collect(Collectors.toList())
-                );
-            }
-
-        } catch (Exception e) {
-            log.info("local msg : {}",e.getLocalizedMessage());
-            return "users/room";
-        }
-
-        return "users/room";
-    }
-
-    //채팅방 개설
-    @PostMapping(value = "/room")
-    public String createRoomForm(
-        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = true) User user,
-        @ModelAttribute("form") RoomCreationDTO form, HttpSession session, Model model) {
-        CommonModel.addCommonModel(model);
-
-        List<String> friendIds = new ArrayList<>();
-        for (CreateChatRoomUnitDTO f : form.getFriends()) {
-            if (f.getJoin()) {
-                log.info(f.getUserName());
-                log.info(f.getUserId());
-                log.info(f.getJoin().toString());
-                friendIds.add(f.getUserId());
-            } else {
-                log.info(f.getUserName());
-                log.info(f.getUserId());
-                log.info(f.getJoin().toString());
-            }
-
-        }
-
-        try {
-            Flux<ChatRoomDTO> response = webClient.mutate()
-                .build()
-                .post()
-                .uri("/chat/room")
-                .bodyValue(new RequestAddChatRoomDTO(user.getUserId(), friendIds))
-                .retrieve()
-                .onStatus(
-                    HttpStatus::is4xxClientError,
-                    r -> r.bodyToMono(ErrorResponse.class).map(CustomThrowableException::new))
-                .bodyToFlux(ChatRoomDTO.class);
-
-            List<ChatRoomDTO> readers = response.collect(Collectors.toList())
-                .share().block();
-
-
-        } catch (CustomThrowableException e) {
-            log.info(e.getErrorResponse().getCode());
-            log.info(e.getErrorResponse().getMessage());
-            return "users/room";
-        }
-
-        return "redirect:/user/rooms";
-    }
 
     // 패킷의 크기 또한 신경써야될듯
     // 채팅방

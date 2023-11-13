@@ -6,8 +6,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import lombok.ToString;
 
 @Data
+@ToString
 public class RequestUser {
     @NotNull(message = "user id must not be null")
     @Size(min = 3, message = "user id must not be less than 3")

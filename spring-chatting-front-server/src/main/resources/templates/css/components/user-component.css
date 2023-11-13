@@ -1,72 +1,110 @@
 .user-component {
-    justify-content: space-between ;
-    margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .user-component,
-.user-component__colunm:first-child{
-    display: flex;
-    align-items: center;
+.user-component__colunm:first-child {
+  display: flex;
+  align-items: center;
 }
-.user-component__avatar{
-    width: 50px;
-    height: 50px;
-    border-radius: 20px;
-    margin-right: 10px;
+.user-component__avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 20px;
+  margin-right: 10px;
 }
 
 .user-component__title {
-    font-weight:500;
-    font-size: 15px;
+  font-weight: 500;
+  font-size: 15px;
 }
 
 .user-component__title--not-bold {
-    font-weight: 300;
+  font-weight: 300;
 }
 
-.user-component__subtitle{
-    margin-top: 5px;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.5);
+.user-component__subtitle {
+  margin-top: 5px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .user-component__subtitle i {
-    color: tomato;
-    opacity: 70%;
-
+  color: tomato;
+  opacity: 70%;
 }
 
-.user-component__avatar--xl{
-    width: 55px;
-    height: 55px;
-    border-radius: 22px;
-
+.user-component__avatar--xl {
+  width: 55px;
+  height: 55px;
+  border-radius: 22px;
 }
 
 .user-component__avatar--sm {
-    width: 40px;
-    height: 40px;
-    border-radius: 15px;
-
+  width: 40px;
+  height: 40px;
+  border-radius: 15px;
 }
 
-
 .user-component__colunm:last-child {
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    
-
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .check {
-    padding-top: 5px;
+  padding-top: 5px;
 }
 
 .user-component__time {
-    margin-bottom:  10px;
-    display: block;
+  margin-bottom: 10px;
+  display: block;
 }
 
+.user-component__checkbox {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 실제 체크박스 숨기기 */
+.user-component__checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* 체크마크 스타일 */
+.user-component__checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 1px solid lightgray;
+  border-radius: 50%;
+}
+
+.fa-check {
+  visibility: hidden;
+  position: absolute;
+  left: 6px;
+  top: 4px;
+}
+
+/* 체크된 상태에서의 체크마크 스타일 */
+.user-component__checkbox input:checked ~ .user-component__checkmark {
+  background-color: #fae100;
+  border: 1px solid white;
+}
+
+.user-component__checkbox input:checked ~ .fa-check {
+  visibility: visible;
+}

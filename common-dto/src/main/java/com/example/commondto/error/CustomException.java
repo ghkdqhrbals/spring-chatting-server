@@ -13,6 +13,11 @@ public class CustomException extends RuntimeException { // RuntimeException ÏÉÅÏ
         return customException.getErrorCode();
     }
 
+    public CustomException(ErrorResponse e){
+        super(e.getMessage());
+        this.errorCode = ErrorCode.valueOf(e.getCode());
+    }
+
 
 
     @Override

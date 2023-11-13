@@ -1,6 +1,7 @@
 package chatting.chat.web.kafka.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RequestAddChatRoomDTO {
+    @JsonIgnore
     private String userId;
+
     private List<String> friendIds;
 }

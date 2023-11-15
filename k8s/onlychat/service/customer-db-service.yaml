@@ -6,8 +6,11 @@ metadata:
   name: customer-db-service
 spec:
   ports:
-    - name: TCP
+    - name: http
+      protocol: TCP
       port: 5434
       targetPort: 5434
+      nodePort: 30001
+  type: NodePort
   selector:
     app: customer-db

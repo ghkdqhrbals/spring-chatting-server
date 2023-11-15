@@ -6,8 +6,11 @@ metadata:
   name: chatting-server
 spec:
   ports:
-    - name: "8030"
+    - name: http
+      protocol: TCP
       port: 8030
       targetPort: 8030
+      nodePort: 8030
+  type: NodePort
   selector:
     app: chatting-server

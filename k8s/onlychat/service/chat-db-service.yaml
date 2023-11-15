@@ -6,8 +6,11 @@ metadata:
   name: chat-db
 spec:
   ports:
-    - name: TCP
+    - name: http
+      protocol: TCP
       port: 5433
       targetPort: 5433
+      nodePort: 30000
+  type: NodePort
   selector:
     app: chat-db

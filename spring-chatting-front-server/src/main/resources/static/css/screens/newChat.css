@@ -1,0 +1,103 @@
+.newChat {
+  width: 100%;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 10px;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.newChat .newChat__colunm:last-child {
+  width: 100%;
+  position: relative;
+}
+
+.newChat i {
+  position: absolute;
+  right: 20px;
+  top: 25px;
+  opacity: 0.5;
+}
+.newChat__colunm {
+  display: flex;
+}
+
+.newChat input {
+  padding: 15px 18px;
+  width: 100%;
+  border: var(--main-border);
+  border-radius: 30px;
+  box-sizing: border-box;
+  background-color: rgb(247, 247, 247);
+}
+
+.newChat_list {
+  border-top: solid 1px lightgray;
+  padding-top: 10px;
+  padding: px 10px;
+  /* background: lightyellow; */
+}
+.newChat_list__title {
+  margin-left: 10px;
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.newChat__submit {
+  display: flex;
+  justify-content: end;
+  margin-right: 20px;
+}
+
+.newChat_Selected {
+  background-color: #fae100;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 2px;
+  color: gray;
+  margin-right: 7px;
+}
+
+.newChat__submit button:last-child {
+  border: solid 1px lightgrey;
+  background-color: white;
+  padding: 10px 30px;
+  border-radius: 2px;
+  color: gray;
+}
+
+.newChat_notSelected {
+  background-color: lightgray;
+  padding: 10px 30px;
+  border-radius: 2px;
+  color: gray;
+  border: none;
+  margin-right: 7px;
+  pointer-events: none;
+}
+
+.newChat__selected_Friends {
+  background-color: white;
+  border: solid 1px lightgray;
+  padding: 10px 20px;
+  margin-right: 20px;
+}
+
+#selectedValues span {
+  background-color: white;
+  border: solid 1px lightgray;
+  padding: 5px 10px;
+  margin-right: 8px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.newChat__selected__list {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+}

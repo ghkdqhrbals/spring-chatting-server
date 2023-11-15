@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500&display=swap");
 
 @import "reset.css";
 @import "variables.css";
@@ -20,12 +20,20 @@
 @import "screens/more.css";
 @import "screens/settings.css";
 @import "screens/chat.css";
+@import "screens/newChat.css";
+@import "screens/signup.css";
 
 body {
-    color: #2e363e;
-    font-family: 'Golos Text', sans-serif;
+  color: #2e363e;
+  font-family: "Golos Text", sans-serif;
 }
 
-.main-screen{
-    padding: 0px var(--horizontal-space);
+.main-screen {
+  padding: 0px var(--horizontal-space);
+}
+
+.field-error {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #842029;
 }

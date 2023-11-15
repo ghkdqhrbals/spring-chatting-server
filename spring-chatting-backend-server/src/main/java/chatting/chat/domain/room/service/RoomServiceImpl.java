@@ -1,12 +1,13 @@
 package chatting.chat.domain.room.service;
 
 import static com.example.commondto.error.ErrorCode.*;
+
+import chatting.chat.domain.participant.entity.Participant;
+import chatting.chat.domain.participant.repository.ParticipantRepository;
 import com.example.commondto.error.CustomException;
-import com.example.commondto.error.ErrorCode;
-import com.example.commondto.error.ErrorResponse;
-import com.example.commondto.error.AppException;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.room.repository.RoomRepository;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +20,12 @@ import java.util.Optional;
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
+    private final ParticipantRepository participantRepository;
 
-    public RoomServiceImpl(RoomRepository roomRepository) {
+    public RoomServiceImpl(RoomRepository roomRepository,
+        ParticipantRepository participantRepository) {
         this.roomRepository = roomRepository;
+        this.participantRepository = participantRepository;
     }
 
     @Override
@@ -30,6 +34,7 @@ public class RoomServiceImpl implements RoomService {
         if (!findRoom.isPresent()){
             throw new CustomException(CANNOT_FIND_ROOM);
         }
+
         return findRoom.get();
     }
 

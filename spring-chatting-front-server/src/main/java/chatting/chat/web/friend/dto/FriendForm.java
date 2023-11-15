@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class FriendForm {
 
-    @NotBlank(message = "${friend.add.notEmpty}")
+    @NotBlank(message = "{friend.add.notEmpty}")
     private String friendId;
 }

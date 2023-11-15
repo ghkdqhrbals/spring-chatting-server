@@ -13,30 +13,10 @@
   </head>
 
   <body>
-    <div class="status-bar">
-      <div class="status-bar__column">
-        <span>No Service</span>
-        <i class="fa-solid fa-wifi"></i>
-      </div>
-
-      <div class="status-bar__column">
-        <span>18:43</span>
-      </div>
-
-      <div class="status-bar__column">
-        <span>80%</span>
-        <i class="fa-solid fa-battery-full fa-lg"></i>
-        <i class="fa-solid fa-bolt-lightning"></i>
-      </div>
-    </div>
+  <div th:replace="fragments/status-bar.html :: status-bar"></div>
 
     <header class="screen-header">
       <h1 class="screen-header__title">Create Account</h1>
-      <div class="screen-header__icons">
-        <span><i class="fa-solid fa-magnifying-glass"></i></span>
-        <span><i class="fa-solid fa-music"></i></span>
-        <span><i class="fa-solid fa-gear"></i></span>
-      </div>
     </header>
 
     <div id="sse-events">
@@ -72,7 +52,7 @@
             <i class="fa-regular fa-user fa-3x"></i>
             <input
               type="file"
-              id="fileInput"
+              id="imageFile"
               style="display: none"
               accept="image/jpeg, image/jpg, image/png, image/gif"
             />
@@ -88,7 +68,7 @@
         <div class="signup__profile__text">
           <input
             name="username"
-            th:field="*{userName}"
+            th:field="*{userFirstName}"
             type="text"
             placeholder="First-name"
           />
@@ -96,11 +76,11 @@
 
           <input
             name="username"
-            th:field="*{userName}"
+            th:field="*{userLastName}"
             type="text"
-            placeholder="Second-name"
+            placeholder="Last-name"
           />
-          <p class="field-error" th:errors="*{userSecondName}">오류메세지</p>
+          <p class="field-error" th:errors="*{userLastName}">오류메세지</p>
         </div>
       </div>
 
@@ -147,11 +127,11 @@
       .getElementById("uploadButton")
       .addEventListener("click", function () {
         console.log("uploadButton clicked");
-        document.getElementById("fileInput").click();
+        document.getElementById("imageFile").click();
       });
 
     document
-      .getElementById("fileInput")
+      .getElementById("imageFile")
       .addEventListener("change", function () {
         console.log("aa");
         const selectedImage = document.getElementById("selectedImage");
@@ -164,8 +144,8 @@
           placeholderIcon.style.display = "none";
         }
 
-        const fileInput = this; // 파일 입력 요소
-        const file = fileInput.files[0]; // 선택한 파일
+        const imageFile = this; // 파일 입력 요소
+        const file = imageFile.files[0]; // 선택한 파일
 
         if (file) {
           const reader = new FileReader();

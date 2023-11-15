@@ -3,13 +3,13 @@ package chatting.chat.web;
 import chatting.chat.domain.util.MessageUtil;
 import chatting.chat.web.dto.ResponseGetFriend;
 import chatting.chat.web.dto.ResponseGetUser;
-import chatting.chat.web.error.ErrorCode;
 import chatting.chat.web.friend.service.FriendService;
 import chatting.chat.web.global.CommonModel;
 import chatting.chat.web.login.util.CookieUtil;
 import chatting.chat.web.user.service.UserService;
 import com.example.commondto.dto.friend.FriendResponse;
 import com.example.commondto.error.AppException;
+import com.example.commondto.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,26 +52,22 @@ public class HomeController {
         if (accessToken == null || refreshToken == null) {
             return Mono.just("redirect:/login");
         }
+        Mono<ResponseGetUser> userInfo = userService.getUserInfo(request);
+        Flux<FriendResponse.FriendDTO> resGetFriend = friendService.getMyFriends(request);
 
-        try {
-            Mono<ResponseGetUser> userInfo = userService.getUserInfo(accessToken, refreshToken);
-            Flux<FriendResponse.FriendDTO> resGetFriend = friendService.getMyFriends(accessToken,
-                refreshToken);
+        return Mono.zip(userInfo, resGetFriend.collectList())
+            .doOnNext(tuple -> {
+                ResponseGetUser me = tuple.getT1();
+                List<FriendResponse.FriendDTO> friends = tuple.getT2();
 
-            return Mono.zip(userInfo, resGetFriend.collectList())
-                .doOnNext(tuple -> {
-                    ResponseGetUser me = tuple.getT1();
-                    List<FriendResponse.FriendDTO> friends = tuple.getT2();
-
-                    model.addAttribute("userName", me.getUserName());
-                    model.addAttribute("userDescription", me.getUserStatus());
-                    model.addAttribute("friends", friends);
-                })
-                .then(Mono.just("friends/friends")).log();
-
-        } catch (AppException e) {
-            log.info("Exception Message {}", messageUtil.getMessage(e));
-            return Mono.just("redirect:/login");
-        }
+                model.addAttribute("userName", me.getUserName());
+                model.addAttribute("userDescription", me.getUserStatus());
+                model.addAttribute("friends", friends);
+            })
+            .doOnError(throwable -> {
+                log.error("error: {}", throwable.getMessage());
+                throw new AppException(ErrorCode.INVALID_TOKEN);
+            })
+            .map(tuple -> "friends/friends");
     }
 }

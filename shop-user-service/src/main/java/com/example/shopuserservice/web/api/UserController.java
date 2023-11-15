@@ -91,7 +91,8 @@ public class UserController {
         UserEvent userEvent = new UserEvent(
                 eventId,
                 UserStatus.USER_INSERT_APPEND,
-                req.getUserId()
+                req.getUserId(),
+                req.getUserName()
         );
 
         // event publishing to kafka and event handling

@@ -4,6 +4,7 @@ import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.user.entity.User;
+import chatting.chat.web.filter.UserContext;
 import com.example.commondto.dto.friend.FriendResponse;
 import com.example.commondto.dto.friend.FriendResponse.FriendDTO;
 import chatting.chat.domain.friend.repository.FriendRepository;
@@ -33,6 +34,7 @@ import com.example.commondto.error.AppException;
 
 @Slf4j
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -113,7 +115,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
 
-        User findUser = getUser(req.getUserId());
+        User findUser = getUser(UserContext.getUserId());
 
         // 새로운 채팅방 생성
         Room room = roomRepository.save(new Room(ZonedDateTime.now(), ZonedDateTime.now()));
@@ -144,6 +146,7 @@ public class UserServiceImpl implements UserService {
         List<Participant> findParticipants = participantRepository.findAllByUserId(userId);
         // 채팅방 DTO 생성
         List<ChatRoomDTO> chatRoomDTOS = getChatRoomDTOS(findParticipants);
+
         return chatRoomDTOS;
     }
 
@@ -218,13 +221,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     private List<ChatRoomDTO> getChatRoomDTOS(List<Participant> findParticipants) {
         List<ChatRoomDTO> chatRoomDTOS = new ArrayList<>();
         for (Participant p : findParticipants) {
             ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
             chatRoomDTO.setRoomId(p.getRoom().getRoomId());
             chatRoomDTO.setRoomName(p.getRoomName());
+            chatRoomDTO.setParticipantNames(
+                participantRepository.findAllByRoomId(p.getRoom().getRoomId()).stream()
+                    .map(Participant::getUser)
+                    .map(User::getUserName)
+                    .collect(Collectors.toList()));
             chatRoomDTOS.add(chatRoomDTO);
+
         }
         return chatRoomDTOS;
     }

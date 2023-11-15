@@ -35,3 +35,8 @@
 .alt-header__column {
   margin: 0px 10px;
 }
+
+.alt-header__column__newchat {
+  font-size: 18px;
+  font-weight: 400;
+}

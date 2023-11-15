@@ -6,10 +6,7 @@ metadata:
   name: user-db-service
 spec:
   ports:
-    - name: "5435"
-      port: 5435
-      targetPort: 5435
-    - name: 5435-tcp
+    - name: TCP
       port: 5435
       targetPort: 5435
   selector:

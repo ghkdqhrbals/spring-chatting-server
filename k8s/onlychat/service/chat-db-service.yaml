@@ -6,10 +6,7 @@ metadata:
   name: chat-db
 spec:
   ports:
-    - name: "5433"
-      port: 5433
-      targetPort: 5433
-    - name: 5433-tcp
+    - name: TCP
       port: 5433
       targetPort: 5433
   selector:

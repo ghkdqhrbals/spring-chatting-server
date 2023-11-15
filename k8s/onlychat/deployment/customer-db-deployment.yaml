@@ -7,13 +7,9 @@ spec:
   selector:
     matchLabels:
       app: customer-db
-  strategy:
-    type: Recreate
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        io.kompose.network/spring-chatting-server-default: "true"
         io.kompose.service: customer-db
     spec:
       containers:

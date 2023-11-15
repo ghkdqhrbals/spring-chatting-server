@@ -6,10 +6,7 @@ metadata:
   name: customer-db-service
 spec:
   ports:
-    - name: "5434"
-      port: 5434
-      targetPort: 5434
-    - name: 5434-tcp
+    - name: TCP
       port: 5434
       targetPort: 5434
   selector:

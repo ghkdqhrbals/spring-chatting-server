@@ -17,7 +17,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: customer-pvc
+  name: pgadmin-pvc
 spec:
   accessModes:
     - ReadWriteMany

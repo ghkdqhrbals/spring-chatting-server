@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        io.kompose.service: customer-db
+        app: customer-db
     spec:
       containers:
         - args:

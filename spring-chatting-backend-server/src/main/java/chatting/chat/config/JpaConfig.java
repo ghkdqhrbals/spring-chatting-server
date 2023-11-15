@@ -51,12 +51,12 @@ public class JpaConfig {
 
     @Bean
     public RoomService roomService() {
-        return new RoomServiceImpl(roomRepository);
+        return new RoomServiceImpl(roomRepository, participantRepository);
     }
 
     @Bean
     public ParticipantService participantService() {
-        return new ParticipantServiceImpl(participantRepository);
+        return new ParticipantServiceImpl(participantRepository, userRepository);
     }
 
 }

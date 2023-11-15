@@ -52,22 +52,24 @@
 
   var roomName = [[${roomName}]];
   var roomId = [[${roomId}]];
-  var username = [[${user.userName}]];
-  var userId = [[${user.userId}]];
+  var username = [[${userName}]];
+  var userId = [[${userId}]];
   var record = [[${records}]];
-  var writerId = [[${user.userId}]];
+  var writerId = [[${records.sendUserId}]];
 
   console.log(roomName + ", " + roomId + ", " + username);
   record.forEach(function(r){
     var str = '';
 
 
+    // If the message is from the current user
     if (r.sendUserId == userId){
         str = "<div class='msg-r m-tb-5'>";
         str += r.sendUserName + " : " + r.message;
         str += "</div>";
         $("#msgArea").append(str);
     }
+    // If the message is from the others
     else{
         str = "<div class='msg-l m-tb-5'>";
         str += r.sendUserName + " : " + r.message;

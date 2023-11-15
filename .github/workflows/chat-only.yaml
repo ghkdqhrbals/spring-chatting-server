@@ -128,6 +128,7 @@ jobs:
             git pull origin main
             cd k8s/onlychat/deployment
             sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            kubectl apply -f ./volume/
             kubectl apply -f ./namespace/
             kubectl apply -f ./service/
             kubectl apply -f ./deployment/

@@ -1,14 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  labels:
-    app: pgdata-chat
-  name: pgdata-chat
-  namespace: default
+  name: nfs-pvc
 spec:
-  storageClassName: pgchat
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 100Mi

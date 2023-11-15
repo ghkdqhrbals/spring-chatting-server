@@ -1,41 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chat-db-deployment
+  name: customer-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chat-db
+      app: customer-db
+  strategy:
+    type: Recreate
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        app: chat-db
+        io.kompose.network/spring-chatting-server-default: "true"
+        io.kompose.service: customer-db
     spec:
       containers:
         - args:
             - -c
             - wal_level=logical
             - -p
-            - "5433"
+            - "5434"
           env:
             - name: POSTGRES_DB
-              value: chat
+              value: customer
             - name: POSTGRES_PASSWORD
               value: password
             - name: POSTGRES_USER
               value: postgres
           image: postgres:12-alpine
-          name: chat-db
+          name: customer-db
           ports:
-            - containerPort: 5433
-              hostPort: 5433
+            - containerPort: 5434
+              hostPort: 5434
               protocol: TCP
+          resources: {}
           volumeMounts:
-            - name: chat-vol
+            - name: customer-vol
               mountPath: /var/lib/postgresql/data
       restartPolicy: Always
       volumes:
-        - name: chat-vol
+        - name: customer-vol
           persistentVolumeClaim:
-            claimName: chat-pvc
+            claimName: customer-pvc

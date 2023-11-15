@@ -1,41 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chat-db-deployment
+  name: user-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chat-db
+      app: user-db
   template:
     metadata:
       labels:
-        app: chat-db
+        app: user-db
     spec:
       containers:
         - args:
             - -c
             - wal_level=logical
             - -p
-            - "5433"
+            - "5435"
           env:
             - name: POSTGRES_DB
-              value: chat
+              value: user
             - name: POSTGRES_PASSWORD
               value: password
             - name: POSTGRES_USER
               value: postgres
           image: postgres:12-alpine
-          name: chat-db
+          name: user-db
           ports:
-            - containerPort: 5433
-              hostPort: 5433
+            - containerPort: 5435
+              hostPort: 5435
               protocol: TCP
+          resources: {}
           volumeMounts:
-            - name: chat-vol
+            - name: user-vol
               mountPath: /var/lib/postgresql/data
       restartPolicy: Always
       volumes:
-        - name: chat-vol
+        - name: user-vol
           persistentVolumeClaim:
-            claimName: chat-pvc
+            claimName: user-pvc

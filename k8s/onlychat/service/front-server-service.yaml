@@ -4,7 +4,6 @@ metadata:
   labels:
     app: front-server
   name: front-server
-  namespace: only-chat-namespace
 spec:
   ports:
     - name: "80"

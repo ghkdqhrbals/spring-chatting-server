@@ -4,7 +4,6 @@ metadata:
   labels:
     app: front-server
   name: front-server
-  namespace: only-chat-namespace
 spec:
   replicas: 1
   selector:
@@ -13,7 +12,6 @@ spec:
   template:
     metadata:
       labels:
-        io.kompose.network/spring-chatting-server-default: "true"
         app: front-server
     spec:
       imagePullSecrets:

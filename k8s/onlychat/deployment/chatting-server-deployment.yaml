@@ -1,10 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: chatting-server
   name: chatting-server
-  namespace: only-chat-namespace
 spec:
   replicas: 1
   selector:
@@ -13,7 +10,6 @@ spec:
   template:
     metadata:
       labels:
-        io.kompose.network/spring-chatting-server-default: "true"
         app: chatting-server
     spec:
       imagePullSecrets:

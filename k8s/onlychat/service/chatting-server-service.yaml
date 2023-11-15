@@ -4,7 +4,6 @@ metadata:
   labels:
     app: chatting-server
   name: chatting-server
-  namespace: only-chat-namespace
 spec:
   ports:
     - name: "8030"

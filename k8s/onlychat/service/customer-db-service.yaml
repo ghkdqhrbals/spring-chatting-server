@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: customer-db
+  name: customer-db-service
+spec:
+  ports:
+    - name: "5434"
+      port: 5434
+      targetPort: 5434
+    - name: 5434-tcp
+      port: 5434
+      targetPort: 5434
+  selector:
+    app: customer-db

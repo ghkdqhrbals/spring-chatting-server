@@ -112,6 +112,9 @@ jobs:
 
       - name: SSH Commands
         uses: appleboy/ssh-action@master
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           host: ${{ secrets.EC2_URL }}
           username: ec2-user
@@ -119,6 +122,7 @@ jobs:
           script_stop: true
           script: |
             sudo -i
+            whoami
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi

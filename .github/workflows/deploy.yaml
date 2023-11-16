@@ -110,30 +110,59 @@ jobs:
           ECR_URL: ${{ env.ECR_URL }}
         run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
 
-      - name: Deploy to EC2
+      - name: SSH Commands
+        uses: appleboy/ssh-action@v0.1.6
         env:
-          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          EC2_URL: ${{ secrets.EC2_URL }}
           NEW_VERSION: ${{ env.NEW_VERSION }}
-        run: |
-          sudo -i
-#          echo "$PRIVATE_KEY" > temp_key.pem
-#          chmod 600 temp_key.pem
-#          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
-          if [ ! -d "spring-chatting-server" ]; then
-            git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
-          fi
-          cd spring-chatting-server
-          git checkout main
-          git reset --hard
-          git pull
-          cd k8s/onlychat/deployment
-          sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
-          cd ..
-          kubectl apply redis.yaml
-          kubectl apply -f ./volume/
-          kubectl apply -f ./namespace/
-          kubectl apply -f ./service/
-          kubectl apply -f ./deployment/
+        with:
+          host: ${{ secrets.EC2_URL }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            sudo -i
+            if [ ! -d "spring-chatting-server" ]; then
+              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
+            fi
+            cd spring-chatting-server
+            git checkout main
+            git reset --hard
+            git pull
+            cd k8s/onlychat/deployment
+            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            cd ..
+            kubectl apply redis.yaml
+            kubectl apply -f ./volume/
+            kubectl apply -f ./namespace/
+            kubectl apply -f ./service/
+            kubectl apply -f ./deployment/
+            
+
+#      - name: Deploy to EC2
+#        env:
+#          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+#          EC2_URL: ${{ secrets.EC2_URL }}
+#          NEW_VERSION: ${{ env.NEW_VERSION }}
+#        run: |
+#          sudo -i
+##          echo "$PRIVATE_KEY" > temp_key.pem
+##          chmod 600 temp_key.pem
+##          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
 #          EOF
-#          rm temp_key.pem
+#            if [ ! -d "spring-chatting-server" ]; then
+#              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
+#            fi
+#            cd spring-chatting-server
+#            git checkout main
+#            git reset --hard
+#            git pull
+#            cd k8s/onlychat/deployment
+#            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+#            cd ..
+#            kubectl apply redis.yaml
+#            kubectl apply -f ./volume/
+#            kubectl apply -f ./namespace/
+#            kubectl apply -f ./service/
+#            kubectl apply -f ./deployment/
+#          EOF
+##          rm temp_key.pem

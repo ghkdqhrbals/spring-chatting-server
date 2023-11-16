@@ -124,10 +124,12 @@ jobs:
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi
             cd spring-chatting-server
+            git checkout main
             git reset --hard
-            git pull origin main
+            git pull
             cd k8s/onlychat/deployment
             sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            cd ..
             kubectl apply -f ./volume/
             kubectl apply -f ./namespace/
             kubectl apply -f ./service/

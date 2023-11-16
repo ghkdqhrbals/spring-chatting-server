@@ -117,11 +117,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           host: ${{ secrets.EC2_URL }}
-          username: ec2-user
+          username: root
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            sudo -i
             whoami
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
@@ -150,7 +149,6 @@ jobs:
 ##          echo "$PRIVATE_KEY" > temp_key.pem
 ##          chmod 600 temp_key.pem
 ##          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
-#          EOF
 #            if [ ! -d "spring-chatting-server" ]; then
 #              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
 #            fi

@@ -111,13 +111,13 @@ jobs:
         run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
 
       - name: SSH Commands
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@master
         env:
           NEW_VERSION: ${{ env.NEW_VERSION }}
         with:
           host: ${{ secrets.EC2_URL }}
           username: ec2-user
-          key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
             sudo -i

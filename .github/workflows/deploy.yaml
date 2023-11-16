@@ -117,20 +117,22 @@ jobs:
           NEW_VERSION: ${{ env.NEW_VERSION }}
         run: |
           sudo -i
-          echo "$PRIVATE_KEY" > temp_key.pem
-          chmod 600 temp_key.pem
-          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
-            if [ ! -d "spring-chatting-server" ]; then
-              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
-            fi
-            cd spring-chatting-server
-            git reset --hard
-            git pull origin main
-            cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
-            kubectl apply -f ./volume/
-            kubectl apply -f ./namespace/
-            kubectl apply -f ./service/
-            kubectl apply -f ./deployment/
-          EOF
-          rm temp_key.pem
+#          echo "$PRIVATE_KEY" > temp_key.pem
+#          chmod 600 temp_key.pem
+#          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
+          if [ ! -d "spring-chatting-server" ]; then
+            git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
+          fi
+          cd spring-chatting-server
+          git checkout main
+          git reset --hard
+          git pull
+          cd k8s/onlychat/deployment
+          sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+          cd ..
+          kubectl apply -f ./volume/
+          kubectl apply -f ./namespace/
+          kubectl apply -f ./service/
+          kubectl apply -f ./deployment/
+#          EOF
+#          rm temp_key.pem

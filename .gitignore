@@ -3,6 +3,6 @@
 /docker-elk
 /backups
 /kafka-connect-jdbc
-
+.Ds_store
 /redis
 .gradle

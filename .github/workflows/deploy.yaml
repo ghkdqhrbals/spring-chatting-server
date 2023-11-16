@@ -112,8 +112,6 @@ jobs:
 
       - name: SSH Commands
         uses: appleboy/ssh-action@master
-        env:
-          NEW_VERSION: ${{ env.NEW_VERSION }}
         with:
           host: ${{ secrets.EC2_URL }}
           username: ec2-user
@@ -129,7 +127,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${{ env.NEW_VERSION }}
             cd ..
             kubectl apply redis.yaml
             kubectl apply -f ./volume/

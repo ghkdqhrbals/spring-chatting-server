@@ -3,6 +3,7 @@
 # 입력 파라미터 체크
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0 REPOSITORY_NAME REGION VERSION"
+    echo "More params needed"
     exit 1
 fi
 

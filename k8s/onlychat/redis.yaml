@@ -25,7 +25,7 @@ spec:
           value: "true"
       ports:
         - containerPort: 6379
-          name: user-redis-service
+          name: user-redis
       volumeMounts:
         - mountPath: /redis-master-data
           name: data

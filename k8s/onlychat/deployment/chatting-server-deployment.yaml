@@ -1,19 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: chatting-server
-  name: chatting-server
-  namespace: only-chat-namespace
+  name: chatting-server-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chatting-server
+      app: chatting-server-service
   template:
     metadata:
       labels:
-        io.kompose.network/spring-chatting-server-default: "true"
         app: chatting-server
     spec:
       imagePullSecrets:
@@ -49,7 +45,7 @@ spec:
           image: main-service_chatting-server:latest
           name: chatting-server
           ports:
-            - containerPort: 8030
-              hostPort: 8030
+            - port: 8030
+              targetPort: 8030
               protocol: TCP
       restartPolicy: Always

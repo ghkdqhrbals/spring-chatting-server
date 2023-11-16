@@ -32,3 +32,11 @@ spec:
               value: pgadmin4@pgadmin.org
             - name: PGADMIN_DEFAULT_PASSWORD
               value: password
+          volumeMounts:
+            - name: pgadmin-vol
+              mountPath: /data/pgadmin
+      restartPolicy: Always
+      volumes:
+        - name: pgadmin-vol
+          persistentVolumeClaim:
+            claimName: pgadmin-pvc

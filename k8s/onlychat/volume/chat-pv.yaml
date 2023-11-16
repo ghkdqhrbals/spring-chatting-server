@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pgdata-chat-pv
+  name: chat-pv
 spec:
   capacity:
-    storage: 100Mi # 요구하는 스토리지 용량과 일치해야 합니다.
-  volumeMode: Filesystem # 또는 Block
+    storage: 100Mi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain # Reclaim 정책 (Delete, Retain, Recycle 중 선택)
-  storageClassName: pgchat # StorageClass 이름
   nfs:
     path: /nfs_shared/pgdata-chat # NFS 서버의 공유 경로
     server: 172.31.15.86

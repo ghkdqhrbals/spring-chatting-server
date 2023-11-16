@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discovery-server-service
+  template:
+    metadata:
+      labels:
+        app: discovery-server
+    spec:
+      containers:
+        - env:
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+          image: main-service_discovery-server:latest
+          name: discovery-server
+          ports:
+            - containerPort: 8761
+              hostPort: 8761
+              protocol: TCP
+      restartPolicy: Always

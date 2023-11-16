@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-server-service
+  template:
+    metadata:
+      labels:
+        app: api-server
+    spec:
+      containers:
+        - env:
+            - name: SERVER_PORT
+              value: "8000"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: http://43.202.52.177:8888
+            - name: SPRING_MAIN_web-application-type
+              value: reactive
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+            - name: eureka_client_service-url_defaultZone
+              value: http://discovery-server-service:8761/eureka
+          image: main-service_api-server:latest
+          name: api-server
+          ports:
+            - port: 8000
+              targetPort: 8000
+              protocol: TCP
+      restartPolicy: Always

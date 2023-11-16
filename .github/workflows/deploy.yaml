@@ -117,7 +117,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_URL }}
           username: ec2-user
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           script_stop: true
           script: |
             sudo -i

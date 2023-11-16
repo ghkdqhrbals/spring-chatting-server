@@ -9,7 +9,7 @@ spec:
     - port: 8020
       targetPort: 8020
       nodePort: 30013
-    type: NodePort
+  type: NodePort
   selector:
     app: customer-server-service
 status:

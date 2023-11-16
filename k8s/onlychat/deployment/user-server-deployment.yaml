@@ -1,29 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose-prod.yaml
-    kompose.version: 1.31.0 (HEAD)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: user-server
-  name: user-server
-  namespace: default
+  name: user-server-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: user-server
-  strategy: {}
+      app: user-server-service
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose-prod.yaml
-        kompose.version: 1.31.0 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/spring-chatting-server-default: "true"
-        io.kompose.service: user-server
+        app: user-server
     spec:
       containers:
         - env:
@@ -32,7 +19,7 @@ spec:
             - name: SERVER_PORT
               value: "8010"
             - name: SPRING_CLOUD_CONFIG_URI
-              value: http://configuration-server-service:8888
+              value: http://43.202.52.177:8888
             - name: SPRING_MAIN_web-application-type
               value: reactive
             - name: SPRING_RABBITMQ_HOST
@@ -48,7 +35,7 @@ spec:
             - name: spring_datasource_hikari_username
               value: postgres
             - name: spring_datasource_url
-              value: jdbc:postgresql://user-db-service:5435/user
+              value: jdbc:postgresql://user-db:5435/user
             - name: spring_redis_host
               value: user-redis
             - name: spring_redis_port
@@ -56,9 +43,7 @@ spec:
           image: main-service_user-server:latest
           name: user-server
           ports:
-            - containerPort: 8010
-              hostPort: 8010
+            - port: 8010
+              targetPort: 8010
               protocol: TCP
-          resources: {}
       restartPolicy: Always
-status: {}

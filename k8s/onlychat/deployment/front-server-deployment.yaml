@@ -1,14 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: front-server
-  name: front-server
+  name: front-server-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: front-server
+      app: front-server-service
   template:
     metadata:
       labels:
@@ -21,7 +19,7 @@ spec:
             - name: SERVER_PORT
               value: "8000"
             - name: backend_api_gateway
-              value: http://chatting-server:8030
+              value: http://chatting-server-service:8030
             - name: spring_profiles_active
               value: local
           image: main-service_front-server:latest

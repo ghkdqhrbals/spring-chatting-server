@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: zookeeper-service
   labels:
-    io.kompose.service: zookeeper
+    app: zookeeper-service
 spec:
+  selector:
+    app: zookeeper-service
   ports:
     - port: 2181
       targetPort: 2181
-  selector:
-    io.kompose.service: zookeeper
+      protocol: TCP
+  type: ClusterIP

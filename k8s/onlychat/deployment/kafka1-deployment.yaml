@@ -1,23 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: kafka1
   name: kafka1
-  namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: kafka1
-  strategy: {}
+      app: kafka1-service
   template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        io.kompose.network/spring-chatting-server-default: "true"
-        io.kompose.service: kafka1
     spec:
       containers:
         - env:
@@ -40,4 +30,3 @@ spec:
               hostPort: 8097
               protocol: TCP
       restartPolicy: Always
-status: {}

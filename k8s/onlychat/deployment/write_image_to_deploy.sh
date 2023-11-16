@@ -14,15 +14,16 @@ VERSION=$3
 ALL_TAGS=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?contains(imageTag, '${VERSION}')].imageTag" --output text)
 echo "Get all tags from ECR : $ALL_TAGS"
 for file in *-deployment.yaml; do
+  echo "Check file : $file"
   # 현재 서비스 이름 추출
   SERVICE_NAME=$(grep "image: main-service_" "$file" | awk -F':' '{print $2}' | awk -F'_' '{print $2}' | awk '{print $1}')
 
   # SERVICE_NAME이 없다면 다음 파일로 넘어간다
   # 있다면, SERVICE_NAME 이 "chatting-server" 로 됩니다
-  echo "Check service name : $SERVICE_NAME"
   if [ -z "$SERVICE_NAME" ]; then
     continue
   fi
+  echo "Check service name : $SERVICE_NAME"
 
   # ALL_TAGS에서 해당 서비스 이름에 맞고, VERSION으로 끝나는 최신 이미지 태그 찾기
   DESIRED_TAG=$(echo "$ALL_TAGS" | tr '\t' '\n' | grep "${SERVICE_NAME}_${VERSION}")
@@ -34,6 +35,6 @@ for file in *-deployment.yaml; do
   fi
 
   # deploy.yaml 파일 내의 이미지 태그 업데이트
-  sed -i '' "s#image: main-service_$SERVICE_NAME.*#image: $REPOSITORY_NAME:$DESIRED_TAG#g" "$file"
+  sed -i "s#image: main-service_$SERVICE_NAME.*#image: $REPOSITORY_NAME:$DESIRED_TAG#g" "$file"
   echo "Updated $file"
 done

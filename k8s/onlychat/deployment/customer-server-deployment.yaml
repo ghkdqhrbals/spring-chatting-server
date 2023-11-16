@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: customer-server-deployment
+  name: customer-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-server-service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: customer-server
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: SERVER_PORT
+              value: "8020"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: http://43.202.52.177:8888
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+            - name: eureka_client_service-url_defaultZone
+              value: http://discovery-server-service:8761/eureka
+            - name: spring_datasource_hikari_maximum-pool-size
+              value: "70"
+            - name: spring_datasource_hikari_password
+              value: password
+            - name: spring_datasource_hikari_username
+              value: postgres
+            - name: spring_datasource_url
+              value: jdbc:postgresql://customer-db:5434/customer
+          image: main-service_customer-server:latest
+          name: customer-server
+          ports:
+            - port: 8020
+              targetPort: 8020
+              protocol: TCP
+      restartPolicy: Always

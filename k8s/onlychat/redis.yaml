@@ -6,7 +6,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-redis
+      app: user-redis-service
   template:
     metadata:
       labels:
@@ -16,7 +16,8 @@ spec:
         - name: user-redis
           image: redis:latest
           ports:
-            - containerPort: 6379
+            - port: 6379
+              targetPort: 6379
           volumeMounts:
             - name: redis-data
               mountPath: /data
@@ -26,21 +27,21 @@ spec:
           command:
             - "redis-server"
             - "/usr/local/conf/redis.conf"
-      volumes:
-        - name: redis-data
-          hostPath:
-            path: /path/to/redis/data # 호스트의 Redis 데이터 디렉토리 경로로 변경하세요
-        - name: redis-config
-          configMap:
-            name: redis-config-map # 필요한 경우 ConfigMap을 생성하여 설정 파일을 제공할 수 있습니다.
+#      volumes:
+#        - name: redis-data
+#          hostPath:
+#            path: /path/to/redis/data # 호스트의 Redis 데이터 디렉토리 경로로 변경하세요
+#        - name: redis-config
+#          configMap:
+#            name: redis-config-map # 필요한 경우 ConfigMap을 생성하여 설정 파일을 제공할 수 있습니다.
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app: user-redis-service
   name: user-redis-service
 spec:
-  selector:
-    app: user-redis
   ports:
     - protocol: TCP
       port: 6379

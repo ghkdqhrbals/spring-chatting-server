@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chatting-server
+  name: chatting-server-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chatting-server
+      app: chatting-server-service
   template:
     metadata:
       labels:
@@ -45,7 +45,7 @@ spec:
           image: main-service_chatting-server:latest
           name: chatting-server
           ports:
-            - containerPort: 8030
-              hostPort: 8030
+            - port: 8030
+              targetPort: 8030
               protocol: TCP
       restartPolicy: Always

@@ -11,7 +11,7 @@ spec:
       protocol: TCP
       port: 8000
       targetPort: 8000
-      nodePort: 30010
+      nodePort: 30012
   type: NodePort
   selector:
     app: api-server-service

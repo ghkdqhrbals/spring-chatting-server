@@ -8,7 +8,6 @@ spec:
   ports:
     - port: 8761
       targetPort: 8761
-      nodePort: 30014
-  type: NodePort
+  type: ClusterIP
   selector:
     app: discovery-server-service

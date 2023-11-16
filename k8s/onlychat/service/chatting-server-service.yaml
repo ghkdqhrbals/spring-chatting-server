@@ -10,7 +10,6 @@ spec:
       protocol: TCP
       port: 8030
       targetPort: 8030
-      nodePort: 30011
-  type: NodePort
+  type: ClusterIP
   selector:
     app: chatting-server-service

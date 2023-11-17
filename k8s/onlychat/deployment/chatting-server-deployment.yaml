@@ -20,6 +20,14 @@ spec:
               value: "8030"
             - name: spring_autoconfigure_exclude
               value: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+            - name: spring_rabbitmq_host
+              value: "43.202.52.177"
+            - name: spring_rabbitmq_port
+              value: "5672"
+            - name: spring_rabbitmq_username
+              value: "guest"
+            - name: spring_rabbitmq_password
+              value: "guest"
             - name: spring_cloud_discovery_enabled
               value: "false"
             - name: spring_config_activate_on-profile
@@ -44,8 +52,4 @@ spec:
               value: v1
           image: main-service_chatting-server:latest
           name: chatting-server
-          ports:
-            - port: 8030
-              targetPort: 8030
-              protocol: TCP
       restartPolicy: Always

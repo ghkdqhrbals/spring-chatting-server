@@ -23,8 +23,14 @@ spec:
               value: "8020"
             - name: SPRING_CLOUD_CONFIG_URI
               value: http://43.202.52.177:8888
-            - name: SPRING_RABBITMQ_HOST
-              value: rabbitmq
+            - name: spring_rabbitmq_host
+              value: "43.202.52.177"
+            - name: spring_rabbitmq_port
+              value: "5672"
+            - name: spring_rabbitmq_username
+              value: "guest"
+            - name: spring_rabbitmq_password
+              value: "guest"
             - name: eureka_client_service-url_defaultZone
               value: http://discovery-server-service:8761/eureka
             - name: spring_datasource_hikari_maximum-pool-size

@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: chatting-server
+        app: chatting-server-service
     spec:
       imagePullSecrets:
         - name: ecr-cred

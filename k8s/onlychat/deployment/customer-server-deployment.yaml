@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: customer-server
+        app: customer-server-service
     spec:
       containers:
         - env:

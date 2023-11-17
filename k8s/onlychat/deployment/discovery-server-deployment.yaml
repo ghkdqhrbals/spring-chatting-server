@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: discovery-server
+        app: discovery-server-service
     spec:
       containers:
         - env:

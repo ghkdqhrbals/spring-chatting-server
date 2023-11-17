@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: front-server
+        app: front-server-service
     spec:
       imagePullSecrets:
         - name: ecr-cred

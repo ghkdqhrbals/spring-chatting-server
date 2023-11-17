@@ -12,6 +12,8 @@ spec:
       labels:
         app: user-server-service
     spec:
+      imagePullSecrets:
+        - name: ecr-cred
       containers:
         - env:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR

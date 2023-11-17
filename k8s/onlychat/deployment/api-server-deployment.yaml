@@ -12,6 +12,8 @@ spec:
       labels:
         app: api-server-service
     spec:
+      imagePullSecrets:
+        - name: ecr-cred
       containers:
         - env:
             - name: SERVER_PORT

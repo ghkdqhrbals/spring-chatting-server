@@ -12,6 +12,8 @@ spec:
       labels:
         app: discovery-server-service
     spec:
+      imagePullSecrets:
+        - name: ecr-cred
       containers:
         - env:
             - name: spring_rabbitmq_host

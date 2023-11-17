@@ -24,8 +24,4 @@ spec:
               value: local
           image: main-service_front-server:latest
           name: front-server
-          ports:
-            - containerPort: 8000
-              hostPort: 80
-              protocol: TCP
       restartPolicy: Always

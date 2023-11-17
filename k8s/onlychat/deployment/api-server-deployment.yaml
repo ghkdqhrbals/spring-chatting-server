@@ -26,8 +26,4 @@ spec:
               value: http://discovery-server-service:8761/eureka
           image: main-service_api-server:latest
           name: api-server
-          ports:
-            - port: 8000
-              targetPort: 8000
-              protocol: TCP
       restartPolicy: Always

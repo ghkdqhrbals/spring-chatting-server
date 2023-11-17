@@ -10,7 +10,6 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 8000
-      nodePort: 30010
-  type: NodePort
+  type: ClusterIP
   selector:
     app: front-server-service

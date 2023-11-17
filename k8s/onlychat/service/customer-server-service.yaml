@@ -8,8 +8,7 @@ spec:
   ports:
     - port: 8020
       targetPort: 8020
-      nodePort: 30013
-  type: NodePort
+  type: ClusterIP
   selector:
     app: customer-server-service
 status:

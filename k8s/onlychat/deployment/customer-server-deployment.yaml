@@ -43,8 +43,4 @@ spec:
               value: jdbc:postgresql://customer-db:5434/customer
           image: main-service_customer-server:latest
           name: customer-server
-          ports:
-            - port: 8020
-              targetPort: 8020
-              protocol: TCP
       restartPolicy: Always

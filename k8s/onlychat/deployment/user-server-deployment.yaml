@@ -12,6 +12,8 @@ spec:
       labels:
         app: user-server-service
     spec:
+      imagePullSecrets:
+        - name: ecr-cred
       containers:
         - env:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
@@ -48,8 +50,4 @@ spec:
               value: "6379"
           image: main-service_user-server:latest
           name: user-server
-          ports:
-            - port: 8010
-              targetPort: 8010
-              protocol: TCP
       restartPolicy: Always

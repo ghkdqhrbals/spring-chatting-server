@@ -8,6 +8,9 @@ spec:
     matchLabels:
       app: kafka1-service
   template:
+    metadata:
+      labels:
+        app: kafka1-service
     spec:
       containers:
         - env:

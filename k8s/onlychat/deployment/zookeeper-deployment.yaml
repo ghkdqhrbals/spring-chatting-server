@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: zookeeper
+        app: zookeeper-service
     spec:
       containers:
         - env:

@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: user-server
+        app: user-server-service
     spec:
       containers:
         - env:

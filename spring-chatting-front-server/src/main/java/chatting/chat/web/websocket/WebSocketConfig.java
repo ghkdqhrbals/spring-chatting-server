@@ -27,7 +27,6 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @AllArgsConstructor
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
-    private final WebSocketSessionManager webSocketSessionManager;
 
     // 메시지 발행 요청 : /pub (Application Destination Prefix)
     // 메시지 구독 요청 : /sub (enable Simple Broker)

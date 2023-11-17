@@ -18,6 +18,8 @@ spec:
         - env:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
               value: "1"
+            - name: kafka_bootstrap
+              value: http://kafka1-service:9092
             - name: SERVER_PORT
               value: "8010"
             - name: SPRING_CLOUD_CONFIG_URI

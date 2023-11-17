@@ -18,6 +18,8 @@ spec:
         - env:
             - name: SERVER_PORT
               value: "8030"
+            - name: kafka_bootstrap
+              value: http://kafka1-service:9092
             - name: spring_autoconfigure_exclude
               value: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
             - name: spring_rabbitmq_host

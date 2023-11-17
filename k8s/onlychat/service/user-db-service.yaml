@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: user-db
-  name: user-db-service
+  name: user-db
 spec:
   ports:
     - name: http

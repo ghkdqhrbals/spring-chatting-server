@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: discoveryService # MSA ?? ??? ID
+  jersey:
+    servlet:
+      load-on-startup:
 
 eureka:
   client:

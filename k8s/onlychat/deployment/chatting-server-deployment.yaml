@@ -22,6 +22,10 @@ spec:
               value: http://kafka1-service:9092
             - name: spring_autoconfigure_exclude
               value: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+            - name: spring_redis_host
+              value: redis.default.svc.cluster.local
+            - name: spring_redis_port
+              value: "6379"
             - name: spring_rabbitmq_host
               value: "43.202.52.177"
             - name: spring_rabbitmq_port

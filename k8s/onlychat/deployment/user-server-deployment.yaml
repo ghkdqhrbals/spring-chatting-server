@@ -47,9 +47,27 @@ spec:
             - name: spring_datasource_url
               value: jdbc:postgresql://user-db:5435/user
             - name: spring_redis_host
-              value: user-redis
+              value: redis.default.svc.cluster.local
             - name: spring_redis_port
               value: "6379"
           image: main-service_user-server:latest
           name: user-server
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 1
+              memory: 1.0Gi
+            limits:
+              memory: 1.0Gi
       restartPolicy: Always

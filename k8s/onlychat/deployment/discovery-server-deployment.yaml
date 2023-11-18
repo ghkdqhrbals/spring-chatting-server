@@ -26,8 +26,4 @@ spec:
               value: "guest"
           image: main-service_discovery-server:latest
           name: discovery-server
-          ports:
-            - containerPort: 8761
-              hostPort: 8761
-              protocol: TCP
       restartPolicy: Always

@@ -1,0 +1,29 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: ecr-token-refresh
+spec:
+  schedule: "*/30 * * * *" # 30분마다 실행하도록 스케줄을 설정합니다.
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: ecr-token-refresh
+              image: amazon/aws-cli:latest # AWS CLI 이미지 사용
+              args:
+                - /bin/sh
+                - -c
+                - aws ecr get-login-password --region ap-northeast-2 | kubectl create secret docker-registry ecr-cred --docker-server=305603388825.dkr.ecr.ap-northeast-2.amazonaws.com --docker-username=AWS --docker-password-stdin
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: ecr-cred
+                      key: AWS_ACCESS_KEY_ID
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: ecr-cred
+                      key: AWS_SECRET_ACCESS_KEY
+          restartPolicy: OnFailure

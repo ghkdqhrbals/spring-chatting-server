@@ -14,7 +14,8 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - aws ecr get-login-password --region ap-northeast-2 | kubectl create secret docker-registry ecr-cred --docker-server=305603388825.dkr.ecr.ap-northeast-2.amazonaws.com --docker-username=AWS --docker-password-stdin
+                - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 305603388825.dkr.ecr.ap-northeast-2.amazonaws.com
+                - kubectl create secret generic ecr-cred --from-file=.dockerconfigjson=/root/.docker/config.json --type=kubernetes.io/dockerconfigjson
               env:
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:

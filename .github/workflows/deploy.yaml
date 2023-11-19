@@ -60,7 +60,7 @@ jobs:
           new_version="$major.$minor.$patch-$short_commit_hash"
           echo "Output [$new_version]"
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
-          echo "NEW_VERSION=${NEW_VERSION}"
+          echo "NEW_VERSION=$new_version"
 
       - name: Create and push new tag to Github
         run: |
@@ -98,7 +98,6 @@ jobs:
         run: |
           echo "echo ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
           echo "echo ${{needs.pushNewTag.outputs.NEW_VERSION}}"
-          echo "echo needs.pushNewTag.outputs.NEW_VERSION"
           chmod +x ./gradlew
 
       - name: Build project and create Dockerfiles
@@ -148,7 +147,7 @@ jobs:
           script_stop: true
           script: |
             echo "ECR_URL=${ECR_URL}"
-            echo NEW_VERSION=${NEW_VERSION}
+            echo "NEW_VERSION=${NEW_VERSION}"
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi

@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    active:
+      - dev
   main:
     web-application-type: reactive
   task:
@@ -36,6 +39,8 @@ spring:
         jdbc:
           time_zone: UTC
           batch_size: 50
+  cache:
+    type: redis
   data:
     redis:
       lettuce:
@@ -46,6 +51,7 @@ spring:
 #    allow-bean-definition-overriding: true
 
 kafka:
+  bootstrap: kafka1:9092
   enabled: true
   broker:
     number: 1

@@ -58,8 +58,11 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.testcontainers:testcontainers:1.17.2'
+	implementation 'org.testcontainers:junit-jupiter:1.17.2'
+	implementation 'com.redis.testcontainers:testcontainers-redis:1.4.6'
 
-	testImplementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 
 	// Thrid-party
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'

@@ -159,6 +159,8 @@ jobs:
             kubectl apply -f ./deployment/
 
   pushSlack:
+    needs: [pushImageToEcr, pushNewTag, DeployToEC2KubernetesCluster]
+    if: always()
     name: Slack Alert
     runs-on: ubuntu-latest
     steps:
@@ -168,4 +170,3 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()

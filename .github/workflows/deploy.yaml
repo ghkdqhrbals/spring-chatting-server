@@ -71,18 +71,13 @@ jobs:
     name: Slack Alert
     runs-on: ubuntu-latest
     steps:
-      - name: Send custom JSON data to Slack workflow
-        id: slack
-        uses: slackapi/slack-github-action@v1.24.0
+      - uses: 8398a7/action-slack@v3
         with:
-          # This data can be any valid JSON from a previous step in the GitHub Action
-          payload: |
-            {
-              "key": "value",
-              "foo": "bar"
-            }
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.
 
   pushImageToEcr:
     needs: pushNewTag

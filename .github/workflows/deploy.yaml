@@ -125,11 +125,12 @@ jobs:
     name: Deploy to EC2 Kubernetes Cluster
     needs: [pushImageToEcr,pushNewTag]
     runs-on: ubuntu-latest
+    env:
+      NEW_VERSION: ${{ needs.pushNewTag.outputs.NEW_VERSION }}
     steps:
       - name: SSH Commands
         uses: appleboy/ssh-action@master
         env:
-          NEW_VERSION: ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           ECR_URL: ${{ secrets.ECR_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -159,6 +160,8 @@ jobs:
             kubectl apply -f ./deployment/
 
   pushSlack:
+    needs: [pushImageToEcr, pushNewTag, DeployToEC2KubernetesCluster]
+    if: always()
     name: Slack Alert
     runs-on: ubuntu-latest
     steps:
@@ -168,4 +171,3 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()

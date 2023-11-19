@@ -1,15 +1,28 @@
 #!/bin/bash
 
-# 입력 파라미터 체크
-if [ "$#" -ne 3 ]; then
-    echo "Usage: $0 REPOSITORY_NAME REGION VERSION"
-    echo "More params needed"
-    exit 1
-fi
+
+echo "Received $# parameters."
 
 REPOSITORY_NAME=$1
 REGION=$2
 VERSION=$3
+
+echo "Received parameters:"
+if [ -n "$REPOSITORY_NAME" ]; then
+    echo "REPOSITORY_NAME: $REPOSITORY_NAME"
+fi
+
+if [ -n "$REGION" ]; then
+    echo "REGION: $REGION"
+fi
+
+if [ -n "$VERSION" ]; then
+    echo "VERSION: $VERSION"
+fi
+
+if [ "$#" -lt 3 ]; then
+    exit 1
+fi
 
 # ECR에서 모든 이미지 태그 가져오기
 ALL_TAGS=$(aws ecr list-images --repository-name chat --filter "tagStatus=TAGGED" --query "imageIds[?contains(imageTag, '${VERSION}')].imageTag" --output text --region "$REGION")

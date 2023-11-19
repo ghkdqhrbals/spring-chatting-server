@@ -68,23 +68,21 @@ jobs:
           git push origin v${NEW_VERSION}
   pushSlack:
     needs: pushNewTag
-    name: Push image to AWS-ECR
+    name: Push newTag to Slack
     runs-on: ubuntu-latest
     steps:
       - name: slack-send
         uses: slackapi/slack-github-action@v1.24.0
         env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-    with:
-      status: ${{ job.status }}
-      author_name: Chat Backend - dev
-      fields: repo,commit,message,author # action,eventName,ref,workflow,job,took 추가할 수 있음
-      mention: Actions
-      if_mention: failure,cancelled
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-      if: always() # Pick up events even if the job fails or is canceled.
+        with:
+          status: ${{ job.status }}
+          author_name: Chat Backend - dev
+          fields: repo,commit,message,author # action,eventName,ref,workflow,job,took 추가할 수 있음
+          mention: Actions
+          if_mention: failure,cancelled
+          if: always() # Pick up events even if the job fails or is canceled.
 
   pushImageToEcr:
     needs: pushNewTag

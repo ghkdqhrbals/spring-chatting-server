@@ -17,39 +17,45 @@ spec:
       containers:
         - env:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: "1"
+              value: 1
             - name: kafka_bootstrap
               value: http://kafka1-service:9092
             - name: SERVER_PORT
-              value: "8010"
+              value: 8010
             - name: SPRING_CLOUD_CONFIG_URI
               value: http://43.202.52.177:8888
             - name: SPRING_MAIN_web-application-type
               value: reactive
             - name: spring_rabbitmq_host
-              value: "43.202.52.177"
+              value: 43.202.52.177
             - name: spring_rabbitmq_port
-              value: "5672"
+              value: 5672
             - name: spring_rabbitmq_username
-              value: "guest"
+              value: guest
             - name: spring_rabbitmq_password
-              value: "guest"
+              value: guest
             - name: eureka_client_service-url_defaultZone
               value: http://discovery-server-service:8761/eureka
             - name: server_undertow_no-request-timeout
-              value: "100"
+              value: 100
             - name: spring_datasource_hikari_maximum-pool-size
-              value: "30"
+              value: 30
             - name: spring_datasource_hikari_password
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: user-db-password
             - name: spring_datasource_hikari_username
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: user-db-username
             - name: spring_datasource_url
               value: jdbc:postgresql://user-db:5435/user
             - name: spring_redis_host
               value: redis.default.svc.cluster.local
             - name: spring_redis_port
-              value: "6379"
+              value: 6379
           image: main-service_user-server:latest
           name: user-server
           readinessProbe:

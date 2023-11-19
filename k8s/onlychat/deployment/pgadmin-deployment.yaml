@@ -29,9 +29,15 @@ spec:
             - name: PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT
               value: "1"
             - name: PGADMIN_DEFAULT_EMAIL
-              value: pgadmin4@pgadmin.org
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: pgadmin-email
             - name: PGADMIN_DEFAULT_PASSWORD
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: pgadmin-password
           volumeMounts:
             - name: pgadmin-vol
               mountPath: /data/pgadmin

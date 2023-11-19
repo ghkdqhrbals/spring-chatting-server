@@ -18,6 +18,8 @@ spec:
         - env:
             - name: SERVER_PORT
               value: "8030"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: http://43.202.52.177:8888
             - name: kafka_bootstrap
               value: http://kafka1-service:9092
             - name: spring_autoconfigure_exclude
@@ -41,9 +43,15 @@ spec:
             - name: spring_datasource_hikari_maximum-pool-size
               value: "70"
             - name: spring_datasource_hikari_password
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: chat-db-password
             - name: spring_datasource_hikari_username
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: chat-db-username
             - name: spring_datasource_url
               value: jdbc:postgresql://chat-db:5433/chat
             - name: spring_profiles_active

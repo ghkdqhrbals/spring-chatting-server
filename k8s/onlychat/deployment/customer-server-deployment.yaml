@@ -40,9 +40,15 @@ spec:
             - name: spring_datasource_hikari_maximum-pool-size
               value: "70"
             - name: spring_datasource_hikari_password
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: customer-db-password
             - name: spring_datasource_hikari_username
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: customer-db-username
             - name: spring_datasource_url
               value: jdbc:postgresql://customer-db:5434/customer
           image: main-service_customer-server:latest

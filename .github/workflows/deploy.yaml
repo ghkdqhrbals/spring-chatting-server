@@ -94,12 +94,17 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+        run: |
+          echo ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+          echo ${needs.pushNewTag.outputs.NEW_VERSION}
+          echo "${{needs.pushNewTag.outputs.NEW_VERSION}}"
+          echo needs.pushNewTag.outputs.NEW_VERSION
+          chmod +x ./gradlew
 
       - name: Build project and create Dockerfiles
         env:
           NEW_VERSION: ${{ env.NEW_VERSION }}
-        run: ./gradlew build --daemon --parallel -Pversion=${NEW_VERSION}
+        run: ./gradlew build --daemon --parallel -Pversion=${{ needs.pushNewTag.outputs.NEW_VERSION }}
 
       - name: Build docker images
         run: docker-compose -f docker-compose-prod.yaml build
@@ -121,7 +126,6 @@ jobs:
       - name: Tag Push images to ECR
         env:
           ECR_URL: ${{ env.ECR_URL }}
-          NEW_VERSION: ${{ needs.pushNewTag.outputs.NEW_VERSION }}
         run: ./push_to_ecr.sh ${ECR_URL} ${NEW_VERSION}
 
   DeployToEC2KubernetesCluster:

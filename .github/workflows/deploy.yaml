@@ -134,7 +134,7 @@ jobs:
         name: Code checkout
 
       - name: Deploy to EC2 Kubernetes Cluster
-        uses: appleboy/ssh-action@1.0.0
+        uses: appleboy/ssh-action@v1.0.0
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

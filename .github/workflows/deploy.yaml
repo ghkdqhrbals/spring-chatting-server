@@ -8,8 +8,10 @@ on:
 env:
   ECR_URL: ${{ secrets.ECR_URL }}
 
+# run this job only if PR title does not contain 'chore'
 jobs:
-  deploy:
+  PUSH-NEW-TAG:
+    if: !contains(github.event.pull_request.title, 'chore')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -64,6 +66,10 @@ jobs:
           git tag v${NEW_VERSION}
           git push origin v${NEW_VERSION}
 
+  PUSH-IMAGE-TO-ECR:
+    needs: PUSH-NEW-TAG
+    runs-on: ubuntu-latest
+    steps:
       - name: Set up Corretto openJDK 17
         uses: actions/setup-java@v3 # check specific version in https://github.com/actions/setup-java
         with:
@@ -110,6 +116,10 @@ jobs:
           ECR_URL: ${{ env.ECR_URL }}
         run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
 
+  DEPLOY-TO-EC2-KUBERNETES-CLUSTER:
+    needs: PUSH-IMAGE-TO-ECR
+    runs-on: ubuntu-latest
+    steps:
       - name: SSH Commands
         uses: appleboy/ssh-action@master
         env:

@@ -19,9 +19,9 @@ spec:
             - name: SERVER_PORT
               value: "8030"
             - name: SPRING_CLOUD_CONFIG_URI
-              value: http://43.202.52.177:8888
+              value: "http://43.202.52.177:8888"
             - name: kafka_bootstrap
-              value: http://kafka1-service:9092
+              value: "http://kafka1-service:9092"
             - name: spring_autoconfigure_exclude
               value: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
             - name: spring_redis_host

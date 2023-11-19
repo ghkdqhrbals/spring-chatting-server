@@ -1,5 +1,3 @@
-![main-workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
-
 * [Purpose of our project](#purpose-of-our-project)
 * [Versions And Skills](#versions-and-skills)
 * [Unstable Architecture(v5)](#unstable-architecture-v5)

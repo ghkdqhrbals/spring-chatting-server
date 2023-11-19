@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       NEW_VERSION: ${{ steps.increment_version.outputs.NEW_VERSION }}
+      ECR_URL: ${{ steps.increment_version.outputs.ECR_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -60,6 +61,7 @@ jobs:
           new_version="$major.$minor.$patch-$short_commit_hash"
           echo "Output [$new_version]"
           echo "NEW_VERSION=$new_version" >> $GITHUB_OUTPUT
+          echo "ECR_URL=${{ secrets.ECR_URL }}" >> $GITHUB_OUTPUT
 
       - name: Create and push new tag to Github
         run: |
@@ -128,13 +130,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: Retrieve the secret and decode it to a file
-        env:
-          ECR_URL: ${{ secrets.ECR_URL }}
+        name: Code checkout
+
       - name: Deploy to EC2 Kubernetes Cluster
         uses: appleboy/ssh-action@master
         env:
-          ECR_URL: ${{ env.ECR_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
@@ -143,8 +143,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            echo "ECR_URL=${ECR_URL}"
-            echo "NEW_VERSION=${ECR_URL}"
+            echo "connect to ECR: ${{ needs.pushNewTag.outputs.ECR_URL }}"
             echo "new version will be deployed ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
@@ -154,7 +153,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${ECR_URL} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+            sh write_image_to_deploy.sh ${{ needs.pushNewTag.outputs.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
             cd ..
             kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml

@@ -10,7 +10,8 @@ env:
 
 # run this job only if PR title does not contain 'chore'
 jobs:
-  PUSH-NEW-TAG:
+  push_new_tag:
+    name: Push new tag
     if: !contains(github.event.pull_request.title, 'chore')
     runs-on: ubuntu-latest
     steps:
@@ -66,8 +67,9 @@ jobs:
           git tag v${NEW_VERSION}
           git push origin v${NEW_VERSION}
 
-  PUSH-IMAGE-TO-ECR:
-    needs: PUSH-NEW-TAG
+  push_image_to_ecr:
+    needs: push_new_tag
+    name: push image to AWS-ECR
     runs-on: ubuntu-latest
     steps:
       - name: Set up Corretto openJDK 17
@@ -116,8 +118,9 @@ jobs:
           ECR_URL: ${{ env.ECR_URL }}
         run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
 
-  DEPLOY-TO-EC2-KUBERNETES-CLUSTER:
-    needs: PUSH-IMAGE-TO-ECR
+  deploy_to_ec2_kubernetes_cluster:
+    name: Deploy to EC2 Kubernetes Cluster
+    needs: push_image_to_ecr
     runs-on: ubuntu-latest
     steps:
       - name: SSH Commands

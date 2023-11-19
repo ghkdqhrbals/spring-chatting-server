@@ -68,21 +68,21 @@ jobs:
           git push origin v${NEW_VERSION}
   pushSlack:
     needs: pushNewTag
-    name: Push newTag to Slack
+    name: Slack Alert
     runs-on: ubuntu-latest
     steps:
-      - name: slack-send
+      - name: Send custom JSON data to Slack workflow
+        id: slack
         uses: slackapi/slack-github-action@v1.24.0
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
-          status: ${{ job.status }}
-          author_name: Chat Backend - dev
-          fields: repo,commit,message,author # action,eventName,ref,workflow,job,took 추가할 수 있음
-          mention: Actions
-          if_mention: failure,cancelled
-          if: always() # Pick up events even if the job fails or is canceled.
+          # This data can be any valid JSON from a previous step in the GitHub Action
+          payload: |
+            {
+              "key": "value",
+              "foo": "bar"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   pushImageToEcr:
     needs: pushNewTag
@@ -148,6 +148,7 @@ jobs:
       - name: SSH Commands
         uses: appleboy/ssh-action@master
         env:
+          ECR_URL: ${{ env.ECR_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
@@ -164,7 +165,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
+            sh write_image_to_deploy.sh ${ECR_URL} ap-northeast-2 ${NEW_VERSION}
             cd ..
             kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml

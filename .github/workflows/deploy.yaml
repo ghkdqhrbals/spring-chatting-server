@@ -8,9 +8,8 @@ on:
 env:
   ECR_URL: ${{ secrets.ECR_URL }}
 
-# run this job only if PR title does not contain 'chore'
 jobs:
-  push_new_tag:
+  pushNewTag:
     name: Push new tag
     if: !contains(github.event.pull_request.title, 'chore')
     runs-on: ubuntu-latest
@@ -67,8 +66,8 @@ jobs:
           git tag v${NEW_VERSION}
           git push origin v${NEW_VERSION}
 
-  push_image_to_ecr:
-    needs: push_new_tag
+  pushImageToEcr:
+    needs: pushNewTag
     name: push image to AWS-ECR
     runs-on: ubuntu-latest
     steps:
@@ -118,9 +117,9 @@ jobs:
           ECR_URL: ${{ env.ECR_URL }}
         run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
 
-  deploy_to_ec2_kubernetes_cluster:
+  DeployToEC2KubernetesCluster:
     name: Deploy to EC2 Kubernetes Cluster
-    needs: push_image_to_ecr
+    needs: pushImageToEcr
     runs-on: ubuntu-latest
     steps:
       - name: SSH Commands
@@ -151,32 +150,3 @@ jobs:
             kubectl apply -f ./namespace/
             kubectl apply -f ./service/
             kubectl apply -f ./deployment/
-            
-
-#      - name: Deploy to EC2
-#        env:
-#          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-#          EC2_URL: ${{ secrets.EC2_URL }}
-#          NEW_VERSION: ${{ env.NEW_VERSION }}
-#        run: |
-#          sudo -i
-##          echo "$PRIVATE_KEY" > temp_key.pem
-##          chmod 600 temp_key.pem
-##          ssh -o StrictHostKeyChecking=no -i temp_key.pem ${EC2_URL} << EOF
-#            if [ ! -d "spring-chatting-server" ]; then
-#              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
-#            fi
-#            cd spring-chatting-server
-#            git checkout main
-#            git reset --hard
-#            git pull
-#            cd k8s/onlychat/deployment
-#            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
-#            cd ..
-#            kubectl apply redis.yaml
-#            kubectl apply -f ./volume/
-#            kubectl apply -f ./namespace/
-#            kubectl apply -f ./service/
-#            kubectl apply -f ./deployment/
-#          EOF
-##          rm temp_key.pem

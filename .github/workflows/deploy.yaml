@@ -95,10 +95,9 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: |
-          echo ${{ needs.pushNewTag.outputs.NEW_VERSION }}
-          echo ${needs.pushNewTag.outputs.NEW_VERSION}
-          echo "${{needs.pushNewTag.outputs.NEW_VERSION}}"
-          echo needs.pushNewTag.outputs.NEW_VERSION
+          echo "echo ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
+          echo "echo ${{needs.pushNewTag.outputs.NEW_VERSION}}"
+          echo "echo needs.pushNewTag.outputs.NEW_VERSION"
           chmod +x ./gradlew
 
       - name: Build project and create Dockerfiles

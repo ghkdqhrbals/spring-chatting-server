@@ -127,9 +127,6 @@ jobs:
     needs: [pushImageToEcr,pushNewTag]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Deploy to EC2 Kubernetes Cluster
         uses: appleboy/ssh-action@master
         env:
@@ -150,7 +147,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${ECR_URL} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+            sh write_image_to_deploy.sh $ECR_URL ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
             cd ..
             kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml

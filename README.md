@@ -1,4 +1,4 @@
-![main-workflow](https://github.com/github/docs/actions/workflows/deploy.yml/badge.svg)
+![main-workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 
 * [Purpose of our project](#purpose-of-our-project)
 * [Versions And Skills](#versions-and-skills)

@@ -127,7 +127,10 @@ jobs:
     needs: [pushImageToEcr,pushNewTag]
     runs-on: ubuntu-latest
     steps:
-      - name: SSH Commands
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2 Kubernetes Cluster
         uses: appleboy/ssh-action@master
         env:
           ECR_URL: ${{ env.ECR_URL }}

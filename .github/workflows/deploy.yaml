@@ -59,7 +59,7 @@ jobs:
           
           new_version="$major.$minor.$patch-$short_commit_hash"
           echo "Output [$new_version]"
-          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+#          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
           echo "NEW_VERSION=$new_version"
 
       - name: Create and push new tag to Github

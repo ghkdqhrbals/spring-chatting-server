@@ -12,6 +12,8 @@ jobs:
   pushNewTag:
     name: Push new tag
     runs-on: ubuntu-latest
+    outputs:
+      NEW_VERSION: ${{ steps.increment_version.outputs.NEW_VERSION }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -67,7 +69,7 @@ jobs:
 
   pushImageToEcr:
     needs: pushNewTag
-    name: push image to AWS-ECR
+    name: Push image to AWS-ECR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -123,6 +125,8 @@ jobs:
     name: Deploy to EC2 Kubernetes Cluster
     needs: pushImageToEcr
     runs-on: ubuntu-latest
+    env:
+        NEW_VERSION: ${{ needs.pushNewTag.outputs.NEW_VERSION }}
     steps:
       - name: SSH Commands
         uses: appleboy/ssh-action@master
@@ -135,7 +139,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            whoami
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi
@@ -144,7 +147,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${{ env.ECR_URL }} ap-northeast-2 ${{ env.NEW_VERSION }}
+            sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${NEW_VERSION}
             cd ..
             kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml

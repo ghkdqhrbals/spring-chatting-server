@@ -152,6 +152,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
+            echo "ECR_URL=${ECR_URL}"
+            echo NEW_VERSION=${NEW_VERSION}
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi

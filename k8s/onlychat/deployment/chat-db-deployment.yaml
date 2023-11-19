@@ -22,9 +22,15 @@ spec:
             - name: POSTGRES_DB
               value: chat
             - name: POSTGRES_PASSWORD
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: user-db-password
             - name: POSTGRES_USER
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: user-db-username
           image: postgres:12-alpine
           name: chat-db
           ports:

@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: ecr-token-refresh
 spec:
-  schedule: "*/30 * * * *" # 30분마다 실행하도록 스케줄을 설정합니다.
+  schedule: "*/1 * * * *" # 1분마다 실행하도록 스케줄을 설정합니다.
   jobTemplate:
     spec:
       template:

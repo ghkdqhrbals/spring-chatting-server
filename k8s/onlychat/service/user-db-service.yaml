@@ -6,11 +6,9 @@ metadata:
   name: user-db
 spec:
   ports:
-    - name: http
+    - name: user-db
       protocol: TCP
       port: 5435
       targetPort: 5435
-      nodePort: 30002
-  type: NodePort
   selector:
     app: user-db

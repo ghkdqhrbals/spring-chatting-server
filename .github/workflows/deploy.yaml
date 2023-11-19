@@ -127,10 +127,13 @@ jobs:
     needs: [pushImageToEcr,pushNewTag]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        name: Retrieve the secret and decode it to a file
+
       - name: Deploy to EC2 Kubernetes Cluster
         uses: appleboy/ssh-action@master
         env:
-          ECR_URL: ${{ env.ECR_URL }}
+          ECR_URL: ${{ secrets.ECR_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
@@ -139,6 +142,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
+            echo "ECR_URL=${ECR_URL}"
+            echo "NEW_VERSION=${ECR_URL}"
+            echo "new version will be deployed ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi
@@ -147,7 +153,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh $ECR_URL ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+            sh write_image_to_deploy.sh ${ECR_URL} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
             cd ..
             kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml

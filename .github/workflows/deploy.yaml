@@ -147,8 +147,8 @@ jobs:
           envs: ECR_URL,NEW_VERSION
           script_stop: true
           script: |
-            echo "connect to ECR: ${ ECR_URL }"
-            echo "new version will be deployed ${ NEW_VERSION }"
+            echo "connect to ECR: $ECR_URL"
+            echo "new version will be deployed $NEW_VERSION"
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
             fi
@@ -157,7 +157,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${ ECR_URL } ap-northeast-2 ${ NEW_VERSION }
+            sh write_image_to_deploy.sh $ECR_URL ap-northeast-2 $NEW_VERSION
             cd ..
             kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml

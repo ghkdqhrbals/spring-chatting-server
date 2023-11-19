@@ -159,7 +159,6 @@ jobs:
             kubectl apply -f ./deployment/
 
   pushSlack:
-    needs: DeployToEC2KubernetesCluster
     name: Slack Alert
     runs-on: ubuntu-latest
     steps:

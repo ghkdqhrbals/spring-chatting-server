@@ -123,7 +123,7 @@ jobs:
 
   DeployToEC2KubernetesCluster:
     name: Deploy to EC2 Kubernetes Cluster
-    needs: pushImageToEcr
+    needs: [pushImageToEcr,pushNewTag]
     runs-on: ubuntu-latest
     steps:
       - name: SSH Commands

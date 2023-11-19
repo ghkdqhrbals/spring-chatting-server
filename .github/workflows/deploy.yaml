@@ -59,7 +59,8 @@ jobs:
           fi
           
           new_version="$major.$minor.$patch-$short_commit_hash"
-          echo "Output [$new_version]"
+          echo "Output new_version: [$new_version]"
+          echo "Output ecr_url: [${{ secrets.ECR_URL }}]"
           echo "NEW_VERSION=$new_version" >> $GITHUB_OUTPUT
           echo "ECR_URL=${{ secrets.ECR_URL }}" >> $GITHUB_OUTPUT
 
@@ -141,9 +142,12 @@ jobs:
           host: ${{ secrets.EC2_URL }}
           username: root
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          envs: |
+            ECR_URL=${{ secrets.ECR_URL }}
+            NEW_VERSION=${{ needs.pushNewTag.outputs.NEW_VERSION }}
           script_stop: true
           script: |
-            echo "connect to ECR: ${{ needs.pushNewTag.outputs.ECR_URL }}"
+            echo "connect to ECR: $ECR_URL"
             echo "new version will be deployed ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
             if [ ! -d "spring-chatting-server" ]; then
               git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
@@ -153,7 +157,7 @@ jobs:
             git reset --hard
             git pull
             cd k8s/onlychat/deployment
-            sh write_image_to_deploy.sh ${{ needs.pushNewTag.outputs.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+            sh write_image_to_deploy.sh $ECR_URL ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
             cd ..
             kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml

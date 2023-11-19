@@ -58,6 +58,7 @@ jobs:
           fi
           
           new_version="$major.$minor.$patch-$short_commit_hash"
+          echo "Output [$new_version]"
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
       - name: Create and push new tag to Github
@@ -66,6 +67,7 @@ jobs:
           git config --global user.email 'actions@github.com'
           git tag v${NEW_VERSION}
           git push origin v${NEW_VERSION}
+          
 
   pushImageToEcr:
     needs: pushNewTag
@@ -119,7 +121,8 @@ jobs:
       - name: Tag Push images to ECR
         env:
           ECR_URL: ${{ env.ECR_URL }}
-        run: ./push_to_ecr.sh ${ECR_URL} ${{ env.NEW_VERSION }}
+          NEW_VERSION: ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+        run: ./push_to_ecr.sh ${ECR_URL} ${NEW_VERSION}
 
   DeployToEC2KubernetesCluster:
     name: Deploy to EC2 Kubernetes Cluster

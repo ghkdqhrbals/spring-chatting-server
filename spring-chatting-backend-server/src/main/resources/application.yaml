@@ -30,6 +30,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+  profiles:
+    active: prod
 
 #  main:
 #    allow-bean-definition-overriding: true
@@ -62,6 +64,8 @@ eureka:
 
 management:
   endpoints:
+    prometheus:
+      enabled: true
     web:
       exposure:
         include: health, httpexchanges, beans, busrefresh

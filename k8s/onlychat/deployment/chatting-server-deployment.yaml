@@ -21,11 +21,11 @@ spec:
             - name: SPRING_CLOUD_CONFIG_URI
               value: "http://43.202.52.177:8888"
             - name: kafka_bootstrap
-              value: "http://kafka1-service:9092"
+              value: "http://kafka1-service:8097"
             - name: spring_autoconfigure_exclude
-              value: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+              value: "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration"
             - name: spring_redis_host
-              value: redis.default.svc.cluster.local
+              value: "redis.default.svc.cluster.local"
             - name: spring_redis_port
               value: "6379"
             - name: spring_rabbitmq_host
@@ -39,7 +39,7 @@ spec:
             - name: spring_cloud_discovery_enabled
               value: "false"
             - name: spring_config_activate_on-profile
-              value: prod
+              value: "prod"
             - name: spring_datasource_hikari_maximum-pool-size
               value: "70"
             - name: spring_datasource_hikari_password
@@ -55,7 +55,7 @@ spec:
             - name: spring_datasource_url
               value: jdbc:postgresql://chat-db:5433/chat
             - name: spring_profiles_active
-              value: local
+              value: "prod"
             - name: spring_rabbitmq_listener_direct_auto-startup
               value: "false"
             - name: spring_rabbitmq_listener_simple_auto-startup

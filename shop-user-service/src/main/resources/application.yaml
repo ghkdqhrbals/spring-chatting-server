@@ -51,7 +51,7 @@ spring:
 #    allow-bean-definition-overriding: true
 
 kafka:
-  bootstrap: kafka1:9092
+  bootstrap: kafka1-service:8097
   enabled: true
   broker:
     number: 1

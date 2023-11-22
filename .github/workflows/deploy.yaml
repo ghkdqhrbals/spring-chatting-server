@@ -159,7 +159,6 @@ jobs:
             cd k8s/onlychat/deployment
             sh write_image_to_deploy.sh $ECR_URL ap-northeast-2 $NEW_VERSION
             cd ..
-#            kubectl apply -f ecr-registry-token-refresh.yaml
             kubectl apply -f redis.yaml
             kubectl apply -f ./volume/
             kubectl apply -f ./namespace/

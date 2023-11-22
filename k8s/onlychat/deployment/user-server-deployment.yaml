@@ -19,11 +19,11 @@ spec:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
               value: "1"
             - name: kafka_bootstrap
-              value: http://kafka1-service:8097
+              value: "http://kafka1-service:9092"
             - name: SERVER_PORT
               value: "8010"
             - name: SPRING_CLOUD_CONFIG_URI
-              value: http://43.202.52.177:8888
+              value: "http://43.202.52.177:8888"
             - name: SPRING_MAIN_web-application-type
               value: "reactive"
             - name: spring_rabbitmq_host
@@ -35,7 +35,7 @@ spec:
             - name: spring_rabbitmq_password
               value: "guest"
             - name: eureka_client_service-url_defaultZone
-              value: http://discovery-server-service:8761/eureka
+              value: "http://discovery-server-service:8761/eureka"
             - name: server_undertow_no-request-timeout
               value: "100"
             - name: spring_datasource_hikari_maximum-pool-size

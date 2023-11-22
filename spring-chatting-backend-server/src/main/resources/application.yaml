@@ -32,6 +32,8 @@ spring:
       port: 6379
   profiles:
     active: prod
+  kafka:
+    bootstrap-servers: kafka-broker-1:9092
 
 #  main:
 #    allow-bean-definition-overriding: true

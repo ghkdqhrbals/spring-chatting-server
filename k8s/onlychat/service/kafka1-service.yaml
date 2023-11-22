@@ -6,7 +6,7 @@ metadata:
   name: kafka1-service
 spec:
   ports:
-    - port: 8097
+    - port: 9092
       targetPort: 9092
   selector:
     app: kafka1-service

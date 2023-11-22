@@ -13,15 +13,16 @@ eureka:
 
 management:
   endpoint:
-    livenessState:
+    shutdown:
       enabled: true
-    readinessState:
+    info:
       enabled: true
-    health:
-      probes:
-        enabled: true
   endpoints:
+    enabled-by-default: false
     web:
       exposure:
         include: "*"
-
+        exclude: "env,beans"
+    jmx:
+      exposure:
+        include: "health,info"

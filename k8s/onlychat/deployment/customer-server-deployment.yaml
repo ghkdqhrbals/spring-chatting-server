@@ -22,7 +22,7 @@ spec:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
               value: "1"
             - name: kafka_bootstrap
-              value: "kafka1-service:9092"
+              value: "http://kafka1-service:9092"
             - name: SERVER_PORT
               value: "8020"
             - name: SPRING_CLOUD_CONFIG_URI

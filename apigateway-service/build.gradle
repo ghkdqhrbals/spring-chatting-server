@@ -44,7 +44,8 @@ dependencies {
 
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
-	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-kubernetes-client'
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-kubernetes
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-kubernetes', version: '1.1.10.RELEASE'
 }
 
 dependencyManagement {

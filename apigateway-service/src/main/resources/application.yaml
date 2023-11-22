@@ -9,6 +9,8 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka
 
 spring:
+  main:
+    web-application-type: reactive
   rabbitmq:
     host: 127.0.0.1
     port: 5672

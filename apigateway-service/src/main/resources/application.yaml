@@ -84,3 +84,9 @@ management:
     web:
       exposure:
         include: health, httpexchanges, beans, busrefresh
+  endpoint:
+    health:
+      show-details: always
+  health:
+    probes:
+      enabled: true

@@ -15,7 +15,7 @@ spec:
       imagePullSecrets:
         - name: ecr-cred
       containers:
-        image: main-service_discovery-server:latest
+      - image: main-service_discovery-server:latest
         name: discovery-server
         env:
           - name: spring_rabbitmq_host

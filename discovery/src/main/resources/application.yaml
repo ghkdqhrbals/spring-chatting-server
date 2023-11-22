@@ -10,3 +10,18 @@ eureka:
     # true: ? ??? ??? ????? ??? ???? ??? DHT? ???.
     register-with-eureka: false
     fetch-registry: false
+
+management:
+  endpoint:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

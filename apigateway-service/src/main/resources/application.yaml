@@ -79,11 +79,12 @@ spring:
             - Method=POST, GET, DELETE
           filters:
             - RewritePath=/chat(?<segment>/?.*), $\{segment}
+
 management:
   endpoints:
     web:
       exposure:
-        include: health, httpexchanges, beans, busrefresh
+        include: health, prometheus
   endpoint:
     health:
       show-details: always

@@ -39,7 +39,7 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
 
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config'

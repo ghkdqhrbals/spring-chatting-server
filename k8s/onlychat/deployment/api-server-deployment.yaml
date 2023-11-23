@@ -15,7 +15,9 @@ spec:
       imagePullSecrets:
         - name: ecr-cred
       containers:
-        - env:
+        - image: main-service_api-server:latest
+          name: api-server
+          env:
             - name: SERVER_PORT
               value: "8000"
             - name: SPRING_CLOUD_CONFIG_URI
@@ -32,6 +34,14 @@ spec:
               value: "guest"
             - name: eureka_client_serviceUrl_defaultZone
               value: "http://spring-cloud-kubernetes-discoveryserver/eureka"
-          image: main-service_api-server:latest
-          name: api-server
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8000
+            initialDelaySeconds: 300
+            timeoutSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8000
       restartPolicy: Always

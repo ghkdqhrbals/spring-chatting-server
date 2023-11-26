@@ -21,7 +21,7 @@ spec:
             - name: SPRING_CLOUD_CONFIG_URI
               value: "http://43.202.52.177:8888"
             - name: spring_kafka_bootstrap-servers
-              value: "http://kafka1-service:9092"
+              value: "my-kafka-controller-0.my-kafka-controller-headless.default.svc.cluster.local:9092,my-kafka-controller-1.my-kafka-controller-headless.default.svc.cluster.local:9092,my-kafka-controller-2.my-kafka-controller-headless.default.svc.cluster.local:9092"
             - name: spring_autoconfigure_exclude
               value: "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration"
             - name: spring_redis_host

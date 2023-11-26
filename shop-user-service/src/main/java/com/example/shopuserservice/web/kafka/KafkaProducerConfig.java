@@ -21,7 +21,7 @@ import java.util.UUID;
 @EnableKafka
 public class KafkaProducerConfig {
 
-    @Value("${kafka.bootstrap}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
     private final String batchSize = Integer.toString(32*1024); // 32KB
     private final Integer linger = 50; // 50ms

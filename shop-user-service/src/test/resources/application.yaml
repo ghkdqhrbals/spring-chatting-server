@@ -63,10 +63,11 @@ server:
 #        MAX_QUEUED_READ_BUFFERS: 10
 #        MAX_BUFFERED_REQUEST_SIZE: 16384
   port: 8010
+  kafka:
+    bootstrap-servers: kafka1:9092
 
 kafka:
   enabled: false
-  bootstrap: http://localhost:8099,http://localhost:8098,http://localhost:8097
 
 token:
   expiration_time: 300000 # 30 seconds

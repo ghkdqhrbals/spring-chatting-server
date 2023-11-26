@@ -3,7 +3,7 @@
 inputValue="$1"
 
 # 기본값 설정
-defaultValue="0.0.1"
+defaultValue=""
 
 # if inputValue is empty, set the default value
 if [ -z "$inputValue" ]; then

@@ -20,7 +20,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 @Configuration
 @Profile("prod")
 public class KafkaConsumerConfig {
-    @Value("${kafka.bootstrap}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
 
 
@@ -35,15 +35,6 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String> userRollbackKafkaListenerContainerFactory() {
         return getContainerFactory("chat",String.class);
     }
-
-    /**
-     * 유틸 목록
-     * --Methods--
-     * getContainerFactory()
-     * getKafkaConsumerFactory()
-     * setConfig()
-     * setDeserializer()
-     */
 
     private <T> ConcurrentKafkaListenerContainerFactory<String, T> getContainerFactory(String groupId, Class<T> classType) {
         ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -69,9 +60,6 @@ public class KafkaConsumerConfig {
 
     private <T> JsonDeserializer<T> setDeserializer(Class<T> classType) {
         JsonDeserializer<T> deserializer = new JsonDeserializer<>(classType, false);
-//        deserializer.setRemoveTypeHeaders(true);
-//        deserializer.addTrustedPackages("*");
-//        deserializer.setUseTypeMapperForKey(true);
         return deserializer;
     }
 }

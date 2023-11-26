@@ -29,6 +29,8 @@ spring:
         jdbc:
           time_zone: UTC
           batch_size: 50
+  kafka:
+    bootstrap-servers: kafka1:9092
 
 kafka:
   broker:

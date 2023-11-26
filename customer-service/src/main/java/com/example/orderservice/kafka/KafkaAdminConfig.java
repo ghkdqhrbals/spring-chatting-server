@@ -12,7 +12,7 @@ import java.util.Map;
 @Configuration
 public class KafkaAdminConfig {
 
-    @Value("${kafka.bootstrap}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
 
     @Bean

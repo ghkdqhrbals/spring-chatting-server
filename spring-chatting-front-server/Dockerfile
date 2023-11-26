@@ -8,4 +8,4 @@ COPY /build/libs/spring-chatting-front-server.jar /app/app.jar
 COPY keystore.p12 /app/keystore.p12
 ENTRYPOINT java -jar app.jar
 
-LABEL version="unspecified"
+LABEL version=""

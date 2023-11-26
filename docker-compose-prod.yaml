@@ -101,7 +101,7 @@ services:
     restart: "no"
     environment:
       KAFKA_BROKERCONNECT: "kafka1:9092"
-      JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+#      JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     ports:
       - 9010:9000
     depends_on:
@@ -137,6 +137,7 @@ services:
       SPRING_MAIN_web-application-type: reactive
       SPRING_RABBITMQ_HOST: "43.202.52.177"
       SPRING_CLOUD_CONFIG_URI: http://43.202.52.177:8888
+      spring_kafka_bootstrap-servers: kafka1:9092
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka
       spring_datasource_hikari_maximum-pool-size: 30
       spring_datasource_url: jdbc:postgresql://user-db:5435/user
@@ -170,6 +171,7 @@ services:
       spring_datasource_url: jdbc:postgresql://chat-db:5433/chat
       spring_datasource_hikari_username: postgres
       spring_datasource_hikari_password: password
+      spring_kafka_bootstrap-servers: kafka1:9092
       SPRING_DATA_REDIS_HOST: user-redis
       SPRING_DATA_REDIS_PORT: 6379
       SERVER_PORT: 8030
@@ -191,6 +193,7 @@ services:
       - "8020:8020"
     environment:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      spring_kafka_bootstrap-servers: kafka1:9092
       SPRING_RABBITMQ_HOST: "43.202.52.177"
       SPRING_CLOUD_CONFIG_URI: http://43.202.52.177:8888
       eureka_client_service-url_defaultZone: http://discovery-server:8761/eureka

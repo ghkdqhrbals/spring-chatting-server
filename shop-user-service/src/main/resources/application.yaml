@@ -48,10 +48,12 @@ spring:
           max-active: 10
       host: 127.0.0.1
       port: 6379
+  kafka:
+    bootstrap-servers: kafka1:9092
 #    allow-bean-definition-overriding: true
 
+
 kafka:
-  bootstrap: kafka1-service:8097
   enabled: true
   broker:
     number: 1

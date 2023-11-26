@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -19,9 +20,10 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
  * setDeserializer()
  */
 @Configuration
+@ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 public class KafkaConsumerManager {
 
-    @Value("${kafka.bootstrap}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
 
     @Bean
@@ -53,9 +55,6 @@ public class KafkaConsumerManager {
 
     public <T> JsonDeserializer<T> setDeserializer(Class<T> classType) {
         JsonDeserializer<T> deserializer = new JsonDeserializer<>(classType, false);
-//        deserializer.setRemoveTypeHeaders(true);
-//        deserializer.addTrustedPackages("*");
-//        deserializer.setUseTypeMapperForKey(true);
         return deserializer;
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 @Configuration
 @ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 public class KafkaAdminConfig {
-    @Value("${kafka.bootstrap}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
     @Bean
     public KafkaAdmin kafkaAdmin() {

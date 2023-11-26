@@ -205,31 +205,6 @@ public class UserServiceTest {
         friendService.save("a","b");
     }
 
-//    @Test
-//    @DisplayName("친구/생성 시 이미 내가 상대방과 친구")
-//    public void c() {
-//        //pre
-//        User user_a = new User("a","a","");
-//        User user_b = new User("b","b","");
-//
-//        //mocking
-//        mockUserRepositoryFindById(Arrays.asList(user_a,user_b));
-//        when(friendRepository.findByUserIdAndFriendId("a","b"))
-//                .thenReturn(new Friend(user_a,"b"));
-//        when(friendRepository.findByUserIdAndFriendId("b","a"))
-//                .thenReturn(null);
-//
-//        //logic
-//        try{
-//            friendService.save("a","b");
-//        }catch(CustomException e){
-//            logErrorInformation(e);
-//
-//            //validate
-//            assertThat(e.getErrorCode()).isEqualTo(DUPLICATE_FRIEND);
-//        }
-//    }
-
     @Test
     @DisplayName("친구/생성 시 친구유저 미발견")
     public void d() {

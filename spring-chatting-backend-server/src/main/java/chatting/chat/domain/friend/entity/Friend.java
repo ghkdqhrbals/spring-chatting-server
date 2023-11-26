@@ -3,6 +3,7 @@ package chatting.chat.domain.friend.entity;
 
 import chatting.chat.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +30,7 @@ public class Friend {
 
     public Friend() {}
 
+    @Builder
     public Friend(User user, String friendId) {
         this.user = user;
         this.friendId = friendId;

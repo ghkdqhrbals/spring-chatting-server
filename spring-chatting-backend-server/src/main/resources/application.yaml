@@ -33,7 +33,7 @@ spring:
   profiles:
     active: prod
   kafka:
-    bootstrap-servers: kafka-broker-1:9092
+    bootstrap-servers: kafka1:9092
 
 #  main:
 #    allow-bean-definition-overriding: true

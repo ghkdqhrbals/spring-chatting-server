@@ -38,23 +38,23 @@ import static com.example.shopuserservice.web.security.JwtTokenProvider.getUserI
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserCommandQueryService userCommandQueryService;
-    private final LoginService loginService;
     private final UserReadService userReadService;
-    private final KafkaTemplate<String, Object> kafkaProducerTemplate;
     private final Environment env;
 
     @GetMapping("/")
-    public CompletableFuture<String> welcome(ServletRequest request){
-        return CompletableFuture.completedFuture("Access auth-controller port "+ String.valueOf(request.getRemotePort()));
+    public CompletableFuture<String> welcome(ServletRequest request) {
+        return CompletableFuture.completedFuture(
+            "Access auth-controller port " + String.valueOf(request.getRemotePort()));
     }
 
     @GetMapping("/health-check")
-    public Mono<String> hello(ServerHttpRequest request){
-        return Mono.just("Access auth-controller port "+
-                String.valueOf(request.getRemoteAddress().getPort()+","+
-                        env.getProperty("token.expiration_time")+","+
-                        env.getProperty("token.secret")));
+    public Mono<String> hello(ServerHttpRequest request) {
+        return Mono.just("Access auth-controller port " +
+            String.valueOf(request.getRemoteAddress().getPort() + "," +
+                env.getProperty("token.expiration_time") + "," +
+                env.getProperty("token.secret")));
     }
 
     /**
@@ -62,21 +62,21 @@ public class UserController {
      */
     // 유저 조회
     @GetMapping("/user")
-    public CompletableFuture<ResponseEntity<ResponseUser>> findUser(){
+    public CompletableFuture<ResponseEntity<ResponseUser>> findUser() {
         String userId = getUserIdFromSpringSecurityContext();
-        return userCommandQueryService.getUserDetailsByUserId(userId).thenApply((userDto -> {
-            List<UserTransactions> userTransactions = null;
-            try {
-                userReadService.getRecentUserAddTransaction(userId).get()
-                        .forEach(u ->userTransactions.add(u));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(userTransactions);
-            ResponseUser result = new ModelMapper().map(userDto, ResponseUser.class);
-            result.setUserTransaction(userTransactions);
-            return ResponseEntity.ok(result);
-        }));
+        return userCommandQueryService
+            .getUserDetailsByUserId(userId).thenApply((userDto -> {
+                List<UserTransactions> userTransactions = null;
+                try {
+                    userReadService.getRecentUserAddTransaction(userId).get()
+                        .forEach(u -> userTransactions.add(u));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                ResponseUser result = new ModelMapper().map(userDto, ResponseUser.class);
+                result.setUserTransaction(userTransactions);
+                return ResponseEntity.ok(result);
+            }));
     }
 
     // add user with sse
@@ -89,24 +89,25 @@ public class UserController {
         // add sink for sse
         Reactor.addSink(req.getUserId());
         UserEvent userEvent = new UserEvent(
-                eventId,
-                UserStatus.USER_INSERT_APPEND,
-                req.getUserId(),
-                req.getUserName()
+            eventId,
+            UserStatus.USER_INSERT_APPEND,
+            req.getUserId(),
+            req.getUserName()
         );
 
         // event publishing to kafka and event handling
         userCommandQueryService
-                .newUserEvent(req, eventId, userEvent)
-                .exceptionally(e -> {
-                    log.trace("exception is occurred: "+ e.getMessage());
-                    if (e.getCause() instanceof CustomException) {
-                        Reactor.emitErrorAndComplete(req.getUserId(), e.getCause());
-                    } else {
-                        Reactor.emitErrorAndComplete(req.getUserId(), new CustomException(ErrorCode.SERVER_ERROR));
-                    }
-                    return null;
-                });
+            .newUserEvent(req, eventId, userEvent)
+            .exceptionally(e -> {
+                log.trace("exception is occurred: " + e.getMessage());
+                if (e.getCause() instanceof CustomException) {
+                    Reactor.emitErrorAndComplete(req.getUserId(), e.getCause());
+                } else {
+                    Reactor.emitErrorAndComplete(req.getUserId(),
+                        new CustomException(ErrorCode.SERVER_ERROR));
+                }
+                return null;
+            });
         return Reactor.getSink(req.getUserId()).log();
     }
 
@@ -139,7 +140,6 @@ public class UserController {
 //            return ResponseEntity.internalServerError().body("delete method error is occurred");
 //        });
 //    }
-
 
     // 유저 삭제
 //    @DeleteMapping("/user")
@@ -178,13 +178,14 @@ public class UserController {
      */
     // 유저 업데이트
     @PutMapping("/user")
-    public CompletableFuture<ResponseEntity> updateUser(WebSession session, @RequestParam(name = "userPw") String userPw) {
+    public CompletableFuture<ResponseEntity> updateUser(WebSession session,
+        @RequestParam(name = "userPw") String userPw) {
         String userId = session.getAttribute("userId");
-        return userCommandQueryService.changePassword(userId, userPw).thenApply((s)->{
+        return userCommandQueryService.changePassword(userId, userPw).thenApply((s) -> {
             return ResponseEntity.ok("success");
-        }).exceptionally((e)->{
+        }).exceptionally((e) -> {
             return ResponseEntity.badRequest().body("fail");
-        }).thenApply(res->{
+        }).thenApply(res -> {
             return res;
         });
     }

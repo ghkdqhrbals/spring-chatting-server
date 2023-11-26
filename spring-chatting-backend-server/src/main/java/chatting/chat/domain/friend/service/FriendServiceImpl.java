@@ -1,29 +1,20 @@
 package chatting.chat.domain.friend.service;
 
 import static com.example.commondto.error.ErrorCode.*;
-import com.example.commondto.error.CustomException;
-import com.example.commondto.error.ErrorCode;
-import com.example.commondto.error.ErrorResponse;
-import com.example.commondto.error.AppException;
 
+import com.example.commondto.error.CustomException;
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.friend.repository.FriendRepository;
 import chatting.chat.domain.user.repository.UserRepository;
 
 import com.example.commondto.dto.friend.FriendResponse;
-import com.example.commondto.dto.friend.FriendResponse.FriendDTO;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-
-
 
 @Slf4j
 @Service
@@ -42,58 +33,37 @@ public class FriendServiceImpl implements FriendService {
     @Override
     @Transactional
     public Friend save(String userId, String friendId) {
-        // validation
-        log.trace("user id : {}", userId);
-        Optional<User> findUser = userRepository.findById(userId);
-        Optional<User> findUserFriend = userRepository.findById(friendId);
-
-        if (findUser.isEmpty() || findUserFriend.isEmpty()) {
-            log.trace("empty user");
-            throw new CustomException(CANNOT_FIND_USER);
-        }
-        log.trace("user exist!");
-
-        Friend isFriend1 = friendRepository.findByUserIdAndFriendId(userId, friendId);
-        Friend isFriend2 = friendRepository.findByUserIdAndFriendId(friendId, userId);
-
         if (userId.equals(friendId)) {
-            log.trace("cannot add self!");
             throw new CustomException(CANNOT_ADD_SELF);
         }
-        log.trace("friend with me? : {}", isFriend1 != null ? "true" : "false");
-        log.trace("me with friend? : {}", isFriend2 != null ? "true" : "false");
 
-        // 이미 나와 친구임
-        if (isFriend1 != null) {
-            log.trace("already friend!");
+        User findUser = getUserById(userId);
+        User findFriend = getUserById(friendId);
+
+        if (areFriends(userId, friendId)) {
             throw new CustomException(ALREADY_FRIEND);
         }
-        log.trace("not friend!");
 
-        // logic
-        Friend friend1 = new Friend(findUser.get(), findUserFriend.get().getUserId());
-        Friend friend2 = new Friend(findUserFriend.get(), findUser.get().getUserId());
-        log.trace("friend create!");
+        Friend myFriend = new Friend(findUser, findFriend.getUserId());
+        Friend hisFriend = new Friend(findFriend, findUser.getUserId());
 
-        Friend save = friendRepository.save(friend1);
-        log.trace("now friend!");
+        Friend savedFriend = friendRepository.save(myFriend);
 
-        if (isFriend2 == null) {
-            friendRepository.save(friend2); // 상대방또한 나를 친구추가
-            log.trace("friend add me!");
+        if (!areFriends(friendId, userId)) {
+            friendRepository.save(hisFriend);
         }
-        return save;
+
+        return savedFriend;
     }
 
     @Override
     @Transactional(readOnly = true)
     public FriendResponse.FriendDTO findMyFriend(String userId, String friendId) {
         Friend findFriends = friendRepository.findByUserIdAndFriendId(userId, friendId);
-        if (findFriends==null){
-            new CustomException(CANNOT_FIND_USER);
+        if (findFriends == null) {
+            throw new CustomException(CANNOT_FIND_USER);
         }
-        User user = userRepository.findById(friendId)
-            .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
+        User user = getUserById(friendId);
 
         return FriendResponse.FriendDTO.builder()
             .friendId(user.getUserId())
@@ -103,13 +73,26 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
+    @Transactional
     public void removeFriend(String userId, String friendId) {
         Friend findFriend = friendRepository.findByUserIdAndFriendId(userId, friendId);
-        friendRepository.delete(findFriend);
+        if (findFriend != null) {
+            friendRepository.delete(findFriend);
+        }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Friend> findAllByUserId(String userId) {
         return friendRepository.findAllByUserId(userId);
+    }
+
+    private User getUserById(String userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
+    }
+
+    private boolean areFriends(String userId, String friendId) {
+        return friendRepository.findByUserIdAndFriendId(userId, friendId) != null;
     }
 }

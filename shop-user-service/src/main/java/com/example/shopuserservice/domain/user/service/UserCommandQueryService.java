@@ -26,7 +26,6 @@ public interface UserCommandQueryService {
     CompletableFuture<UserTransactions> updateStatus(UserResponseEvent event);
     DeferredResult<ResponseEntity<?>> login(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
     DeferredResult<ResponseEntity<?>> logout(String userId, String userPw, DeferredResult<ResponseEntity<?>> dr);
-//    CompletableFuture<Boolean> removeUser(UUID eventId, String userId);
     void updateUser(User user);
     CompletableFuture<UserDto> getUserDetailsByUserId(String username);
     CompletableFuture<String> changePassword(String userId, String userPw);

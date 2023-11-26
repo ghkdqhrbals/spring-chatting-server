@@ -15,8 +15,12 @@ import org.springframework.kafka.core.KafkaAdmin;
 @Configuration
 @Profile("prod")
 public class KafkaTopicConfig {
-    @Autowired
     private KafkaAdmin kafkaAdmin;
+
+    @Autowired
+    public KafkaTopicConfig(KafkaAdmin kafkaAdmin) {
+        this.kafkaAdmin = kafkaAdmin;
+    }
 
     @Value("${kafka.broker.number}")
     private int brokerNum;

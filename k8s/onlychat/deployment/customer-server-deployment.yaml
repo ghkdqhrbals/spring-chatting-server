@@ -22,7 +22,7 @@ spec:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
               value: "1"
             - name: spring_kafka_bootstrap-servers
-              value: "my-kafka-controller-0.my-kafka-controller-headless.default.svc.cluster.local:9092,my-kafka-controller-1.my-kafka-controller-headless.default.svc.cluster.local:9092,my-kafka-controller-2.my-kafka-controller-headless.default.svc.cluster.local:9092"
+              value: "kafka-service:9092"
             - name: SERVER_PORT
               value: "8020"
             - name: SPRING_CLOUD_CONFIG_URI

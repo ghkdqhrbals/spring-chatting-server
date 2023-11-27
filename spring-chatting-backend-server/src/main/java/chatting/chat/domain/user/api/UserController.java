@@ -34,7 +34,6 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Save user")
     public ResponseEntity<?> addUser(@RequestBody RequestUser req) {
-        log.trace(req.toString());
         return ResponseEntity.ok(userService.save(req.getUserId(), req.getUserName(), ""));
     }
 

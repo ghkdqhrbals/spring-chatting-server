@@ -49,6 +49,9 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+	implementation 'org.testcontainers:testcontainers:1.17.2'
+	implementation 'org.testcontainers:junit-jupiter:1.17.2'
+	testImplementation 'org.testcontainers:postgresql:1.14.3'
 
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '4.0.0'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.0.0'

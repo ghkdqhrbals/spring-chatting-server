@@ -58,4 +58,11 @@ spec:
               value: "6379"
           image: main-service_user-server:latest
           name: user-server
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "256Mi"
+              cpu: "1000m"
       restartPolicy: Always

@@ -58,16 +58,4 @@ spec:
               value: "6379"
           image: main-service_user-server:latest
           name: user-server
-          readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 20
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 20
       restartPolicy: Always

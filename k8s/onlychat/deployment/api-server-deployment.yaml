@@ -34,14 +34,4 @@ spec:
               value: "guest"
             - name: eureka_client_service-url_defaultZone
               value: http://discovery-server-service:8761/eureka
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8000
-            initialDelaySeconds: 300
-            timeoutSeconds: 20
-          readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 8000
       restartPolicy: Always

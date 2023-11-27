@@ -16,7 +16,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @Slf4j
-@EnableKafka
 @Configuration
 @Profile("prod")
 public class KafkaConsumerConfig {

@@ -18,7 +18,6 @@ import java.util.UUID;
 
 @Configuration
 @ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
-@EnableKafka
 public class KafkaProducerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")

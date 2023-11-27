@@ -57,9 +57,9 @@ dependencies {
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.0.0'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
-	implementation('io.opentelemetry:opentelemetry-api:1.22.0') {
-		force = true
-	}
+//	implementation('io.opentelemetry:opentelemetry-api:1.22.0') {
+//		force = true
+//	}
 	implementation 'org.springframework.boot:spring-boot-configuration-processor';
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'com.google.guava:guava:31.1-jre'
@@ -111,7 +111,7 @@ task generateDockerfile {
 			println "Latest Path: \${projectPath}${latestJarFile.absolutePath.replace(project.projectDir.absolutePath, '')}"
 			def dockerfileContent =
 """
-FROM openjdk:17-alpine
+FROM amazoncorretto:17-alpine3.16-jdk
 
 WORKDIR /${group}
 

@@ -36,6 +36,8 @@ spec:
               value: "guest"
             - name: spring_rabbitmq_password
               value: "guest"
+            - name: eureka_client_service-url_defaultZone
+              value: http://discovery-server-service:8761/eureka
             - name: spring_cloud_discovery_enabled
               value: "false"
             - name: spring_config_activate_on-profile

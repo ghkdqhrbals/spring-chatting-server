@@ -35,7 +35,7 @@ spec:
             - name: spring_rabbitmq_password
               value: "guest"
             - name: eureka_client_service-url_defaultZone
-              value: "http://discovery-server-service:8761/eureka"
+              value: http://discovery-server-service:8761/eureka
             - name: server_undertow_no-request-timeout
               value: "100"
             - name: spring_datasource_hikari_maximum-pool-size

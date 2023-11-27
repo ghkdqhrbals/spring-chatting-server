@@ -81,7 +81,7 @@ task generateDockerfile {
 			println "Latest Path: \${projectPath}${latestJarFile.absolutePath.replace(project.projectDir.absolutePath, '')}"
 			def dockerfileContent =
 					"""
-FROM openjdk:17-alpine
+FROM amazoncorretto:17-alpine3.16-jdk
 
 WORKDIR /${group}
 

@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@EnableKafka
 @Profile("prod")
 public class KafkaProducerConfig {
 

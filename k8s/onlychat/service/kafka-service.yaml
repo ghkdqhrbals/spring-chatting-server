@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: kafka1-service
-  name: kafka1-service
+    app: kafka-service
+  name: kafka-service
 spec:
   ports:
     - port: 9092
       targetPort: 9092
   selector:
-    app: kafka1-service
+    app: kafka-service

@@ -15,6 +15,7 @@ import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.web.kafka.dto.ChatRoomDTO;
 import chatting.chat.web.kafka.dto.*;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.commondto.error.ErrorCode.*;
+
 import com.example.commondto.error.CustomException;
 import com.example.commondto.error.ErrorCode;
 import com.example.commondto.error.ErrorResponse;
@@ -35,6 +37,7 @@ import com.example.commondto.error.AppException;
 @Slf4j
 @Service
 @Transactional
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -42,24 +45,10 @@ public class UserServiceImpl implements UserService {
     private final ParticipantRepository participantRepository;
     private final FriendRepository friendRepository;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoomRepository roomRepository,
-        ParticipantRepository participantRepository, FriendRepository friendRepository) {
-        this.userRepository = userRepository;
-        this.roomRepository = roomRepository;
-        this.participantRepository = participantRepository;
-        this.friendRepository = friendRepository;
-    }
-
-    /**
-     * ------ public methods -------
-     */
-
-    // 유저 검색
     @Override
     @Transactional(readOnly = true)
     public User findById(String userId) {
-        return getUser(userId);
+        return userRepository.findById(userId).orElseThrow(()-> new CustomException(CANNOT_FIND_USER));
     }
 
     @Override
@@ -83,21 +72,19 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     // 유저 저장
     @Override
-    @Transactional
     public User save(String userId, String userName, String userStatus) {
-        throwErrorWhenUserFind(userId);
-        User savedUser = userRepository.save(createUser(userId, userName, userStatus));
-        return savedUser;
+        userRepository.findByUserId(userId).ifPresent(user -> {
+            throw new CustomException(DUPLICATE_RESOURCE);
+        });
+        return userRepository.save(createUser(userId, userName, userStatus));
     }
 
     // 유저 상태메세지 업데이트
     @Override
-    @Transactional
     public void updateUserStatus(RequestChangeUserStatusDTO req) {
-        User findUser = getUser(req.getUserId());
+        User findUser = userRepository.findById(req.getUserId()).orElseThrow(()-> new CustomException(CANNOT_FIND_USER));
         findUser.setUserStatus(req.getStatus());
     }
 
@@ -107,7 +94,6 @@ public class UserServiceImpl implements UserService {
         for (Friend f : findFriends) {
             friendRepository.deleteByUserId(f.getFriendId());
         }
-
         userRepository.deleteById(userId);
     }
 
@@ -115,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
 
-        User findUser = getUser(UserContext.getUserId());
+        User findUser = userRepository.findByUserId(UserContext.getUserId()).orElseThrow(()->new CustomException(CANNOT_FIND_USER));
 
         // 새로운 채팅방 생성
         Room room = roomRepository.save(new Room(ZonedDateTime.now(), ZonedDateTime.now()));
@@ -176,18 +162,7 @@ public class UserServiceImpl implements UserService {
      */
 
     private static User createUser(String userId, String userName, String userStatus) {
-        User user = new User();
-        user.setUserId(userId);
-        user.setUserStatus(userStatus);
-        user.setUserName(userName);
-        return user;
-    }
-
-    public void throwErrorWhenUserFind(String userId) throws CustomException {
-        Optional<User> findUser = userRepository.findById(userId);
-        if (findUser.isPresent()) {
-            throw new CustomException(DUPLICATE_RESOURCE);
-        }
+        return User.builder().userStatus(userStatus).userName(userName).userId(userId).build();
     }
 
     public void throwErrorWhenUserNotFind(String userId) throws CustomException {
@@ -206,11 +181,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getUser(String userId) throws CustomException {
-        Optional<User> findUser = userRepository.findById(userId);
-        if (!findUser.isPresent()) {
-            throw new CustomException(CANNOT_FIND_USER);
-        }
-        return findUser.get();
+        return userRepository.findById(userId).orElseThrow(()-> new CustomException(CANNOT_FIND_USER));
     }
 
     private void isFriend(User findUser, String userId) throws CustomException {

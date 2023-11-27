@@ -4,7 +4,10 @@ import chatting.chat.domain.chat.entity.Chatting;
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.participant.entity.Participant;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -14,7 +17,9 @@ import java.util.List;
 @Table(name = "USER_CHAT_TABLE")
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+    @Builder
     public User(String userId, String userName, String userStatus) {
         this.userId = userId;
         this.userName = userName;
@@ -37,7 +42,4 @@ public class User {
     @OneToMany(mappedBy = "sendUser", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Chatting> chattings = new ArrayList<>();
 
-    public User() {
-
-    }
 }

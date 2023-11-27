@@ -2,6 +2,7 @@ package chatting.chat.domain.user.repository;
 
 
 import chatting.chat.domain.user.entity.User;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,9 +14,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     // The method "save" always returns you the same object you are going to save.
 
-    @Nullable
+
     @Query("select u from User u where u.userId = :userId")
-    User findByUserId(@Param("userId") String userId);
+    Optional<User> findByUserId(@Param("userId") String userId);
 
     List<User> findAll();
 

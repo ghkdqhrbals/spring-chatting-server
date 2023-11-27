@@ -32,8 +32,8 @@ spec:
               value: "guest"
             - name: spring_rabbitmq_password
               value: "guest"
-            - name: eureka_client_serviceUrl_defaultZone
-              value: "http://spring-cloud-kubernetes-discoveryserver/eureka"
+            - name: eureka_client_service-url_defaultZone
+              value: http://discovery-server-service:8761/eureka
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness

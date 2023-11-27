@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: discovery-server-deployment
+  name: discovery-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discovery-server-service
+  template:
+    metadata:
+      labels:
+        app: discovery-server-service
+    spec:
+      imagePullSecrets:
+        - name: ecr-cred
+      containers:
+        - image: main-service_discovery-server:latest
+          name: discovery-server
+      restartPolicy: Always

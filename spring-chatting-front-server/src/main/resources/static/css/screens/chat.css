@@ -199,7 +199,7 @@
 .reply .reply__colunm:first-child,
 .reply .fa-face-smile,
 .reply button{
-    transition:opacity 0.3s ease-in-out;
+    /*transition:opacity 0.3s ease-in-out;*/
 
 }
 
@@ -213,11 +213,11 @@
 
 .reply:focus-within input {
     width: 90vw;
-    will-change: auto;
-    transform: translateX(-30px) translateY(-50px);
+    /*will-change: auto;*/
+    /*transform: translateX(-30px) translateY(-50px);*/
 }
 
 .reply:focus-within {
-    transform: translateY(50px) ;
+    /*transform: translateY(50px) ;*/
     
 }

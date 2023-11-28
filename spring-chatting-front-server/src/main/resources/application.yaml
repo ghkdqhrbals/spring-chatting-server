@@ -18,7 +18,7 @@ logging:
 # backend endpoint
 backend:
   api:
-    gateway: http://127.0.0.1:8000
+    gateway: api-server-service:8000
 
   # cookie
 server:

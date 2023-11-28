@@ -19,7 +19,7 @@ spec:
             - name: SERVER_PORT
               value: "8000"
             - name: backend_api_gateway
-              value: http://chatting-server-service:8030
+              value: http://api-server-service:8000
             - name: spring_profiles_active
               value: local
           image: main-service_front-server:latest

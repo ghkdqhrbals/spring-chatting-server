@@ -68,11 +68,4 @@ spec:
               value: v1
           image: main-service_chatting-server:latest
           name: chatting-server
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "200m"
-            limits:
-              memory: "256Mi"
-              cpu: "500m"
       restartPolicy: Always

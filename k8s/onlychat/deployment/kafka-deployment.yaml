@@ -28,11 +28,4 @@ spec:
               value: zookeeper-service:2181
           image: confluentinc/cp-kafka:7.2.1
           name: kafka
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "300m"
-            limits:
-              memory: "256Mi"
-              cpu: "1000m"
       restartPolicy: Always

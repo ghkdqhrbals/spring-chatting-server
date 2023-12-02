@@ -8,16 +8,8 @@ spec:
   ports:
     - port: 80
       targetPort: 8000
-  type: ClusterIP
   selector:
     app: front-server-service
----
-apiVersion: networking.k8s.io/v1
-kind: IngressClass
-metadata:
-  name: nginx
-spec:
-  controller: k8s.io/ingress-nginx
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -41,4 +33,4 @@ spec:
   tls:
     - hosts:
         - litcodev.com
-      secretName: litcodev-api.cert
+      secretName: litcodev.cert

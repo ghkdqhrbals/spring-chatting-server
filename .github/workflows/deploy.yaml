@@ -148,7 +148,7 @@ jobs:
         run: |
           echo "connect to ECR: ${{ secrets.ECR_URL }}"
           echo "new version will be deployed ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
-          sh /k8s/onlychat/deployment/write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+          sh ./k8s/onlychat/deployment/write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           kubectl apply -f ./k8s/onlychat/eks/
           kubectl apply -f /k8s/onlychat/redis.yaml
           kubectl apply -f ./k8s/onlychat/volume/

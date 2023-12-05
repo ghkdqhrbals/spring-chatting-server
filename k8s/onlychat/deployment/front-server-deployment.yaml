@@ -17,11 +17,11 @@ spec:
       containers:
         - env:
             - name: SERVER_PORT
-              value: "8000"
+              value: "8080"
             - name: backend_api_gateway
               value: http://api-server-service:8000
             - name: spring_profiles_active
               value: local
           image: main-service_front-server:latest
-          name: front-server
+          name: front-server-service
       restartPolicy: Always

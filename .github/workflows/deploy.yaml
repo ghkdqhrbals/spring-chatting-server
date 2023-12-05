@@ -12,6 +12,8 @@ jobs:
   pushNewTag:
     name: Push new tag
     runs-on: ubuntu-latest
+    env:
+      PR_TITLE: ${{ github.event.pull_request.title }}
     outputs:
       NEW_VERSION: ${{ steps.increment_version.outputs.NEW_VERSION }}
       ECR_URL: ${{ steps.increment_version.outputs.ECR_URL }}
@@ -44,15 +46,14 @@ jobs:
           patch=${version_parts[2]}
           patch=$(echo $patch | cut -d'-' -f1)
           
-          pr_title="${{ github.event.pull_request.title }}"
-          echo "Pull-Request title: $pr_title"
+          echo The Title of your PR is $PR_TITLE
           short_commit_hash=$(git rev-parse --short HEAD)
           
-          if [[ $pr_title == *"[major]"* ]]; then
+          if [[ $PR_TITLE == *"[major]"* ]]; then
             major=$(( major + 1 ))
             minor=0
             patch=0
-          elif [[ $pr_title == *"[minor]"* ]]; then
+          elif [[ $PR_TITLE == *"[minor]"* ]]; then
             minor=$(( minor + 1 ))
             patch=0
           else
@@ -148,7 +149,7 @@ jobs:
         run: |
           echo "connect to ECR: ${{ secrets.ECR_URL }}"
           echo "new version will be deployed ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
-          sh /k8s/onlychat/deployment/write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+          sh ./k8s/onlychat/deployment/write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           kubectl apply -f ./k8s/onlychat/eks/
           kubectl apply -f /k8s/onlychat/redis.yaml
           kubectl apply -f ./k8s/onlychat/volume/

@@ -10,4 +10,4 @@ spec:
   persistentVolumeReclaimPolicy: Retain # Reclaim 정책 (Delete, Retain, Recycle 중 선택)
   nfs:
     path: /nfs_shared/pgdata-chat # NFS 서버의 공유 경로
-    server: 172.31.15.86
+    server: 172.31.8.39 # private EC2 NFS server IP

@@ -160,8 +160,6 @@ jobs:
           sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           cd ..
           kubectl apply -f eks/aws-auth.yaml
-          kubectl apply -f eks/issuer.yaml
-          kubectl apply -f eks/ingress.yaml
           kubectl apply -f redis.yaml
           kubectl apply -f ./volume/
           kubectl apply -f ./namespace/

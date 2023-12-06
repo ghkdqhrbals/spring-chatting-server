@@ -12,8 +12,6 @@ jobs:
   pushNewTag:
     name: Push new tag
     runs-on: ubuntu-latest
-    env:
-      PR_TITLE: ${{ github.event.pull_request.title }}
     outputs:
       NEW_VERSION: ${{ steps.increment_version.outputs.NEW_VERSION }}
       ECR_URL: ${{ steps.increment_version.outputs.ECR_URL }}
@@ -34,6 +32,8 @@ jobs:
       # PR title contains "[minor]" -> 5.0.1 -> 5.1.0
       # PR title contains "[major]" -> 5.0.1 -> 6.0.0
       - name: Increment version based on commit message with commit hash
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         id: increment_version
         run: |
           current_version=${LATEST_TAG#"v"}
@@ -150,7 +150,7 @@ jobs:
           echo "connect to ECR: ${{ secrets.ECR_URL }}"
           echo "new version will be deployed ${{ needs.pushNewTag.outputs.NEW_VERSION }}"
           cd k8s/onlychat/deployment
-          sh ./k8s/onlychat/deployment/write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+          sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           cd ..
           kubectl apply -f ./eks/
           kubectl apply -f redis.yaml

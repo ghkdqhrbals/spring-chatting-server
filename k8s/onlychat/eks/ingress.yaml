@@ -1,30 +1,30 @@
-apiVersion: networking.k8s.io/v1
-kind: IngressClass
-metadata:
-  name: nginx
-spec:
-  controller: k8s.io/ingress-nginx
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: golang-backend-api-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: "www.litcodev.com"
-      http:
-        paths:
-          - pathType: Prefix # 443, 80 etc. -> 80 if "/" prefix
-            path: "/"
-            backend:
-              service:
-                name: front-server-service
-                port:
-                  number: 8080
-  tls:
-    - hosts:
-        - www.litcodev.com
-      secretName: hwangbogyumin.cert
+#apiVersion: networking.k8s.io/v1
+#kind: IngressClass
+#metadata:
+#  name: nginx
+#spec:
+#  controller: k8s.io/ingress-nginx
+#---
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: front-api-ingress
+#  annotations:
+#    cert-manager.io/cluster-issuer: letsencrypt
+#spec:
+#  ingressClassName: nginx
+#  rules:
+#    - host: "www.litcodev.com"
+#      http:
+#        paths:
+#          - pathType: Prefix # 443, 80 etc. -> 80 if "/" prefix
+#            path: "/"
+#            backend:
+#              service:
+#                name: front-server-service
+#                port:
+#                  number: 8080
+#  tls:
+#    - hosts:
+#        - www.litcodev.com
+#      secretName: hwangbogyumin.cert

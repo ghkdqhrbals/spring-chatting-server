@@ -136,7 +136,7 @@ jobs:
         name: Code checkout
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v2.0 # default is latest stable
+        uses: azure/setup-kubectl@v3.0 # default is latest stable
         id: install
 
       - name: Configure AWS credentials
@@ -147,7 +147,10 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Update kube config
-        run: aws eks update-kubeconfig --name spring-chat-k8s-cluster --region ap-northeast-2
+        run: |
+          aws eks update-kubeconfig --name spring-chat-k8s-cluster --region ap-northeast-2
+          kubectl config current-context
+          kubectl get nodes -o wide
 
       - name: Deploy to AWS EKS Cluster
         run: |
@@ -156,53 +159,14 @@ jobs:
           cd k8s/onlychat/deployment
           sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           cd ..
-          kubectl apply -f ./eks/
+          kubectl apply -f eks/aws-auth.yaml
+          kubectl apply -f eks/issuer.yaml
+          kubectl apply -f eks/ingress.yaml
           kubectl apply -f redis.yaml
           kubectl apply -f ./volume/
           kubectl apply -f ./namespace/
           kubectl apply -f ./service/
           kubectl apply -f ./deployment/
-          
-
-#  DeployToEC2KubernetesCluster:
-#    name: Deploy to EC2 Kubernetes Cluster
-#    needs: [pushImageToEcr,pushNewTag]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v3
-#        name: Code checkout
-#
-#      - name: Deploy to EC2 Kubernetes Cluster
-#        uses: appleboy/ssh-action@v1.0.0
-#        env:
-#          ECR_URL: ${{ secrets.ECR_URL }}
-#          NEW_VERSION: ${{ needs.pushNewTag.outputs.NEW_VERSION }}
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        with:
-#          host: ${{ secrets.EC2_URL }}
-#          username: root
-#          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-#          envs: ECR_URL,NEW_VERSION
-#          script_stop: true
-#          script: |
-#            echo "connect to ECR: $ECR_URL"
-#            echo "new version will be deployed $NEW_VERSION"
-#            if [ ! -d "spring-chatting-server" ]; then
-#              git clone https://github.com/ghkdqhrbals/spring-chatting-server.git spring-chatting-server
-#            fi
-#            cd spring-chatting-server
-#            git checkout main
-#            git reset --hard
-#            git pull
-#            cd k8s/onlychat/deployment
-#            sh write_image_to_deploy.sh $ECR_URL ap-northeast-2 $NEW_VERSION
-#            cd ..
-#            kubectl apply -f redis.yaml
-#            kubectl apply -f ./volume/
-#            kubectl apply -f ./namespace/
-#            kubectl apply -f ./service/
-#            kubectl apply -f ./deployment/
 
   pushSlack:
     needs: [pushImageToEcr, pushNewTag, DeployToEKSCluster]

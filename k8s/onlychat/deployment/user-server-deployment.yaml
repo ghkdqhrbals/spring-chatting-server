@@ -56,6 +56,6 @@ spec:
               value: "redis.default.svc.cluster.local"
             - name: spring_redis_port
               value: "6379"
-          image: 305603388825.dkr.ecr.ap-northeast-2.amazonaws.com/chat:user-server_5.1.105-26a1f42
+          image: main-service_user-server:latest
           name: user-server
       restartPolicy: Always

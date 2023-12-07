@@ -26,9 +26,9 @@ spec:
             - name: SERVER_PORT
               value: "8020"
             - name: SPRING_CLOUD_CONFIG_URI
-              value: http://43.202.52.177:8888
+              value: http://43.203.25.44:8888
             - name: spring_rabbitmq_host
-              value: "43.202.52.177"
+              value: "43.203.25.44"
             - name: spring_rabbitmq_port
               value: "5672"
             - name: spring_rabbitmq_username

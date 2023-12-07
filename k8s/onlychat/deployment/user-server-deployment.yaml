@@ -23,11 +23,11 @@ spec:
             - name: SERVER_PORT
               value: "8010"
             - name: SPRING_CLOUD_CONFIG_URI
-              value: "http://43.202.52.177:8888"
+              value: "http://43.203.25.44:8888"
             - name: SPRING_MAIN_web-application-type
               value: "reactive"
             - name: spring_rabbitmq_host
-              value: "43.202.52.177"
+              value: "43.203.25.44"
             - name: spring_rabbitmq_port
               value: "5672"
             - name: spring_rabbitmq_username
@@ -56,6 +56,6 @@ spec:
               value: "redis.default.svc.cluster.local"
             - name: spring_redis_port
               value: "6379"
-          image: main-service_user-server:latest
+          image: 305603388825.dkr.ecr.ap-northeast-2.amazonaws.com/chat:user-server_5.1.105-26a1f42
           name: user-server
       restartPolicy: Always

@@ -4,7 +4,7 @@ metadata:
   name: user-pv
 spec:
   capacity:
-    storage: 100Mi
+    storage: 200Mi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain # Reclaim 정책 (Delete, Retain, Recycle 중 선택)

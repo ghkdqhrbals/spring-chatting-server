@@ -8,6 +8,7 @@ spec:
   selector:
     app: discovery-server-service
   ports:
-    - port: 8761
+    - protocol: TCP
+      port: 8761
       targetPort: 8761
-  type: ClusterIP
+  type: LoadBalancer

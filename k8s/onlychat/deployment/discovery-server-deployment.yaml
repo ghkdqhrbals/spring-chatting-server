@@ -18,5 +18,5 @@ spec:
         - name: ecr-cred
       containers:
         - image: main-service_discovery-server:latest
-          name: discovery-server
+          name: discovery-server-service
       restartPolicy: Always

@@ -32,7 +32,7 @@ spring:
       routes:
         # 세부기능
         - id: user-service
-          uri: http://user-server-service:8000
+          uri: http://user-server-service:8010
           predicates:
             - Path=/user/actuator/**
             - Method=GET, POST
@@ -41,7 +41,7 @@ spring:
             - RewritePath=/user(?<segment>/?.*), $\{segment}
         # 로그인
         - id: user-service
-          uri: http://user-server-service:8000
+          uri: http://user-server-service:8010
           predicates:
             - Path=/user/login
             - Method=POST
@@ -50,7 +50,7 @@ spring:
             - RewritePath=/user(?<segment>/?.*), $\{segment}
         # 회원가입
         - id: user-service
-          uri: http://user-server-service:8000
+          uri: http://user-server-service:8010
           predicates:
             - Path=/user
             - Method=POST
@@ -58,7 +58,7 @@ spring:
             - RemoveRequestHeader=Cookie
         # 관리자 access
         - id: user-service
-          uri: http://user-server-service:8000
+          uri: http://user-server-service:8010
           predicates:
             - Path=/user/admin/**
             - Method=GET, POST
@@ -66,7 +66,7 @@ spring:
             - RewritePath=/user(?<segment>/?.*), $\{segment}
         # 일반 사용자 access
         - id: user-service
-          uri: http://user-server-service:8000
+          uri: http://user-server-service:8010
           predicates:
             - Path=/user/**
             - Method=GET, POST, DELETE

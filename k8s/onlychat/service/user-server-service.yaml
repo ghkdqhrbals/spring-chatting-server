@@ -4,6 +4,7 @@ metadata:
   labels:
     app: user-server-service
   name: user-server-service
+  namespace: default
 spec:
   ports:
     - name: http

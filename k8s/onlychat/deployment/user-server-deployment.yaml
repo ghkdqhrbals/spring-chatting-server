@@ -53,7 +53,7 @@ spec:
             - name: spring_datasource_url
               value: "jdbc:postgresql://user-db:5435/user"
             - name: spring_redis_host
-              value: "redis.default.svc.cluster.local"
+              value: "redis-service"
             - name: spring_redis_port
               value: "6379"
           image: main-service_user-server:latest

@@ -52,9 +52,9 @@ spec:
                   key: user-db-username
             - name: spring_datasource_url
               value: "jdbc:postgresql://user-db:5435/user"
-            - name: spring_redis_host
+            - name: spring_data_redis_host
               value: "redis-service"
-            - name: spring_redis_port
+            - name: spring_data_redis_port
               value: "6379"
           image: main-service_user-server:latest
           name: user-server

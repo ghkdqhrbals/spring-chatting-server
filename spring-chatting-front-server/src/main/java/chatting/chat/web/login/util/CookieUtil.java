@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import org.thymeleaf.util.ArrayUtils;
 
 public class CookieUtil {
     public static void removeCookie(HttpServletResponse response, String cookieName) {
@@ -24,6 +25,9 @@ public class CookieUtil {
 
     public static String getCookie(HttpServletRequest request, String cookieName){
         Cookie[] cookies = request.getCookies();
+        if (ArrayUtils.isEmpty(cookies)){
+            return null;
+        }
         Cookie findCookie = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieName)).findFirst().orElse(null);
         if (findCookie==null){
             return null;

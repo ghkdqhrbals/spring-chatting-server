@@ -25,7 +25,7 @@ spec:
             - name: spring_autoconfigure_exclude
               value: "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration"
             - name: spring_redis_host
-              value: "redis.default.svc.cluster.local"
+              value: "redis-service"
             - name: spring_redis_port
               value: "6379"
             - name: spring_rabbitmq_host

@@ -64,10 +64,6 @@ public class HomeController {
                 model.addAttribute("userDescription", me.getUserStatus());
                 model.addAttribute("friends", friends);
             })
-            .doOnError(throwable -> {
-                log.error("error: {}", throwable.getMessage());
-                throw new AppException(ErrorCode.INVALID_TOKEN);
-            })
             .map(tuple -> "friends/friends");
     }
 }

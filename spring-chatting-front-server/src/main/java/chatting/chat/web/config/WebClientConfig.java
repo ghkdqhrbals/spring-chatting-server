@@ -33,8 +33,7 @@ public class WebClientConfig {
             if (clientResponse.statusCode().value() == 401) {
                 log.trace("User is not authenticated");
                 String redirectUrl = "/login";
-                return Mono.error(
-                    new AuthorizedException(ErrorCode.INVALID_CREDENTIAL, redirectUrl));
+                return Mono.error(new AuthorizedException(ErrorCode.INVALID_CREDENTIAL, redirectUrl));
             } else if (clientResponse.statusCode().value() == 403) {
                 log.trace("User is not authorized");
                 String redirectUrl = "/login";

@@ -92,7 +92,7 @@ public class LoginController {
 
         } catch (AppException e) {
             String message = messageUtil.getMessage(e);
-            log.trace(message);
+            log.trace("AppException {}", message);
             bindingResult.reject( e.getErrorCode().getDetail(), message);
             return "login/loginForm";
         }

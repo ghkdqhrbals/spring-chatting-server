@@ -6,7 +6,9 @@ metadata:
   name: user-server-service
 spec:
   ports:
-    - port: 8010
+    - name: http
+      protocol: TCP
+      port: 8010
       targetPort: 8010
   selector:
     app: user-server-service

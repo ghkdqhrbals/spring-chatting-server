@@ -11,19 +11,34 @@ metadata:
   name: front-api-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   ingressClassName: nginx
   rules:
     - host: "www.litcodev.com"
       http:
         paths:
-          - path: /
-            pathType: Prefix
+          - path: /api(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-server-service
+                port:
+                  number: 8010
+          - path: /(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: front-server-service
                 port:
                   number: 8080
+#          - path: /(.*)
+#            pathType: ImplementationSpecific
+#            backend:
+#              service:
+#                name: user-server-service
+#                port:
+#                  number: 8010
   tls:
     - hosts:
         - www.litcodev.com

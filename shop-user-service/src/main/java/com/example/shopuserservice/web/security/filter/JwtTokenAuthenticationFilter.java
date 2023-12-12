@@ -12,7 +12,6 @@ import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 
 
-// for access token
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenAuthenticationFilter implements WebFilter {
@@ -20,7 +19,6 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
         String accessToken = TokenUtil.getAccessToken(exchange.getRequest());
         if (accessToken != null) {
             return chain.filter(exchange);

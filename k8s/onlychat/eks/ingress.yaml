@@ -17,13 +17,6 @@ spec:
     - host: "www.litcodev.com"
       http:
         paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: user-server-service
-                port:
-                  number: 8010
           - path: /
             pathType: Prefix
             backend:

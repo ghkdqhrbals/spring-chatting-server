@@ -18,6 +18,11 @@ public class TokenUtil {
         }
     }
 
+    /**
+     * get access token from cookie
+     * @param request
+     * @return accessToken or {@code null}
+     */
     public static String getAccessToken(ServerHttpRequest request) {
         MultiValueMap<String, HttpCookie> cookies = request.getCookies();
         HttpCookie accessToken = cookies.getFirst("accessToken");

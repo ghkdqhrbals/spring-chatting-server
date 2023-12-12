@@ -92,14 +92,19 @@ public class ReactiveSecurityConfig {
                 .addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
                 .addFilterAfter(new JwtRefreshTokenAuthenticationFilter(jwtTokenProvider,userRedisSessionRepository), SecurityWebFiltersOrder.HTTP_BASIC)
                 .authorizeExchange(exchange -> exchange
-                        // 승인 목록
-                        .pathMatchers(HttpMethod.OPTIONS).permitAll() // 사용가능 Method
-                        .pathMatchers(HttpMethod.POST,"/user").permitAll() // 회원가입
-                        .pathMatchers("/login").permitAll() // 로그인
-                        // 권한 필터
-                        .pathMatchers("/admin/**").hasRole("ADMIN") // admin 만 접근가능하도록 권한 설정
-                        .pathMatchers("/**").hasAnyRole("USER","ADMIN") // 다른 모든 method 권한 설정
-                        .anyExchange().authenticated()
+                    // 승인 목록
+                    .pathMatchers(HttpMethod.OPTIONS).permitAll() // 사용가능 Method
+                    .pathMatchers(HttpMethod.POST,"/user").permitAll() // 회원가입
+                    .pathMatchers("/login").permitAll() // 로그인
+                    .pathMatchers("/health-check").permitAll()
+                    .pathMatchers("/css/**","/favicon.ico").permitAll()
+                    .pathMatchers("/error").permitAll()
+                    .pathMatchers("/accessDenied").permitAll()
+                    .pathMatchers("/swagger-ui/**","/api/v3/**","/v3/api-docs/**").permitAll()
+                    // 권한 필터
+                    .pathMatchers("/admin/**").hasRole("ADMIN") // admin 만 접근가능하도록 권한 설정
+                    .pathMatchers("/**").hasAnyRole("USER","ADMIN") // 다른 모든 method 권한 설정
+                    .anyExchange().authenticated()
                 )
                 .build();
     }

@@ -1,7 +1,8 @@
 name: Deployment
 
 on:
-  push:
+  pull_request:
+    types: [synchronize, closed]
     branches:
       - main
 

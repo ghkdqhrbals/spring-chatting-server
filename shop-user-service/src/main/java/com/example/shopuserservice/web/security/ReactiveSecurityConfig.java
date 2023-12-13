@@ -109,6 +109,11 @@ public class ReactiveSecurityConfig {
                 .build();
     }
 
+    /**
+     * Permission Checker
+     * <p> This methods will check its permission and logging</p>
+     * @return PermissionEvaluator
+     */
     @Bean
     public PermissionEvaluator myPermissionEvaluator() {
         return new PermissionEvaluator() {

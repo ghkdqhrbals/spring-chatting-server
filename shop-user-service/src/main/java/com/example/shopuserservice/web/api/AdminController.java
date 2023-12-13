@@ -4,6 +4,7 @@ import com.example.shopuserservice.domain.user.data.User;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.service.UserCommandQueryService;
 import com.example.shopuserservice.domain.user.service.UserReadService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,27 +24,29 @@ public class AdminController {
 
 
     @GetMapping("/")
+    @Operation(summary = "Test admin access")
     public Mono<String> accessSuccess() {
         return Mono.just("ADMIN access").log();
     }
 
     /**
-     * 모든 유저정보 가져오기
+     * getAllUsers method is used to get all users.
      *
-     * @return
+     * @return Mono<List < User>>
      * @throws ExecutionException
      * @throws InterruptedException
      */
     @GetMapping("/users")
+    @Operation(summary = "Get all users")
     public Mono<List<User>> getAllUsers() throws ExecutionException, InterruptedException {
         CompletableFuture<Mono<List<User>>> set = userCommandQueryService.getAllUser().thenApply(users -> {
-            log.info("SET");
             return Mono.just(users);
         });
         return set.get();
     }
 
     @GetMapping("/users/tx")
+    @Operation(summary = "Get all user transactions")
     public CompletableFuture<Iterable<UserTransactions>> getAllUserAddTransaction(){
         return userReadService.getAllUserAddTransaction();
     }

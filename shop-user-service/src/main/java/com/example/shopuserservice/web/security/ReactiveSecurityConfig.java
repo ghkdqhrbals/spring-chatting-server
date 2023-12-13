@@ -4,6 +4,7 @@ import com.example.shopuserservice.domain.user.data.User;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
 import com.example.shopuserservice.web.security.filter.JwtRefreshTokenAuthenticationFilter;
 import com.example.shopuserservice.web.security.filter.JwtTokenAuthenticationFilter;
+import com.example.shopuserservice.web.security.filter.UrlPathLoggingFilter;
 import com.example.shopuserservice.web.security.token.UserRedisSessionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,41 +73,42 @@ public class ReactiveSecurityConfig {
         DefaultMethodSecurityExpressionHandler defaultWebSecurityExpressionHandler = this.applicationContext.getBean(DefaultMethodSecurityExpressionHandler.class);
         defaultWebSecurityExpressionHandler.setPermissionEvaluator(myPermissionEvaluator());
         return http
-                .exceptionHandling(exceptionHandlingSpec -> exceptionHandlingSpec
-                        .authenticationEntryPoint((exchange, ex) -> {
-                            return Mono.fromRunnable(() -> {
-                                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                            });
-                        })
-                        .accessDeniedHandler((exchange, denied) -> {
-                            return Mono.fromRunnable(() -> {
-                                exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-                            });
-                        }))
-                .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .authenticationManager(reactiveAuthenticationManager)
-                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-                // authenticate
-                .addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
-                .addFilterAfter(new JwtRefreshTokenAuthenticationFilter(jwtTokenProvider,userRedisSessionRepository), SecurityWebFiltersOrder.HTTP_BASIC)
-                .authorizeExchange(exchange -> exchange
-                    // 승인 목록
-                    .pathMatchers(HttpMethod.OPTIONS).permitAll() // 사용가능 Method
-                    .pathMatchers(HttpMethod.POST,"/user").permitAll() // 회원가입
-                    .pathMatchers("/login").permitAll() // 로그인
-                    .pathMatchers("/health-check").permitAll()
-                    .pathMatchers("/css/**","/favicon.ico").permitAll()
-                    .pathMatchers("/error").permitAll()
-                    .pathMatchers("/accessDenied").permitAll()
-                    .pathMatchers("/swagger-ui/**","/api/v3/**","/v3/api-docs/**").permitAll()
-                    // 권한 필터
-                    .pathMatchers("/admin/**").hasRole("ADMIN") // admin 만 접근가능하도록 권한 설정
-                    .pathMatchers("/**").hasAnyRole("USER","ADMIN") // 다른 모든 method 권한 설정
-                    .anyExchange().authenticated()
-                )
-                .build();
+            .exceptionHandling(exceptionHandlingSpec -> exceptionHandlingSpec
+                    .authenticationEntryPoint((exchange, ex) -> {
+                        return Mono.fromRunnable(() -> {
+                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                        });
+                    })
+                    .accessDeniedHandler((exchange, denied) -> {
+                        return Mono.fromRunnable(() -> {
+                            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                        });
+                    }))
+            .csrf().disable()
+            .formLogin().disable()
+            .httpBasic().disable()
+            .authenticationManager(reactiveAuthenticationManager)
+            .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+            // authenticate
+            .addFilterBefore(new UrlPathLoggingFilter(), SecurityWebFiltersOrder.HTTP_BASIC)
+            .addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
+            .addFilterAfter(new JwtRefreshTokenAuthenticationFilter(jwtTokenProvider,userRedisSessionRepository), SecurityWebFiltersOrder.HTTP_BASIC)
+            .authorizeExchange(exchange -> exchange
+                // 승인 목록
+                .pathMatchers(HttpMethod.OPTIONS).permitAll() // 사용가능 Method
+                .pathMatchers(HttpMethod.POST,"/user").permitAll() // 회원가입
+                .pathMatchers("/login").permitAll() // 로그인
+                .pathMatchers("/health-check").permitAll()
+                .pathMatchers("/css/**","/favicon.ico").permitAll()
+                .pathMatchers("/error").permitAll()
+                .pathMatchers("/accessDenied").permitAll()
+                .pathMatchers("/swagger-ui/**","/api/v3/**","/v3/api-docs/**").permitAll()
+                // 권한 필터
+                .pathMatchers("/admin/**").hasRole("ADMIN") // admin 만 접근가능하도록 권한 설정
+                .pathMatchers("/**").hasAnyRole("USER","ADMIN") // 다른 모든 method 권한 설정
+                .anyExchange().authenticated()
+            )
+            .build();
     }
 
     /**

@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 public class UrlPathLoggingFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        log.trace("Request from {}",exchange.getRequest().getURI().toString());
+        log.info("METHOD: {}, URL: {}",exchange.getRequest().getMethod(), exchange.getRequest().getURI().toString());
         return chain.filter(exchange);
     }
 }

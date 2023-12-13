@@ -20,6 +20,8 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String accessToken = TokenUtil.getAccessToken(exchange.getRequest());
+        log.info("METHOD: {}, URL:{}",exchange.getRequest().getMethod().name(), exchange.getRequest().getURI().toString());
+        log.debug("With accessToken: {}", accessToken);
         if (accessToken == null || accessToken.isEmpty()) {
             return chain.filter(exchange);
         }

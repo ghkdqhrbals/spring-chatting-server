@@ -17,8 +17,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public Mono<String> login(@RequestBody LoginRequestDto request,
-                              ServerHttpResponse response){
+    public Mono<String> login(@RequestBody LoginRequestDto request, ServerHttpResponse response){
         return loginService.login(request, response).log();
     }
 

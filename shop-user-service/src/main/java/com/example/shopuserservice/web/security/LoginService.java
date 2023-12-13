@@ -21,11 +21,14 @@ import reactor.core.publisher.Mono;
 public class LoginService {
     private final JwtTokenProvider jwtTokenProvider;
     private final ReactiveAuthenticationManager authenticationManager;
-
     private final UserRedisSessionRepository userRedisSessionRepository;
 
-
-
+    /**
+     * login method is used to authenticate user and create tokens.
+     * @param loginRequestDto
+     * @param response
+     * @return Mono< String >
+     */
     public Mono<String> login(LoginRequestDto loginRequestDto, ServerHttpResponse response) {
         log.trace("login service access");
 
@@ -41,6 +44,7 @@ public class LoginService {
                     String refreshToken = jwtTokenProvider.createRefreshToken(auth);
                     String accessToken = jwtTokenProvider.createToken(auth);
 
+                    // cookie option setting
                     response.addCookie(ResponseCookie.from("accessToken", accessToken)
                             .httpOnly(true)
                             .path("/")

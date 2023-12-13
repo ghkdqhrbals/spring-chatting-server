@@ -25,6 +25,13 @@ spec:
                 name: user-server-service
                 port:
                   number: 8010
+          - path: /api-chat/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: chatting-server-service
+                port:
+                  number: 8030
           - path: /(.*)
             pathType: ImplementationSpecific
             backend:

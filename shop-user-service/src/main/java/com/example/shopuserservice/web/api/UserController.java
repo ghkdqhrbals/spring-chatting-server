@@ -105,7 +105,7 @@ public class UserController {
                 }
                 return null;
             });
-        return Reactor.getSink(req.getUserId()).log();
+        return Reactor.getSink(req.getUserId());
     }
 
     /**

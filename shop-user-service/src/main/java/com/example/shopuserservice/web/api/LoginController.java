@@ -20,13 +20,13 @@ public class LoginController {
     @PostMapping("/login")
     @Operation(summary = "Login for user")
     public Mono<String> login(@RequestBody LoginRequestDto request, ServerHttpResponse response){
-        return loginService.login(request, response).log();
+        return loginService.login(request, response);
     }
 
     @PostMapping("/logout")
     @Operation(summary = "Logout for user")
     public Mono<String> logout(HttpServletResponse response){
-        return loginService.logout(response).log();
+        return loginService.logout(response);
     }
 
 }

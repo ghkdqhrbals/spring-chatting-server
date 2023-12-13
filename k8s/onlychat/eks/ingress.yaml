@@ -18,7 +18,7 @@ spec:
     - host: "www.litcodev.com"
       http:
         paths:
-          - path: /api(.*)
+          - path: /api/(.*)
             pathType: ImplementationSpecific
             backend:
               service:

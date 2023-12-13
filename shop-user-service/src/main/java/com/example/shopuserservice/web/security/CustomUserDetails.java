@@ -7,6 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
+
+/**
+ * {@link CustomUserDetails} class is used to store user information which is returned by UserDetailsService.
+ * This class is used by Spring Security internally for authentication and authorization purposes.
+ * This class must implement UserDetails interface.
+ */
 @Getter
 @Setter
 @Slf4j
@@ -57,6 +63,10 @@ public class CustomUserDetails implements UserDetails {
         return this.enabled;
     }
 
+    /**
+     * Add permissions to the user based on the role.
+     * @return Collection<? extends GrantedAuthority>
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

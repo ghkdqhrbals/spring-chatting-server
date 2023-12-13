@@ -12,6 +12,7 @@ import com.example.shopuserservice.web.security.LoginService;
 import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.shopuserservice.web.vo.ResponseUser;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,25 +44,15 @@ public class UserController {
     private final UserReadService userReadService;
     private final Environment env;
 
-    @GetMapping("/")
-    public CompletableFuture<String> welcome(ServletRequest request) {
-        return CompletableFuture.completedFuture(
-            "Access auth-controller port " + String.valueOf(request.getRemotePort()));
-    }
-
     @GetMapping("/health-check")
+    @Operation(summary = "Check server's status")
     public Mono<String> hello(ServerHttpRequest request) {
-        return Mono.just("Access auth-controller port " +
-            String.valueOf(request.getRemoteAddress().getPort() + "," +
-                env.getProperty("token.expiration_time") + "," +
-                env.getProperty("token.secret")));
+        return Mono.just("Server status: " + String.valueOf(request.getRemoteAddress()));
     }
 
-    /**
-     * -------------- READ METHODS --------------
-     */
-    // 유저 조회
+
     @GetMapping("/user")
+    @Operation(summary = "Get user info based on Cookies that is sent from client")
     public CompletableFuture<ResponseEntity<ResponseUser>> findUser() {
         String userId = getUserIdFromSpringSecurityContext();
         return userCommandQueryService
@@ -79,15 +70,21 @@ public class UserController {
             }));
     }
 
-    // add user with sse
+    /**
+     * Add user with SSE and Kafka
+     *
+     * @param req {@link RequestUser}
+     * @return {@link Flux}
+     * @throws Exception
+     */
     @PostMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<?> addUser(@RequestBody RequestUser req) throws Exception {
-        log.trace("addUser method is called");
-        // event id for kafka
+        // create event id for kafka
         UUID eventId = UUID.randomUUID();
 
         // add sink for sse
         Reactor.addSink(req.getUserId());
+
         UserEvent userEvent = new UserEvent(
             eventId,
             UserStatus.USER_INSERT_APPEND,
@@ -174,13 +171,13 @@ public class UserController {
 //    }
 
     /**
-     * -------------- UPDATE METHODS --------------
+     * Update user's password
+     * @param userPw {@link String}
+     * @return {@link Boolean}
      */
-    // 유저 업데이트
     @PutMapping("/user")
-    public CompletableFuture<ResponseEntity> updateUser(WebSession session,
-        @RequestParam(name = "userPw") String userPw) {
-        String userId = session.getAttribute("userId");
+    public CompletableFuture<ResponseEntity> updateUser(@RequestParam(name = "userPw") String userPw) {
+        String userId = getUserIdFromSpringSecurityContext();
         return userCommandQueryService.changePassword(userId, userPw).thenApply((s) -> {
             return ResponseEntity.ok("success");
         }).exceptionally((e) -> {

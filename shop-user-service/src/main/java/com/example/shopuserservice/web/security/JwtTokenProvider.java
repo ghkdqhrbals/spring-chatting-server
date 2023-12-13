@@ -24,6 +24,9 @@ import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * {@link JwtTokenProvider} class is used to create and validate Json Web Token.
+ */
 @Slf4j
 @Component
 public class JwtTokenProvider {
@@ -36,9 +39,15 @@ public class JwtTokenProvider {
         this.userRedisSessionRepository = userRedisSessionRepository;
     }
 
+    /**
+     * Access token's expiration time
+     */
     @Value("${token.expiration_time}")
     String expirationTime;
 
+    /**
+     * Refresh token's expiration time
+     */
     @Value("${token.refresh_expiration_time}")
     String refreshExpirationTime;
 
@@ -46,14 +55,21 @@ public class JwtTokenProvider {
     String secret;
 
 
-    /***
-     * jwt payload
-     * {
-     *   "sub": "userId",
-     *   "permissions": ["ROLE_USER","ROLE_ADMIN"],
-     *   "iat": 1680778900,
-     *   "exp": 1680865300
-     * }
+    /**
+     * Create Json Web Token with user's username and authorities
+     *
+     * <p> Here, this method generate accessToken </p>
+     * <p> JWT's payload will looks like below</p>
+     * <blockquote><pre>
+     *  {
+     *      "sub": "userId",
+     *      "permissions": ["ROLE_USER","ROLE_ADMIN"],
+     *      "iat": 1680778900,
+     *      "exp": 1680865300
+     *  }
+     * </pre></blockquote>
+     * @param authentication {@link Authentication}
+     * @return Json-web-token
      */
     public String createToken(Authentication authentication) {
         String username = authentication.getName();
@@ -77,42 +93,14 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String generateAccessToken(String userId, String role) {
-        // 토큰 클레임 (payload) 설정
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(AUTHORITIES_KEY, role);
-        claims.put("sub", userId);
-
-        // Access Token 생성
-        long now = (new Date()).getTime();
-        // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + Integer.parseInt(expirationTime));
-        return Jwts.builder()
-                .setSubject(userId)
-                .setClaims(claims)
-                .setExpiration(accessTokenExpiresIn)
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
-
-    public String generateRefreshToken(String userId, String role) {
-        // 토큰 클레임 (payload) 설정
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(AUTHORITIES_KEY, role);
-        claims.put("sub", userId);
-
-        // Access Token 생성
-        long now = (new Date()).getTime();
-        // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + Integer.parseInt(refreshExpirationTime));
-        return Jwts.builder()
-                .setSubject(userId)
-                .setClaims(claims)
-                .setExpiration(accessTokenExpiresIn)
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
-
+    /**
+     * Create Json-web-token with user's username and authorities
+     *
+     * <p> Here, this method generate refreshToken. It has much longer expiration time than accessToken </p>
+     * <p> After generate Token, save it to redis cluster session </p>
+     * @param authentication {@link Authentication}
+     * @return Json-web-token
+     */
     public String createRefreshToken(Authentication authentication) {
         String username = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -142,6 +130,11 @@ public class JwtTokenProvider {
         return refreshToken;
     }
 
+    /**
+     * Get {@link Authentication} from Json-web-token
+     * @param token
+     * @return {@link Authentication}
+     */
     public Authentication getAuthentication(String token) {
 
         Claims claims = Jwts.parserBuilder().setSigningKey(this.secret).build().parseClaimsJws(token).getBody();
@@ -152,13 +145,19 @@ public class JwtTokenProvider {
         Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null ? AuthorityUtils.NO_AUTHORITIES
                 : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
         authorities.forEach(c->{
-            log.info("JWT has these authorities={}",c.getAuthority());
+            log.debug("JWT has these authorities={}",c.getAuthority());
         });
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
+    /**
+     * Get Json-web-token from {@link HttpServletRequest} and validate it
+     * @param token
+     * @param exchange
+     * @return true if token is valid, false if not
+     */
     public boolean validateToken(String token, ServerWebExchange exchange) {
         try {
             Jws<Claims> claims = Jwts
@@ -174,17 +173,15 @@ public class JwtTokenProvider {
         return false;
     }
 
-    // Get userId from Spring Security Context
+    /**
+     * Check {@link SecurityContextHolder} and get user's userId
+     * @return user's userId
+     */
     public static String getUserIdFromSpringSecurityContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
         return ((User) authentication.getPrincipal()).getUsername();
-    }
-
-    public boolean isRefreshTokenInRedis(String refreshToken) {
-        Optional<UserRedisSession> findSession = userRedisSessionRepository.findById(refreshToken);
-        return findSession.isPresent();
     }
 }

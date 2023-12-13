@@ -7,10 +7,20 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+/**
+ * BatteryInfo class
+ */
 @Slf4j
 public class BatteryInfo {
 
-    public static Optional<String> getBatteryStatus() throws IOException, InterruptedException {
+    /**
+     * Check battery percentage
+     * <p> It can be run only in Mac || Linux || Window OS </p>
+     * <p> If it isn't one of above OS, return {@code Optional.empty()}</p>
+     * @return Optional< String >
+     * @throws IOException
+     */
+    public static Optional<String> getBatteryStatus() throws IOException {
         String osName = System.getProperty("os.name").toLowerCase();
         log.trace("osName: {}", osName);
         int batteryPercentage = 100;

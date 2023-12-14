@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FriendService {
 
-    Friend save(String userId, String friendId);
+    FriendResponse.FriendDTO save(String userId, String friendId);
     void removeFriend(String userId, String friendId);
 
     FriendResponse.FriendDTO findMyFriend(String userId, String friendId);

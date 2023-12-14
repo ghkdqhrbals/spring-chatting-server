@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "friend", key = "#userId")
+    @Cacheable(value = "friendsList", key = "#userId")
     public List<FriendResponse.FriendDTO> findAllFriends(String userId) {
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
         ArrayList<FriendResponse.FriendDTO> collect = findFriends.stream()

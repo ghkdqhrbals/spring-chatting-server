@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "friend", key = "#userId")
     public List<FriendResponse.FriendDTO> findAllFriends(String userId) {
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
         ArrayList<FriendResponse.FriendDTO> collect = findFriends.stream()

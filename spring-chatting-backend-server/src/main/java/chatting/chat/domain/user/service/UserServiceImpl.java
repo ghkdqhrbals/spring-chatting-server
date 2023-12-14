@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,17 +59,13 @@ public class UserServiceImpl implements UserService {
     public List<FriendResponse.FriendDTO> findAllFriends(String userId) {
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
         ArrayList<FriendResponse.FriendDTO> collect = findFriends.stream()
-            .map(Friend::getFriendId)
-            .map(friendId -> {
-                // TODO(Query Optimizing) : SELECT QUERY N+1 문제 해결 필요
-                User user = userRepository.findById(friendId)
-                    .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
-                return FriendResponse.FriendDTO.builder()
+            .map(Friend::getUser)
+            .map(user ->
+                FriendResponse.FriendDTO.builder()
                     .friendId(user.getUserId())
                     .friendName(user.getUserName())
                     .friendStatus(user.getUserStatus())
-                    .build();
-            })
+                    .build())
             .collect(Collectors.toCollection(ArrayList::new));
         return collect;
     }
@@ -101,6 +98,7 @@ public class UserServiceImpl implements UserService {
 
     // 채팅방 생성
     @Override
+    @CacheEvict(value = "chatRoom", key = "#req.userId")
     public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
 
         User findUser = userRepository.findByUserId(UserContext.getUserId()).orElseThrow(()->new CustomException(CANNOT_FIND_USER));

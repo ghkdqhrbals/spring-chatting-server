@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,9 +44,8 @@ public class FriendController {
 
     @PostMapping("/friend")
     @Operation(summary = "Add friends")
-    public ResponseEntity<String> addFriend(@RequestBody FriendRequest.NewFriendDTO newFriendDTO) {
-        friendService.save(UserContext.getUserId(), newFriendDTO.getFriendId());
-        return ResponseEntity.ok("success");
+    public ResponseEntity<FriendResponse.FriendDTO> addFriend(@RequestBody FriendRequest.NewFriendDTO newFriendDTO) {
+        return ResponseEntity.ok(friendService.save(UserContext.getUserId(), newFriendDTO.getFriendId()));
     }
 
     @DeleteMapping("/friend")

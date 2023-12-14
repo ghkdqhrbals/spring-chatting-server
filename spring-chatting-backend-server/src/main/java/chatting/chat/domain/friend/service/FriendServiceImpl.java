@@ -2,6 +2,7 @@ package chatting.chat.domain.friend.service;
 
 import static com.example.commondto.error.ErrorCode.*;
 
+import com.example.commondto.dto.friend.FriendResponse.FriendDTO;
 import com.example.commondto.error.CustomException;
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.user.entity.User;
@@ -11,6 +12,8 @@ import chatting.chat.domain.user.repository.UserRepository;
 import com.example.commondto.dto.friend.FriendResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +35,8 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     @Transactional
-    public Friend save(String userId, String friendId) {
+    @CacheEvict(value = "friendsList", key = "#userId")
+    public FriendResponse.FriendDTO save(String userId, String friendId) {
         if (userId.equals(friendId)) {
             throw new CustomException(CANNOT_ADD_SELF);
         }
@@ -53,7 +57,12 @@ public class FriendServiceImpl implements FriendService {
             friendRepository.save(hisFriend);
         }
 
-        return savedFriend;
+        FriendResponse.FriendDTO friendDTO = FriendDTO.builder()
+            .friendId(findFriend.getUserId())
+            .friendName(findFriend.getUserName())
+            .friendStatus(findFriend.getUserStatus())
+            .build();
+        return friendDTO;
     }
 
     @Override

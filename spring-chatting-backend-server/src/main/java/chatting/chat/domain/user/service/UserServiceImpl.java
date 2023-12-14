@@ -127,6 +127,8 @@ public class UserServiceImpl implements UserService {
 
     // 유저참여 채팅방 검색
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "chatRoom", key = "#userId")
     public List<ChatRoomDTO> findAllMyRooms(String userId) {
         // 유저 존재여부
         throwErrorWhenUserNotFind(userId);

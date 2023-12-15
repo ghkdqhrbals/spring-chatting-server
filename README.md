@@ -1,14 +1,15 @@
-본 [프로젝트](https://github.com/users/ghkdqhrbals/projects/3)는 다양한 기술을 실험적으로 적용하는 것을 목적으로 합니다.
-프로젝트의 진행과정을 알고싶으신 분은 [블로그](https://ghkdqhrbals.github.io/portfolios/docs/project/) 를 참고해주세요.
-
-자동화와 안정성에 초점을 맞추고 개발하고 있습니다.
+본 [프로젝트](https://github.com/users/ghkdqhrbals/projects/3)는 다양한 기술을 실험적으로 적용하는 것을 목적으로 합니다. 프로젝트의 진행과정을 알고싶으신 분은 [블로그](https://ghkdqhrbals.github.io/portfolios/docs/project/) 를 참고해주세요. 저는 자동화와 성능향상에 초점을 맞추고 개발하고 있습니다.
 
 5.2.0 부터는 EKS 마이그레이션이 완료되었습니다. [배포주소](https://www.litcodev.com) 로컬에서 수행하기 위해서는 [4.2.0v](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.2.0) 버전으로 태그를 이동하고 Instruction 에 따라 실행해주세요.
+
+현재는 추가 개발을 멈추고 서버 로드테스트를 진행하고 있습니다. 로드 테스트 툴은 [nGrinder](https://naver.github.io/ngrinder) 와 Golang 으로 직접만든 [Gotybench](https://github.com/ghkdqhrbals/gotybench) 을 사용하고 있습니다. 테스트 및 성능향상 기록은 Issue 에 `feature:performance` 태그로 기록 중입니다.
+
+<img width="880" alt="스크린샷 2023-12-15 오후 12 31 41" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/2652be5a-2d1c-4a7b-957b-d69aaa21007e">
+
+
 > Backend & Frontend Contributor 를 모집중입니다. 자유롭게 신청하세요 :) 학생이나 직장인 모두 재미삼아 참여하실 수 있어요!
 >
 > We are looking for contributors in any fields. Feel free to apply :) Both students and who work at a company can join this project for fun!
-
-현재는 추가 개발을 멈추고 서버 로드테스트를 진행하고 있습니다. 로드 테스트 툴은 [nGrinder](https://naver.github.io/ngrinder) 와 Golang 으로 직접만든 [Gotybench](https://github.com/ghkdqhrbals/gotybench) 을 사용하고 있습니다.
 
 ## Update Logs
 ### v5.x.x

@@ -73,6 +73,6 @@ spec:
               cpu: "0.5" # 요청하는 CPU 양
               memory: "512Mi" # 요청하는 메모리 양
             limits:
-              cpu: "1" # 최대 사용 가능한 CPU 양
+              cpu: "1.5" # 최대 사용 가능한 CPU 양
               memory: "1Gi" # 최대 사용 가능한 메모리 양
       restartPolicy: Always

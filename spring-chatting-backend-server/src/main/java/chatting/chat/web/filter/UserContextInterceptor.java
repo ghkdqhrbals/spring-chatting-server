@@ -13,17 +13,23 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
 import java.util.Optional;
-
+import java.util.*;
 @Slf4j
 @Component
 @AllArgsConstructor
 public class UserContextInterceptor implements HandlerInterceptor {
 
     private final UserRedisSessionRepository userRedisSessionRepository;
+    private final List<String> whiteList = Arrays.asList("/health");
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String requestURI = request.getRequestURI();
+        log.trace("requestURI: {}",requestURI);
+        if (whiteList.contains(requestURI)){
+            return true;
+        }
 
         String userId = extractUserIdFromRequest(request);
         if (userId==null){

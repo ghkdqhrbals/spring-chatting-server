@@ -26,9 +26,6 @@ public class UserService {
                 c.add("refreshToken", CookieUtil.getCookie(request, "refreshToken"));
             })
             .retrieve()
-            .onStatus(HttpStatus::is4xxClientError, (response) -> {
-                throw new CustomException(ErrorCode.INVALID_TOKEN);
-            })
             .bodyToMono(ResponseGetUser.class);
     }
 

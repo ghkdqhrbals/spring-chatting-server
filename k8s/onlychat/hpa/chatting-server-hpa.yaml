@@ -15,4 +15,11 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50 # 원하는 CPU 사용률 목표 (예: 50%)
+          averageUtilization: 50 # 원하는 CPU 사용률 목표 (50%)
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300 # 스케일 다운 안정화 기간 (300초) 빠르게 스케일 업/다운을 하지 않도록 설정
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60 # 매트릭 확인 주기 (60초)

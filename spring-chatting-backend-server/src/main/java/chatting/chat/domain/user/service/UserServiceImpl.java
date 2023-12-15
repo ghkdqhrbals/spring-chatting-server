@@ -59,13 +59,16 @@ public class UserServiceImpl implements UserService {
     public List<FriendResponse.FriendDTO> findAllFriends(String userId) {
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
         ArrayList<FriendResponse.FriendDTO> collect = findFriends.stream()
-            .map(Friend::getUser)
-            .map(user ->
-                FriendResponse.FriendDTO.builder()
+            .map(Friend::getFriendId)
+            .map(friendId -> {
+                User user = userRepository.findById(friendId)
+                    .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
+                return FriendResponse.FriendDTO.builder()
                     .friendId(user.getUserId())
                     .friendName(user.getUserName())
                     .friendStatus(user.getUserStatus())
-                    .build())
+                    .build();
+            })
             .collect(Collectors.toCollection(ArrayList::new));
         return collect;
     }

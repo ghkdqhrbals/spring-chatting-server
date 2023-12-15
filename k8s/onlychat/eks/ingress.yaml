@@ -9,6 +9,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: front-api-ingress
+  namespace: default
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/rewrite-target: /$1
@@ -32,6 +33,13 @@ spec:
                 name: chatting-server-service
                 port:
                   number: 8030
+#          - path: /grafana
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: prometheus-grafana
+#                port:
+#                  number: 80
           - path: /(.*)
             pathType: ImplementationSpecific
             backend:
@@ -39,13 +47,6 @@ spec:
                 name: front-server-service
                 port:
                   number: 8080
-#          - path: /(.*)
-#            pathType: ImplementationSpecific
-#            backend:
-#              service:
-#                name: user-server-service
-#                port:
-#                  number: 8010
   tls:
     - hosts:
         - www.litcodev.com

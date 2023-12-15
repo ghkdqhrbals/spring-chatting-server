@@ -160,6 +160,7 @@ jobs:
           cd k8s/onlychat/deployment
           sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           cd ..
+          kubectl apply -f ./hpa/
           kubectl apply -f ./eks/
           kubectl apply -f redis.yaml
           kubectl apply -f ./volume/

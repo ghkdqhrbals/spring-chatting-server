@@ -75,4 +75,10 @@ spec:
             limits:
               cpu: "1.5" # 최대 사용 가능한 CPU 양
               memory: "1Gi" # 최대 사용 가능한 메모리 양
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8030
+            initialDelaySeconds: 5
+            periodSeconds: 5
       restartPolicy: Always

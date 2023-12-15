@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: chatting-server-deployment
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:
@@ -18,7 +18,7 @@ spec:
           averageUtilization: 50 # 원하는 CPU 사용률 목표 (50%)
   behavior:
     scaleDown:
-      stabilizationWindowSeconds: 300 # 스케일 업/다운 안정화 기간 (300초) 빠르게 스케일 업/다운을 하지 않도록 설정
+      stabilizationWindowSeconds: 300 # 스케일 다운 안정화 기간 (300초) 빠르게 스케일 업/다운을 하지 않도록 설정
       policies:
         - type: Pods
           value: 1

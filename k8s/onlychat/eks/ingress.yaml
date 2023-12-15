@@ -33,13 +33,6 @@ spec:
                 name: chatting-server-service
                 port:
                   number: 8030
-#          - path: /grafana
-#            pathType: Prefix
-#            backend:
-#              service:
-#                name: prometheus-grafana
-#                port:
-#                  number: 80
           - path: /(.*)
             pathType: ImplementationSpecific
             backend:

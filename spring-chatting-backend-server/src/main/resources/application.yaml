@@ -9,13 +9,18 @@ spring:
   messages:
     basename: messages,errors
   datasource:
-    hikari:
-      maximum-pool-size: 5
+    # tomcat.jdbc.pool settings
+    tomcat:
+      max-active: 30
+      initial-size: 10
+      max-wait: 10000
+      remove-abandoned: true
+      remove-abandoned-timeout: 300
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
-    show-sql: true
+    show-sql: false
     open-in-view: true
     properties:
       hibernate:

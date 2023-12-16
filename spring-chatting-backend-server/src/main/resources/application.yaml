@@ -8,14 +8,6 @@ spring:
     name: chat-service
   messages:
     basename: messages,errors
-  datasource:
-    # tomcat.jdbc.pool settings
-    tomcat:
-      max-active: 30
-      initial-size: 10
-      max-wait: 10000
-      remove-abandoned: true
-      remove-abandoned-timeout: 300
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect

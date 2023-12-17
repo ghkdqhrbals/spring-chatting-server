@@ -16,12 +16,13 @@ prometheus:
   service:
     type: NodePort
     nodePort: 31001
-  additionalScrapeConfigs:
-    - job_name: 'spring-cloud-api-gateway'
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets: ['api-server-service.default.svc.cluster.local:8000']
-    - job_name: 'chatting-server'
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets: [ 'chatting-server-service.default.svc.cluster.local:8030' ]
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: 'spring-cloud-api-gateway'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['api-server-service.default.svc.cluster.local:8000']
+      - job_name: 'chatting-server'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'chatting-server-service.default.svc.cluster.local:8030' ]

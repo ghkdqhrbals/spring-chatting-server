@@ -10,6 +10,7 @@ import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.kafka.dto.*;
 import com.example.commondto.dto.chat.ChatRequest;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTOsWithUser;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ public class ChatController {
     private final ChatService chatService;
 
 
+
+    @Timed("GET /chats")
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
@@ -65,6 +68,7 @@ public class ChatController {
     }
 
     // 채팅 저장
+    @Timed("POST /CHAT")
     @PostMapping(value = "/chat")
     @Operation(summary = "Save chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {

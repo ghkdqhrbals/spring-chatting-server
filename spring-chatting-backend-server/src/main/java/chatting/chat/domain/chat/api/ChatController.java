@@ -36,7 +36,6 @@ public class ChatController {
 
 
 
-    @Timed("GET /chats")
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
@@ -68,7 +67,6 @@ public class ChatController {
     }
 
     // 채팅 저장
-    @Timed("POST /CHAT")
     @PostMapping(value = "/chat")
     @Operation(summary = "Save chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {

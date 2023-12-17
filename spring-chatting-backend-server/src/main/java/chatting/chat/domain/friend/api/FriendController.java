@@ -7,6 +7,7 @@ import chatting.chat.web.filter.UserContext;
 import com.example.commondto.dto.friend.FriendRequest;
 import com.example.commondto.dto.friend.FriendResponse;
 import com.example.commondto.dto.friend.FriendResponse.FriendDTO;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.AllArgsConstructor;

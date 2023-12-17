@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: postgres-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-exporter
+  template:
+    metadata:
+      labels:
+        app: postgres-exporter
+    spec:
+      containers:
+        - name: postgres-exporter
+          image: wrouesnel/postgres_exporter
+          ports:
+            - containerPort: 9187
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "postgresql://chat-db:5433/chat?sslmode=disable"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: postgres-exporter
+spec:
+  selector:
+    app: postgres-exporter
+  ports:
+    - protocol: TCP
+      port: 9187
+      targetPort: 9187
+  type: ClusterIP
+---

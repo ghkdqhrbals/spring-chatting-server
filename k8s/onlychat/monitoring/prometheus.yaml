@@ -26,3 +26,6 @@ prometheus:
         metrics_path: '/actuator/prometheus'
         static_configs:
           - targets: [ 'chatting-server-service.default.svc.cluster.local:8030' ]
+      - job_name: 'chatting-db-exporter'
+        static_configs:
+          - targets: [ 'postgres-exporter.default.svc.cluster.local:9187' ]

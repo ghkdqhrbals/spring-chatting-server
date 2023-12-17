@@ -18,7 +18,7 @@ spec:
           averageUtilization: 30 # 원하는 CPU 사용률 목표 (30%)
   behavior:
     scaleDown:
-      stabilizationWindowSeconds: 300 # 스케일 다운하기 전 대기 시간 (300초)
+      stabilizationWindowSeconds: 1800 # 스케일 다운하기 전 대기 시간 (30분)
       policies:
         - type: Pods
           value: 1

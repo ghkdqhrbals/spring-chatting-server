@@ -82,6 +82,8 @@ spring:
 
 management:
   endpoints:
+    prometheus:
+      enabled: true
     web:
       exposure:
         include: health, prometheus

@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 15s
+
+grafana:
+  enabled: true
+  ingress:
+    enabled: false
+  service:
+    type: NodePort
+    nodePort: 31000
+
+prometheus:
+  enabled: true
+  ingress:
+    enabled: false
+  service:
+    type: NodePort
+    nodePort: 31001
+  additionalScrapeConfigs:
+    - job_name: 'spring-cloud-api-gateway'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['api-server-service.default.svc.cluster.local:8000']
+    - job_name: 'chatting-server'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: [ 'chatting-server-service.default.svc.cluster.local:8030' ]

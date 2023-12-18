@@ -69,11 +69,11 @@ management:
 
 logging:
   level:
-    chatting.chat: TRACE
+    chatting.chat: INFO
     org.springframework.amqp: ERROR
     org.springframework.boot.actuate.amqp: ERROR
     org:
       springframework:
         data:
-          jpa: DEBUG
-        web: DEBUG
+          jpa: INFO
+        web: INFO

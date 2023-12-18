@@ -20,7 +20,7 @@ spec:
             - containerPort: 9187
           env:
             - name: DATA_SOURCE_NAME
-              value: "postgresql://chat-db:5433/chat?sslmode=disable"
+              value: "postgresql://<your-user-name>:<your-db-password>@chat-db:5433/postgres?sslmode=disable"
 ---
 apiVersion: v1
 kind: Service

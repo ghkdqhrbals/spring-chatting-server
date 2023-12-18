@@ -77,8 +77,9 @@ spec:
               memory: "1Gi" # 최대 사용 가능한 메모리 양
           readinessProbe:
             httpGet:
-              path: /health
+              path: /actuator/health
               port: 8030
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            timeoutSeconds: 10  # 헬스체크 타임아웃 10초로 설정
+            initialDelaySeconds: 10 # 파드 실행 후 10초 후부터 체크
+            periodSeconds: 5 # 5초마다 체크
       restartPolicy: Always

@@ -101,7 +101,6 @@ public class UserServiceImpl implements UserService {
 
     // 채팅방 생성
     @Override
-    @CacheEvict(value = "chatRoom", key = "#req.userId")
     public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
 
         User findUser = userRepository.findByUserId(UserContext.getUserId()).orElseThrow(()->new CustomException(CANNOT_FIND_USER));

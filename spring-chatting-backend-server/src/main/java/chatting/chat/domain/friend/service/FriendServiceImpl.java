@@ -96,12 +96,14 @@ public class FriendServiceImpl implements FriendService {
         return friendRepository.findAllByUserId(userId);
     }
 
-    private User getUserById(String userId) {
+    @Override
+    public User getUserById(String userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
     }
 
-    private boolean areFriends(String userId, String friendId) {
+    @Override
+    public boolean areFriends(String userId, String friendId) {
         return friendRepository.findByUserIdAndFriendId(userId, friendId) != null;
     }
 }

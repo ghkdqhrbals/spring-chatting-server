@@ -41,6 +41,10 @@ public class Chatting {
 
     }
 
+    /**
+     * {@link Chatting} 를 {@link ChatRequest.ChatRecordDTO} 로 변환
+     * @return {@link ChatRequest.ChatRecordDTO}
+     */
     public ChatRequest.ChatRecordDTO toChatRecordDTO() {
         return ChatRequest.ChatRecordDTO.builder()
                 .id(this.id)

@@ -34,8 +34,6 @@ public class ChatController {
     private final RoomService roomService;
     private final ChatService chatService;
 
-
-
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {

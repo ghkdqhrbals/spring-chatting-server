@@ -17,6 +17,18 @@ prometheus:
     type: NodePort
     nodePort: 31001
   prometheusSpec:
+    storageSpec:
+      # Using PersistentVolumeClaim
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ""
+          accessModes: [ "ReadWriteMany" ] # PV의 accessModes와 일치
+          resources:
+            requests:
+              storage: 200Mi # PV의 스토리지 욹량과 일치
+          selector:
+            matchLabels:
+              app: grafana-pv # PV의 라벨과 일치
     additionalScrapeConfigs:
       - job_name: 'spring-cloud-api-gateway'
         metrics_path: '/actuator/prometheus'

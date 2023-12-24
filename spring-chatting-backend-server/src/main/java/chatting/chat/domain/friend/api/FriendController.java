@@ -56,5 +56,4 @@ public class FriendController {
         friendService.removeFriend(userId, friendId);
         return ResponseEntity.ok("success");
     }
-
 }

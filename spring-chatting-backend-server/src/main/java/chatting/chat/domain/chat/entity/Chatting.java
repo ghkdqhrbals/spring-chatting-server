@@ -4,6 +4,7 @@ import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.user.entity.User;
 import com.example.commondto.dto.chat.ChatRequest;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +28,7 @@ public class Chatting {
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
+    @Builder
     public Chatting(String id, Room room, User sendUser, String message, LocalDateTime createdAt) {
         this.id = id;
         this.room = room;

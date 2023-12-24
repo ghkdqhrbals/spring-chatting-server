@@ -83,7 +83,13 @@ public class ChatController {
     }
 
 
-    // utils
+    /**
+     * 채팅 생성
+     * @param room
+     * @param user
+     * @param msg
+     * @return {@link Chatting}
+     */
     private Chatting createChatting(Room room, User user, String msg) {
         Chatting chatting = new Chatting();
         chatting.setId(UUID.randomUUID().toString());

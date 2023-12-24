@@ -58,7 +58,6 @@ public class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
-        // MockMvc에 UserContextInterceptor를 추가
         this.mockMvc = MockMvcBuilders
             .standaloneSetup(new UserController(userService))
             .setControllerAdvice(new GlobalExceptionHandler())

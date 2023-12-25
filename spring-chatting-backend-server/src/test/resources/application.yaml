@@ -1,0 +1,71 @@
+spring:
+  profiles:
+    active: test
+  application:
+    name: chat-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+  messages:
+    basename: messages,errors
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    show-sql: false
+    open-in-view: true
+    properties:
+      hibernate:
+        use-new-id-generator-mappings: true
+        order_inserts: true
+        ddl-auto: create-drop
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+          batch_size: 50
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: kafka1:9092
+
+server:
+  error:
+    include-stacktrace: never
+  tomcat:
+    accept-count: 100 # default 100
+    connection-timeout: 60s # default 60s
+    max-threads: 150 # default 200
+    min-spare-threads: 30 # default 10
+    max-connections: 8192 # default 8192 동시에 처리할 수 있는 최대 연결 수
+    max-swallow-size: 2MB # default 2MB
+
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://spring-cloud-kubernetes-discoveryserver/eureka
+
+management:
+  endpoints:
+    prometheus:
+      enabled: true
+    web:
+      exposure:
+        include: health, httpexchanges, beans, busrefresh, prometheus
+
+logging:
+  level:
+    chatting.chat: TRACE
+    org.springframework.amqp: ERROR
+    org.springframework.boot.actuate.amqp: ERROR
+    org:
+      springframework:
+        data:
+          jpa: DEBUG
+        web: INFO

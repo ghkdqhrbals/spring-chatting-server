@@ -14,6 +14,7 @@ import chatting.chat.domain.user.repository.UserRepository;
 
 import chatting.chat.web.kafka.dto.ChatRoomDTO;
 import chatting.chat.web.kafka.dto.*;
+import io.micrometer.core.annotation.Timed;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findById(String userId) {
-        return userRepository.findById(userId).orElseThrow(()-> new CustomException(CANNOT_FIND_USER));
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
     }
 
     @Override
@@ -58,6 +60,9 @@ public class UserServiceImpl implements UserService {
     @Cacheable(value = "friendsList", key = "#userId")
     public List<FriendResponse.FriendDTO> findAllFriends(String userId) {
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
+        if (findFriends.isEmpty()) {
+            throw new CustomException(CANNOT_FIND_USER);
+        }
         ArrayList<FriendResponse.FriendDTO> collect = findFriends.stream()
             .map(Friend::getFriendId)
             .map(friendId -> {
@@ -86,12 +91,17 @@ public class UserServiceImpl implements UserService {
     // 유저 상태메세지 업데이트
     @Override
     public void updateUserStatus(RequestChangeUserStatusDTO req) {
-        User findUser = userRepository.findById(req.getUserId()).orElseThrow(()-> new CustomException(CANNOT_FIND_USER));
+        User findUser = userRepository.findById(req.getUserId())
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
         findUser.setUserStatus(req.getStatus());
     }
 
     public void remove(String userId) {
-        throwErrorWhenUserNotFind(userId);
+        Optional<User> findUser = userRepository.findById(userId);
+        if (!findUser.isPresent()) {
+            throw new CustomException(CANNOT_FIND_USER);
+        }
+
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
         for (Friend f : findFriends) {
             friendRepository.deleteByUserId(f.getFriendId());
@@ -101,9 +111,16 @@ public class UserServiceImpl implements UserService {
 
     // 채팅방 생성
     @Override
+    @Timed(value = "roomService.makeRoomWithFriends")
     public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
 
-        User findUser = userRepository.findByUserId(UserContext.getUserId()).orElseThrow(()->new CustomException(CANNOT_FIND_USER));
+        User findUser = userRepository.findByUserId(UserContext.getUserId())
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
+
+        // 채팅방 참여자가 없을 때 오류 반환
+        if (req.getFriendIds().isEmpty()) {
+            throw new CustomException(CANNOT_FIND_FRIEND);
+        }
 
         // 새로운 채팅방 생성
         Room room = roomRepository.save(new Room(ZonedDateTime.now(), ZonedDateTime.now()));
@@ -131,7 +148,10 @@ public class UserServiceImpl implements UserService {
     @Cacheable(value = "chatRoom", key = "#userId")
     public List<ChatRoomDTO> findAllMyRooms(String userId) {
         // 유저 존재여부
-        throwErrorWhenUserNotFind(userId);
+        Optional<User> findUser = userRepository.findById(userId);
+        if (!findUser.isPresent()) {
+            throw new CustomException(CANNOT_FIND_USER);
+        }
         // 내가 현재 참가하고있는 채팅방 검색
         List<Participant> findParticipants = participantRepository.findAllByUserId(userId);
         // 채팅방 DTO 생성
@@ -162,20 +182,23 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * ------ private methods -------
+     * 유저 생성 메소드
+     * @param userId
+     * @param userName
+     * @param userStatus
+     * @return {@link User}
      */
-
     private static User createUser(String userId, String userName, String userStatus) {
         return User.builder().userStatus(userStatus).userName(userName).userId(userId).build();
     }
 
-    public void throwErrorWhenUserNotFind(String userId) throws CustomException {
-        Optional<User> findUser = userRepository.findById(userId);
-        if (!findUser.isPresent()) {
-            throw new CustomException(CANNOT_FIND_USER);
-        }
-    }
-
+    /**
+     * roomId와 userId를 기반으로 참여자를 찾습니다. 만약 room 에 userId 참여자가 없다면 예외를 발생시킵니다.
+     * @param roomId
+     * @param userId
+     * @return {@link Participant}
+     * @throws CustomException
+     */
     private Participant getParticipant(Long roomId, String userId) throws CustomException {
         Participant findParticipant = participantRepository.findByRoomIdAndUserId(roomId, userId);
         if (findParticipant == null) {
@@ -184,10 +207,23 @@ public class UserServiceImpl implements UserService {
         return findParticipant;
     }
 
+    /**
+     * userId 기반으로 유저를 찾습니다. 만약 유저가 없다면 예외를 발생시킵니다.
+     * @param userId
+     * @return {@link User}
+     * @throws CustomException
+     */
     private User getUser(String userId) throws CustomException {
-        return userRepository.findById(userId).orElseThrow(()-> new CustomException(CANNOT_FIND_USER));
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
     }
 
+    /**
+     * 서로 친구인지 확인합니다. 만약 한명이라도 친구가 아니라면 예외를 발생시킵니다.
+     * @param findUser {@link User}
+     * @param userId {@link String}
+     * @throws CustomException
+     */
     private void isFriend(User findUser, String userId) throws CustomException {
         Friend f1 = friendRepository.findByUserIdAndFriendId(findUser.getUserId(), userId);
         Friend f2 = friendRepository.findByUserIdAndFriendId(userId, findUser.getUserId());
@@ -197,6 +233,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * 채팅방 리스트를 반환하는 메소드
+     * @param findParticipants
+     * @return {@link List} < {@link ChatRoomDTO} >
+     */
     private List<ChatRoomDTO> getChatRoomDTOS(List<Participant> findParticipants) {
         List<ChatRoomDTO> chatRoomDTOS = new ArrayList<>();
         for (Participant p : findParticipants) {

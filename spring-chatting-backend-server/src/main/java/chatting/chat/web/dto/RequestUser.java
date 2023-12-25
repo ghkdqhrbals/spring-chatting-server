@@ -41,6 +41,15 @@ public class RequestUser {
                 Objects.equals(userName, vo.userName);
     }
 
+    @Builder
+    public RequestUser(String userId, String userPw, String email, String userName, String role) {
+        this.userId = userId;
+        this.userPw = userPw;
+        this.email = email;
+        this.userName = userName;
+        this.role = role;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(userId+userPw+email+userName);

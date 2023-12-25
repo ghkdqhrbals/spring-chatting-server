@@ -34,8 +34,6 @@ public class ChatController {
     private final RoomService roomService;
     private final ChatService chatService;
 
-
-
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
@@ -83,7 +81,13 @@ public class ChatController {
     }
 
 
-    // utils
+    /**
+     * 채팅 생성
+     * @param room
+     * @param user
+     * @param msg
+     * @return {@link Chatting}
+     */
     private Chatting createChatting(Room room, User user, String msg) {
         Chatting chatting = new Chatting();
         chatting.setId(UUID.randomUUID().toString());

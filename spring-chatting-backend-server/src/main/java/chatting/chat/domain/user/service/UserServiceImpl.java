@@ -14,6 +14,7 @@ import chatting.chat.domain.user.repository.UserRepository;
 
 import chatting.chat.web.kafka.dto.ChatRoomDTO;
 import chatting.chat.web.kafka.dto.*;
+import io.micrometer.core.annotation.Timed;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,6 +111,7 @@ public class UserServiceImpl implements UserService {
 
     // 채팅방 생성
     @Override
+    @Timed(value = "roomService.makeRoomWithFriends")
     public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
 
         User findUser = userRepository.findByUserId(UserContext.getUserId())

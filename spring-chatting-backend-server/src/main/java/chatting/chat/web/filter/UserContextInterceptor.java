@@ -3,6 +3,7 @@ package chatting.chat.web.filter;
 import chatting.chat.web.sessionCluster.redis.UserRedisSession;
 import chatting.chat.web.sessionCluster.redis.UserRedisSessionRepository;
 import chatting.chat.web.sessionCluster.redis.util.RedisUtil;
+import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +43,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
     }
 
     @Override
+    @Timed(value = "interceptor.preHandle")
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
         Object handler) throws Exception {
         String requestURI = request.getRequestURI();
@@ -72,6 +74,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
         UserContext.clear();
     }
 
+    @Timed(value = "interceptor.extractUserIdFromRequest")
     private String extractUserIdFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

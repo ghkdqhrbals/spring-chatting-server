@@ -48,12 +48,10 @@ public class UserContextInterceptor implements HandlerInterceptor {
         Object handler) throws Exception {
         String requestURI = request.getRequestURI();
         log.trace("requestURI: {}", requestURI);
-        if (whiteList.get(requestURI).stream().anyMatch((method) -> {
-            if (method.equals(HttpMethod.valueOf(request.getMethod()))) {
-                return true;
-            }
-            return false;
-        })) {
+
+        Set<HttpMethod> methods = whiteList.get(requestURI);
+        if (methods != null && methods.stream()
+            .anyMatch(method -> method.equals(HttpMethod.valueOf(request.getMethod())))) {
             log.debug("whiteList pass : {}", requestURI);
             return true;
         }

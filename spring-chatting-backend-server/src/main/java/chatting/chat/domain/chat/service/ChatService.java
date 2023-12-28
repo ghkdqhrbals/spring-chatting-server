@@ -7,6 +7,7 @@ import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.room.repository.RoomRepository;
+import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -57,14 +58,13 @@ public class ChatService {
         chatRepository.saveAll(chattings);
     }
 
-    public Chatting save(Chatting chatting) throws CustomException {
+    public ChatRecordDTO save(Chatting chatting) throws CustomException {
         Participant findParticipant = participantRepository.findByRoomIdAndUserId(chatting.getRoom().getRoomId(), chatting.getSendUser().getUserId());
         // 채팅방 참여인원인지 확인
         if (findParticipant == null){
             throw new CustomException(INVALID_PARTICIPANT);
         }
 
-        Chatting save = chatRepository.save(chatting);
-        return save;
+        return chatRepository.save(chatting).toChatRecordDTO();
     }
 }

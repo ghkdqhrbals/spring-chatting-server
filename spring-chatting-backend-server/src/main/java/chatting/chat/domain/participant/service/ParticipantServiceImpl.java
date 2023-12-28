@@ -1,5 +1,6 @@
 package chatting.chat.domain.participant.service;
 
+import chatting.chat.domain.participant.dto.ParticipantDto;
 import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.user.entity.User;
@@ -27,14 +28,13 @@ public class ParticipantServiceImpl implements ParticipantService{
     }
 
     @Override
-    public List<Participant> findAllByUserId(String userId) {
-        return participantRepository.findAllByUserId(userId);
+    public List<ParticipantDto> findAllByUserId(String userId) {
+        return participantRepository.findAllByUserId(userId).stream().map(Participant::toDto).toList();
     }
 
     @Override
-    public List<User> findParticipantByRoomId(Long roomId) {
-        List<Participant> participants = participantRepository.findAllByRoomId(roomId);
-        return null;
+    public List<ParticipantDto> findParticipantByRoomId(Long roomId) {
+        return participantRepository.findAllByRoomId(roomId).stream().map(Participant::toDto).toList();
     }
 
     @Override

@@ -8,11 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.*;
+import lombok.ToString;
 
 public class ChatRequest {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @Getter
     @Setter
+    @ToString
     public static class ChatRecordDTO {
         private String id;
         private Long roomId;

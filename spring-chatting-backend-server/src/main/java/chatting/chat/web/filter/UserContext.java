@@ -9,11 +9,19 @@ public class UserContext {
 
     private static final ThreadLocal<String> userIdThreadLocal = new ThreadLocal<>();
 
+    /**
+     * ThreadLocal에 userId를 저장합니다.
+     * @param userId {@link String}
+     */
     public static void setUserId(String userId) {
         log.trace("ThreadLocal userId saved : {}", userId);
         userIdThreadLocal.set(userId);
     }
 
+    /**
+     * ThreadLocal에 저장된 userId를 반환합니다.
+     * @return userId {@link String}
+     */
     public static String getUserId() {
         log.trace("ThreadLocal userId : {}", userIdThreadLocal.get());
         if (userIdThreadLocal.get() == null) {

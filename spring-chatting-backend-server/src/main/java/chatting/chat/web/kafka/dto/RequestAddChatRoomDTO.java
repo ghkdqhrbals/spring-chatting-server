@@ -15,6 +15,10 @@ import java.util.List;
 public class RequestAddChatRoomDTO {
     @JsonIgnore
     private String userId;
-
     private List<String> friendIds;
+    @Builder
+    public RequestAddChatRoomDTO(String userId, List<String> friendIds) {
+        this.userId = userId;
+        this.friendIds = friendIds;
+    }
 }

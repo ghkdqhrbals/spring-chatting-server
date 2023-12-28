@@ -132,6 +132,7 @@ class UserServiceImplTest extends Initializer {
         });
     }
 
+
     @Test
     @DisplayName("사용자 상태 메시지를 성공적으로 업데이트하면 변경된 상태 확인")
     public void whenUpdateUserStatusWithValidId_thenStatusShouldBeUpdated() {

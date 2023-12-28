@@ -1,8 +1,11 @@
 package chatting.chat.domain.participant.entity;
 
+import chatting.chat.domain.participant.dto.ParticipantDto;
 import chatting.chat.domain.room.entity.Room;
+import chatting.chat.domain.user.dto.UserDto;
 import chatting.chat.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +37,7 @@ public class Participant {
     @Column(name = "UPDATED_AT")
     private LocalDate UpdatedAt;
 
+    @Builder
     public Participant(User user, Room room, String roomName, LocalDate createdAt, LocalDate updatedAt) {
         this.user = user;
         this.room = room;
@@ -44,5 +48,16 @@ public class Participant {
 
     public Participant() {
 
+    }
+
+    public ParticipantDto toDto(){
+        return ParticipantDto.builder()
+            .participantId(this.participantId)
+            .userDto(this.user.toDto())
+            .roomId(this.room.getRoomId())
+            .roomName(this.roomName)
+            .createdAt(this.createdAt)
+            .updatedAt(this.UpdatedAt)
+            .build();
     }
 }

@@ -2,7 +2,9 @@ package chatting.chat.domain.user.service;
 
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.participant.entity.Participant;
+import chatting.chat.domain.room.dto.RoomDto;
 import chatting.chat.domain.room.entity.Room;
+import chatting.chat.domain.user.dto.UserDto;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.web.filter.UserContext;
 import com.example.commondto.dto.friend.FriendResponse;
@@ -112,15 +114,24 @@ public class UserServiceImpl implements UserService {
     // 채팅방 생성
     @Override
     @Timed(value = "roomService.makeRoomWithFriends")
-    public void makeRoomWithFriends(RequestAddChatRoomDTO req) {
+    public RoomDto makeRoomWithFriends(RequestAddChatRoomDTO req) throws CustomException{
+        ArrayList<UserDto> userParticipants = new ArrayList<>();
 
         User findUser = userRepository.findByUserId(UserContext.getUserId())
             .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
+
+        userParticipants.add(findUser.toDto());
 
         // 채팅방 참여자가 없을 때 오류 반환
         if (req.getFriendIds().isEmpty()) {
             throw new CustomException(CANNOT_FIND_FRIEND);
         }
+
+        req.getFriendIds().forEach(friendId -> {
+            User findFriend = userRepository.findByUserId(friendId)
+                .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
+            userParticipants.add(findFriend.toDto());
+        });
 
         // 새로운 채팅방 생성
         Room room = roomRepository.save(new Room(ZonedDateTime.now(), ZonedDateTime.now()));
@@ -140,6 +151,13 @@ public class UserServiceImpl implements UserService {
             saveParticipant(findFriend, room,
                 req.getFriendIds().toString().replace("[", "").replace("]", ""));
         }
+
+        return RoomDto.builder()
+            .roomId(room.getRoomId())
+            .users(userParticipants)
+            .createdAt(room.getCreatedAt())
+            .updatedAt(room.getUpdatedAt())
+            .build();
     }
 
     // 유저참여 채팅방 검색
@@ -183,6 +201,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 유저 생성 메소드
+     *
      * @param userId
      * @param userName
      * @param userStatus
@@ -194,6 +213,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * roomId와 userId를 기반으로 참여자를 찾습니다. 만약 room 에 userId 참여자가 없다면 예외를 발생시킵니다.
+     *
      * @param roomId
      * @param userId
      * @return {@link Participant}
@@ -209,6 +229,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * userId 기반으로 유저를 찾습니다. 만약 유저가 없다면 예외를 발생시킵니다.
+     *
      * @param userId
      * @return {@link User}
      * @throws CustomException
@@ -220,8 +241,9 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 서로 친구인지 확인합니다. 만약 한명이라도 친구가 아니라면 예외를 발생시킵니다.
+     *
      * @param findUser {@link User}
-     * @param userId {@link String}
+     * @param userId   {@link String}
      * @throws CustomException
      */
     private void isFriend(User findUser, String userId) throws CustomException {
@@ -235,6 +257,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 채팅방 리스트를 반환하는 메소드
+     *
      * @param findParticipants
      * @return {@link List} < {@link ChatRoomDTO} >
      */

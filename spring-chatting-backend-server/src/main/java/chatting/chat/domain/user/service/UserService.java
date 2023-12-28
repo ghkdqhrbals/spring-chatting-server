@@ -2,6 +2,7 @@ package chatting.chat.domain.user.service;
 
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.participant.entity.Participant;
+import chatting.chat.domain.room.dto.RoomDto;
 import chatting.chat.domain.user.entity.User;
 import com.example.commondto.dto.friend.FriendResponse;
 import chatting.chat.web.kafka.dto.*;
@@ -14,7 +15,7 @@ public interface UserService {
     User save(String userId, String userName, String userStatus);
     void updateUserStatus(RequestChangeUserStatusDTO req);
     List<ChatRoomDTO> findAllMyRooms(String userId);
-    void makeRoomWithFriends(RequestAddChatRoomDTO req);
+    RoomDto makeRoomWithFriends(RequestAddChatRoomDTO req);
     User findById(String id);
     void removeUser(String userId);
     List<Participant> findParticipantWithRoomId(Long roomId);

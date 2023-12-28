@@ -3,6 +3,7 @@ package chatting.chat.domain.user.entity;
 import chatting.chat.domain.chat.entity.Chatting;
 import chatting.chat.domain.friend.entity.Friend;
 import chatting.chat.domain.participant.entity.Participant;
+import chatting.chat.domain.user.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,5 +42,13 @@ public class User {
 
     @OneToMany(mappedBy = "sendUser", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Chatting> chattings = new ArrayList<>();
+
+    public UserDto toDto() {
+        return UserDto.builder()
+            .userId(userId)
+            .userName(userName)
+            .userStatus(userStatus)
+            .build();
+    }
 
 }

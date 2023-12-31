@@ -6,3 +6,4 @@
 .Ds_store
 /redis
 .gradle
+**/build/

@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.*;
 
+/**
+ * 초기 요청 시, 쿠키에서 userId 를 추출하여 {@link UserRedisSessionRepository} 를 통해 Redis 에서 userId 에 해당하는
+ * {@link UserRedisSession} 을 가져옵니다. 이후 {@link UserContext} 에 userId 를 저장합니다.
+ */
 @Slf4j
 @Component
 public class UserContextInterceptor implements HandlerInterceptor {
@@ -24,8 +28,12 @@ public class UserContextInterceptor implements HandlerInterceptor {
     private final UserRedisSessionRepository userRedisSessionRepository;
 
     private final Map<String, Set<HttpMethod>> whiteList = new HashMap<>();
-//    private final List<String> whiteList = Arrays.asList("/health","/user");
 
+    /**
+     * @param userRedisSessionRepository
+     * @implNote WhiteList를 설정할 수 있으며 등록된 path 는 {@link UserContextInterceptor#preHandle} 에서 검증하지
+     * 않습니다.
+     */
     public UserContextInterceptor(UserRedisSessionRepository userRedisSessionRepository) {
         this.userRedisSessionRepository = userRedisSessionRepository;
 
@@ -34,6 +42,11 @@ public class UserContextInterceptor implements HandlerInterceptor {
         addWhiteList("/health", HttpMethod.GET);
     }
 
+    /**
+     * @param path
+     * @param method
+     * @implNote WhiteList 에 path 를 추가합니다.
+     */
     private void addWhiteList(String path, HttpMethod method) {
         if (whiteList.containsKey(path)) {
             whiteList.get(path).add(method);
@@ -42,6 +55,16 @@ public class UserContextInterceptor implements HandlerInterceptor {
         }
     }
 
+    /**
+     * @param request  current HTTP request
+     * @param response current HTTP response
+     * @param handler  chosen handler to execute, for type and/or instance evaluation
+     * @return {@code true} if the execution chain should proceed with the next interceptor or the
+     * handler itself.
+     * @throws Exception
+     * @implNote 요청이 들어올 때마다 userId 를 추출하여 {@link UserContext} 에 저장합니다. 추출된 userId 가 없을 경우 401 을
+     * 반환합니다. 또한 Redis 에 refreshToken 이 저장되어있지 않을 때도 401 에러를 반환합니다. 테스트 시 {@link UserContext#setUserId} 로 ThreadLocal 에 저장해주세요.
+     */
     @Override
     @Timed(value = "interceptor.preHandle")
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,

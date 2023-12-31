@@ -42,6 +42,11 @@ class ParticipantServiceImplTest extends Initializer {
         .userName("friendName")
         .userStatus("").build();
 
+    private final User testNewUser = User.builder()
+        .userId("newUserId")
+        .userName("newUserName")
+        .userStatus("").build();
+
     @BeforeEach
     void setUpRemove() {
         userRepository.deleteAll();
@@ -135,5 +140,172 @@ class ParticipantServiceImplTest extends Initializer {
 
         assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.CANNOT_FIND_FRIEND);
     }
+
+    @Test
+    @DisplayName("채팅방 참여 시 채팅방에 존재하지 않으면 에러 반환")
+    void whenRoomIsNotValid_thenCustomExceptionShouldBeReturned() throws CustomException{
+        // given
+        userService.save(testUser.getUserId(), testUser.getUserName(), testUser.getUserStatus());
+        userService.save(testFriendUser.getUserId(), testFriendUser.getUserName(), testFriendUser.getUserStatus());
+        UserContext.setUserId(testUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 친구 추가
+        friendService.save(testUser.getUserId(), testFriendUser.getUserId());
+
+        // when then
+        CustomException customException = assertThrows(CustomException.class, () -> {
+            participantService.addParticipant(1L, testUser.getUserId());
+        });
+
+        assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.CANNOT_FIND_ROOM);
+    }
+
+    @Test
+    @DisplayName("채팅방에 참여 성공")
+    void whenValidParticipantAdd_thenSuccessShouldBeReturned() {
+        // given
+        // 유저 추가
+        userService.save(testUser.getUserId(), testUser.getUserName(), testUser.getUserStatus());
+        userService.save(testFriendUser.getUserId(), testFriendUser.getUserName(), testFriendUser.getUserStatus());
+        UserContext.setUserId(testUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 친구 추가
+        friendService.save(testUser.getUserId(), testFriendUser.getUserId());
+
+        // 채팅방 생성
+        RoomDto roomDto = userService.makeRoomWithFriends(RequestAddChatRoomDTO.builder()
+            .userId(testUser.getUserId())
+            .friendIds(Arrays.asList(testFriendUser.getUserId()))
+            .build());
+
+        userService.save(testNewUser.getUserId(), testNewUser.getUserName(), testNewUser.getUserStatus());
+        UserContext.setUserId(testNewUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // when
+        String success = participantService.addParticipant(roomDto.getRoomId(), testNewUser.getUserId());
+
+        // then
+        List<ParticipantDto> participants = participantService.findParticipantByRoomId(roomDto.getRoomId());
+
+        participants.forEach(participantDto -> log.info("participantDto: {}", participantDto));
+        assertThat(participants).hasSize(3);
+        assertThat(participants.get(0).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(0).getUserDto().getUserId()).isEqualTo(testUser.getUserId());
+        assertThat(participants.get(1).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(1).getUserDto().getUserId()).isEqualTo(testFriendUser.getUserId());
+        assertThat(participants.get(2).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(2).getUserDto().getUserId()).isEqualTo(testNewUser.getUserId());
+    }
+
+    @Test
+    @DisplayName("채팅방에서 나가기 성공")
+    void whenValidParticipantRemove_thenSuccessShouldBeReturned() {
+        // given
+        // 유저 추가
+        userService.save(testUser.getUserId(), testUser.getUserName(), testUser.getUserStatus());
+        userService.save(testFriendUser.getUserId(), testFriendUser.getUserName(), testFriendUser.getUserStatus());
+        UserContext.setUserId(testUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 친구 추가
+        friendService.save(testUser.getUserId(), testFriendUser.getUserId());
+
+        // 채팅방 생성
+        RoomDto roomDto = userService.makeRoomWithFriends(RequestAddChatRoomDTO.builder()
+            .userId(testUser.getUserId())
+            .friendIds(Arrays.asList(testFriendUser.getUserId()))
+            .build());
+
+        userService.save(testNewUser.getUserId(), testNewUser.getUserName(), testNewUser.getUserStatus());
+        UserContext.setUserId(testNewUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 채팅방 참여
+        participantService.addParticipant(roomDto.getRoomId(), testNewUser.getUserId());
+
+        // when
+        String success = participantService.remove(roomDto.getRoomId(), testNewUser.getUserId());
+
+        // then
+        List<ParticipantDto> participants = participantService.findParticipantByRoomId(roomDto.getRoomId());
+
+        participants.forEach(participantDto -> log.info("participantDto: {}", participantDto));
+        assertThat(participants).hasSize(2);
+        assertThat(participants.get(0).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(0).getUserDto().getUserId()).isEqualTo(testUser.getUserId());
+        assertThat(participants.get(1).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(1).getUserDto().getUserId()).isEqualTo(testFriendUser.getUserId());
+    }
+
+    @Test
+    @DisplayName("채팅방에 참여중인 유저 목록 조회 성공")
+    void whenValidParticipantGet_thenSuccessShouldBeReturned() {
+        // given
+        // 유저 추가
+        userService.save(testUser.getUserId(), testUser.getUserName(), testUser.getUserStatus());
+        userService.save(testFriendUser.getUserId(), testFriendUser.getUserName(), testFriendUser.getUserStatus());
+        UserContext.setUserId(testUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 친구 추가
+        friendService.save(testUser.getUserId(), testFriendUser.getUserId());
+
+        // 채팅방 생성
+        RoomDto roomDto = userService.makeRoomWithFriends(RequestAddChatRoomDTO.builder()
+            .userId(testUser.getUserId())
+            .friendIds(Arrays.asList(testFriendUser.getUserId()))
+            .build());
+
+        userService.save(testNewUser.getUserId(), testNewUser.getUserName(), testNewUser.getUserStatus());
+        UserContext.setUserId(testNewUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 채팅방 참여
+        participantService.addParticipant(roomDto.getRoomId(), testNewUser.getUserId());
+
+        // when
+        List<ParticipantDto> participants = participantService.findParticipantByRoomId(roomDto.getRoomId());
+
+        // then
+        participants.forEach(participantDto -> log.info("participantDto: {}", participantDto));
+        assertThat(participants).hasSize(3);
+        assertThat(participants.get(0).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(0).getUserDto().getUserId()).isEqualTo(testUser.getUserId());
+        assertThat(participants.get(1).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(1).getUserDto().getUserId()).isEqualTo(testFriendUser.getUserId());
+        assertThat(participants.get(2).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(2).getUserDto().getUserId()).isEqualTo(testNewUser.getUserId());
+    }
+
+    @Test
+    @DisplayName("기존 채팅방 참여 시 내 채팅방 목록 조회 성공")
+    void whenValidParticipantGetMyRoom_thenSuccessShouldBeReturned() {
+        // given
+        // 유저 추가
+        userService.save(testUser.getUserId(), testUser.getUserName(), testUser.getUserStatus());
+        userService.save(testFriendUser.getUserId(), testFriendUser.getUserName(), testFriendUser.getUserStatus());
+        UserContext.setUserId(testUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 친구 추가
+        friendService.save(testUser.getUserId(), testFriendUser.getUserId());
+
+        // 채팅방 생성
+        RoomDto roomDto = userService.makeRoomWithFriends(RequestAddChatRoomDTO.builder()
+            .userId(testUser.getUserId())
+            .friendIds(Arrays.asList(testFriendUser.getUserId()))
+            .build());
+
+        userService.save(testNewUser.getUserId(), testNewUser.getUserName(), testNewUser.getUserStatus());
+        UserContext.setUserId(testNewUser.getUserId()); // ThreadLocal 에 userId 저장
+
+        // 채팅방 참여
+        participantService.addParticipant(roomDto.getRoomId(), testNewUser.getUserId());
+
+        // when
+        List<ParticipantDto> participants = participantService.findAllByUserId(testNewUser.getUserId());
+
+        // then
+        participants.forEach(participantDto -> log.info("participantDto: {}", participantDto));
+        assertThat(participants).hasSize(1);
+        assertThat(participants.get(0).getRoomId()).isEqualTo(roomDto.getRoomId());
+        assertThat(participants.get(0).getUserDto().getUserId()).isEqualTo(testNewUser.getUserId());
+    }
+
 
 }

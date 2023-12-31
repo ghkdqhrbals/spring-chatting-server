@@ -2,10 +2,28 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.5'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id 'jacoco'
+}
+
+jacoco {
+	toolVersion = "0.8.8"
 }
 
 ext {
 	set('springCloudVersion', "2022.0.1")
+}
+
+jacocoTestReport {
+	dependsOn test // 리포트 생성을 위해서는 test가 먼저 완료되어야 함
+	reports {
+		xml.enabled false
+		html.enabled true
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport // 테스트 종료후 항상 리포트 생성
 }
 
 group = 'chattingBackend'
@@ -83,10 +101,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
 }
 
 // find the latest jar file in the build/libs directory

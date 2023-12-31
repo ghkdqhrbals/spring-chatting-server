@@ -9,8 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import chatting.chat.domain.participant.dto.ParticipantDto;
 import chatting.chat.domain.participant.service.ParticipantServiceImpl;
 import chatting.chat.domain.user.api.UserController;
+import chatting.chat.domain.user.dto.UserDto;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.error.GlobalExceptionHandler;
@@ -19,6 +21,8 @@ import chatting.chat.web.sessionCluster.redis.UserRedisSession;
 import chatting.chat.web.sessionCluster.redis.UserRedisSessionRepository;
 import com.example.commondto.error.CustomException;
 import jakarta.servlet.http.Cookie;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +83,7 @@ class ParticipantControllerTest {
 
     @Test
     @DisplayName("채팅방이 존재하지 않을 때 참여 시 에러 반환")
-    void addParticipant() throws Exception {
+    void whenRoomNotValid_then404ShouldBeReturned() throws Exception {
         // given
         String refreshToken = "validToken";
         String userId = "userId";
@@ -93,10 +97,25 @@ class ParticipantControllerTest {
     }
 
     @Test
-    void getParticipants() {
-    }
+    @DisplayName("내가 참여중인 채팅방 목록 조회 시 참여중인 채팅방 목록 반환 성공")
+    void whenValidUserGetHisParticipantList_thenValidParticipantListShouldBeReturned()
+        throws Exception {
+        // given
+        String refreshToken = "validToken";
+        String userId = "userId";
+        ParticipantDto participantDto = ParticipantDto.builder().userDto(UserDto.builder().userId(userId).userName("userName").userStatus("").build())
+            .participantId(1L)
+            .createdAt(LocalDate.now())
+            .updatedAt(LocalDate.now())
+            .roomId(1L)
+            .roomName("roomName")
+            .build();
+        UserRedisSession userRedisSession = new UserRedisSession(userId, refreshToken);
+        when(userRedisSessionRepository.findById(refreshToken)).thenReturn(Optional.of(userRedisSession));
+        when(participantService.findAllByUserId(userId)).thenReturn(Arrays.asList(participantDto));
 
-    @Test
-    void getParticipant() {
+        // when + then
+        mockMvc.perform(get("/participant").cookie(new Cookie("refreshToken", refreshToken)))
+            .andExpect(status().isOk()).andExpect(jsonPath("$[0].userDto.userId", is(userId)));
     }
 }

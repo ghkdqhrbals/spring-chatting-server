@@ -58,7 +58,7 @@ public class JpaConfig {
 
     @Bean
     public ParticipantService participantService() {
-        return new ParticipantServiceImpl(participantRepository, userRepository);
+        return new ParticipantServiceImpl(participantRepository, userRepository, roomRepository);
     }
 
 }

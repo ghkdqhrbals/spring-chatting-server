@@ -68,10 +68,11 @@ public class ChatController {
     @PostMapping(value = "/chat")
     @Operation(summary = "Save chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
+        String userId = UserContext.getUserId();
 
         // validation
         Room findRoom = roomService.findByRoomId(req.getRoomId());
-        User findUser = userService.findById(req.getWriterId());
+        User findUser = userService.findById(userId);
 
         // service-logic
         Chatting chatting = createChatting(findRoom, findUser, req.getMessage());

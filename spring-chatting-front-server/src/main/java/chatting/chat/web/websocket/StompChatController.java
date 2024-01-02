@@ -69,8 +69,7 @@ public class StompChatController {
                 c.add("refreshToken", refreshToken);
                 c.add("accessToken", accessToken);
             })
-            .bodyValue(new RequestAddChatMessageDTO(message.getRoomId(), message.getWriter(),
-                message.getWriterId(), message.getMessage()))
+            .bodyValue(new RequestAddChatMessageDTO(message.getRoomId(), message.getMessage()))
             .retrieve()
             .onStatus(
                 HttpStatus::is4xxClientError,

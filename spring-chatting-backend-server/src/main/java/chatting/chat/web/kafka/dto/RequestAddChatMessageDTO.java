@@ -7,7 +7,5 @@ import lombok.Setter;
 @Setter
 public class RequestAddChatMessageDTO {
     private Long roomId;
-    private String writer;
-    private String writerId;
     private String message;
 }

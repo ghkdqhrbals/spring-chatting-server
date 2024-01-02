@@ -65,18 +65,8 @@ public class ChatController {
     @Operation(summary = "Save chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
         String userId = UserContext.getUserId();
-
-        // validation
-        roomService.findByRoomId(req.getRoomId());
-        userService.findById(userId);
-
-        // service-logic
-
-
-
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(chatService.save(req, userId));
     }
-
 
     /**
      * 채팅 생성

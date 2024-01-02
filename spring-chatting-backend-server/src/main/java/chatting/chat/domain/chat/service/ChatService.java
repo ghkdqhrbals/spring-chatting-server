@@ -40,6 +40,13 @@ public class ChatService {
     private final ParticipantRepository participantRepository;
 
 
+    /**
+     * 채팅방 아이디로 채팅기록을 조회하는 메소드입니다.
+     * <br>채팅방이 존재하지 않는다면 예외를 발생시킵니다. {@link ErrorCode#CANNOT_FIND_ROOM}
+     *
+     * @param roomId
+     * @return List {@link ChatRecordDTO}
+     */
     @Nullable
     public List<ChatRecordDTO> findAllByRoomId(Long roomId) {
         roomRepository.findById(roomId)
@@ -57,6 +64,16 @@ public class ChatService {
         chatRepository.saveAll(chattings);
     }
 
+    /**
+     * 채팅을 저장하는 메소드입니다.
+     * <br>채팅을 저장하기 전에 해당 유저가 해당 채팅방에 참여중인지 확인합니다. 참여중이지 않다면 예외를 발생시킵니다. {@link ErrorCode#INVALID_PARTICIPANT}
+     * <br>채팅방이 존재하지 않는다면 예외를 발생시킵니다. {@link ErrorCode#CANNOT_FIND_ROOM}
+     * <br>채팅을 전송하는 유저가 존재하지 않는다면 예외를 발생시킵니다. {@link ErrorCode#CANNOT_FIND_USER}
+     * @param req {@link RequestAddChatMessageDTO}
+     * @param userId
+     * @return {@link ChatRecordDTO}
+     * @throws CustomException
+     */
     public ChatRecordDTO save(RequestAddChatMessageDTO req, String userId) throws CustomException {
         Room room = roomRepository.findByRoomId(req.getRoomId())
             .orElseThrow(() -> new CustomException(CANNOT_FIND_ROOM));

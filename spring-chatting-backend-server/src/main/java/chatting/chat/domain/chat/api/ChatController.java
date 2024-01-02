@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ChatController {
 
+    private final UserContext userContext;
     private final UserService userService;
     private final RoomService roomService;
     private final ChatService chatService;
@@ -37,11 +38,12 @@ public class ChatController {
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
+        String userId = userContext.getUserId();
         List<ChatRecordDTO> records = chatService.findAllByRoomId(roomId);
         ChatRequest.ChatRecordDTOsWithUser response = ChatRecordDTOsWithUser.builder()
             .records(records)
-            .userId(UserContext.getUserId())
-            .userName(userService.findById(UserContext.getUserId()).getUserName())
+            .userId(userId)
+            .userName(userService.findById(userId).getUserName())
             .build();
 
         return ResponseEntity.ok(response);
@@ -49,7 +51,7 @@ public class ChatController {
 
     @GetMapping(value = "/chat")
     @Operation(summary = "Get a single chat with chat id")
-    public ResponseEntity<?> findChatRecord(@RequestParam("chatId") Long chatId) {
+    public ResponseEntity<?> findChatRecord(@RequestParam("chatId") String chatId) {
         return ResponseEntity.ok(chatService.findById(chatId));
     }
 
@@ -63,9 +65,8 @@ public class ChatController {
     // 채팅 저장
     @PostMapping(value = "/chat")
     @Operation(summary = "Save chat")
-    public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
-        String userId = UserContext.getUserId();
-        return ResponseEntity.ok(chatService.save(req, userId));
+    public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {;
+        return ResponseEntity.ok(chatService.save(req, userContext.getUserId()));
     }
 
     /**

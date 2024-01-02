@@ -2,10 +2,14 @@ package chatting.chat.web.kafka.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class RequestAddChatMessageDTO {
     private Long roomId;
     private String message;

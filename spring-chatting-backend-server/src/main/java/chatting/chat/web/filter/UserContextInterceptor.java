@@ -69,6 +69,10 @@ public class UserContextInterceptor implements HandlerInterceptor {
     @Timed(value = "interceptor.preHandle")
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
         Object handler) throws Exception {
+        if (request == null) {
+            log.trace("request is null");
+            return false;
+        }
         String requestURI = request.getRequestURI();
         log.trace("requestURI: {}", requestURI);
 

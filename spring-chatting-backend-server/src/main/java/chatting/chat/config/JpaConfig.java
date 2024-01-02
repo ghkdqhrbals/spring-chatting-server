@@ -13,6 +13,7 @@ import chatting.chat.domain.user.repository.UserRepository;
 
 import chatting.chat.domain.user.service.UserServiceImpl;
 import chatting.chat.domain.user.service.UserService;
+import chatting.chat.web.filter.UserContext;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,21 +30,24 @@ public class JpaConfig {
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
-
+    private final UserContext userContext;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public JpaConfig(EntityManager em, UserRepository userRepository,FriendRepository friendRepository, RoomRepository roomRepository, ParticipantRepository participantRepository) {
+    public JpaConfig(EntityManager em, UserRepository userRepository,FriendRepository friendRepository, RoomRepository roomRepository, ParticipantRepository participantRepository,
+        UserContext userContext, JdbcTemplate jdbcTemplate) {
         this.em = em;
         this.userRepository = userRepository;
         this.friendRepository = friendRepository;
         this.roomRepository = roomRepository;
         this.participantRepository = participantRepository;
+        this.userContext = userContext;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(userRepository, roomRepository, participantRepository, friendRepository);
+        return new UserServiceImpl(userContext, userRepository, roomRepository, participantRepository, friendRepository);
     }
 
     @Bean

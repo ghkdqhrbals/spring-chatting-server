@@ -11,6 +11,7 @@ import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.web.kafka.dto.RequestAddChatMessageDTO;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class ChatService {
             Chatting::toChatRecordDTO).collect(Collectors.toList());
     }
 
-    public ChatRecordDTO findById(Long id) {
+    public ChatRecordDTO findById(String id) {
         return chatRepository.findById(id)
             .orElseThrow(() -> new CustomException(CANNOT_FIND_CHATTING)).toChatRecordDTO();
     }
@@ -81,6 +82,7 @@ public class ChatService {
             .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
 
         Chatting chatting = Chatting.builder()
+            .id(UUID.randomUUID().toString())
             .room(room)
             .sendUser(user)
             .message(req.getMessage())

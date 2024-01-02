@@ -21,13 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 @AllArgsConstructor
 public class UserController {
+    private final UserContext userContext;
 
     private final UserService userService;
     
     @GetMapping
     @Operation(summary = "Get user information")
     public ResponseEntity<?> findUser() {
-        User findUser = userService.findById(UserContext.getUserId());
+        User findUser = userService.findById(userContext.getUserId());
         return ResponseEntity.ok(new ResponseGetUser(findUser.getUserId(), findUser.getUserName(),
             findUser.getUserStatus()));
     }

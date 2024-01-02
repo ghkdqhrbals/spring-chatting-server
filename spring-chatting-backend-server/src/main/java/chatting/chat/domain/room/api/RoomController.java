@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class RoomController {
 
+    private final UserContext userContext;
     private final RoomService roomService;
     private final UserService userService;
     private final ParticipantService participantService;
@@ -38,7 +39,7 @@ public class RoomController {
     @GetMapping(value = "/rooms")
     @Operation(summary = "Get room information that user participated")
     public ResponseEntity<?> findRoomWithUserId() {
-        return ResponseEntity.ok(userService.findAllMyRooms(UserContext.getUserId()));
+        return ResponseEntity.ok(userService.findAllMyRooms(userContext.getUserId()));
     }
 
     // 채팅방 개설
@@ -46,7 +47,7 @@ public class RoomController {
     @Operation(summary = "Open room with friends")
     public ResponseEntity<?> addChatRoom(@RequestBody RequestAddChatRoomDTO req){
         userService.makeRoomWithFriends(req);
-        List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(UserContext.getUserId());
+        List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(userContext.getUserId());
         return ResponseEntity.ok(allMyRooms);
     }
 }

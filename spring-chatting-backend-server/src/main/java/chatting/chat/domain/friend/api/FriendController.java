@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class FriendController {
+    private final UserContext userContext;
 
     private final UserService userService;
     private final FriendService friendService;
@@ -34,19 +35,19 @@ public class FriendController {
     @GetMapping("/friend")
     @Operation(summary = "Get a friend information that connected with user")
     public ResponseEntity<FriendResponse.FriendDTO> findMyFriend(@RequestParam("friendId") String friendId) {
-        return ResponseEntity.ok(friendService.findMyFriend(UserContext.getUserId(),friendId));
+        return ResponseEntity.ok(friendService.findMyFriend(userContext.getUserId(),friendId));
     }
 
     @GetMapping("/friends")
     @Operation(summary = "Get friends information that connected with user")
     public ResponseEntity<List<FriendResponse.FriendDTO>> findFriends() {
-        return ResponseEntity.ok(userService.findAllFriends(UserContext.getUserId()));
+        return ResponseEntity.ok(userService.findAllFriends(userContext.getUserId()));
     }
 
     @PostMapping("/friend")
     @Operation(summary = "Add friends")
     public ResponseEntity<FriendResponse.FriendDTO> addFriend(@RequestBody FriendRequest.NewFriendDTO newFriendDTO) {
-        return ResponseEntity.ok(friendService.save(UserContext.getUserId(), newFriendDTO.getFriendId()));
+        return ResponseEntity.ok(friendService.save(userContext.getUserId(), newFriendDTO.getFriendId()));
     }
 
     @DeleteMapping("/friend")

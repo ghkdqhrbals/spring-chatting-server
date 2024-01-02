@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.List;
 
-public interface ChatRepository extends JpaRepository<Chatting, Long> {
+public interface ChatRepository extends JpaRepository<Chatting, String> {
 
     @Nullable
     @Query("select c from Chatting c where c.room.roomId = :roomId")

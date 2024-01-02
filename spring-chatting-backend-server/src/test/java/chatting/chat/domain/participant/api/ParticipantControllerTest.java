@@ -16,6 +16,7 @@ import chatting.chat.domain.user.dto.UserDto;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.error.GlobalExceptionHandler;
+import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.filter.UserContextInterceptor;
 import chatting.chat.web.sessionCluster.redis.UserRedisSession;
 import chatting.chat.web.sessionCluster.redis.UserRedisSessionRepository;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -47,6 +49,9 @@ class ParticipantControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @SpyBean
+    private UserContext userContext;
+
     @MockBean
     private ParticipantServiceImpl participantService;
 
@@ -59,7 +64,7 @@ class ParticipantControllerTest {
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders
-            .standaloneSetup(new ParticipantController(participantService))
+            .standaloneSetup(new ParticipantController(userContext,participantService))
             .setControllerAdvice(new GlobalExceptionHandler())
             .addInterceptors(userContextInterceptor)
             .build();

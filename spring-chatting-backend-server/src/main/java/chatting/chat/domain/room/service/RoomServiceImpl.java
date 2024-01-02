@@ -30,12 +30,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room findByRoomId(Long roomId) {
-        Optional<Room> findRoom = roomRepository.findById(roomId);
-        if (!findRoom.isPresent()){
-            throw new CustomException(CANNOT_FIND_ROOM);
-        }
-
-        return findRoom.get();
+        return roomRepository.findById(roomId)
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_ROOM));
     }
 
     @Override
@@ -44,12 +40,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void remove(Long roomId){
-        Optional<Room> findRoom = roomRepository.findById(roomId);
-        if (!findRoom.isPresent()){
-            throw new CustomException(CANNOT_FIND_ROOM);
-        }
-
-        roomRepository.deleteById(roomId);
+    public void remove(Long roomId) {
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_ROOM));
+        roomRepository.delete(room);
     }
 }

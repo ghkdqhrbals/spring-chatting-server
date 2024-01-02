@@ -1,5 +1,6 @@
 package chatting.chat.web.kafka.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,17 +8,14 @@ import lombok.Setter;
 @Setter
 public class RequestAddChatMessageDTO {
     private Long roomId;
-    private String writer;
-    private String writerId;
     private String message;
 
     public RequestAddChatMessageDTO() {
     }
 
-    public RequestAddChatMessageDTO(Long roomId, String writer, String writerId, String message) {
+    @Builder
+    public RequestAddChatMessageDTO(Long roomId, String message) {
         this.roomId = roomId;
-        this.writer = writer;
-        this.writerId = writerId;
         this.message = message;
     }
 }

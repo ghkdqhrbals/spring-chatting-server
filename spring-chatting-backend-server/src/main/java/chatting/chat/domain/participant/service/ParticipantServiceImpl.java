@@ -16,12 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.commondto.error.ErrorCode.*;
+
 import com.example.commondto.error.CustomException;
 
 @Slf4j
 @Service
 @Transactional
-public class ParticipantServiceImpl implements ParticipantService{
+public class ParticipantServiceImpl implements ParticipantService {
+
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
@@ -35,25 +37,29 @@ public class ParticipantServiceImpl implements ParticipantService{
 
     /**
      * 유저 아이디로 현재 참여중인 채팅방 조회
+     *
      * @param userId
      * @return List {@link ParticipantDto}
      */
     @Override
     public List<ParticipantDto> findAllByUserId(String userId) {
-        return participantRepository.findAllByUserId(userId).stream().map(Participant::toDto).toList();
+        return participantRepository.findAllByUserId(userId).stream().map(Participant::toDto)
+            .toList();
     }
 
     @Override
     public List<ParticipantDto> findParticipantByRoomId(Long roomId) {
-        return participantRepository.findAllByRoomId(roomId).stream().map(Participant::toDto).toList();
+        return participantRepository.findAllByRoomId(roomId).stream().map(Participant::toDto)
+            .toList();
     }
 
     @Override
     public String save(Participant participant) throws CustomException {
-        Participant findParticipant = participantRepository.findByRoomIdAndUserId(participant.getRoom().getRoomId(), participant.getUser().getUserId());
+        Optional<Participant> findParticipant = participantRepository.findByRoomIdAndUserId(
+            participant.getRoom().getRoomId(), participant.getUser().getUserId());
 
         // 기존에 참여하던 방일 때
-        if (findParticipant!=null){
+        if (findParticipant.isPresent()) {
             throw new CustomException(DUPLICATE_PARTICIPANT);
         }
 
@@ -63,10 +69,8 @@ public class ParticipantServiceImpl implements ParticipantService{
 
     @Override
     public String remove(Long roomId, String userId) throws CustomException {
-        Participant participant = participantRepository.findByRoomIdAndUserId(roomId, userId);
-        if (participant == null){
-            throw new CustomException(INVALID_PARTICIPANT);
-        }
+        Participant participant = participantRepository.findByRoomIdAndUserId(roomId, userId)
+            .orElseThrow(() -> new CustomException(INVALID_PARTICIPANT));
         participantRepository.delete(participant);
         return "success";
     }

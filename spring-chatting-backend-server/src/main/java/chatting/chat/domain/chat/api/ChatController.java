@@ -9,6 +9,7 @@ import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.kafka.dto.*;
 import com.example.commondto.dto.chat.ChatRequest;
+import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTOsWithUser;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,10 +27,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@Transactional
 @AllArgsConstructor
 public class ChatController {
 
+    private final UserContext userContext;
     private final UserService userService;
     private final RoomService roomService;
     private final ChatService chatService;
@@ -37,14 +38,12 @@ public class ChatController {
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
-        Room findRoom = roomService.findByRoomId(roomId);
-        List<Chatting> findChattings = chatService.findAllByRoomId(findRoom.getRoomId());
+        String userId = userContext.getUserId();
+        List<ChatRecordDTO> records = chatService.findAllByRoomId(roomId);
         ChatRequest.ChatRecordDTOsWithUser response = ChatRecordDTOsWithUser.builder()
-            .records(
-                findChattings.stream().map(
-                    Chatting::toChatRecordDTO).collect(Collectors.toList()))
-            .userId(UserContext.getUserId())
-            .userName(userService.findById(UserContext.getUserId()).getUserName())
+            .records(records)
+            .userId(userId)
+            .userName(userService.findById(userId).getUserName())
             .build();
 
         return ResponseEntity.ok(response);
@@ -52,9 +51,8 @@ public class ChatController {
 
     @GetMapping(value = "/chat")
     @Operation(summary = "Get a single chat with chat id")
-    public ResponseEntity<?> findChatRecord(@RequestParam("chatId") Long chatId) {
-        Chatting findChatting = chatService.findById(chatId);
-        return ResponseEntity.ok(findChatting);
+    public ResponseEntity<?> findChatRecord(@RequestParam("chatId") String chatId) {
+        return ResponseEntity.ok(chatService.findById(chatId));
     }
 
     @PostMapping("/status")
@@ -67,19 +65,9 @@ public class ChatController {
     // 채팅 저장
     @PostMapping(value = "/chat")
     @Operation(summary = "Save chat")
-    public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {
-
-        // validation
-        Room findRoom = roomService.findByRoomId(req.getRoomId());
-        User findUser = userService.findById(req.getWriterId());
-
-        // service-logic
-        Chatting chatting = createChatting(findRoom, findUser, req.getMessage());
-        chatService.save(chatting);
-
-        return ResponseEntity.ok("success");
+    public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {;
+        return ResponseEntity.ok(chatService.save(req, userContext.getUserId()));
     }
-
 
     /**
      * 채팅 생성

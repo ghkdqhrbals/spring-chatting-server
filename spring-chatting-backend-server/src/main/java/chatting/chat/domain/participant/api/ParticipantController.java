@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ParticipantController {
 
+    private final UserContext userContext;
     private final ParticipantService participantService;
 
     /**
@@ -32,7 +33,7 @@ public class ParticipantController {
     @DeleteMapping("/participant")
     @Operation(summary = "Delete a participant")
     public String removeParticipant(@RequestParam Long roomId) {
-        return participantService.remove(roomId, UserContext.getUserId());
+        return participantService.remove(roomId, userContext.getUserId());
     }
 
     /**
@@ -46,7 +47,7 @@ public class ParticipantController {
     @PostMapping("/participant")
     @Operation(summary = "Add a participant")
     public String addParticipant(@RequestParam Long roomId) {
-        return participantService.addParticipant(roomId, UserContext.getUserId());
+        return participantService.addParticipant(roomId, userContext.getUserId());
     }
 
     /**
@@ -66,6 +67,6 @@ public class ParticipantController {
     @GetMapping("/participant")
     @Operation(summary = "Get List of my participants")
     public List<ParticipantDto> getParticipant() {
-        return participantService.findAllByUserId(UserContext.getUserId());
+        return participantService.findAllByUserId(userContext.getUserId());
     }
 }

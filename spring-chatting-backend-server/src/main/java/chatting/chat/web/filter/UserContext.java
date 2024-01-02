@@ -3,8 +3,11 @@ package chatting.chat.web.filter;
 import com.example.commondto.error.CustomException;
 import com.example.commondto.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Slf4j
+@Configuration
 public class UserContext {
 
     private static final ThreadLocal<String> userIdThreadLocal = new ThreadLocal<>();
@@ -22,7 +25,7 @@ public class UserContext {
      * ThreadLocal에 저장된 userId를 반환합니다.
      * @return userId {@link String}
      */
-    public static String getUserId() {
+    public String getUserId() {
         log.trace("ThreadLocal userId : {}", userIdThreadLocal.get());
         if (userIdThreadLocal.get() == null) {
             log.trace("ThreadLocal userId is null");

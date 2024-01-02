@@ -11,6 +11,10 @@ import java.util.*;
 import lombok.ToString;
 
 public class ChatRequest {
+
+    /**
+     * 채팅기록 DTO 입니다.
+     */
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @Getter
     @Setter
@@ -34,6 +38,10 @@ public class ChatRequest {
         }
     }
 
+    /**
+     * 채팅방에 있는 유저들의 채팅기록을 가져올 때 사용합니다. ChatRecordDTO 를 리스트로 갖습니다.
+     * @see ChatRecordDTO
+     */
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @Getter
     @Setter

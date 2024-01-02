@@ -6,9 +6,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import chatting.chat.web.error.GlobalExceptionHandler;
+import chatting.chat.web.filter.UserContext;
 import com.example.commondto.error.CustomException;
 import com.example.commondto.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import chatting.chat.domain.user.entity.User;
@@ -49,6 +51,8 @@ public class UserControllerTest {
 
     @MockBean
     private UserService userService;
+    @SpyBean
+    private UserContext userContext;
 
     @MockBean
     private UserRedisSessionRepository userRedisSessionRepository;
@@ -59,7 +63,7 @@ public class UserControllerTest {
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders
-            .standaloneSetup(new UserController(userService))
+            .standaloneSetup(new UserController(userContext, userService))
             .setControllerAdvice(new GlobalExceptionHandler())
             .addInterceptors(userContextInterceptor)
             .build();

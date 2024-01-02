@@ -44,6 +44,7 @@ import com.example.commondto.error.AppException;
 @Transactional
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final UserContext userContext;
 
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
@@ -114,10 +115,10 @@ public class UserServiceImpl implements UserService {
     // 채팅방 생성
     @Override
     @Timed(value = "roomService.makeRoomWithFriends")
-    public RoomDto makeRoomWithFriends(RequestAddChatRoomDTO req) throws CustomException{
+    public RoomDto makeRoomWithFriends(RequestAddChatRoomDTO req) throws CustomException {
         ArrayList<UserDto> userParticipants = new ArrayList<>();
 
-        User findUser = userRepository.findByUserId(UserContext.getUserId())
+        User findUser = userRepository.findByUserId(userContext.getUserId())
             .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
 
         userParticipants.add(findUser.toDto());
@@ -220,11 +221,8 @@ public class UserServiceImpl implements UserService {
      * @throws CustomException
      */
     private Participant getParticipant(Long roomId, String userId) throws CustomException {
-        Participant findParticipant = participantRepository.findByRoomIdAndUserId(roomId, userId);
-        if (findParticipant == null) {
-            throw new CustomException(CANNOT_FIND_PARTICIPANT);
-        }
-        return findParticipant;
+        return participantRepository.findByRoomIdAndUserId(roomId, userId)
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_PARTICIPANT));
     }
 
     /**

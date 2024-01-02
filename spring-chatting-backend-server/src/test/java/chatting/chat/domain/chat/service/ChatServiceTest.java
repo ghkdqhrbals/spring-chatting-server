@@ -8,6 +8,7 @@ import chatting.chat.domain.room.dto.RoomDto;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.initial.Initializer;
 import chatting.chat.web.filter.UserContext;
+import chatting.chat.web.kafka.dto.RequestAddChatMessageDTO;
 import chatting.chat.web.kafka.dto.RequestAddChatRoomDTO;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
 import com.example.commondto.error.CustomException;
@@ -58,15 +59,13 @@ class ChatServiceTest extends Initializer {
             .userId(testUser.getUserId())
             .friendIds(Arrays.asList(testFriendUser.getUserId()))
             .build());
+        RequestAddChatMessageDTO requestAddChatMessageDTO = RequestAddChatMessageDTO.builder()
+            .roomId(roomDto.getRoomId())
+            .message("message")
+            .build();
 
         // when
-        ChatRecordDTO savedChat = chatService.save(Chatting.builder()
-                .id("id")
-            .room(roomRepository.findById(roomDto.getRoomId()).get())
-            .sendUser(savedUser)
-            .message("message")
-            .createdAt(LocalDateTime.now())
-            .build());
+        ChatRecordDTO savedChat = chatService.save(requestAddChatMessageDTO, savedUser.getUserId());
 
         log.info("savedChat: {}", savedChat);
 
@@ -92,16 +91,16 @@ class ChatServiceTest extends Initializer {
 
         userService.save("InvalidParticipantId", "InvalidParticipantName", "");
 
+        RequestAddChatMessageDTO requestAddChatMessageDTO = RequestAddChatMessageDTO.builder()
+            .roomId(roomDto.getRoomId())
+            .message("message")
+            .build();
+
         // when then
         UserContext.setUserId("InvalidParticipantId"); // ThreadLocal 에 userId 저장
 
         CustomException customException = assertThrows(CustomException.class, () -> {
-            chatService.save(Chatting.builder()
-                .room(roomRepository.findById(roomDto.getRoomId()).get())
-                .sendUser(userRepository.findById("InvalidParticipantId").get())
-                .message("message")
-                .createdAt(LocalDateTime.now())
-                .build());
+            chatService.save(requestAddChatMessageDTO, "InvalidParticipantId");
         });
 
         assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.INVALID_PARTICIPANT);

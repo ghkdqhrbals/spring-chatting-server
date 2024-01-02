@@ -1,6 +1,7 @@
 package chatting.chat.domain.room.api;
 
 import chatting.chat.domain.participant.service.ParticipantService;
+import chatting.chat.domain.room.dto.RoomDto;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.room.service.RoomService;
 import chatting.chat.domain.user.service.UserService;
@@ -38,8 +39,7 @@ public class RoomController {
     @GetMapping(value = "/rooms")
     @Operation(summary = "Get room information that user participated")
     public ResponseEntity<?> findRoomWithUserId() {
-        List<ChatRoomDTO> findUserRooms = userService.findAllMyRooms(UserContext.getUserId());
-        return ResponseEntity.ok(findUserRooms);
+        return ResponseEntity.ok(userService.findAllMyRooms(UserContext.getUserId()));
     }
 
     // 채팅방 개설

@@ -9,6 +9,7 @@ import chatting.chat.domain.user.service.UserService;
 import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.kafka.dto.*;
 import com.example.commondto.dto.chat.ChatRequest;
+import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTOsWithUser;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@Transactional
 @AllArgsConstructor
 public class ChatController {
 
@@ -37,12 +37,9 @@ public class ChatController {
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
-        Room findRoom = roomService.findByRoomId(roomId);
-        List<Chatting> findChattings = chatService.findAllByRoomId(findRoom.getRoomId());
+        List<ChatRecordDTO> records = chatService.findAllByRoomId(roomId);
         ChatRequest.ChatRecordDTOsWithUser response = ChatRecordDTOsWithUser.builder()
-            .records(
-                findChattings.stream().map(
-                    Chatting::toChatRecordDTO).collect(Collectors.toList()))
+            .records(records)
             .userId(UserContext.getUserId())
             .userName(userService.findById(UserContext.getUserId()).getUserName())
             .build();
@@ -53,8 +50,7 @@ public class ChatController {
     @GetMapping(value = "/chat")
     @Operation(summary = "Get a single chat with chat id")
     public ResponseEntity<?> findChatRecord(@RequestParam("chatId") Long chatId) {
-        Chatting findChatting = chatService.findById(chatId);
-        return ResponseEntity.ok(findChatting);
+        return ResponseEntity.ok(chatService.findById(chatId));
     }
 
     @PostMapping("/status")

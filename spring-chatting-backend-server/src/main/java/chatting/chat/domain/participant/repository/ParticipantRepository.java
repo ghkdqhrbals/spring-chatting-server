@@ -1,6 +1,7 @@
 package chatting.chat.domain.participant.repository;
 
 import chatting.chat.domain.participant.entity.Participant;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +18,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     @Query("select p from Participant p where p.room.roomId = :roomId")
     List<Participant> findAllByRoomId(@Param("roomId") Long roomId);
 
-    @Nullable
+
     @Query("select p from Participant p where p.room.roomId = :roomId and p.user.userId = :userId")
-    Participant findByRoomIdAndUserId(@Param("roomId") Long roomId, @Param("userId") String userId);
+    Optional<Participant> findByRoomIdAndUserId(@Param("roomId") Long roomId, @Param("userId") String userId);
 }

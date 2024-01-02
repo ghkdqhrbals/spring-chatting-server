@@ -67,12 +67,12 @@ public class ChatController {
         String userId = UserContext.getUserId();
 
         // validation
-        Room findRoom = roomService.findByRoomId(req.getRoomId());
-        User findUser = userService.findById(userId);
+        roomService.findByRoomId(req.getRoomId());
+        userService.findById(userId);
 
         // service-logic
-        Chatting chatting = createChatting(findRoom, findUser, req.getMessage());
-        chatService.save(chatting);
+
+
 
         return ResponseEntity.ok("success");
     }

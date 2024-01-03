@@ -1,9 +1,9 @@
 package chatting.chat.domain.chat.service;
 
 
+import chatting.chat.domain.chat.consts.ChatConst;
 import chatting.chat.domain.chat.entity.Chatting;
 import chatting.chat.domain.chat.repository.ChatRepository;
-import chatting.chat.domain.participant.entity.Participant;
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.participant.repository.ParticipantRepository;
 import chatting.chat.domain.room.repository.RoomRepository;
@@ -12,28 +12,27 @@ import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.web.kafka.dto.RequestAddChatMessageDTO;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.commondto.error.ErrorCode.*;
 
 import com.example.commondto.error.CustomException;
 import com.example.commondto.error.ErrorCode;
-import com.example.commondto.error.ErrorResponse;
-import com.example.commondto.error.AppException;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class ChatService {
+
 
     private final ChatRepository chatRepository;
     private final RoomRepository roomRepository;
@@ -52,8 +51,10 @@ public class ChatService {
     public List<ChatRecordDTO> findAllByRoomId(Long roomId) {
         roomRepository.findById(roomId)
             .orElseThrow(() -> new CustomException(CANNOT_FIND_ROOM));
-        return chatRepository.findAllByRoomId(roomId).stream().map(
-            Chatting::toChatRecordDTO).collect(Collectors.toList());
+        PageRequest pr = PageRequest.of(0, ChatConst.maxChatRecordPage,
+            Sort.by("createdAt").descending());
+        return chatRepository.findAllByRoomId(roomId, pr).map(Chatting::toChatRecordDTO)
+            .toList();
     }
 
     public ChatRecordDTO findById(String id) {
@@ -67,10 +68,12 @@ public class ChatService {
 
     /**
      * 채팅을 저장하는 메소드입니다.
-     * <br>채팅을 저장하기 전에 해당 유저가 해당 채팅방에 참여중인지 확인합니다. 참여중이지 않다면 예외를 발생시킵니다. {@link ErrorCode#INVALID_PARTICIPANT}
+     * <br>채팅을 저장하기 전에 해당 유저가 해당 채팅방에 참여중인지 확인합니다. 참여중이지 않다면 예외를 발생시킵니다.
+     * {@link ErrorCode#INVALID_PARTICIPANT}
      * <br>채팅방이 존재하지 않는다면 예외를 발생시킵니다. {@link ErrorCode#CANNOT_FIND_ROOM}
      * <br>채팅을 전송하는 유저가 존재하지 않는다면 예외를 발생시킵니다. {@link ErrorCode#CANNOT_FIND_USER}
-     * @param req {@link RequestAddChatMessageDTO}
+     *
+     * @param req    {@link RequestAddChatMessageDTO}
      * @param userId
      * @return {@link ChatRecordDTO}
      * @throws CustomException

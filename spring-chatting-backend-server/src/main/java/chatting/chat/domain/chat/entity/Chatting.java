@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 @Setter
 public class Chatting extends BaseTime {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chatting_seq")
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID")
     private Room room;
@@ -28,7 +29,7 @@ public class Chatting extends BaseTime {
     private String message;
 
     @Builder
-    public Chatting(String id, Room room, User sendUser, String message, LocalDateTime createdAt) {
+    public Chatting(Long id, Room room, User sendUser, String message, LocalDateTime createdAt) {
         this.id = id;
         this.room = room;
         this.sendUser = sendUser;
@@ -46,7 +47,7 @@ public class Chatting extends BaseTime {
      */
     public ChatRequest.ChatRecordDTO toChatRecordDTO() {
         return ChatRequest.ChatRecordDTO.builder()
-                .id(this.id)
+                .id(String.valueOf(this.id))
                 .roomId(this.room.getRoomId())
                 .sendUserId(this.sendUser.getUserId())
                 .sendUserName(this.sendUser.getUserName())

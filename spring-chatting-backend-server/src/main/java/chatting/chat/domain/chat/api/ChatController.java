@@ -78,7 +78,6 @@ public class ChatController {
      */
     private Chatting createChatting(Room room, User user, String msg) {
         Chatting chatting = new Chatting();
-        chatting.setId(UUID.randomUUID().toString());
         chatting.setRoom(room);
         chatting.setSendUser(user);
         chatting.setCreatedAt(LocalDateTime.now());

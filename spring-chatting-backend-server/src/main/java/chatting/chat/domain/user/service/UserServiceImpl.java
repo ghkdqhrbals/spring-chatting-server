@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
     private final FriendRepository friendRepository;
 
     @Override
+    @Timed(value = "userService.findById")
     @Transactional(readOnly = true)
     public User findById(String userId) {
         return userRepository.findById(userId)

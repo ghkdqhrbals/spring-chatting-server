@@ -11,6 +11,7 @@ import chatting.chat.domain.user.entity.User;
 import chatting.chat.domain.user.repository.UserRepository;
 import chatting.chat.web.kafka.dto.RequestAddChatMessageDTO;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
+import io.micrometer.core.annotation.Timed;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,7 @@ public class ChatService {
      * @return List {@link ChatRecordDTO}
      */
     @Nullable
+    @Timed(value = "chat.findAllByRoomId")
     public List<ChatRecordDTO> findAllByRoomId(Long roomId) {
         roomRepository.findById(roomId)
             .orElseThrow(() -> new CustomException(CANNOT_FIND_ROOM));

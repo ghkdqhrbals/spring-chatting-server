@@ -87,7 +87,6 @@ public class ChatService {
             .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
 
         Chatting chatting = Chatting.builder()
-            .id(UUID.randomUUID().toString())
             .room(room)
             .sendUser(user)
             .message(req.getMessage())

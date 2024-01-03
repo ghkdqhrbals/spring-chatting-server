@@ -41,9 +41,9 @@ public class ChatController {
         String userId = userContext.getUserId();
         List<ChatRecordDTO> records = chatService.findAllByRoomId(roomId);
         ChatRequest.ChatRecordDTOsWithUser response = ChatRecordDTOsWithUser.builder()
+            .userName(userService.findById(userId).getUserName())
             .records(records)
             .userId(userId)
-            .userName(userService.findById(userId).getUserName())
             .build();
 
         return ResponseEntity.ok(response);

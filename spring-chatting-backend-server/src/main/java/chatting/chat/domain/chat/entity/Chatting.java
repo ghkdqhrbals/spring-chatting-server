@@ -2,6 +2,7 @@ package chatting.chat.domain.chat.entity;
 
 import chatting.chat.domain.room.entity.Room;
 import chatting.chat.domain.user.entity.User;
+import chatting.chat.entityDefault.BaseTime;
 import com.example.commondto.dto.chat.ChatRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class Chatting {
+public class Chatting extends BaseTime {
     @Id
     private String id;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,8 +26,6 @@ public class Chatting {
     private User sendUser;
     @Column(name = "MESSAGE")
     private String message;
-    @Column(name = "CREATED_AT")
-    private LocalDateTime createdAt;
 
     @Builder
     public Chatting(String id, Room room, User sendUser, String message, LocalDateTime createdAt) {

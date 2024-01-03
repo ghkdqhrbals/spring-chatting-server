@@ -15,6 +15,7 @@ import com.example.commondto.error.CustomException;
 import com.example.commondto.error.ErrorCode;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,6 +65,7 @@ class ChatServiceTest extends Initializer {
             .message("message")
             .build();
 
+        System.out.println("Test Start");
         // when
         ChatRecordDTO savedChat = chatService.save(requestAddChatMessageDTO, savedUser.getUserId());
 
@@ -74,6 +76,40 @@ class ChatServiceTest extends Initializer {
         assertThat(savedChat.getRoomId()).isEqualTo(roomDto.getRoomId());
         assertThat(savedChat.getSendUserId()).isEqualTo(testUser.getUserId());
         assertThat(savedChat.getSendUserName()).isEqualTo(testUser.getUserName());
+    }
+
+    @Test
+    @DisplayName("10개의 채팅 전송 시 성공 반환")
+    void whenAddMultipleChat_thenSuccess() {
+        // given
+        User savedUser = userService.save(testUser.getUserId(), testUser.getUserName(),
+            testUser.getUserStatus());
+        userService.save(testFriendUser.getUserId(), testFriendUser.getUserName(), testFriendUser.getUserStatus());
+        UserContext.setUserId(testUser.getUserId()); // ThreadLocal 에 userId 저장
+        friendService.save(testUser.getUserId(), testFriendUser.getUserId());
+        RoomDto roomDto = userService.makeRoomWithFriends(RequestAddChatRoomDTO.builder()
+            .userId(testUser.getUserId())
+            .friendIds(Arrays.asList(testFriendUser.getUserId()))
+            .build());
+        RequestAddChatMessageDTO requestAddChatMessageDTO = RequestAddChatMessageDTO.builder()
+            .roomId(roomDto.getRoomId())
+            .message("message")
+            .build();
+
+
+        for (int i = 0; i < 10; i++) {
+            // when
+            ChatRecordDTO savedChat = chatService.save(requestAddChatMessageDTO, savedUser.getUserId());
+            // then
+            assertThat(savedChat.getMessage()).isEqualTo("message");
+            assertThat(savedChat.getRoomId()).isEqualTo(roomDto.getRoomId());
+            assertThat(savedChat.getSendUserId()).isEqualTo(testUser.getUserId());
+            assertThat(savedChat.getSendUserName()).isEqualTo(testUser.getUserName());
+        }
+
+        List<ChatRecordDTO> allChatRecords = chatService.findAllByRoomId(roomDto.getRoomId());
+        int size = allChatRecords.size();
+        assertThat(size).isEqualTo(10);
     }
 
     @Test

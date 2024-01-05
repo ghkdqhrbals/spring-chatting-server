@@ -19,6 +19,7 @@ import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.filter.UserContextInterceptor;
 import chatting.chat.web.kafka.dto.RequestAddChatMessageDTO;
 import chatting.chat.web.sessionCluster.redis.UserRedisSessionRepository;
+import chatting.chat.web.token.JwtTokenValidator;
 import com.example.commondto.dto.chat.ChatRequest.ChatRecordDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -49,7 +50,7 @@ import static org.hamcrest.Matchers.*;
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ChatController.class)
 @ActiveProfiles("testAPI")
-@Import(GlobalExceptionHandler.class)
+@Import({GlobalExceptionHandler.class, JwtTokenValidator.class})
 @Slf4j
 class ChatControllerTest {
 

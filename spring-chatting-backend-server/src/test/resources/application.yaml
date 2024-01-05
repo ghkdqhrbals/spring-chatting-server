@@ -1,3 +1,9 @@
+token:
+  expiration_time: 300000 # 30 seconds
+  refresh_expiration_time: 86400000 # 24 hours
+  secret: 'Ym9lNzFmZHdGVm5Rb2pIYU1wS3JmZz09'
+
+
 spring:
   profiles:
     active: test

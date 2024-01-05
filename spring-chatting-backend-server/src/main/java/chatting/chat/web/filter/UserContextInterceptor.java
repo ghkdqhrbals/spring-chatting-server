@@ -112,9 +112,10 @@ public class UserContextInterceptor implements HandlerInterceptor {
                 .findFirst()
                 .orElse(null);
             if (findCookie != null) {
-                if(!jwtTokenValidator.validateToken(findCookie.getValue())){
-                    log.error("token is invalid");
-                    return null;
+                String userId = jwtTokenValidator.validateToken(findCookie.getValue());
+                if(userId!=null){
+                    log.info("token is valid");
+                    return userId;
                 }
                 Optional<UserRedisSession> findUser = userRedisSessionRepository.findById(
                     findCookie.getValue());

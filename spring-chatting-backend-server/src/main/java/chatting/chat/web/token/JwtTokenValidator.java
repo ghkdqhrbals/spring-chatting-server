@@ -39,16 +39,16 @@ public class JwtTokenValidator {
      * @param token
      * @return true if token is valid, false if not
      */
-    public boolean validateToken(String token) {
+    public String validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts
                 .parserBuilder().setSigningKey(this.secret).build()
                 .parseClaimsJws(token);
-            return true;
+            return claims.getBody().get("sub").toString();
         } catch (JwtException | IllegalArgumentException e) {
             log.trace("JWT Error: {}", e.getMessage());
         }
-        return false;
+        return null;
     }
 }
 

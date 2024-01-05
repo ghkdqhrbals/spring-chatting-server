@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import chatting.chat.web.error.GlobalExceptionHandler;
 import chatting.chat.web.filter.UserContext;
+import chatting.chat.web.token.JwtTokenValidator;
 import com.example.commondto.error.CustomException;
 import com.example.commondto.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ExtendWith({SpringExtension.class})
 @WebMvcTest(UserController.class)
 @ActiveProfiles("testAPI")
-@Import(GlobalExceptionHandler.class)
+@Import({GlobalExceptionHandler.class, JwtTokenValidator.class})
 @Slf4j
 public class UserControllerTest {
 

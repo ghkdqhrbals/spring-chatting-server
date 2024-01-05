@@ -20,6 +20,7 @@ import chatting.chat.web.filter.UserContext;
 import chatting.chat.web.filter.UserContextInterceptor;
 import chatting.chat.web.sessionCluster.redis.UserRedisSession;
 import chatting.chat.web.sessionCluster.redis.UserRedisSessionRepository;
+import chatting.chat.web.token.JwtTokenValidator;
 import com.example.commondto.error.CustomException;
 import jakarta.servlet.http.Cookie;
 import java.time.LocalDate;
@@ -43,7 +44,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ExtendWith({SpringExtension.class})
 @WebMvcTest(ParticipantController.class)
 @ActiveProfiles("testAPI")
-@Import(GlobalExceptionHandler.class)
+@Import({GlobalExceptionHandler.class, JwtTokenValidator.class})
 @Slf4j
 class ParticipantControllerTest {
     @Autowired

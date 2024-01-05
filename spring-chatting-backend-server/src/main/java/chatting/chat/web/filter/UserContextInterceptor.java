@@ -2,12 +2,11 @@ package chatting.chat.web.filter;
 
 import chatting.chat.web.sessionCluster.redis.UserRedisSession;
 import chatting.chat.web.sessionCluster.redis.UserRedisSessionRepository;
-import chatting.chat.web.sessionCluster.redis.util.RedisUtil;
+import chatting.chat.web.token.JwtTokenValidator;
 import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -25,6 +24,7 @@ import java.util.*;
 @Component
 public class UserContextInterceptor implements HandlerInterceptor {
 
+    private final JwtTokenValidator jwtTokenValidator;
     private final UserRedisSessionRepository userRedisSessionRepository;
 
     private final Map<String, Set<HttpMethod>> whiteList = new HashMap<>();
@@ -34,8 +34,10 @@ public class UserContextInterceptor implements HandlerInterceptor {
      * @implNote WhiteList를 설정할 수 있으며 등록된 path 는 {@link UserContextInterceptor#preHandle} 에서 검증하지
      * 않습니다.
      */
-    public UserContextInterceptor(UserRedisSessionRepository userRedisSessionRepository) {
+    public UserContextInterceptor(UserRedisSessionRepository userRedisSessionRepository,
+        JwtTokenValidator jwtTokenValidator) {
         this.userRedisSessionRepository = userRedisSessionRepository;
+        this.jwtTokenValidator = jwtTokenValidator;
 
         addWhiteList("/actuator/health", HttpMethod.GET);
         addWhiteList("/user", HttpMethod.POST);
@@ -63,7 +65,8 @@ public class UserContextInterceptor implements HandlerInterceptor {
      * handler itself.
      * @throws Exception
      * @implNote 요청이 들어올 때마다 userId 를 추출하여 {@link UserContext} 에 저장합니다. 추출된 userId 가 없을 경우 401 을
-     * 반환합니다. 또한 Redis 에 refreshToken 이 저장되어있지 않을 때도 401 에러를 반환합니다. 테스트 시 {@link UserContext#setUserId} 로 ThreadLocal 에 저장해주세요.
+     * 반환합니다. 또한 Redis 에 refreshToken 이 저장되어있지 않을 때도 401 에러를 반환합니다. 테스트 시
+     * {@link UserContext#setUserId} 로 ThreadLocal 에 저장해주세요.
      */
     @Override
     @Timed(value = "interceptor.preHandle")
@@ -83,7 +86,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String userId = extractUserIdFromRequest(request);
+        String userId = validateRefreshToken(request);
         if (userId == null) {
             response.sendError(401);
             return false;
@@ -99,8 +102,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
         UserContext.clear();
     }
 
-    @Timed(value = "interceptor.extractUserIdFromRequest")
-    private String extractUserIdFromRequest(HttpServletRequest request) {
+    private String validateRefreshToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             Cookie findCookie = Arrays.stream(cookies)
@@ -110,6 +112,11 @@ public class UserContextInterceptor implements HandlerInterceptor {
                 .findFirst()
                 .orElse(null);
             if (findCookie != null) {
+                String userId = jwtTokenValidator.validateToken(findCookie.getValue());
+                if(userId!=null){
+                    log.info("token is valid");
+                    return userId;
+                }
                 Optional<UserRedisSession> findUser = userRedisSessionRepository.findById(
                     findCookie.getValue());
                 if (findUser.isPresent()) {

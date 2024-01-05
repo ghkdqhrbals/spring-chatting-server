@@ -29,9 +29,9 @@ spring:
       port: 6379
       lettuce:
         pool:
-          max-active: 150
-          max-idle: 70
-          min-idle: 50
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
   profiles:
     active: prod
   kafka:

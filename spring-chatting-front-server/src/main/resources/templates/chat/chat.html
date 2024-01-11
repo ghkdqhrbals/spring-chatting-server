@@ -65,6 +65,7 @@
 <script th:inline="javascript">
   /*<![CDATA[*/
   var userLocale = navigator.language
+  var prevTime = ""; // 이전에 출력한 시간을 저장하는 변수
 
   // 한글 입력 완료 시 실행될 핸들러 함수
   function handleKeyDown(event) {
@@ -110,7 +111,7 @@
       // Create a span element for the sender's name
       var messageAuthor = document.createElement("span");
       messageAuthor.className = "message-author";
-      messageAuthor.textContent = "kangoll";
+      messageAuthor.textContent = r.sendUserName;
 
       // Create a message bubble element
       var messageBubble = document.createElement("span");
@@ -143,8 +144,10 @@
     var formattedTime = messageTimeDate.toLocaleTimeString(userLocale, options);
     messageTime.textContent = formattedTime;
 
-    // Append the message time to the content container
-    messageInfo.appendChild(messageTime);
+    if (formattedTime !== prevTime) { // 현재 시간과 이전 시간이 다를 때만 출력
+      messageInfo.appendChild(messageTime);
+      prevTime = formattedTime; // 이전 시간 업데이트
+    }
 
     // Append the sender's avatar and content container to the message row
     if (r.sendUserId !== userId) {
@@ -201,7 +204,7 @@
         // Create a span element for the sender's name
         var messageAuthor = document.createElement("span");
         messageAuthor.className = "message-author";
-        messageAuthor.textContent = "kangoll";
+        messageAuthor.textContent = writer ;
 
         // Create a message bubble element
         var messageBubble = document.createElement("span");

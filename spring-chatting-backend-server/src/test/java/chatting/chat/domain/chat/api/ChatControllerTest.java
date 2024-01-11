@@ -76,7 +76,7 @@ class ChatControllerTest {
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders
-            .standaloneSetup(new ChatController(userContext, userService, roomService, chatService))
+            .standaloneSetup(new ChatController(userContext, userService, chatService))
             .setControllerAdvice(new GlobalExceptionHandler())
             .addInterceptors(userContextInterceptor)
             .build();

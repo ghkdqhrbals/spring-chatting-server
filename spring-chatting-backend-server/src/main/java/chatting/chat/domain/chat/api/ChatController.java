@@ -32,9 +32,13 @@ public class ChatController {
 
     private final UserContext userContext;
     private final UserService userService;
-    private final RoomService roomService;
     private final ChatService chatService;
 
+    /**
+     * 채팅방 아이디로 채팅기록을 조회하는 메소드입니다.
+     * @param roomId
+     * @return List {@link ChatRecordDTO}
+     */
     @GetMapping("/chats")
     @Operation(summary = "Get chat records")
     public ResponseEntity<?> findChatRecords(@RequestParam("roomId") Long roomId) {
@@ -49,12 +53,22 @@ public class ChatController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * 단일 채팅기록을 조회하는 메소드입니다.
+     * @param chatId
+     * @return {@link ChatRecordDTO}
+     */
     @GetMapping(value = "/chat")
     @Operation(summary = "Get a single chat with chat id")
     public ResponseEntity<?> findChatRecord(@RequestParam("chatId") String chatId) {
         return ResponseEntity.ok(chatService.findById(chatId));
     }
 
+    /**
+     * 사용자의 상태창을 변경하는 메소드입니다.
+     * @param request
+     * @return "success" if success
+     */
     @PostMapping("/status")
     @Operation(summary = "Change user's status")
     public ResponseEntity<?> changeUserStatus(@RequestBody RequestChangeUserStatusDTO request) {
@@ -62,7 +76,11 @@ public class ChatController {
         return ResponseEntity.ok("success");
     }
 
-    // 채팅 저장
+    /**
+     * 채팅을 저장하는 메소드입니다.
+     * @param req
+     * @return {@link ChatRecordDTO}
+     */
     @PostMapping(value = "/chat")
     @Operation(summary = "Save chat")
     public ResponseEntity<?> addChat(@RequestBody RequestAddChatMessageDTO req) {;

@@ -54,7 +54,7 @@ public class ChatService {
         roomRepository.findById(roomId)
             .orElseThrow(() -> new CustomException(CANNOT_FIND_ROOM));
         PageRequest pr = PageRequest.of(0, ChatConst.maxChatRecordPage,
-            Sort.by("createdAt").descending());
+            Sort.by("createdAt").ascending());
         return chatRepository.findAllByRoomId(roomId, pr).map(Chatting::toChatRecordDTO)
             .toList();
     }

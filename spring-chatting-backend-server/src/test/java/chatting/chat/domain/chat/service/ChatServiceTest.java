@@ -105,7 +105,6 @@ class ChatServiceTest extends Initializer {
             assertThat(savedChat.getSendUserName()).isEqualTo(testUser.getUserName());
         }
 
-        System.out.println("----------------------");
         List<ChatRecordDTO> allChatRecords = chatService.findAllByRoomId(roomDto.getRoomId());
         int size = allChatRecords.size();
         assertThat(size).isEqualTo(10);

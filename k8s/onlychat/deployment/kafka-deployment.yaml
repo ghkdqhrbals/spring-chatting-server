@@ -14,6 +14,8 @@ spec:
     spec:
       containers:
         - env:
+            - name: KAFKA_HEAP_OPTS
+              value: "-Xmx500m -Xms500m"
             - name: KAFKA_ADVERTISED_LISTENERS
               value: EXTERNAL://localhost:8097,INTERNAL://kafka-service:9092
             - name: KAFKA_BROKER_ID
@@ -28,4 +30,9 @@ spec:
               value: zookeeper-service:2181
           image: confluentinc/cp-kafka:7.2.1
           name: kafka
+          resources:
+            requests:
+              memory: "500Mi"
+            limits:
+              memory: "1Gi"
       restartPolicy: Always

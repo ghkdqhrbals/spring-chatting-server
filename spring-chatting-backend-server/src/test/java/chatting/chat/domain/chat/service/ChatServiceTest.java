@@ -92,6 +92,8 @@ class ChatServiceTest extends Initializer {
             .build());
 
         for (int i = 0; i < 10; i++) {
+            System.out.println("Add Chat "+ String.valueOf(i));
+
             RequestAddChatMessageDTO requestAddChatMessageDTO = RequestAddChatMessageDTO.builder()
                 .roomId(roomDto.getRoomId())
                 .message("message"+String.valueOf(i))

@@ -115,6 +115,7 @@ public class UserContextInterceptor implements HandlerInterceptor {
                 String userId = jwtTokenValidator.validateToken(findCookie.getValue());
                 if(userId!=null){
                     log.info("token is valid");
+                    log.info("userId: {}", userId);
                     return userId;
                 }
                 Optional<UserRedisSession> findUser = userRedisSessionRepository.findById(

@@ -1,5 +1,6 @@
 package chatting.chat.domain.user.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import chatting.chat.domain.friend.entity.Friend;
@@ -8,6 +9,7 @@ import chatting.chat.initial.Initializer;
 import chatting.chat.web.kafka.dto.RequestChangeUserStatusDTO;
 import com.example.commondto.dto.friend.FriendResponse;
 import com.example.commondto.error.CustomException;
+import com.example.commondto.error.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,15 +80,17 @@ class UserServiceImplTest extends Initializer {
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자 ID로 사용자를 찾으면 예외 발생")
+    @DisplayName("존재하지 않는 사용자 ID로 사용자를 찾으면 CANNOT_FIND_USER 예외 발생")
     public void whenFindAllFriendsWithInvalidUserId_thenExceptionShouldBeThrown() {
         // given
         String userId = "nonExistentUserId";
 
         // when + then
-        assertThrows(CustomException.class, () -> {
+        CustomException customException = assertThrows(CustomException.class, () -> {
             userService.findAllFriends(userId);
         });
+
+        assertThat(customException.getErrorCode()).isEqualByComparingTo(ErrorCode.CANNOT_FIND_USER);
     }
 
     @Test
@@ -121,15 +125,17 @@ class UserServiceImplTest extends Initializer {
 
 
     @Test
-    @DisplayName("존재하지 않는 사용자 ID로 친구 목록을 조회하면 예외 발생")
+    @DisplayName("존재하지 않는 사용자 ID로 친구 목록을 조회하면 CANNOT_FIND_USER 예외 발생")
     public void whenFindByIdWithInvalidId_thenExceptionShouldBeThrown() {
         // given
         String userId = "nonExistentUserId";
 
         // when + then
-        assertThrows(CustomException.class, () -> {
+        CustomException customException = assertThrows(CustomException.class, () -> {
             userService.findById(userId);
         });
+
+        assertThat(customException.getErrorCode()).isEqualByComparingTo(ErrorCode.CANNOT_FIND_USER);
     }
 
 

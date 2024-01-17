@@ -37,7 +37,6 @@ spec:
             - containerPort: 5435
               hostPort: 5435
               protocol: TCP
-          resources: {}
           volumeMounts:
             - name: user-vol
               mountPath: /var/lib/postgresql/data

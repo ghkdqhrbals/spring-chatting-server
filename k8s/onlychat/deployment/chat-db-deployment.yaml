@@ -33,6 +33,13 @@ spec:
                   key: user-db-username
           image: postgres:12-alpine
           name: chat-db
+          resources:
+            requests:
+              cpu: "0.5" # 요청하는 CPU 양
+              memory: "512Mi" # 요청하는 메모리 양
+            limits:
+              cpu: "1.0" # 최대 사용 가능한 CPU 양
+              memory: "1Gi" # 최대 사용 가능한 메모리 양
           ports:
             - containerPort: 5433
               hostPort: 5433
@@ -41,13 +48,6 @@ spec:
             - name: chat-vol
               mountPath: /var/lib/postgresql/data
       restartPolicy: Always
-      resources:
-        requests:
-          cpu: "0.5" # 요청하는 CPU 양
-          memory: "512Mi" # 요청하는 메모리 양
-        limits:
-          cpu: "1.0" # 최대 사용 가능한 CPU 양
-          memory: "1Gi" # 최대 사용 가능한 메모리 양
       volumes:
         - name: chat-vol
           persistentVolumeClaim:

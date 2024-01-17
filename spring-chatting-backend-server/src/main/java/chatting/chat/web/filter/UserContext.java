@@ -5,9 +5,10 @@ import com.example.commondto.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Configuration
+@Component
 public class UserContext {
 
     private static final ThreadLocal<String> userIdThreadLocal = new ThreadLocal<>();

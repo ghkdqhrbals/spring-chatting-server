@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
     // 채팅방 생성
     @Override
     @Timed(value = "roomService.makeRoomWithFriends")
-    @CacheEvict(value = "chatRoom", key = "#req.userId")
+    @CacheEvict(value = "chatRoom", key = "@userContext.getUserId()")
     public RoomDto makeRoomWithFriends(RequestAddChatRoomDTO req) throws CustomException {
         ArrayList<UserDto> userParticipants = new ArrayList<>();
 

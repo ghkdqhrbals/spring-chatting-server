@@ -63,6 +63,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Cacheable(value = "friendsList", key = "#userId")
     public List<FriendResponse.FriendDTO> findAllFriends(String userId) {
+        userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
         List<Friend> findFriends = friendRepository.findAllByUserId(userId);
         if (findFriends.isEmpty()) {
             return new ArrayList<>();

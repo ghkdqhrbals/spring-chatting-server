@@ -7,8 +7,11 @@ import chatting.chat.domain.room.dto.RoomDto;
 import chatting.chat.domain.user.entity.User;
 import chatting.chat.initial.Initializer;
 import chatting.chat.web.filter.UserContext;
+import chatting.chat.web.kafka.dto.ChatRoomDTO;
+import chatting.chat.web.kafka.dto.RequestAddChatMessageDTO;
 import chatting.chat.web.kafka.dto.RequestAddChatRoomDTO;
 import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +42,26 @@ class RoomServiceImplTest extends Initializer {
         roomRepository.deleteAll();
     }
 
+    @Test
+    @DisplayName("채팅방 생성이 성공해야합니다")
+    void whenCreateSingleChatRoom_thenOneRoomExist(){
+        // given
+        userService.save(testUser.getUserId(), testUser.getUserName(), testUser.getUserStatus());
+        userService.save(testFriendUser.getUserId(), testFriendUser.getUserName(), testFriendUser.getUserStatus());
 
+        UserContext.setUserId(testUser.getUserId()); // ThreadLocal 에 userId 저장
+        friendService.save(testUser.getUserId(), testFriendUser.getUserId());
+
+        // when
+        userService.makeRoomWithFriends(RequestAddChatRoomDTO.builder()
+            .userId(testUser.getUserId())
+            .friendIds(Arrays.asList(testFriendUser.getUserId()))
+            .build());
+        List<ChatRoomDTO> allMyRooms = userService.findAllMyRooms(testUser.getUserId());
+
+        // then
+        assertThat(allMyRooms.size()).isEqualTo(1);
+    }
 
 
 }

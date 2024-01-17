@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService {
     // 채팅방 생성
     @Override
     @Timed(value = "roomService.makeRoomWithFriends")
+    @CacheEvict(value = "chatRoom", key = "#userId")
     public RoomDto makeRoomWithFriends(RequestAddChatRoomDTO req) throws CustomException {
         ArrayList<UserDto> userParticipants = new ArrayList<>();
 
@@ -171,7 +172,7 @@ public class UserServiceImpl implements UserService {
     public List<ChatRoomDTO> findAllMyRooms(String userId) {
         // 유저 존재여부
         Optional<User> findUser = userRepository.findById(userId);
-        if (!findUser.isPresent()) {
+        if (findUser.isEmpty()) {
             throw new CustomException(CANNOT_FIND_USER);
         }
         // 내가 현재 참가하고있는 채팅방 검색

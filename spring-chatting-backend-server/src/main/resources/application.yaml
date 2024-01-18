@@ -50,10 +50,11 @@ server:
   tomcat:
     accept-count: 100 # default 100
     connection-timeout: 60s # default 60s
-    max-threads: 150 # default 200
-    min-spare-threads: 30 # default 10
     max-connections: 8192 # default 8192 동시에 처리할 수 있는 최대 연결 수
     max-swallow-size: 2MB # default 2MB
+    threads:
+      max: 150 # default 200
+      min-spare: 30 # default 10
 
 
 eureka:

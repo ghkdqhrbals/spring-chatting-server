@@ -43,7 +43,7 @@ public class JwtTokenValidatorTest {
     }
 
     @Test
-    @DisplayName("만료된 토큰 테스트")
+    @DisplayName("만료된 토큰을 validate 하면 null 을 반환해야합니다")
     public void testExpiredToken() {
         // given
         String subject = "user123";
@@ -64,7 +64,7 @@ public class JwtTokenValidatorTest {
     }
 
     @Test
-    @DisplayName("잘못된 서명을 가진 토큰 테스트")
+    @DisplayName("잘못된 서명을 가진 토큰을 validate 하면 null 을 반환해야합니다")
     public void testInvalidToken() {
         // 잘못된 서명을 가진 토큰 생성
         String subject = "user123";

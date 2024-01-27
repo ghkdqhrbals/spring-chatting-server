@@ -160,7 +160,7 @@ jobs:
 
   DeployToEKSCluster:
     name: 🚀 Deploy to AWS EKS Cluster
-    needs: [pushImageToEcr]
+    needs: [pushImageToEcr, pushNewTag]
     runs-on: ubuntu-latest
     outputs:
       duration: ${{ steps.calculate_duration.outputs.duration }}
@@ -238,7 +238,7 @@ jobs:
                     },
                     {
                       "title": "Deployment Workflow Status",
-                      "value": ":label: Push New Tag - Duration: ${{ needs.pushNewTag.outputs.duration }}\n:whale: Push Image To ECR - Duration: ${{ needs.pushImageToEcr.outputs.duration }}\n:rocket: Deploy To EKS - Duration: ${{ needs.DeployToEKSCluster.outputs.duration }}",
+                      "value": ":label: Push New Tag\t\tDuration: ${{ needs.pushNewTag.outputs.DURATION }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.DURATION }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.DURATION }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}",
                       "short": false
                     }
                   ]

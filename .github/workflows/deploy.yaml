@@ -160,7 +160,7 @@ jobs:
 
   DeployToEKSCluster:
     name: 🚀 Deploy to AWS EKS Cluster
-    needs: [pushImageToEcr]
+    needs: [pushImageToEcr, pushNewTag]
     runs-on: ubuntu-latest
     outputs:
       duration: ${{ steps.calculate_duration.outputs.duration }}

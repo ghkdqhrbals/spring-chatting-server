@@ -4,7 +4,13 @@
 
 현재는 추가 개발을 멈추고 서버 로드테스트를 진행하고 있습니다. 로드 테스트 툴은 [nGrinder](https://naver.github.io/ngrinder) 와 Golang 으로 직접만든 [Gotybench](https://github.com/ghkdqhrbals/gotybench) 을 사용하고 있습니다. 테스트 및 성능향상 기록은 Issue 에 `feature:performance` 태그로 기록 중입니다.
 
-<img width="880" alt="스크린샷 2023-12-15 오후 12 31 41" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/2652be5a-2d1c-4a7b-957b-d69aaa21007e">
+| Pod 종류와 Scale-up/down | 전체 아키텍처 | 
+|--|--|
+| <img width="708" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/f2bd747a-ef24-46b4-a0c7-4bd371ce0d4c"> | <img width="880" alt="스크린샷 2023-12-15 오후 12 31 41" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/2652be5a-2d1c-4a7b-957b-d69aaa21007e"> |
+
+| 단일서버 배포 자동화 | 멀티서버(AWS-EKS) 배포 자동화 | 
+|--|--|
+| <img width="893" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/17dcd8ce-f209-4b9b-b83a-2d5c8014ad34"> | <img width="707" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/30a7c6a3-6cb6-47bc-900d-ee765c86c28e"> |
 
 
 > Backend & Frontend Contributor 를 모집중입니다. 자유롭게 신청하세요 :) 학생이나 직장인 모두 재미삼아 참여하실 수 있어요!

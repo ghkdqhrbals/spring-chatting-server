@@ -46,6 +46,8 @@ public class FluxTest {
 
 
         var a = LocalDateTime.now();
+        Flux<String> source = Flux.fromIterable(Arrays.asList("1", "2")).log();
+
 
 
         System.out.println(Duration.between(a, LocalDateTime.now()).toMillis());
@@ -81,7 +83,6 @@ public class FluxTest {
         flux.subscribe(System.out::println);
 
         fluxWithC.subscribe(System.out::println);
-
 
     }
 

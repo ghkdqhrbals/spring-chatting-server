@@ -169,14 +169,30 @@ jobs:
           kubectl apply -f ./deployment/
 
   pushSlack:
-    needs: [pushImageToEcr, pushNewTag, DeployToEKSCluster]
+    needs: [ pushImageToEcr, pushNewTag, DeployToEKSCluster ]
     if: always()
     name: Slack Alert
     runs-on: ubuntu-latest
     steps:
-      - uses: 8398a7/action-slack@v3
+      - name: Send Slack Notification
+        uses: 8398a7/action-slack@v3
         with:
-          status: ${{ job.status }}
-          fields: job,took,author
+          status: custom
+          fields: 'result'
+          custom_payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ job.status == 'failure' ? 'danger' : 'good' }}",
+                  "fields": [
+                    {
+                      "title": "Deployment Status",
+                      "value": "Push New Tag: ${{ needs.pushNewTag.result }}\nPush Image To ECR: ${{ needs.pushImageToEcr.result }}\nDeploy To EKS Cluster: ${{ needs.DeployToEKSCluster.result }}",
+                      "short": false
+                    }
+                  ]
+                }
+              ]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

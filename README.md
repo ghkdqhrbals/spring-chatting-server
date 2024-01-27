@@ -2,7 +2,7 @@
 
 5.2.0 부터는 EKS 마이그레이션이 완료되었습니다. [배포주소](https://www.litcodev.com) 로컬에서 수행하기 위해서는 [4.2.0v](https://github.com/ghkdqhrbals/spring-chatting-server/tree/v4.2.0) 버전으로 태그를 이동하고 Instruction 에 따라 실행해주세요.
 
-현재는 추가 개발을 멈추고 서버 로드테스트를 진행하고 있습니다. 로드 테스트 툴은 [nGrinder](https://naver.github.io/ngrinder) 와 Golang 으로 직접만든 [Gotybench](https://github.com/ghkdqhrbals/gotybench) 을 사용하고 있습니다. 테스트 및 성능향상 기록은 Issue 에 `feature:performance` 태그로 기록 중입니다.
+현재는 추가 개발을 멈추고 서버 로드테스트를 진행하고 있습니다. 로드 테스트 툴은 [nGrinder](https://naver.github.io/ngrinder) 와 Golang 으로 직접만든 [Gotybench](https://github.com/ghkdqhrbals/gotybench) 을 사용하고 있습니다. 테스트 및 성능향상 기록은 Issue 에 [feature:performance](https://github.com/ghkdqhrbals/spring-chatting-server/issues?q=is%3Aopen+is%3Aissue+label%3A%22feature%3A+performance%22) 태그로 기록 중입니다.
 
 | Pod 종류와 Scale-up/down | 전체 아키텍처 | 
 |--|--|

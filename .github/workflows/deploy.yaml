@@ -11,12 +11,15 @@ env:
 
 jobs:
   pushNewTag:
-    name: Push new tag
+    name: 🏷️ Push new tag
     runs-on: ubuntu-latest
     outputs:
       NEW_VERSION: ${{ steps.increment_version.outputs.NEW_VERSION }}
       ECR_URL: ${{ steps.increment_version.outputs.ECR_URL }}
     steps:
+      - name: Record start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -73,13 +76,19 @@ jobs:
           git config --global user.email 'actions@github.com'
           git tag v${{ steps.increment_version.outputs.NEW_VERSION }}
           git push origin v${{ steps.increment_version.outputs.NEW_VERSION }}
+
+      - name: Record end time
+        run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV
           
 
   pushImageToEcr:
     needs: pushNewTag
-    name: Push image to AWS-ECR
+    name: 🐳 Push image to AWS-ECR
     runs-on: ubuntu-latest
     steps:
+      - name: Record start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -127,12 +136,17 @@ jobs:
         env:
           ECR_URL: ${{ env.ECR_URL }}
         run: ./push_to_ecr.sh ${ECR_URL} ${{ needs.pushNewTag.outputs.NEW_VERSION }}
+      - name: Record end time
+        run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV
 
   DeployToEKSCluster:
-    name: Deplyo to AWS EKS Cluster
-    needs: [pushImageToEcr,pushNewTag]
+    name: 🚀 Deploy to AWS EKS Cluster
+    needs: [pushImageToEcr]
     runs-on: ubuntu-latest
     steps:
+      - name: Record start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - uses: actions/checkout@v3
         name: Code checkout
 
@@ -168,10 +182,13 @@ jobs:
           kubectl apply -f ./service/
           kubectl apply -f ./deployment/
 
+      - name: Record end time
+        run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV
+
   pushSlack:
     needs: [ pushImageToEcr, pushNewTag, DeployToEKSCluster ]
     if: always()
-    name: Slack Alert
+    name: 📢 Slack Alert
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack Notification
@@ -183,11 +200,16 @@ jobs:
             {
               "attachments": [
                 {
-                  color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                  "color": '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
                   "fields": [
                     {
-                      "title": "Deployment Status",
-                      "value": "Push New Tag: ${{ needs.pushNewTag.result }}\nPush Image To ECR: ${{ needs.pushImageToEcr.result }}\nDeploy To EKS Cluster: ${{ needs.DeployToEKSCluster.result }}",
+                      "title": ":rocket: New Version Deployed",
+                      "value": "${{ needs.pushNewTag.outputs.NEW_VERSION }}",
+                      "short": false
+                    },
+                    {
+                      "title": "Deployment Workflow Status",
+                      "value": ":label: Push New Tag\t\tDuration: ${{ needs.pushNewTag.outputs.END_TIME - needs.pushNewTag.outputs.START_TIME }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.END_TIME - needs.pushImageToEcr.outputs.START_TIME }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.END_TIME - needs.DeployToEKSCluster.outputs.START_TIME }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}",
                       "short": false
                     }
                   ]

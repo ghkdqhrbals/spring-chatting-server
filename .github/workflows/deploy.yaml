@@ -14,6 +14,7 @@ jobs:
     name: 🏷️ Push new tag
     runs-on: ubuntu-latest
     outputs:
+      duration: ${{ steps.calculate_duration.outputs.duration }}
       NEW_VERSION: ${{ steps.increment_version.outputs.NEW_VERSION }}
       ECR_URL: ${{ steps.increment_version.outputs.ECR_URL }}
     steps:
@@ -79,15 +80,22 @@ jobs:
 
       - name: Record end time
         run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Calculate duration
+        id: calculate_duration
         run: |
-          echo "DURATION=$((${{ env.END_TIME }} - ${{ env.START_TIME }}))" >> $GITHUB_ENV
+          DURATION=$((END_TIME - START_TIME))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          echo "::set-output name=duration::${MINUTES}m ${SECONDS}s"
           
 
   pushImageToEcr:
     needs: pushNewTag
     name: 🐳 Push image to AWS-ECR
     runs-on: ubuntu-latest
+    outputs:
+      duration: ${{ steps.calculate_duration.outputs.duration }}
     steps:
       - name: Record start time
         run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
@@ -141,14 +149,21 @@ jobs:
         run: ./push_to_ecr.sh ${ECR_URL} ${{ needs.pushNewTag.outputs.NEW_VERSION }}
       - name: Record end time
         run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Calculate duration
+        id: calculate_duration
         run: |
-          echo "DURATION=$((${{ env.END_TIME }} - ${{ env.START_TIME }}))" >> $GITHUB_ENV
+          DURATION=$((END_TIME - START_TIME))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          echo "::set-output name=duration::${MINUTES}m ${SECONDS}s"
 
   DeployToEKSCluster:
     name: 🚀 Deploy to AWS EKS Cluster
     needs: [pushImageToEcr]
     runs-on: ubuntu-latest
+    outputs:
+      duration: ${{ steps.calculate_duration.outputs.duration }}
     steps:
       - name: Record start time
         run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
@@ -192,8 +207,12 @@ jobs:
         run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV
 
       - name: Calculate duration
+        id: calculate_duration
         run: |
-          echo "DURATION=$((${{ env.END_TIME }} - ${{ env.START_TIME }}))" >> $GITHUB_ENV
+          DURATION=$((END_TIME - START_TIME))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          echo "::set-output name=duration::${MINUTES}m ${SECONDS}s"
 
   pushSlack:
     needs: [ pushImageToEcr, pushNewTag, DeployToEKSCluster ]
@@ -219,7 +238,7 @@ jobs:
                     },
                     {
                       "title": "Deployment Workflow Status",
-                      "value": ":label: Push New Tag\t\tDuration: ${{ needs.pushNewTag.outputs.DURATION }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.DURATION }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.DURATION }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}"
+                      "value": ":label: Push New Tag\t\tDuration: ${{ needs.pushNewTag.outputs.duration }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.duration }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.duration }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}"
                       "short": false
                     }
                   ]

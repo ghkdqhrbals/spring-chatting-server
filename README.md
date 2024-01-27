@@ -10,7 +10,8 @@
 
 | (기존) 모노서버 배포 자동화 | (최근) AWS-EKS 배포 자동화 | 
 |--|--|
-| <img width="893" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/17dcd8ce-f209-4b9b-b83a-2d5c8014ad34"> | <img width="707" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/30a7c6a3-6cb6-47bc-900d-ee765c86c28e"> |
+| <img width="893" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/17dcd8ce-f209-4b9b-b83a-2d5c8014ad34"> | <img width="707" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/30a7c6a3-6cb6-47bc-900d-ee765c86c28e"> <img width="507" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/152bf2e2-cedd-4cef-83e6-662726ffe187">
+|
 
 
 > Backend & Frontend Contributor 를 모집중입니다. 자유롭게 신청하세요 :) 학생이나 직장인 모두 재미삼아 참여하실 수 있어요!

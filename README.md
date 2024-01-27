@@ -6,12 +6,11 @@
 
 | Pod 종류와 Scale-up/down | 전체 아키텍처 | 
 |--|--|
-| <img width="708" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/f2bd747a-ef24-46b4-a0c7-4bd371ce0d4c"> | <img width="880" alt="스크린샷 2023-12-15 오후 12 31 41" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/2652be5a-2d1c-4a7b-957b-d69aaa21007e"> |
+| ![pods](img/v53/pods.png) | ![architecture](img/v53/arc.png) |
 
 | (기존) 모노서버 배포 자동화 | (최근) AWS-EKS 배포 자동화 | 
 |--|--|
-| <img width="893" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/17dcd8ce-f209-4b9b-b83a-2d5c8014ad34"> | <img width="707" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/30a7c6a3-6cb6-47bc-900d-ee765c86c28e"> <img width="507" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/152bf2e2-cedd-4cef-83e6-662726ffe187">
-|
+| ![monodeploy](img/v53/monodeploy.png) | ![multijob](img/v53/multijob.png) ![slack](img/v53/slack.png) |
 
 
 > Backend & Frontend Contributor 를 모집중입니다. 자유롭게 신청하세요 :) 학생이나 직장인 모두 재미삼아 참여하실 수 있어요!

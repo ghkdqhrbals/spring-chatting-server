@@ -183,7 +183,7 @@ jobs:
             {
               "attachments": [
                 {
-                  "color": "${{ job.status == 'failure' ? 'danger' : 'good' }}",
+                  color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
                   "fields": [
                     {
                       "title": "Deployment Status",

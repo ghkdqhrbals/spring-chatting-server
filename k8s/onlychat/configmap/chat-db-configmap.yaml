@@ -4,5 +4,5 @@ metadata:
   name: postgres-config
 data:
   postgresql.conf: |
-    max_connections = 200
+    max_connections = 300
     max_parallel_workers_per_gather = 2

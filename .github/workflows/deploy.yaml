@@ -238,6 +238,11 @@ jobs:
                       "short": false
                     },
                     {
+                      "title": "PR Title and Author",
+                      "value": "${{ github.event.pull_request.title }} by @${{ github.event.pull_request.user.login }}",
+                      "short": false
+                    },
+                    {
                       "title": "Deployment Workflow Status",
                       "value": ":label: Push New Tag\t\t\tDuration: ${{ needs.pushNewTag.outputs.DURATION }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.DURATION }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.DURATION }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}",
                       "short": false

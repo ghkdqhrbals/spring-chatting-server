@@ -41,7 +41,7 @@ spec:
             - name: spring_config_activate_on-profile
               value: "prod"
             - name: spring_datasource_hikari_maximum-pool-size
-              value: "90"
+              value: "70"
             - name: spring_datasource_hikari_password
               valueFrom:
                 secretKeyRef:

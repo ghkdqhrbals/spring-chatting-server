@@ -16,6 +16,8 @@ spec:
         - args:
             - -c
             - wal_level=logical
+            - -c
+            - max_connections=300
             - -p
             - "5433"
           env:

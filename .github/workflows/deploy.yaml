@@ -234,12 +234,12 @@ jobs:
                   "fields": [
                     {
                       "title": ":rocket: New Version Deployed",
-                      "value": "${{ needs.pushNewTag.outputs.NEW_VERSION }}",
+                      "value": "<${{ github.event.pull_request.html_url }}|${{ needs.pushNewTag.outputs.NEW_VERSION }}>",
                       "short": false
                     },
                     {
                       "title": "PR Title and Author",
-                      "value": "${{ github.event.pull_request.title }} by @${{ github.event.pull_request.user.login }}",
+                      "value": "<${{ github.event.pull_request.html_url }}|${{ github.event.pull_request.title }}> \nBy <https://github.com/${{ github.event.pull_request.user.login }}|@${{ github.event.pull_request.user.login }}>",
                       "short": false
                     },
                     {

@@ -47,8 +47,13 @@ spec:
           volumeMounts:
             - name: chat-vol
               mountPath: /var/lib/postgresql/data
+            - name: config-volume
+              mountPath: /etc/postgresql/conf.d
       restartPolicy: Always
       volumes:
         - name: chat-vol
           persistentVolumeClaim:
             claimName: chat-pvc
+        - name: config-volume
+          configMap:
+            name: postgres-config

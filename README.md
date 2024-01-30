@@ -10,8 +10,7 @@
 
 | (기존) 모노서버 배포 자동화 | (최근) AWS-EKS 배포 자동화 | 
 |--|--|
-| ![monodeploy](img/v53/monodeploy.png) | ![multijob](img/v53/multijob.png) ![slack](img/v53/slack.png) |
-
+| ![monodeploy](img/v53/monodeploy.png) | ![multijob](img/v53/multijob.png) <img width="1000" alt="image" src="https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/0d3e36ff-64e8-40dd-9be4-28355051222f"> |
 
 > Backend & Frontend Contributor 를 모집중입니다. 자유롭게 신청하세요 :) 학생이나 직장인 모두 재미삼아 참여하실 수 있어요!
 >

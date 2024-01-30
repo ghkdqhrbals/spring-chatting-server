@@ -195,6 +195,7 @@ jobs:
           cd k8s/onlychat/deployment
           sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           cd ..
+          kubectl apply -f ./configmap/
           kubectl apply -f ./hpa/
           kubectl apply -f ./eks/
           kubectl apply -f redis.yaml
@@ -238,7 +239,7 @@ jobs:
                     },
                     {
                       "title": "Deployment Workflow Status",
-                      "value": ":label: Push New Tag\t\tDuration: ${{ needs.pushNewTag.outputs.DURATION }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.DURATION }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.DURATION }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}",
+                      "value": ":label: Push New Tag\t\t\tDuration: ${{ needs.pushNewTag.outputs.DURATION }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.DURATION }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.DURATION }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}",
                       "short": false
                     }
                   ]

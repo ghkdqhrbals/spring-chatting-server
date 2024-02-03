@@ -82,7 +82,7 @@ public class UserController {
         // create event id for kafka
         UUID eventId = UUID.randomUUID();
 
-        // add sink for sse
+        // 클라이언트에게
         Reactor.addSink(req.getUserId());
 
         UserEvent userEvent = new UserEvent(

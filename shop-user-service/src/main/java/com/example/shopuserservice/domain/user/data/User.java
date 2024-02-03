@@ -3,12 +3,14 @@ package com.example.shopuserservice.domain.user.data;
 
 import com.example.commondto.format.DateFormat;
 import com.example.shopuserservice.domain.data.base.BaseTime;
+import com.example.shopuserservice.web.vo.RequestUser;
 import jakarta.persistence.*;
 import lombok.*;
 
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "USER_TABLE")
@@ -65,6 +67,18 @@ public class User extends BaseTime {
 
     public void updateLoginDate(){
         this.loginDate = DateFormat.getCurrentTime();
+    }
+
+    public static User createUser(RequestUser request, PasswordEncoder pwe){
+        return User.builder()
+            .userName(request.getUserName())
+            .email(request.getEmail())
+            .role(request.getRole())
+            .userPw(pwe.encode(request.getUserPw()))
+            .userId(request.getUserId())
+            .loginDate(DateFormat.getCurrentTime())
+            .logoutDate(DateFormat.getCurrentTime())
+            .build();
     }
 
 }

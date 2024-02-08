@@ -4,9 +4,12 @@
 
 현재는 추가 개발을 멈추고 서버 로드테스트를 진행하고 있습니다. 로드 테스트 툴은 [nGrinder](https://naver.github.io/ngrinder) 와 Golang 으로 직접만든 [Gotybench](https://github.com/ghkdqhrbals/gotybench) 을 사용하고 있습니다. 테스트 및 성능향상 기록은 Issue 에 [feature:performance](https://github.com/ghkdqhrbals/spring-chatting-server/issues?q=is%3Aopen+is%3Aissue+label%3A%22feature%3A+performance%22) 태그로 기록 중입니다.
 
-| Pod 종류와 Scale-up/down | 전체 아키텍처 | 
-|--|--|
-| ![pods](img/v53/pods.png) | ![architecture](img/v53/arc.png) |
+### Kubernetes Pods Architecture
+![image](https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/e621a68d-ad03-4044-bd03-7600b8815d96)
+
+### Scalability
+![image](https://github.com/ghkdqhrbals/spring-chatting-server/assets/29156882/b0489783-27ed-4835-bf49-65f4a2bd0726)
+
 
 | (기존) 모노서버 배포 자동화 | (최근) AWS-EKS 배포 자동화 | 
 |--|--|

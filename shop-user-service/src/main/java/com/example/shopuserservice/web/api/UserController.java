@@ -109,68 +109,6 @@ public class UserController {
     }
 
     /**
-     * -------------- DELETE METHODS --------------
-     */
-    // 유저 삭제(deprecated)
-//    @DeleteMapping("/user")
-//    public CompletableFuture<ResponseEntity<String>> removeUser(WebSession session){
-//        // JWT validation 과정 중, session 에 저장한 payload 의 sub:userId 를 가져옴
-//        String userId = session.getAttribute("userId");
-//        // 이벤트 ID 및 이벤트
-//        UUID eventId = UUID.randomUUID();
-//        UserEvent userEvent = new UserEvent(
-//                eventId,
-//                UserStatus.USER_DELETE,
-//                userId
-//        );
-//        // 이번에는 먼저 유저 삭제 후, 토픽에 전송
-//        return userCommandQueryService.removeUser(eventId, userId).thenApply(b->{
-//            if (b){
-//                sendToKafkaWithKey(KafkaTopic.userReq,
-//                        userEvent,
-//                        userId).thenRun(()->{
-//                    log.debug("send kafka message");
-//                });
-//            }
-//            return ResponseEntity.ok().body("delete method is successfully running");
-//        }).exceptionally(e->{
-//            return ResponseEntity.internalServerError().body("delete method error is occurred");
-//        });
-//    }
-
-    // 유저 삭제
-//    @DeleteMapping("/user")
-//    public Flux<?> removeUser(WebSession session){
-//        // JWT validation 과정애서 session 에 저장한 payload 의 sub:userId 를 가져옴
-//        String userId = session.getAttribute("userId");
-//
-//        // sse 를 위한 Sinks 객체 추가
-//        AsyncConfig.sinkMap.put(userId, Sinks.many().multicast().onBackpressureBuffer());
-//
-//        // 이벤트 ID 및 이벤트
-//        UUID eventId = UUID.randomUUID();
-//        UserEvent userEvent = new UserEvent(
-//                eventId,
-//                UserStatus.USER_DELETE,
-//                userId
-//        );
-//
-//        // 유저 삭제 이벤트 전송 및 예외 처리
-//        userCommandQueryService
-//            .deleteUserEvent(eventId, userEvent)
-//            .exceptionally(e -> {
-//                if (e.getCause() instanceof CustomException) {
-//                    CustomException e2 = ((CustomException) e.getCause());
-//                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(e2.getErrorCode().getHttpStatus(), e2.getErrorCode().getDetail()));
-//                } else {
-//                    AsyncConfig.sinkMap.get(userId).tryEmitError(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
-//                }
-//                return null;
-//            });
-//        return AsyncConfig.sinkMap.get(userId).asFlux().log();
-//    }
-
-    /**
      * Update user's password
      * @param userPw {@link String}
      * @return {@link Boolean}

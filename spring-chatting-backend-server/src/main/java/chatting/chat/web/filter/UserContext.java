@@ -26,7 +26,7 @@ public class UserContext {
      * ThreadLocal에 저장된 userId를 반환합니다.
      * @return userId {@link String}
      */
-    public String getUserId() {
+    public static String getUserId() {
         log.trace("ThreadLocal userId : {}", userIdThreadLocal.get());
         if (userIdThreadLocal.get() == null) {
             log.trace("ThreadLocal userId is null");

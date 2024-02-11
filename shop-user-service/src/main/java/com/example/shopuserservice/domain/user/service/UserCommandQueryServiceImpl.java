@@ -21,6 +21,7 @@ import com.example.shopuserservice.web.util.reactor.Reactor;
 import com.example.shopuserservice.web.vo.RequestUser;
 import com.example.commondto.dto.order.ResponseOrder;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.transaction.UserTransaction;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
@@ -90,10 +91,9 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
                 .orElseThrow(() -> new CustomException(CANNOT_FIND_USER));
 
             UserRedisManager.changeUserRegisterStatusByEventResponse(event, userTransactions);
-
             UserStatusManager.sendUserStatusToClient(userTransactions, event.getUserId());
 
-            return userTransactionRedisRepository.save(userTransactions);   // redis status save
+            return userTransactionRedisRepository.save(userTransactions); // 상태 기반 저장
         });
     }
 
@@ -176,57 +176,27 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
             .build();
     }
 
-    private void queryWithMethods(String userId, String userPw,
-        DeferredResult<ResponseEntity<?>> dr, CompletableFuture<?> cf) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                cf.get(); // Blocking
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e.getCause());
-            }
-        }, serviceExecutor).thenRunAsync(() -> {
-            dr.setResult(ResponseEntity.ok("success"));
-        }, serviceExecutor).exceptionally(e -> {
-            if (e.getCause().getCause() instanceof CustomException) {
-                dr.setResult(ErrorResponse.toResponseEntity(
-                    ((CustomException) e.getCause().getCause()).getErrorCode()));
-            } else {
-                dr.setResult(ResponseEntity.badRequest().body("default bad request response"));
-            }
-            return null;
-        });
-    }
+    @Transactional
+    @Async
+    public CompletableFuture<Boolean> removeUser(UUID eventId, String userId) {
 
-    // 유저 삭제
-//    @Override
-//    @Transactional
-//    @Async
-//    public CompletableFuture<Boolean> removeUser(UUID eventId, String userId) {
-//
-//        // tx 저장
-//        userTransactionRepository.save(
-//                new UserTransaction(
-//                        eventId,
-//                        UserStatus.USER_DELETE,
-//                        UserResponseStatus.USER_APPEND,
-//                        UserResponseStatus.USER_APPEND,
-//                        userId,
-//                        LocalDateTime.now(),
-//                        null,
-//                        null,
-//                        null,
-//                        null)
-//        );
-//
-//        Optional<User> findUser = userRepository.findById(userId);
-//
-//        if (findUser.isPresent()){
-//            userRepository.delete(findUser.get());
-//            return CompletableFuture.completedFuture(true);
-//        }
-//
-//        throw new CustomException(CANNOT_FIND_USER);
-//    }
+        // 이벤트 저장
+        userTransactionRedisRepository.save(
+            UserTransactions.builder()
+                .eventId(eventId)
+                .userId(userId)
+                .userStatus(UserStatus.USER_DELETE_APPEND)
+                .chatStatus(UserStatus.USER_DELETE_APPEND)
+                .customerStatus(UserStatus.USER_DELETE_APPEND)
+                .createdAt(DateFormat.getCurrentTime())
+                .build()
+        );
+
+        User findUser = userRepository.findById(userId).orElseThrow(()->new CustomException(CANNOT_FIND_USER));
+        userRepository.delete(findUser);
+
+        return CompletableFuture.completedFuture(true);
+    }
 
     // 유저 업데이트
     @Override

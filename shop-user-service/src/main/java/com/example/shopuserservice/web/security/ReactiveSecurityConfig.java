@@ -66,7 +66,6 @@ public class ReactiveSecurityConfig {
      * @return
      */
     @Bean
-//    @DependsOn({"methodSecurityExpressionHandler"})
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
                                                          JwtTokenProvider jwtTokenProvider,
                                                          ReactiveAuthenticationManager reactiveAuthenticationManager) {
@@ -143,7 +142,14 @@ public class ReactiveSecurityConfig {
     }
 
 
-
+    /**
+     * UserRepoistory 의 실제 사용자 정보를 가져와서 반환합니다!
+     *
+     * <br>이렇게 Bean 으로 등록하면 자동으로 Spring Security 가 가져가서 쓰는 방식으로 바뀌었습니다</br>
+     *
+     * @param userRepository
+     * @return
+     */
     @Bean
     public ReactiveUserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> {

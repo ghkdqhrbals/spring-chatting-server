@@ -14,6 +14,7 @@ jobs:
 
       - name: Fetch commit messages
         run: |
+          git log -5
           COMMIT_MESSAGES=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')
           echo "$COMMIT_MESSAGES" > commit_messages.txt
 

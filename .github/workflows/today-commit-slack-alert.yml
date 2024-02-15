@@ -17,6 +17,11 @@ jobs:
           COMMIT_MESSAGES=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')
           echo "$COMMIT_MESSAGES" > commit_messages.txt
 
+      - name: Read commit messages from file
+        run: |
+          COMMIT_MESSAGES=$(cat commit_messages.txt)
+          echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+
       - name: Send Slack Notification
         uses: 8398a7/action-slack@v3
         with:
@@ -30,7 +35,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "$(cat commit_messages.txt)",
+                      "value": "${{ steps.read-commit-messages.outputs.commit_messages }}",
                       "short": false
                     }
                   ]

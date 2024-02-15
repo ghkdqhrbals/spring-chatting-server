@@ -23,7 +23,8 @@ jobs:
       - name: Split commit messages
         id: split-commit-messages
         run: |
-          IFS=$'\n' read -r -d '' -a COMMIT_MESSAGES_ARRAY <<<"${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+          commit_messages="${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+          IFS=$'\n' read -r -a COMMIT_MESSAGES_ARRAY <<< "$commit_messages"
           for message in "${COMMIT_MESSAGES_ARRAY[@]}"; do
             echo "::set-output name=COMMIT_MESSAGE::$message"
           done

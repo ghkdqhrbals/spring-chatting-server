@@ -19,13 +19,15 @@ jobs:
         run: |
           commit_messages=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')
           echo "::set-output name=COMMIT_MESSAGES::$commit_messages"
+          echo $commit_messages
 
       - name: Split commit messages
         id: split-commit-messages
         run: |
           commit_messages="${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
-          commit_messages_single_line=$(echo "$commit_messages" | tr '\n' ' ')
+          commit_messages_single_line=${commit_messages//[$'\t\n\r']}
           echo "::set-output name=COMMIT_MESSAGES_SINGLE_LINE::$commit_messages_single_line"
+          echo "$commit_messages_single_line"
 
       - name: Send Slack Notification
         uses: 8398a7/action-slack@v3

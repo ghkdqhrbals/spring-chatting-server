@@ -18,7 +18,7 @@ jobs:
         id: read-commit-messages
         run: |
           commit_messages=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')
-          commit_messages=$(echo "$commit_messages" | tr '\n' ' ')
+          commit_messages=$(echo "$commit_messages" | tr '\n' ' \n ')
           echo "::set-output name=COMMIT_MESSAGES::$commit_messages"
           
           echo $commit_messages
@@ -36,7 +36,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "Yes This \n is \n me ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
+                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
                       "short": false
                     }
                   ]

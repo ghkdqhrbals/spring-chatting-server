@@ -30,7 +30,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "${{COMMIT_MESSAGES}}",
+                      "value": "${{ env.COMMIT_MESSAGES }}",
                       "short": false
                     }
                   ]

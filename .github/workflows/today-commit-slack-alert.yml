@@ -19,7 +19,7 @@ jobs:
           for message in "${COMMIT_MESSAGES_ARRAY[@]}"; do
             echo "$message"
           done
-          echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+#          echo "::set-output name=commit_messages::${COMMIT_MESSAGES_ARRAY[*]}"
 
       - name: Store commit messages as a list variable
         id: store-commit-messages

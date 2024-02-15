@@ -15,7 +15,10 @@ jobs:
       - name: Fetch commit messages
         run: |
           COMMIT_MESSAGES=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H%n%ad %s %an" --date=format:'%H:%M:%S')
-          echo "$COMMIT_MESSAGES"
+          IFS=$'\n' read -r -d '' -a COMMIT_MESSAGES_ARRAY <<<"$COMMIT_MESSAGES"
+          for message in "${COMMIT_MESSAGES_ARRAY[@]}"; do
+            echo "$message"
+          done
           echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
 
       - name: Store commit messages as a list variable

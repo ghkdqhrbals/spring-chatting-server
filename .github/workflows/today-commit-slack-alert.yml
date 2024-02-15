@@ -42,7 +42,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "${{ steps.split-commit-messages.outputs.COMMIT_MESSAGES }}",
+                      "value": "${{ steps.split-commit-messages.outputs.COMMIT_MESSAGE }}",
                       "short": false
                     }
                   ]

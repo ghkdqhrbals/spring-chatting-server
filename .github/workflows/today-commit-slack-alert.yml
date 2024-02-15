@@ -14,23 +14,29 @@ jobs:
 
       - name: Fetch commit messages
         run: |
-          COMMIT_MESSAGES=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H%n%ad %s %an" --date=format:'%H:%M:%S')
-          IFS=$'\n' read -r -d '' -a COMMIT_MESSAGES_ARRAY <<<"$COMMIT_MESSAGES"
-          for message in "${COMMIT_MESSAGES_ARRAY[@]}"; do
-            echo "$message"
-          done
-#          echo "::set-output name=commit_messages::${COMMIT_MESSAGES_ARRAY[*]}"
+          COMMIT_MESSAGES=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')
+          echo "$COMMIT_MESSAGES"
+          echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
 
-      - name: Store commit messages as a list variable
-        id: store-commit-messages
-        run: |
-          IFS=$'\n'
-          COMMIT_MESSAGES_ARRAY=($COMMIT_MESSAGES)
-          echo "::set-output name=commit_messages_array::${COMMIT_MESSAGES_ARRAY[*]}"
-
-      - name: Use commit messages in downstream steps
-        run: |
-          echo "Commit messages for the day:"
-          for message in "${{ steps.store-commit-messages.outputs.commit_messages_array }}"; do
-            echo "- $message"
-          done
+      - name: Send Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: 'result'
+          custom_payload: |
+            {
+              "attachments": [
+                {
+                  "color": '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                  "fields": [
+                    {
+                      "title": "Today commits",
+                      "value": "${{ steps.fetch-commit-messages.outputs.commit_messages }}",
+                      "short": false
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

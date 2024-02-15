@@ -36,7 +36,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
+                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }} \n By ME",
                       "short": false
                     }
                   ]

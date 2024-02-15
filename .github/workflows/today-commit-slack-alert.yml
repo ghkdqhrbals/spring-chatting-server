@@ -15,6 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch commit messages
+        id: read-commit-messages
         run: |
           git log -5
           commit_messages=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')

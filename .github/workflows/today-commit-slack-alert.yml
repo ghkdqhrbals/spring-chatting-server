@@ -24,10 +24,8 @@ jobs:
         id: split-commit-messages
         run: |
           commit_messages="${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
-          IFS=$'\n' read -r -a COMMIT_MESSAGES_ARRAY <<< "$commit_messages"
-          for message in "${COMMIT_MESSAGES_ARRAY[@]}"; do
-            echo "::set-output name=COMMIT_MESSAGE::$message"
-          done
+          commit_messages_single_line=$(echo "$commit_messages" | tr '\n' ' ')
+          echo "::set-output name=COMMIT_MESSAGES_SINGLE_LINE::$commit_messages_single_line"
 
       - name: Send Slack Notification
         uses: 8398a7/action-slack@v3
@@ -42,7 +40,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "${{ steps.split-commit-messages.outputs.COMMIT_MESSAGE }}",
+                      "value": "${{ steps.split-commit-messages.outputs.COMMIT_MESSAGES_SINGLE_LINE }}",
                       "short": false
                     }
                   ]

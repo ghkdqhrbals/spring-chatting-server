@@ -1,0 +1,32 @@
+name: Daily Commit Messages Summary
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch-commit-messages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Fetch commit messages
+        run: |
+          COMMIT_MESSAGES=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H%n%ad %s %an" --date=format:'%H:%M:%S')
+          echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+
+      - name: Store commit messages as a list variable
+        id: store-commit-messages
+        run: |
+          IFS=$'\n'
+          COMMIT_MESSAGES_ARRAY=($COMMIT_MESSAGES)
+          echo "::set-output name=commit_messages_array::${COMMIT_MESSAGES_ARRAY[*]}"
+
+      - name: Use commit messages in downstream steps
+        run: |
+          echo "Commit messages for the day:"
+          for message in "${{ steps.store-commit-messages.outputs.commit_messages_array }}"; do
+            echo "- $message"
+          done

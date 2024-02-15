@@ -15,7 +15,7 @@ jobs:
       - name: Fetch commit messages
         run: |
           COMMIT_MESSAGES=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')
-          echo "$COMMIT_MESSAGES" >> $GITHUB_ENV
+          echo "$COMMIT_MESSAGES" > commit_messages.txt
 
       - name: Send Slack Notification
         uses: 8398a7/action-slack@v3
@@ -30,7 +30,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "${{ env.COMMIT_MESSAGES }}",
+                      "value": "$(cat commit_messages.txt)",
                       "short": false
                     }
                   ]

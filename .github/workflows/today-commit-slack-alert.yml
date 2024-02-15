@@ -26,10 +26,6 @@ jobs:
         with:
           status: custom
           fields: 'result'
-          run: |
-            echo "Today's commit messages: ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
-            msg=$(cat commit_messages.txt)
-            echo $msg
           custom_payload: |
             {
               "attachments": [
@@ -38,7 +34,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
+                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES | join("\n") }}",
                       "short": false
                     }
                   ]

@@ -17,12 +17,16 @@ jobs:
       - name: Fetch commit messages
         id: read-commit-messages
         run: |
-          
           commit_messages=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%H %ad %s %an" --date=format:'%H:%M:%S')
-          echo "$commit_messages"
-          git log -5
           echo "::set-output name=COMMIT_MESSAGES::$commit_messages"
-          
+
+      - name: Split commit messages
+        id: split-commit-messages
+        run: |
+          IFS=$'\n' read -r -d '' -a COMMIT_MESSAGES_ARRAY <<<"${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+          for message in "${COMMIT_MESSAGES_ARRAY[@]}"; do
+            echo "::set-output name=COMMIT_MESSAGE::$message"
+          done
 
       - name: Send Slack Notification
         uses: 8398a7/action-slack@v3
@@ -37,7 +41,7 @@ jobs:
                   "fields": [
                     {
                       "title": "Today commits",
-                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
+                      "value": "${{ steps.split-commit-messages.outputs.COMMIT_MESSAGES }}",
                       "short": false
                     }
                   ]

@@ -17,7 +17,12 @@ jobs:
       - name: Fetch commit messages
         id: read-commit-messages
         run: |
-          commit_messages=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%h" --date=format:'%H:%M:%S')
+          today_only_date=$(date +'%Y-%m-%d')
+          echo "DATE=$(today_only_date)" >> $GITHUB_ENV
+          
+          today=$(date +'%Y-%m-%d')' 00:00:00'
+          nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
+          commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"%h %ad %s %an" --date=format:'%H:%M:%S')
           commit_messages=$(echo "$commit_messages" | tr '\n' ' \n ')
           echo "::set-output name=COMMIT_MESSAGES::$commit_messages"
           
@@ -32,13 +37,13 @@ jobs:
           # For posting a rich message using Block Kit
           payload: |
             {
-              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "text": "Today's commits",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                    "text": "${{ steps.read-commit-messages.outputs.DATE }}\n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
                   }
                 }
               ]

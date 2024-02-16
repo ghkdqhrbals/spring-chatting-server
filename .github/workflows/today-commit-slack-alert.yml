@@ -17,10 +17,8 @@ jobs:
       - name: Fetch commit messages
         id: read-commit-messages
         run: |
-          today_only_date=$(date +'%Y-%m-%d')
-          echo "DATE=$(today_only_date)" >> $GITHUB_ENV
-          
-          echo "Today : $DATE"
+          echo "TODAY_ONLY_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "Today : $TODAY_ONLY_DATE"
           
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'

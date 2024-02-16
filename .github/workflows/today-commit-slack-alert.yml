@@ -20,6 +20,8 @@ jobs:
           today_only_date=$(date +'%Y-%m-%d')
           echo "DATE=$(today_only_date)" >> $GITHUB_ENV
           
+          echo "Today : $DATE"
+          
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
           commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"%h %ad %s %an" --date=format:'%H:%M:%S')
@@ -43,7 +45,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.read-commit-messages.outputs.DATE }}\n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                    "text": "$DATE \n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
                   }
                 }
               ]

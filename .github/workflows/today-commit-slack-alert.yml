@@ -24,7 +24,7 @@ jobs:
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
           commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"%h %ad %s %an" --date=format:'%H:%M:%S')
-          commit_messages=$(echo "$commit_messages" | tr '\n' ' \n ')
+#          commit_messages=$(echo "$commit_messages" | tr '\n' ' \n ')
           echo "COMMIT_MESSAGES=$commit_messages" >> $GITHUB_OUTPUT
       - name: Get today date
         id: today-date

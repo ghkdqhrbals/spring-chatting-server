@@ -17,8 +17,9 @@ jobs:
       - name: Fetch commit messages
         id: read-commit-messages
         run: |
-          echo "TODAY_ONLY_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "Today : $TODAY_ONLY_DATE"
+          TODAY_ONLY_DATE=$(date +'%Y-%m-%d')
+          echo "TODAY_ONLY_DATE set to: $TODAY_ONLY_DATE"
+          echo "TODAY=$TODAY_ONLY_DATE" >> $GITHUB_ENV
           
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
@@ -43,7 +44,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.read-commit-messages.outputs.TODAY_ONLY_DATE }} \n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                    "text": "${{ steps.read-commit-messages.outputs.TODAY }} \n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
                   }
                 }
               ]

@@ -20,13 +20,18 @@ jobs:
           TODAY_ONLY_DATE=$(date +'%Y-%m-%d')
           echo "TODAY_ONLY_DATE set to: $TODAY_ONLY_DATE"
           echo "TODAY=$TODAY_ONLY_DATE" >> $GITHUB_OUTPUT
-          
+      
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
           commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"%h %ad %s %an" --date=format:'%H:%M:%S')
           commit_messages=$(echo "$commit_messages" | tr '\n' ' \n ')
           echo "COMMIT_MESSAGES=$commit_messages" >> $GITHUB_OUTPUT
-#          echo "::set-output name=COMMIT_MESSAGES::$commit_messages"
+      - name: Get today date
+        id: today-date
+        run: |
+          TODAY_ONLY_DATE=$(date +'%Y-%m-%d')
+          echo "TODAY_ONLY_DATE set to: $TODAY_ONLY_DATE"
+          echo "TODAY_DATE=$TODAY_ONLY_DATE" >> $GITHUB_OUTPUT
           
           echo $commit_messages
       - name: Post to a Slack channel
@@ -45,7 +50,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.read-commit-messages.outputs.TODAY }} \n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                    "text": "${{ steps.today-date.outputs.TODAY_DATE }} \n ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
                   }
                 }
               ]

@@ -18,30 +18,53 @@ jobs:
         id: read-commit-messages
         run: |
           commit_messages=$(git log --since="2023-12-13 00:00:00" --until="2024-02-13 23:59:59" --pretty=format:"%h %ad %s %an" --date=format:'%H:%M:%S')
-          commit_messages=$(echo "$commit_messages" | sed 's/\(.*\)/ \1 /')
+          commit_messages=$(echo "$commit_messages" | tr '\n' ' \n ')
           echo "::set-output name=COMMIT_MESSAGES::$commit_messages"
           
           echo $commit_messages
-
-      - name: Send Slack Notification
-        uses: 8398a7/action-slack@v3
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.25.0
         with:
-          status: custom
-          fields: 'result'
-          custom_payload: |
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: 'C06KUB7FR24'
+          # For posting a rich message using Block Kit
+          payload: |
             {
-              "attachments": [
+              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
                 {
-                  "color": '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                  "fields": [
-                    {
-                      "title": "Today commits",
-                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
-                      "short": false
-                    }
-                  ]
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                  }
                 }
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN_V2 }}
+
+#      - name: Send Slack Notification
+#        uses: 8398a7/action-slack@v3
+#        with:
+#          status: custom
+#          fields: 'result'
+#          custom_payload: |
+#            {
+#              "attachments": [
+#                {
+#                  "color": '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+#                  "fields": [
+#                    {
+#                      "title": "Today commits",
+#                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
+#                      "short": false
+#                    }
+#                  ]
+#                }
+#              ]
+#            }
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

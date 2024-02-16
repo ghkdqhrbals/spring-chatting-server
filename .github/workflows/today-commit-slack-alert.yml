@@ -1,9 +1,8 @@
 name: Daily Commit Messages Summary
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '59 15 * * *' # 분 시 일 월 요일. UTC +9 매일 23:59 에 실행
 
 jobs:
   fetch-commit-messages:
@@ -19,7 +18,7 @@ jobs:
         run: |
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
-          commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"%h %ad %s %an" --date=format:'%H:%M:%S' | sed 's/$/ \\n /' | tr -d '\n')
+          commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"**%ad** | **msg**: %s | **author**: %an" --date=format:'%H:%M:%S' | sed 's/$/ \\n /' | tr -d '\n')
           echo "COMMIT_MESSAGES=$commit_messages" >> $GITHUB_OUTPUT
       - name: Get today date
         id: today-date
@@ -45,33 +44,10 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.today-date.outputs.TODAY_DATE }} \n ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                    "text": "##${{ steps.today-date.outputs.TODAY_DATE }} \n ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
                   }
                 }
               ]
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN_V2 }}
-
-#      - name: Send Slack Notification
-#        uses: 8398a7/action-slack@v3
-#        with:
-#          status: custom
-#          fields: 'result'
-#          custom_payload: |
-#            {
-#              "attachments": [
-#                {
-#                  "color": '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-#                  "fields": [
-#                    {
-#                      "title": "Today commits",
-#                      "value": "${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}",
-#                      "short": false
-#                    }
-#                  ]
-#                }
-#              ]
-#            }
-#        env:
-#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

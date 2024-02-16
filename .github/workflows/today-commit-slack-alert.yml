@@ -1,9 +1,14 @@
 name: Daily Commit Messages Summary
 
-on:
-  schedule:
-    - cron: '59 15 * * *' # 분 시 일 월 요일. UTC +9 매일 23:59 에 실행
+#on:
+#  schedule:
+#    - cron: '59 15 * * *' # 분 시 일 월 요일. UTC +9 매일 23:59 에 실행
 
+on:
+  push:
+    branches:
+      - main
+      -
 jobs:
   fetch-commit-messages:
     runs-on: ubuntu-latest

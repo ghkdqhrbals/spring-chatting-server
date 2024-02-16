@@ -43,7 +43,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ DATE }} \n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                    "text": "${{ steps.read-commit-messages.outputs.TODAY_ONLY_DATE }} \n${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
                   }
                 }
               ]

@@ -17,14 +17,11 @@ jobs:
       - name: Fetch commit messages
         id: read-commit-messages
         run: |
-          TODAY_ONLY_DATE=$(date +'%Y-%m-%d')
-          echo "TODAY_ONLY_DATE set to: $TODAY_ONLY_DATE"
-          echo "TODAY=$TODAY_ONLY_DATE" >> $GITHUB_OUTPUT
-      
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
           commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"%h %ad %s %an" --date=format:'%H:%M:%S')
           echo "COMMIT_MESSAGES=$commit_messages" >> $GITHUB_OUTPUT
+
       - name: Get today date
         id: today-date
         run: |

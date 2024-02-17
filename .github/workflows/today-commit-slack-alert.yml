@@ -20,6 +20,12 @@ jobs:
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
           commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"[%ad] | [msg] %s | [author] %an" --date=format:'%H:%M:%S' | sed 's/$/ \\n /' | tr -d '\n')
           echo "COMMIT_MESSAGES=$commit_messages" >> $GITHUB_OUTPUT
+      - name: Fetch open PRs
+        id: fetch-open-prs
+        run: |
+          PRS=$(gh pr list --state open --format json | jq -r '.[] | select((now - .created_at | strptime("%Y-%m-%dT%H:%M:%SZ") | .days) > 7) | "[PR #\(.number)](\(.html_url)): \(.title)"' | sed 's/$/ \\n /' | tr -d '\n')
+          echo "OLD_PRS=$PRS" >> $GITHUB_OUTPUT
+
       - name: Get today date
         id: today-date
         run: |
@@ -45,6 +51,13 @@ jobs:
                   "text": {
                     "type": "mrkdwn",
                     "text": "${{ steps.today-date.outputs.TODAY_DATE }} \n ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Old PRs: \n ${{ steps.fetch-open-prs.outputs.OLD_PRS }}"
                   }
                 }
               ]

@@ -1,4 +1,4 @@
-name: Daily Commit Messages Summary
+name: Commit Messages to Slack Alert
 
 on:
   schedule:
@@ -18,7 +18,7 @@ jobs:
         run: |
           today=$(date +'%Y-%m-%d')' 00:00:00'
           nextday=$(date -d '+1 day' +'%Y-%m-%d')' 00:00:00'
-          commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"**%ad** | **msg**: %s | **author**: %an" --date=format:'%H:%M:%S' | sed 's/$/ \\n /' | tr -d '\n')
+          commit_messages=$(git log --since="$today" --until="$nextday" --pretty=format:"[%ad] | [msg] %s | [author] %an" --date=format:'%H:%M:%S' | sed 's/$/ \\n /' | tr -d '\n')
           echo "COMMIT_MESSAGES=$commit_messages" >> $GITHUB_OUTPUT
       - name: Get today date
         id: today-date
@@ -34,7 +34,7 @@ jobs:
         with:
           # Slack channel id, channel name, or user id to post message.
           # See also: https://api.slack.com/methods/chat.postMessage#channels
-          channel-id: 'C06KUB7FR24'
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID_V2 }}
           # For posting a rich message using Block Kit
           payload: |
             {

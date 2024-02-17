@@ -1,11 +1,8 @@
 name: Commit Messages to Slack Alert
 
 on:
-#  schedule:
-#    - cron: '59 15 * * *' # 분 시 일 월 요일. UTC +9 매일 23:59 에 실행
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '59 15 * * *' # 분 시 일 월 요일. UTC +9 매일 23:59 에 실행
 
 jobs:
   fetch-commit-messages:
@@ -53,7 +50,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.today-date.outputs.TODAY_DATE }} \n ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
+                    "text": "${{ steps.today-date.outputs.TODAY_DATE }} Commits: \n ${{ steps.read-commit-messages.outputs.COMMIT_MESSAGES }}"
                   }
                 },
                 {

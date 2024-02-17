@@ -1,8 +1,11 @@
 name: Commit Messages to Slack Alert
 
 on:
-  schedule:
-    - cron: '59 15 * * *' # 분 시 일 월 요일. UTC +9 매일 23:59 에 실행
+#  schedule:
+#    - cron: '59 15 * * *' # 분 시 일 월 요일. UTC +9 매일 23:59 에 실행
+  push:
+    branches:
+      - main
 
 jobs:
   fetch-commit-messages:

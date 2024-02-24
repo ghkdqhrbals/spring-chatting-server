@@ -210,7 +210,8 @@ jobs:
           kubectl apply -f ./volume/
           kubectl apply -f ./namespace/
           kubectl apply -f ./service/
-          kubectl apply -f ./deployment/
+          sh deployment/scripts/deploy-scheduler.sh
+#          kubectl apply -f ./deployment/
 
       - name: Record end time
         run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV

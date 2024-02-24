@@ -183,11 +183,11 @@ jobs:
       - name: Set up gcloud cli
         uses: google-github-actions/setup-gcloud@v2
 
-      - id: Set GKE cluster context
+      - name: Set GKE cluster context
         uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: cluster
-          location: us-central1-a
+          location: asia-east1-a
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -223,7 +223,7 @@ jobs:
           echo "::set-output name=duration::${MINUTES}m ${SECONDS}s"
 
   pushSlack:
-    needs: [ pushImageToEcr, pushNewTag, DeployToEKSCluster ]
+    needs: [ pushImageToEcr, pushNewTag, DeployToGKECluster ]
     if: always()
     name: 📢 Slack Alert
     runs-on: ubuntu-latest
@@ -251,7 +251,7 @@ jobs:
                     },
                     {
                       "title": "Deployment Workflow Status",
-                      "value": ":label: Push New Tag\t\t\tDuration: ${{ needs.pushNewTag.outputs.DURATION }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.DURATION }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To EKS\t\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.DURATION }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}",
+                      "value": ":label: Push New Tag\t\t\tDuration: ${{ needs.pushNewTag.outputs.DURATION }} sec\t\tResult: ${{ needs.pushNewTag.result }}\n:whale: Push Image To ECR\tDuration: ${{ needs.pushImageToEcr.outputs.DURATION }} sec\t\tResult: ${{ needs.pushImageToEcr.result }}\n:rocket: Deploy To GKE\t\t\tDuration: ${{ needs.DeployToEKSCluster.outputs.DURATION }} sec\t\tResult: ${{ needs.DeployToEKSCluster.result }}",
                       "short": false
                     }
                   ]

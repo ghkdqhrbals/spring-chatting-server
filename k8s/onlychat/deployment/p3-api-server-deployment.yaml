@@ -20,8 +20,21 @@ spec:
           env:
             - name: SERVER_PORT
               value: "8000"
-            - name: SPRING_CLOUD_CONFIG_URI
-              value: "http://43.203.25.44:8888"
+            - name: token_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-expiration-time
+            - name: token_refresh_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-refresh-expiration-time
+            - name: spring_datasource_hikari_password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: chat-db-password
             - name: SPRING_MAIN_web-application-type
               value: "reactive"
             - name: spring_rabbitmq_host

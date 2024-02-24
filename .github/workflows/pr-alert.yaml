@@ -3,8 +3,7 @@ name: Notify PR Completion
 on:
   workflow_run:
     workflows: ["Deployment"]
-    types:
-      - completed
+    types: [completed, failed]
 
 jobs:
   notify:

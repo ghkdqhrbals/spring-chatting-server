@@ -183,7 +183,7 @@ jobs:
       - name: Set up gcloud cli
         uses: google-github-actions/setup-gcloud@v2
 
-      - id: Set GKE cluster context
+      - name: Set GKE cluster context
         uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: cluster

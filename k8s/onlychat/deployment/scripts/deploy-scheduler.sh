@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Author: Gyumin HwangBo
 # Date: 2024-02-25
 # Version: 1.0
@@ -15,6 +16,7 @@ default_wait_time=20
 current_dir=$(pwd)
 deployment_dir=$(dirname "$current_dir")
 priority_files=()
+
 
 # Add the files to the priority groups
 for file in "$deployment_dir"/p*-deployment.yaml; do

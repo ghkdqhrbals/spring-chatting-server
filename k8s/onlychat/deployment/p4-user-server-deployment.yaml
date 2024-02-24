@@ -50,21 +50,21 @@ spec:
                 secretKeyRef:
                   name: database-secret
                   key: user-db-username
-#            - name: token_secret
-#              valueFrom:
-#                secretKeyRef:
-#                  name: token-secret
-#                  key: secret
-#            - name: token_expiration_time
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: token-secret
-#                  key: expiration_time
-#            - name: token_refresh_expiration_time
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: token-secret
-#                  key: refresh_expiration_time
+            - name: token_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-expiration-time
+            - name: token_refresh_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-refresh-expiration-time
+            - name: spring_datasource_hikari_password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: chat-db-password
             - name: spring_datasource_url
               value: "jdbc:postgresql://user-db:5435/user"
             - name: spring_data_redis_host

@@ -14,7 +14,7 @@
 default_wait_time=20
 current_dir=$(pwd)
 deployment_dir=$(dirname "$current_dir")
-declare -a priority_files
+priority_files=()
 
 # Add the files to the priority groups
 for file in "$deployment_dir"/p*-deployment.yaml; do

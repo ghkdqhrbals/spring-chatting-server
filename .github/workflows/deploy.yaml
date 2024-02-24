@@ -187,7 +187,7 @@ jobs:
         uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: cluster
-          location: us-central1-a
+          location: asia-east1-a
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

@@ -1,35 +1,41 @@
 name: Notify PR Completion
 
+
 on:
   workflow_run:
-    workflows: ["Deployment"]
-    types:
-      - completed
+    workflows: [Deployment]
+    types: [completed]
 
 jobs:
-  notify:
+  on-success:
     runs-on: ubuntu-latest
-    if: always()
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Notify on Workflow Completion
+      - name: Notify current workflow is succeed
         uses: actions/github-script@v6
+        if: success()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const status = '${{ github.event.workflow_run.conclusion }}';
-            const workflowName = '${{ github.event.workflow.name }}';
-            const runId = '${{ github.event.workflow_run.id }}';
-            
-            let message;
-            if (status === 'success') {
-              message = `✅ Workflow ${workflowName} succeeded ✅\n- [Show details](https://github.com/owner/repo/actions/runs/${runId})`;
-            } else {
-              message = `❌ Workflow ${workflowName} failed ❌\n- [Show details](https://github.com/owner/repo/actions/runs/${runId})`;
-            }
-
             github.rest.issues.createComment({
-              issue_number: ${{ github.event.workflow_run.head_repository.default_branch }},
-              owner: 'owner',
-              repo: 'repo',
-              body: message
+              issue_number: ${{ github.event.pull_request.number }},
+              owner: 'ghkdqhrbals',
+              repo: 'spring-chatting-server',
+              body: '✅ Build & Test workflow succeed ✅\n- [Show details](https://github.com/ghkdqhrbals/spring-chatting-server/actions/runs/${{ github.run_id }})'
+            })
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Notify current workflow is failed
+        uses: actions/github-script@v6
+        if: failure()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: ${{ github.event.pull_request.number }},
+              owner: 'ghkdqhrbals',
+              repo: 'spring-chatting-server',
+              body: '❌ Build & Test workflow failed ❌\n- [Show details](https://github.com/ghkdqhrbals/spring-chatting-server/actions/runs/${{ github.run_id }})'
             })

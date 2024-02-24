@@ -1,0 +1,35 @@
+name: Notify PR Completion
+
+on:
+  workflow_run:
+    workflows: ["Deployment"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify on Workflow Completion
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const status = '${{ github.event.workflow_run.conclusion }}';
+            const workflowName = '${{ github.event.workflow.name }}';
+            const runId = '${{ github.event.workflow_run.id }}';
+            
+            let message;
+            if (status === 'success') {
+              message = `✅ Workflow ${workflowName} succeeded ✅\n- [Show details](https://github.com/owner/repo/actions/runs/${runId})`;
+            } else {
+              message = `❌ Workflow ${workflowName} failed ❌\n- [Show details](https://github.com/owner/repo/actions/runs/${runId})`;
+            }
+
+            github.rest.issues.createComment({
+              issue_number: ${{ github.event.workflow_run.head_repository.default_branch }},
+              owner: 'owner',
+              repo: 'repo',
+              body: message
+            })

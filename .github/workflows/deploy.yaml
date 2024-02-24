@@ -171,9 +171,12 @@ jobs:
       - uses: actions/checkout@v3
         name: Code checkout
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v3.0 # default is latest stable
-        id: install
+      - name: Configure Google Cloud SDK
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -184,11 +187,11 @@ jobs:
 
       - name: Update kube config
         run: |
-          aws eks update-kubeconfig --name spring-chat-k8s-cluster --region ap-northeast-2
+          gcloud container clusters get-credentials cluster --zone us-central1-a --project ${{ secrets.GCP_PROJECT_ID }}
           kubectl config current-context
           kubectl get nodes -o wide
 
-      - name: Deploy to AWS EKS Cluster
+      - name: Deploy to GKE Cluster
         run: |
           echo "connect to ECR: ${{ secrets.ECR_URL }}"
           echo "new version will be deployed ${{ needs.pushNewTag.outputs.NEW_VERSION }}"

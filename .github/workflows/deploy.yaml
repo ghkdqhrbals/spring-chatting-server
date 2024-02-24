@@ -2,7 +2,7 @@ name: Deployment
 
 on:
   pull_request:
-    types: [synchronize, closed]
+    types: [synchronize, opened]
     branches:
       - main
 
@@ -158,10 +158,13 @@ jobs:
           SECONDS=$((DURATION % 60))
           echo "::set-output name=duration::${MINUTES}m ${SECONDS}s"
 
-  DeployToEKSCluster:
-    name: 🚀 Deploy to AWS EKS Cluster
+  DeployToGKECluster:
+    name: 🚀 Deploy to GKE Cluster
     needs: [pushImageToEcr, pushNewTag]
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     outputs:
       duration: ${{ steps.calculate_duration.outputs.duration }}
     steps:
@@ -171,12 +174,20 @@ jobs:
       - uses: actions/checkout@v3
         name: Code checkout
 
-      - name: Configure Google Cloud SDK
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - name: Configure google cloud credentials
+        id: auth
+        uses: google-github-actions/auth@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Set up gcloud cli
+        uses: google-github-actions/setup-gcloud@v2
+
+      - id: Set GKE cluster context
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: cluster
+          location: us-central1-a
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -184,12 +195,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
-
-      - name: Update kube config
-        run: |
-          gcloud container clusters get-credentials cluster --zone us-central1-a --project ${{ secrets.GCP_PROJECT_ID }}
-          kubectl config current-context
-          kubectl get nodes -o wide
 
       - name: Deploy to GKE Cluster
         run: |

@@ -4,13 +4,13 @@ metadata:
   name: pgadmin-pv
 spec:
   capacity:
-    storage: 200Mi
+    storage: 10Gi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain # Reclaim 정책 (Delete, Retain, Recycle 중 선택)
-  nfs:
-    path: /nfs_shared/pgdata-pgadmin # NFS 서버의 공유 경로
-    server: 172.31.8.39
+  persistentVolumeReclaimPolicy: Retain
+  gcePersistentDisk:
+    pdName: db-pd-2 # GCE PD의 이름
+    fsType: ext4
 
 ---
 
@@ -21,7 +21,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
+  volumeName: pgadmin-pv
   resources:
     requests:
-      storage: 100Mi
+      storage: 1Gi
   storageClassName: ""

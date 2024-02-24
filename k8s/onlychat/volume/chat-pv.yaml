@@ -7,6 +7,7 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteMany
+  storageClassName: "chat-gce-pd-1"
   persistentVolumeReclaimPolicy: Retain
   gcePersistentDisk:
     pdName: db-pd # GCE PD의 이름

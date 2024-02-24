@@ -22,14 +22,14 @@ jobs:
             
             let message;
             if (status === 'success') {
-              message = `✅ Workflow ${workflowName} succeeded ✅\n- [Show details](https://github.com/owner/repo/actions/runs/${runId})`;
+              message = `✅ Workflow ${workflowName} succeeded ✅\n- [Show details](https://github.com/ghkdqhrbals/spring-chatting-server/actions/runs/${runId})`;
             } else {
-              message = `❌ Workflow ${workflowName} failed ❌\n- [Show details](https://github.com/owner/repo/actions/runs/${runId})`;
+              message = `❌ Workflow ${workflowName} failed ❌\n- [Show details](https://github.com/ghkdqhrbals/spring-chatting-server/actions/runs/${runId})`;
             }
 
             github.rest.issues.createComment({
               issue_number: ${{ github.event.workflow_run.head_repository.default_branch }},
-              owner: 'owner',
-              repo: 'repo',
+              owner: 'ghkdqhrbals',
+              repo: 'spring-chatting-server',
               body: message
-            })
+            });

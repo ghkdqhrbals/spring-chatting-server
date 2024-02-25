@@ -9,11 +9,6 @@ spring:
       pool:
         size: 50  # Thread Pool Size
       thread-name-prefix: scheduled-task-  # Thread Name Prefix
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
   application:
     name: user-service
   messages:
@@ -93,7 +88,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, httpexchanges, beans, busrefresh
+        include: health, httpexchanges, beans, prometheus
 
 logging:
   level:

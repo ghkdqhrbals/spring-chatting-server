@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: prometheus-pv
+  name: prometheus-pv-with-gce-pd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: db-pd-1 # GCE PD의 이름
+    fsType: ext4
+  capacity:
+    storage: 10Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: prometheus
+  volumeMode: Filesystem

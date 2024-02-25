@@ -13,7 +13,7 @@ spec:
         app: user-server-service
     spec:
       imagePullSecrets:
-        - name: ecr-cred
+        - name: ecr-secret
       containers:
         - env:
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
@@ -22,18 +22,8 @@ spec:
               value: "kafka-service:9092"
             - name: SERVER_PORT
               value: "8010"
-            - name: SPRING_CLOUD_CONFIG_URI
-              value: "http://43.203.25.44:8888"
             - name: SPRING_MAIN_web-application-type
               value: "reactive"
-            - name: spring_rabbitmq_host
-              value: "43.203.25.44"
-            - name: spring_rabbitmq_port
-              value: "5672"
-            - name: spring_rabbitmq_username
-              value: "guest"
-            - name: spring_rabbitmq_password
-              value: "guest"
             - name: eureka_client_service-url_defaultZone
               value: http://discovery-server-service:8761/eureka
             - name: server_undertow_no-request-timeout
@@ -50,21 +40,27 @@ spec:
                 secretKeyRef:
                   name: database-secret
                   key: user-db-username
-#            - name: token_secret
-#              valueFrom:
-#                secretKeyRef:
-#                  name: token-secret
-#                  key: secret
-#            - name: token_expiration_time
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: token-secret
-#                  key: expiration_time
-#            - name: token_refresh_expiration_time
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: token-secret
-#                  key: refresh_expiration_time
+            - name: token_secret
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-priv-key-64bit
+            - name: token_refresh_expiration_time
+            - name: token_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-expiration-time
+            - name: token_refresh_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-refresh-expiration-time
+            - name: spring_datasource_hikari_password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: chat-db-password
             - name: spring_datasource_url
               value: "jdbc:postgresql://user-db:5435/user"
             - name: spring_data_redis_host

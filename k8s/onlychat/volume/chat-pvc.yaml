@@ -5,7 +5,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
+  volumeName: chat-pv
   resources:
     requests:
-      storage: 100Mi
-  storageClassName: ""
+      storage: 1Gi
+  storageClassName: "chat-gce-pd-1"

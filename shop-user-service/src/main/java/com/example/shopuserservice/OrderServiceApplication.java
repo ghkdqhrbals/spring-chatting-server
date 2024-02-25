@@ -30,7 +30,6 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @SpringBootApplication(scanBasePackages = "com.example",exclude={DataSourceAutoConfiguration.class,WebMvcAutoConfiguration.class, SecurityAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = {"com.example.shopuserservice.domain.user.repository"})
 @EnableDiscoveryClient
-@EnableFeignClients
 @Import(JpaConfig.class)
 @EnableKafka
 @EnableWebFlux

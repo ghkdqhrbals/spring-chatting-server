@@ -70,7 +70,7 @@ management:
       enabled: true
     web:
       exposure:
-        include: health, httpexchanges, beans, busrefresh, prometheus
+        include: health, prometheus
 
 logging:
   level:

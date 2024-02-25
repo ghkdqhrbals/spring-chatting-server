@@ -17,7 +17,7 @@ spec:
           image: busybox
           command: ["sh", "-c", "mkdir -p /var/lib/postgresql/production/data"]
           volumeMounts:
-            - name: chat-vol
+            - name: customer-vol
               mountPath: /var/lib/postgresql/production/data
       containers:
         - args:

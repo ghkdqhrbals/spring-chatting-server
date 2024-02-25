@@ -12,6 +12,13 @@ spec:
       labels:
         app: customer-db
     spec:
+      initContainers:
+        - name: init-data-dir
+          image: busybox
+          command: ["sh", "-c", "mkdir -p /var/lib/postgresql/production/data"]
+          volumeMounts:
+            - name: chat-vol
+              mountPath: /var/lib/postgresql/production/data
       containers:
         - args:
             - -c
@@ -40,7 +47,7 @@ spec:
           resources: {}
           volumeMounts:
             - name: customer-vol
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql/production/data
       restartPolicy: Always
       volumes:
         - name: customer-vol

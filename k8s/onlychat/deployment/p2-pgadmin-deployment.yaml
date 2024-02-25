@@ -21,7 +21,7 @@ spec:
               mountPath: /data/pgadmin
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4
+          image: dpage/pgadmin4:latest
           ports:
             - containerPort: 80
           env:

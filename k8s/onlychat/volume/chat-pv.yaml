@@ -4,10 +4,11 @@ metadata:
   name: chat-pv
 spec:
   capacity:
-    storage: 200Mi
+    storage: 10Gi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain # Reclaim 정책 (Delete, Retain, Recycle 중 선택)
-  nfs:
-    path: /nfs_shared/pgdata-chat # NFS 서버의 공유 경로
-    server: 172.31.8.39 # private EC2 NFS server IP
+  storageClassName: "chat-gce-pd-1"
+  persistentVolumeReclaimPolicy: Retain
+  gcePersistentDisk:
+    pdName: db-pd # GCE PD의 이름
+    fsType: ext4

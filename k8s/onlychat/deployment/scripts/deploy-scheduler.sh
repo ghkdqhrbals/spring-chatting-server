@@ -12,9 +12,9 @@
 # between each deployment for stabilization.
 # Then it moves to the next priority group.
 
-default_wait_time=10
+default_wait_time=20
 current_dir="$(pwd)"
-deployment_dir="$(dirname "$current_dir")"
+deployment_dir="$(dirname $current_dir)"
 priority_files=()
 
 

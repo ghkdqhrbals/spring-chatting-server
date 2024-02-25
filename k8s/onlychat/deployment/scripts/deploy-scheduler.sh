@@ -13,13 +13,24 @@
 # Then it moves to the next priority group.
 
 default_wait_time=20
-current_dir="$(pwd)"
-deployment_dir="$(dirname $current_dir)"
+script_path="${BASH_SOURCE[0]}"
 priority_files=()
 
+# Resolve the directory in case the path is a symlink
+while [ -h "$script_path" ]; do
+  script_dir="$( cd -P "$( dirname "$script_path" )" && pwd )"
+  script_path="$(readlink "$script_path")"
+  [[ $script_path != /* ]] && script_path="$script_dir/$script_path"
+done
+script_dir="$( cd -P "$( dirname "$script_path" )" && pwd )"
+
+# Now, get the parent directory of the script directory
+deployment_directory="$(dirname "$script_dir")"
+
+echo "Set deployment directory: $deployment_directory"
 
 # Add the files to the priority groups
-for file in "$deployment_dir"/p*-deployment.yaml; do
+for file in "$deployment_directory"/p*-deployment.yaml; do
     filename=$(basename "$file")
     priority=$(echo "$filename" | cut -d'-' -f1 | tr -d 'p')
     index=$((priority - 1))

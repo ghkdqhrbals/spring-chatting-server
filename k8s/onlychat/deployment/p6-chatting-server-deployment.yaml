@@ -12,12 +12,12 @@ spec:
       labels:
         app: chatting-server-service
     spec:
+      imagePullSecrets:
+        - name: ecr-secret
       containers:
         - env:
             - name: SERVER_PORT
               value: "8030"
-            - name: SPRING_CLOUD_CONFIG_URI
-              value: "http://43.203.25.44:8888"
             - name: spring_kafka_bootstrap-servers
               value: "kafka-service:9092"
             - name: spring_autoconfigure_exclude
@@ -42,6 +42,21 @@ spec:
               value: "prod"
             - name: spring_datasource_hikari_maximum-pool-size
               value: "150"
+            - name: token_secret
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-priv-key-64bit
+            - name: token_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-expiration-time
+            - name: token_refresh_expiration_time
+              valueFrom:
+                secretKeyRef:
+                  name: token-secret
+                  key: token-refresh-expiration-time
             - name: spring_datasource_hikari_password
               valueFrom:
                 secretKeyRef:

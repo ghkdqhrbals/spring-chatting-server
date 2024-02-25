@@ -1,26 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-db
+  name: customer-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-db
+      app: customer-db
   template:
     metadata:
       labels:
-        app: user-db
+        app: customer-db
     spec:
+      initContainers:
+        - name: init-data-dir
+          image: busybox
+          command: ["sh", "-c", "mkdir -p /var/lib/postgresql/production/data"]
+          volumeMounts:
+            - name: customer-vol
+              mountPath: /var/lib/postgresql/production/data
       containers:
         - args:
             - -c
             - wal_level=logical
             - -p
-            - "5435"
+            - "5434"
           env:
             - name: POSTGRES_DB
-              value: user
+              value: customer
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -32,16 +39,17 @@ spec:
                   name: database-secret
                   key: user-db-username
           image: postgres:12-alpine
-          name: user-db
+          name: customer-db
           ports:
-            - containerPort: 5435
-              hostPort: 5435
+            - containerPort: 5434
+              hostPort: 5434
               protocol: TCP
+          resources: {}
           volumeMounts:
-            - name: user-vol
-              mountPath: /var/lib/postgresql/data
+            - name: customer-vol
+              mountPath: /var/lib/postgresql/production/data
       restartPolicy: Always
       volumes:
-        - name: user-vol
+        - name: customer-vol
           persistentVolumeClaim:
-            claimName: user-pvc
+            claimName: customer-pvc

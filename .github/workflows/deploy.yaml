@@ -210,7 +210,7 @@ jobs:
           kubectl apply -f ./volume/
           kubectl apply -f ./namespace/
           kubectl apply -f ./service/
-          sh deployment/scripts/deploy-scheduler.sh
+          /bin/bash deployment/scripts/deploy-scheduler.sh
 #          kubectl apply -f ./deployment/
 
       - name: Record end time

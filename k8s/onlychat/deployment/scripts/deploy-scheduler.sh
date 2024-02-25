@@ -12,7 +12,7 @@
 # between each deployment for stabilization.
 # Then it moves to the next priority group.
 
-default_wait_time=.25
+default_wait_time=10
 current_dir="$(pwd)"
 deployment_dir="$(dirname "$current_dir")"
 priority_files=()
@@ -38,7 +38,7 @@ done
 for files in "${priority_files[@]}"; do
     for file in $files; do
         echo "Applying $file..."
-#        kubectl apply -f $file
+        kubectl apply -f $file
     done
 
     sleep "$default_wait_time"

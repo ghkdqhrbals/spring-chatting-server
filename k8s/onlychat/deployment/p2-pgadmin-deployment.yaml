@@ -12,9 +12,16 @@ spec:
       labels:
         app: pgadmin
     spec:
+      initContainers:
+        - name: init-data-dir
+          image: busybox
+          command: ["sh", "-c", "mkdir -p /data/pgadmin"]
+          volumeMounts:
+            - name: pgadmin-vol
+              mountPath: /data/pgadmin
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4
+          image: dpage/pgadmin4:latest
           ports:
             - containerPort: 80
           env:

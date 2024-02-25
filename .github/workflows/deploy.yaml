@@ -203,13 +203,15 @@ jobs:
           cd k8s/onlychat/deployment
           sh write_image_to_deploy.sh ${{ secrets.ECR_URL }} ap-northeast-2 ${{ needs.pushNewTag.outputs.NEW_VERSION }}
           cd ..
+          kubectl apply -f ./configmap/
           kubectl apply -f ./hpa/
           kubectl apply -f ./eks/
           kubectl apply -f redis.yaml
           kubectl apply -f ./volume/
           kubectl apply -f ./namespace/
           kubectl apply -f ./service/
-          kubectl apply -f ./deployment/
+          /bin/bash deployment/scripts/deploy-scheduler.sh
+#          kubectl apply -f ./deployment/
 
       - name: Record end time
         run: echo "END_TIME=$(date +%s)" >> $GITHUB_ENV

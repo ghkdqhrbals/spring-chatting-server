@@ -13,7 +13,7 @@ spec:
         app: api-server-service
     spec:
       imagePullSecrets:
-        - name: ecr-cred
+        - name: ecr-secret
       containers:
         - image: main-service_api-server:latest
           name: api-server

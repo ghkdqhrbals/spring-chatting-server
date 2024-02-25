@@ -12,6 +12,8 @@ spec:
       labels:
         app: chatting-server-service
     spec:
+      imagePullSecrets:
+        - name: ecr-secret
       containers:
         - env:
             - name: SERVER_PORT

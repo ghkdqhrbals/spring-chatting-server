@@ -6,4 +6,4 @@ WORKDIR /null
 COPY /build/libs/discovery.jar /null/app.jar
 ENTRYPOINT java -jar app.jar
 
-LABEL version=""
+LABEL version="unspecified"

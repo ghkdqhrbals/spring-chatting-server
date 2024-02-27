@@ -18,7 +18,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
-              issue_number: ${{ github.event.pull_request.number }},
+              issue_number: '${{ github.event.pull_request.number }}',
               owner: 'ghkdqhrbals',
               repo: 'spring-chatting-server',
               body: '✅ Build & Test workflow succeed ✅\n- [Show details](https://github.com/ghkdqhrbals/spring-chatting-server/actions/runs/${{ github.run_id }})'
@@ -34,7 +34,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
-              issue_number: ${{ github.event.pull_request.number }},
+              issue_number: '${{ github.event.pull_request.number }}',
               owner: 'ghkdqhrbals',
               repo: 'spring-chatting-server',
               body: '❌ Build & Test workflow failed ❌\n- [Show details](https://github.com/ghkdqhrbals/spring-chatting-server/actions/runs/${{ github.run_id }})'

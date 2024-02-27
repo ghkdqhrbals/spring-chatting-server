@@ -1,3 +1,5 @@
+# See detail values in https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+# PV volume setting https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#persistent-volumes
 global:
   scrape_interval: 15s
 
@@ -9,6 +11,7 @@ grafana:
     type: NodePort
     nodePort: 31000
 
+
 prometheus:
   enabled: true
   ingress:
@@ -18,19 +21,18 @@ prometheus:
     nodePort: 31001
   serviceMonitor:
     interval: "5s"
+  storageSpec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: prometheus
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi
+        selector:
+          matchLabels:
+            app: prometheus-pv
   prometheusSpec:
-#    storageSpec:
-#      # Using PersistentVolumeClaim
-#      volumeClaimTemplate:
-#        spec:
-#          storageClassName: ""
-#          accessModes: [ "ReadWriteMany" ] # PV의 accessModes와 일치
-#          resources:
-#            requests:
-#              storage: 2Gi
-#          selector:
-#            matchLabels:
-#              app: grafana-pv
     additionalScrapeConfigs:
       - job_name: 'spring-cloud-api-gateway'
         metrics_path: '/actuator/prometheus'

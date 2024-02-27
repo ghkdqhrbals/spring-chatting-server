@@ -8,7 +8,6 @@ import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.events.user.UserEvent;
 import com.example.commondto.events.user.UserResponseEvent;
 import com.example.commondto.events.user.UserStatus;
-import com.example.shopuserservice.client.OrderServiceClient;
 import com.example.shopuserservice.domain.user.data.User;
 import com.example.shopuserservice.domain.user.data.UserTransactions;
 import com.example.shopuserservice.domain.user.repository.UserRepository;
@@ -53,14 +52,12 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
     private final Executor serviceExecutor;
     private final HikariDataSource hikariDataSource;
     private final PasswordEncoder pwe;
-    private final OrderServiceClient orderServiceClient;
 
     public UserCommandQueryServiceImpl(UserRepository userRepository,
         UserTransactionRedisRepository userTransactionRedisRepository,
         @Qualifier("taskExecutor") Executor serviceExecutor,
         HikariDataSource hikariDataSource,
         @Qualifier("bcrypt") PasswordEncoder pwe,
-        OrderServiceClient orderServiceClient,
         KafkaTemplate<String, Object> kafkaProducerTemplate,
         TransactionTemplate transactionTemplate) {
         this.userRepository = userRepository;
@@ -68,7 +65,6 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         this.serviceExecutor = serviceExecutor;
         this.hikariDataSource = hikariDataSource;
         this.pwe = pwe;
-        this.orderServiceClient = orderServiceClient;
         this.kafkaProducerTemplate = kafkaProducerTemplate;
         this.transactionTemplate = transactionTemplate;
     }
@@ -249,12 +245,6 @@ public class UserCommandQueryServiceImpl implements UserCommandQueryService {
         User user = userRepository.findById(username).orElseThrow(()->new UsernameNotFoundException(username));
         List<ResponseOrder> orders = null;
 
-
-        try {
-            orders = orderServiceClient.getOrders(username);
-        } catch (Exception e) {
-            // ignore the exception
-        }
 
         UserDto userDto = new ModelMapper().map(user, UserDto.class);
 

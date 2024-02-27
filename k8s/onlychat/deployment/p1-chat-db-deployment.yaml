@@ -12,6 +12,13 @@ spec:
       labels:
         app: chat-db
     spec:
+      initContainers:
+        - name: init-data-dir
+          image: busybox
+          command: ["sh", "-c", "mkdir -p /var/lib/postgresql/production/data"]
+          volumeMounts:
+            - name: chat-vol
+              mountPath: /var/lib/postgresql/production/data
       containers:
         - args:
             - -c
@@ -48,7 +55,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: chat-vol
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql/production/data
             - name: config-volume
               mountPath: /etc/postgresql/conf.d
       restartPolicy: Always

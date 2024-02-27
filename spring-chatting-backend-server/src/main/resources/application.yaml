@@ -1,9 +1,4 @@
 spring:
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
   application:
     name: chat-service
   messages:
@@ -70,7 +65,7 @@ management:
       enabled: true
     web:
       exposure:
-        include: health, httpexchanges, beans, busrefresh, prometheus
+        include: health, prometheus
 
 logging:
   level:

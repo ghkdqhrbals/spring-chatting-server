@@ -15,7 +15,7 @@ spec:
         app: discovery-server-service
     spec:
       imagePullSecrets:
-        - name: ecr-cred
+        - name: ecr-secret
       containers:
         - image: main-service_discovery-server:latest
           name: discovery-server

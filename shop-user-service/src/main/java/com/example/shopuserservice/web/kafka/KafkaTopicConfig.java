@@ -2,6 +2,7 @@ package com.example.shopuserservice.web.kafka;
 
 import com.example.commondto.kafka.KafkaTopic;
 import com.example.commondto.kafka.KafkaTopicPartition;
+import jakarta.annotation.PostConstruct;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +12,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
 
-import javax.annotation.PostConstruct;
-
 
 @Configuration
 @ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 public class KafkaTopicConfig {
+
     @Autowired
     private KafkaAdmin kafkaAdmin;
 
@@ -26,6 +26,7 @@ public class KafkaTopicConfig {
     /**
      * Create topics with the number of partition and replica.
      */
+
     @PostConstruct
     public void init() {
         kafkaAdmin.createOrModifyTopics(generateTopic(KafkaTopic.userReq,Integer.parseInt(KafkaTopicPartition.userReq),brokerNum));

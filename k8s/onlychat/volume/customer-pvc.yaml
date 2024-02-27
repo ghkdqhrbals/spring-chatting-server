@@ -7,5 +7,6 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 100Mi
-  storageClassName: ""
+      storage: 1Gi
+  volumeName: customer-pv
+  storageClassName: "customer-gce-pd-1"
